@@ -1,5 +1,4 @@
 import os
-from posixpath import abspath
 from typing import Literal
 from urllib.request import Request
 import requests
@@ -128,23 +127,11 @@ class XataClient:
     def delete(self, urlPath, headers={}, **kwargs):
         return self.request("DELETE", urlPath, headers=headers, **kwargs)
 
-    def query(self, table, 
-        dbName=None,
-        branchName=None,
-        columns=None,
-        filter=None,
-        sort=None, 
-        page=None):
-
-        if dbName is None:
-            dbName = self.dbName
-        if branchName is None:
-            branchName = self.branchName
-
-        if dbName is None:
-            raise Exception("Database name is not configured. Please set it via `xata init` or pass it as a parameter.")
-        if branchName is None:
-            raise Exception("Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter.")
+    def requestBodyFromParams(self,         
+        columns: list[str] = None,
+        filter: dict = None,
+        sort: dict = None, 
+        page: dict = None) -> dict:
 
         body = {}
         if columns is not None:
@@ -155,6 +142,97 @@ class XataClient:
             body["sort"] = sort
         if page is not None:
             body["page"] = page
+        return body
 
-        return self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+    def dbAndBranchNamesFromParams(self, dbName, branchName) -> tuple[str, str]:
+        dbName = dbName or self.dbName
+        branchName = branchName or self.branchName
+        if dbName is None:
+            raise Exception("Database name is not configured. Please set it via `xata init` or pass it as a parameter.")
+        if branchName is None:
+            raise Exception("Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter.")
+        return dbName, branchName
 
+    """
+    Query a table.
+
+    :param table: The name of the table to query.
+    :param dbName: The name of the database to query. If not provided, the database name 
+                   from the client obejct is used.
+    :param branchName: The name of the branch to query. If not provided, the branch name
+                        from the client obejct is used.
+    :param columns: A list of column names to return. If not provided, all columns are returned.
+    :param filter: A filter expression to apply to the query.
+    :param sort: A sort expression to apply to the query.
+    :param page: A page expression to apply to the query.
+    :return: A page of results.
+    """
+    def query(self, 
+        table: str, 
+        dbName: str = None,
+        branchName: str = None,
+        columns: list[str] = None,
+        filter: dict = None,
+        sort: dict = None, 
+        page: dict = None) -> dict:
+
+        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        body = self.requestBodyFromParams(columns, filter, sort, page)
+        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        return result.json()
+
+    """
+    Get one record from a table.
+
+    :param table: The name of the table to query.
+    :param dbName: The name of the database to query. If not provided, the database name
+                     from the client obejct is used.
+    :param branchName: The name of the branch to query. If not provided, the branch name
+                        from the client obejct is used.
+    :param columns: A list of column names to return. If not provided, all columns are returned.
+    :param filter: A filter expression to apply to the query.
+    :param sort: A sort expression to apply to the query.
+    :return: A record as a dictionary.
+    """
+    def getOne(self, table,
+        dbName = None,
+        branchName = None,
+        columns = None,
+        filter = None,
+        sort = None) -> dict:
+
+        page = {"size": 1}
+        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        body = self.requestBodyFromParams(columns, filter, sort, page)
+        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        data = result.json()
+        if len(data.get("records", [])) == 0:
+            return None
+        return data.get("records")[0]
+    
+    """
+    Create a record in a table. If an ID is not provided, one will be generated.
+    If the ID is provided and a record with that ID already exists, an error is returned.
+
+    :param table: The name of the table to query.
+    :param dbName: The name of the database to query. If not provided, the database name
+                     from the client obejct is used.
+    :param branchName: The name of the branch to query. If not provided, the branch name
+                        from the client obejct is used.
+    :param id: The ID of the record to create. If not provided, one will be generated.
+    :param record: The record to create, as dict.
+    :return: The ID of the created record.
+    """
+    def create(self, table, 
+        dbName: str = None,
+        branchName: str = None,
+        id: str = None,
+        record: dict = None) -> str:
+
+        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        if id is not None:
+            self.put(f"/db/{dbName}:{branchName}/tables/{table}/records/{id}", json=record)
+            return id
+
+        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/data", json=record)
+        return result.json()["id"]

@@ -1,1 +1,5 @@
 __pycache__
+/build
+/dist
+/.eggs
+/xata.egg-info/
