@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 setup(
     name='xata',
     packages=find_packages(include=['xata']),
-    version='0.1.0',
+    version='0.1.1',
     description='Python client for Xata.io',
     long_description_content_type="text/markdown",
     long_description=open("README.md").read(),
