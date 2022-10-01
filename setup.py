@@ -6,7 +6,7 @@ setup(
     description='Python client for Xata.io',
     author='Tudor Golubenco',
     license='Apache-2.0',
-    python_requires=">=3.6, <4",
+    python_requires=">=3.8, <4",
     install_requires=["requests", "python-dotenv"],
     setup_requires=["pytest-runner"],
     tests_require=["pytest"],
