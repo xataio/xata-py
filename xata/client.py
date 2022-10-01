@@ -229,13 +229,13 @@ class XataClient:
             f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
         return result.json()
 
-    def getOne(self, table,
-               dbName=None,
-               branchName=None,
-               columns=None,
-               filter=None,
-               sort=None) -> dict:
-        """Get one record from a table.
+    def getFirst(self, table,
+                 dbName=None,
+                 branchName=None,
+                 columns=None,
+                 filter=None,
+                 sort=None) -> dict:
+        """Get the first record from a table respecting the provided filters and sort order.
 
         :meta public:
         :param table: The name of the table to query.

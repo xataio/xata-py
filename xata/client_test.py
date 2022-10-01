@@ -94,7 +94,7 @@ def test_create_and_query(client: XataClient, demo_db: string):
         "text": "This is a test post",
     })
 
-    rec = client.getOne("Posts", dbName=demo_db, branchName="main")
+    rec = client.getFirst("Posts", dbName=demo_db, branchName="main")
     assert rec["title"] == "Hello world"
     assert rec["labels"] == ["hello", "world"]
     assert rec["slug"] == "hello-world"
