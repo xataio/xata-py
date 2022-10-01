@@ -23,11 +23,29 @@ class RateLimitException(Exception):
 
 
 class BadRequestException(Exception):
-    pass
+    status_code: int
+    message: str
+
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self) -> str:
+        return f"Bad request: {self.status} {self.message}"
 
 
 class ServerErrorException(Exception):
-    pass
+    status_code: int
+    message: str
+
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self) -> str:
+        return f"Server error: {self.status} {self.message}"
 
 
 class XataClient:
@@ -118,7 +136,8 @@ class XataClient:
             elif resp.status_code == 429:
                 raise RateLimitException(f"Rate limited: {resp.json()}")
             elif resp.status_code >= 399 and resp.status_code < 500:
-                raise BadRequestException(f"Bad request: {resp.json()}")
+                raise BadRequestException(
+                    resp.status_code, resp.json().get('message'))
             elif resp.status_code >= 500:
                 raise ServerErrorException(f"Server error: {resp.text}")
             raise Exception(f"{resp.status_code} {resp.text}")
@@ -265,9 +284,11 @@ class XataClient:
             dbName, branchName)
         if id is not None:
             self.put(
-                f"/db/{dbName}:{branchName}/tables/{table}/records/{id}", json=record)
+                f"/db/{dbName}:{branchName}/tables/{table}/data/{id}",
+                params=dict(createOnly=True), json=record)
             return id
 
         result = self.post(
-            f"/db/{dbName}:{branchName}/tables/{table}/data", json=record)
+            f"/db/{dbName}:{branchName}/tables/{table}/data",
+            json=record)
         return result.json()["id"]
