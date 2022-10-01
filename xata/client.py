@@ -6,32 +6,54 @@ import json
 from dotenv import dotenv_values
 from urllib.parse import urljoin
 
-PERSONAL_API_KEY_LOCATION="~/.config/xata/key"
-DEFAULT_BASE_URL_DOMAIN="xata.sh"
-CONFIG_LOCATION=".xatarc"
+PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
+DEFAULT_BASE_URL_DOMAIN = "xata.sh"
+CONFIG_LOCATION = ".xatarc"
 
 ApiKeyLocation = Literal["env", "dotenv", "profile", "parameter"]
 WorkspaceIdLocation = Literal["parameter", "env", "config"]
 
+
 class UnauthorizedException(Exception):
     pass
+
 
 class RateLimitException(Exception):
     pass
 
+
 class BadRequestException(Exception):
     pass
+
 
 class ServerErrorException(Exception):
     pass
 
+
 class XataClient:
+    """This is the Xata Client. When initialised, it will attempt to read the relevant
+    configuraiton (API key, workspace ID, database name, branch name) from the following 
+    sources in order:
+
+    * parameters passed to the constructor
+    * environment variables
+    * .env file
+    * .xatarc configuration file
+
+    :meta public:
+    :param api_key: API key to use for authentication.
+    :param workspace_id: The workspace ID to use.
+    :param base_url_domain: The domain to use for the base URL. Defaults to xata.sh.
+
+    """
     configRead: bool = False
     config = None
+
     def __init__(self,
-             api_key: str = None,
-             base_url_domain: str = DEFAULT_BASE_URL_DOMAIN,
-             workspace_id: str = None):
+                 api_key: str = None,
+                 base_url_domain: str = DEFAULT_BASE_URL_DOMAIN,
+                 workspace_id: str = None):
+        """Constructor method"""
 
         if api_key is None:
             self.api_key, self.api_key_location = self.getApiKey()
@@ -49,9 +71,9 @@ class XataClient:
 
     def getApiKey(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get('XATA_API_KEY') is not None:
-            return os.environ.get('XATA_API_KEY'), "env" 
+            return os.environ.get('XATA_API_KEY'), "env"
 
-        envVals = dotenv_values(".env")        
+        envVals = dotenv_values(".env")
         if envVals.get('XATA_API_KEY') is not None:
             return envVals.get('XATA_API_KEY'), "dotenv"
 
@@ -59,17 +81,20 @@ class XataClient:
             with open(os.path.expanduser(PERSONAL_API_KEY_LOCATION), 'r') as f:
                 return f.read().strip(), "profile"
 
-        raise Exception(f"No API key found. Searched in `XATA_API_KEY` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`")
+        raise Exception(
+            f"No API key found. Searched in `XATA_API_KEY` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`")
 
     def getWorkspaceId(self) -> tuple[str, WorkspaceIdLocation]:
         if os.environ.get('XATA_WORKSPACE_ID') is not None:
-            return os.environ.get('XATA_WORKSPACE_ID'), "env" 
+            return os.environ.get('XATA_WORKSPACE_ID'), "env"
 
         self.ensureConfigRead()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, _ = self.parseDatabaseUrl(self.config.get("databaseURL"))
+            workspaceID, _ = self.parseDatabaseUrl(
+                self.config.get("databaseURL"))
             return workspaceID, "config"
-        raise Exception(f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`")
+        raise Exception(
+            f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`")
 
     def getDatabaseNameIfConfigured(self) -> str:
         self.ensureConfigRead()
@@ -88,7 +113,8 @@ class XataClient:
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
             if resp.status_code == 401:
-                raise UnauthorizedException(f"Unauthorized: {resp.json()} API key location: {self.api_key_location}")
+                raise UnauthorizedException(
+                    f"Unauthorized: {resp.json()} API key location: {self.api_key_location}")
             elif resp.status_code == 429:
                 raise RateLimitException(f"Rate limited: {resp.json()}")
             elif resp.status_code >= 399 and resp.status_code < 500:
@@ -127,11 +153,11 @@ class XataClient:
     def delete(self, urlPath, headers={}, **kwargs):
         return self.request("DELETE", urlPath, headers=headers, **kwargs)
 
-    def requestBodyFromParams(self,         
-        columns: list[str] = None,
-        filter: dict = None,
-        sort: dict = None, 
-        page: dict = None) -> dict:
+    def requestBodyFromParams(self,
+                              columns: list[str] = None,
+                              filter: dict = None,
+                              sort: dict = None,
+                              page: dict = None) -> dict:
 
         body = {}
         if columns is not None:
@@ -148,91 +174,100 @@ class XataClient:
         dbName = dbName or self.dbName
         branchName = branchName or self.branchName
         if dbName is None:
-            raise Exception("Database name is not configured. Please set it via `xata init` or pass it as a parameter.")
+            raise Exception(
+                "Database name is not configured. Please set it via `xata init` or pass it as a parameter.")
         if branchName is None:
-            raise Exception("Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter.")
+            raise Exception(
+                "Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter.")
         return dbName, branchName
 
-    """
-    Query a table.
+    def query(self,
+              table: str,
+              dbName: str = None,
+              branchName: str = None,
+              columns: list[str] = None,
+              filter: dict = None,
+              sort: dict = None,
+              page: dict = None) -> dict:
+        '''Query a table.
 
-    :param table: The name of the table to query.
-    :param dbName: The name of the database to query. If not provided, the database name 
-                   from the client obejct is used.
-    :param branchName: The name of the branch to query. If not provided, the branch name
-                        from the client obejct is used.
-    :param columns: A list of column names to return. If not provided, all columns are returned.
-    :param filter: A filter expression to apply to the query.
-    :param sort: A sort expression to apply to the query.
-    :param page: A page expression to apply to the query.
-    :return: A page of results.
-    """
-    def query(self, 
-        table: str, 
-        dbName: str = None,
-        branchName: str = None,
-        columns: list[str] = None,
-        filter: dict = None,
-        sort: dict = None, 
-        page: dict = None) -> dict:
+        :meta public:
+        :param table: The name of the table to query.
+        :param dbName: The name of the database to query. If not provided, the database name 
+                    from the client obejct is used.
+        :param branchName: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :param columns: A list of column names to return. If not provided, all columns are returned.
+        :param filter: A filter expression to apply to the query.
+        :param sort: A sort expression to apply to the query.
+        :param page: A page expression to apply to the query.
+        :return: A page of results.
+        '''
 
-        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        dbName, branchName = self.dbAndBranchNamesFromParams(
+            dbName, branchName)
         body = self.requestBodyFromParams(columns, filter, sort, page)
-        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        result = self.post(
+            f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
         return result.json()
 
-    """
-    Get one record from a table.
-
-    :param table: The name of the table to query.
-    :param dbName: The name of the database to query. If not provided, the database name
-                     from the client obejct is used.
-    :param branchName: The name of the branch to query. If not provided, the branch name
-                        from the client obejct is used.
-    :param columns: A list of column names to return. If not provided, all columns are returned.
-    :param filter: A filter expression to apply to the query.
-    :param sort: A sort expression to apply to the query.
-    :return: A record as a dictionary.
-    """
     def getOne(self, table,
-        dbName = None,
-        branchName = None,
-        columns = None,
-        filter = None,
-        sort = None) -> dict:
+               dbName=None,
+               branchName=None,
+               columns=None,
+               filter=None,
+               sort=None) -> dict:
+        """Get one record from a table.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param dbName: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branchName: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :param columns: A list of column names to return. If not provided, all columns are returned.
+        :param filter: A filter expression to apply to the query.
+        :param sort: A sort expression to apply to the query.
+        :return: A record as a dictionary.
+        """
 
         page = {"size": 1}
-        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        dbName, branchName = self.dbAndBranchNamesFromParams(
+            dbName, branchName)
         body = self.requestBodyFromParams(columns, filter, sort, page)
-        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        result = self.post(
+            f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
         data = result.json()
         if len(data.get("records", [])) == 0:
             return None
         return data.get("records")[0]
-    
-    """
-    Create a record in a table. If an ID is not provided, one will be generated.
-    If the ID is provided and a record with that ID already exists, an error is returned.
 
-    :param table: The name of the table to query.
-    :param dbName: The name of the database to query. If not provided, the database name
-                     from the client obejct is used.
-    :param branchName: The name of the branch to query. If not provided, the branch name
+    def create(self, table,
+               dbName: str = None,
+               branchName: str = None,
+               id: str = None,
+               record: dict = None) -> str:
+        """Create a record in a table. If an ID is not provided, one will be generated.
+        If the ID is provided and a record with that ID already exists, an error is returned.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param dbName: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-    :param id: The ID of the record to create. If not provided, one will be generated.
-    :param record: The record to create, as dict.
-    :return: The ID of the created record.
-    """
-    def create(self, table, 
-        dbName: str = None,
-        branchName: str = None,
-        id: str = None,
-        record: dict = None) -> str:
+        :param branchName: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :param id: The ID of the record to create. If not provided, one will be generated.
+        :param record: The record to create, as dict.
+        :return: The ID of the created record.
+        """
 
-        dbName, branchName = self.dbAndBranchNamesFromParams(dbName, branchName)
+        dbName, branchName = self.dbAndBranchNamesFromParams(
+            dbName, branchName)
         if id is not None:
-            self.put(f"/db/{dbName}:{branchName}/tables/{table}/records/{id}", json=record)
+            self.put(
+                f"/db/{dbName}:{branchName}/tables/{table}/records/{id}", json=record)
             return id
 
-        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/data", json=record)
+        result = self.post(
+            f"/db/{dbName}:{branchName}/tables/{table}/data", json=record)
         return result.json()["id"]

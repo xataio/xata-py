@@ -3,3 +3,4 @@ __pycache__
 /dist
 /.eggs
 /xata.egg-info/
+/docs/_build
