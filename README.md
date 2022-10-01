@@ -1,3 +1,8 @@
+<p align="center">
+  <img width="200" src="https://raw.githubusercontent.com/xataio/company/main/logo/non-resizable/for-light-backgrounds/colored-with-text.png#gh-light-mode-only" />
+  <img width="200" src="https://raw.githubusercontent.com/xataio/company/main/logo/non-resizable/for-dark-backgrounds/colored-with-text.png#gh-dark-mode-only" />
+</p>
+
 # Python SDK for Xata
 
 [![Documentation Status](https://readthedocs.org/projects/xata-py/badge/?version=latest)](https://xata-py.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/xata.svg)](https://badge.fury.io/py/xata)
