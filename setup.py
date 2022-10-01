@@ -4,6 +4,8 @@ setup(
     packages=find_packages(include=['xata']),
     version='0.1.0',
     description='Python client for Xata.io',
+    long_description_content_type="text/markdown",
+    long_description=open("README.md").read(),
     author='Tudor Golubenco',
     license='Apache-2.0',
     python_requires=">=3.8, <4",
