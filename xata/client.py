@@ -1,6 +1,5 @@
 import os
 from typing import Literal
-from urllib.request import Request
 import requests
 import json
 from dotenv import dotenv_values
