@@ -160,16 +160,40 @@ class XataClient:
         return workspaceId, db
 
     def get(self, urlPath, headers={}, **kwargs):
+        """Send a GET request to the Xata API. This is a wrapper around 
+        the `requests` library and accepts the same parameters as the `get`
+        method of the `requests` library.
+        """
+
         return self.request("GET", urlPath, headers=headers, **kwargs)
 
     def post(self, urlPath, headers={}, **kwargs):
+        """Send a POST request to the Xata API. This is a wrapper around
+        the `requests` library and accepts the same parameters as the `post`
+        method of the `requests` library.
+        """
         return self.request("POST", urlPath, headers=headers, **kwargs)
 
     def put(self, urlPath, headers={}, **kwargs):
+        """Send a PUT request to the Xata API. This is a wrapper around
+        the `requests` library and accepts the same parameters as the `put`
+        method of the `requests` library.
+        """
         return self.request("PUT", urlPath, headers=headers, **kwargs)
 
     def delete(self, urlPath, headers={}, **kwargs):
+        """Send a DELETE request to the Xata API. This is a wrapper around
+        the `requests` library and accepts the same parameters as the `delete`
+        method of the `requests` library.
+        """
         return self.request("DELETE", urlPath, headers=headers, **kwargs)
+
+    def patch(self, urlPath, headers={}, **kwargs):
+        """Send a PATCH request to the Xata API. This is a wrapper around
+        the `requests` library and accepts the same parameters as the `patch`
+        method of the `requests` library.
+        """
+        return self.request("PATCH", urlPath, headers=headers, **kwargs)
 
     def requestBodyFromParams(self,
                               columns: list[str] = None,
