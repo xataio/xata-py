@@ -8,4 +8,4 @@ Xata Client
 
 .. py:module:: xata
 .. autoclass:: XataClient
-   :members: 
+   :members:
