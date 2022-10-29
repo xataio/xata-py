@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "xata"
+version = "0.1.1"
+description = "Python client for Xata.io"
+authors = ["Tudor Golubenco"]
+license = "Apache-2.0"
+readme = "README.md"
+documentation = "https://xata-py.readthedocs.io"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.28.1"
+python-dotenv = "^0.21.0"
+orjson = "^3.8.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+black = "^22.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
