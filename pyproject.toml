@@ -2,7 +2,7 @@
 name = "xata"
 version = "0.1.1"
 description = "Python client for Xata.io"
-authors = ["Tudor Golubenco"]
+authors = ["Xata"]
 license = "Apache-2.0"
 readme = "README.md"
 documentation = "https://xata-py.readthedocs.io"
