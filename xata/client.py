@@ -8,6 +8,8 @@ from dotenv import dotenv_values
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
+DEFAULT_CONTROL_PLANE_DOMAIN = "api.xata.io"
+DEFAULT_REGION = "us-east-1"
 CONFIG_LOCATION = ".xatarc"
 
 ApiKeyLocation = Literal["env", "dotenv", "profile", "parameter"]
@@ -32,7 +34,7 @@ class BadRequestException(Exception):
         super().__init__(message)
 
     def __str__(self) -> str:
-        return f"Bad request: {self.status} {self.message}"
+        return f"Bad request: {self.status_code} {self.message}"
 
 
 class ServerErrorException(Exception):
@@ -45,7 +47,7 @@ class ServerErrorException(Exception):
         super().__init__(message)
 
     def __str__(self) -> str:
-        return f"Server error: {self.status} {self.message}"
+        return f"Server error: {self.status_code} {self.message}"
 
 
 class XataClient:
@@ -72,6 +74,8 @@ class XataClient:
         self,
         api_key: str = None,
         base_url_domain: str = DEFAULT_BASE_URL_DOMAIN,
+        control_plane_domain: str = DEFAULT_CONTROL_PLANE_DOMAIN,
+        region: str = DEFAULT_REGION,
         workspace_id: str = None,
     ):
         """Constructor method"""
@@ -81,10 +85,12 @@ class XataClient:
         else:
             self.api_key, self.api_key_location = api_key, "parameter"
         if workspace_id is None:
-            self.workspace_id, self.workspace_id_location = self.getWorkspaceId()
+            self.workspace_id, self.region, self.workspace_id_location = self.getWorkspaceId()
         else:
             self.workspace_id = workspace_id, "parameter"
-        self.base_url = f"https://{self.workspace_id}.{base_url_domain}"
+            self.region = region
+        self.base_url = f"https://{self.workspace_id}.{region}.{base_url_domain}"
+        self.control_plane_url = f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
 
         self.dbName = self.getDatabaseNameIfConfigured()
         self.branchName = self.getBranchNameIfConfigured()
@@ -111,14 +117,14 @@ class XataClient:
             f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
         )
 
-    def getWorkspaceId(self) -> tuple[str, WorkspaceIdLocation]:
+    def getWorkspaceId(self) -> tuple[str, str, WorkspaceIdLocation]:
         if os.environ.get("XATA_WORKSPACE_ID") is not None:
-            return os.environ.get("XATA_WORKSPACE_ID"), "env"
+            return os.environ.get("XATA_WORKSPACE_ID"), os.environ.get("XATA_REGION", DEFAULT_REGION), "env"
 
         self.ensureConfigRead()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, _ = self.parseDatabaseUrl(self.config.get("databaseURL"))
-            return workspaceID, "config"
+            workspaceID, region, _ = self.parseDatabaseUrl(self.config.get("databaseURL"))
+            return workspaceID, region, "config"
         raise Exception(
             f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
             f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
@@ -135,9 +141,11 @@ class XataClient:
         # TODO: resolve branch name by the current git branch
         return os.environ.get("XATA_BRANCH")
 
-    def request(self, method, urlPath, headers={}, **kwargs):
+    def request(self, method, urlPath, cp=False, headers={}, **kwargs):
         headers["Authorization"] = f"Bearer {self.api_key}"
-        url = urljoin(self.base_url, urlPath)
+        base_url = self.base_url if cp == False else self.control_plane_url      
+        url = urljoin(base_url, urlPath.lstrip("/"))
+        print("URL", url)
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
             if resp.status_code == 401:
@@ -162,13 +170,14 @@ class XataClient:
         self.configRead = True
         return True
 
-    def parseDatabaseUrl(self, databaseURL: str) -> tuple[str, str]:
+    def parseDatabaseUrl(self, databaseURL: str) -> tuple[str, str, str]:
         (_, _, host, _, db) = databaseURL.split("/")
         if host == "":
             raise Exception("Invalid database URL")
         parts = host.split(".")
         workspaceId = parts[0]
-        return workspaceId, db
+        region = parts[1]
+        return workspaceId, region, db
 
     def get(self, urlPath, headers={}, **kwargs):
         """Send a GET request to the Xata API. This is a wrapper around

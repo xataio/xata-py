@@ -9,7 +9,7 @@ from . import XataClient
 
 
 def create_demo_db(client, dbName):
-    client.put(f"/dbs/{dbName}")
+    client.put(f"/dbs/{dbName}", cp=True, json={"region": "us-east-1"})
 
     client.put(f"/db/{dbName}:main/tables/Posts")
     client.put(f"/db/{dbName}:main/tables/Users")
@@ -47,7 +47,7 @@ def create_demo_db(client, dbName):
 
 
 def delete_db(client, dbName):
-    client.delete(f"/dbs/{dbName}")
+    client.delete(f"/dbs/{dbName}", cp=True)
 
 
 def get_random_string(length):
@@ -111,5 +111,5 @@ def test_create_with_id(client: XataClient, demo_db: string):
         == "record with ID [helloWorld] already exists in table [Posts]"
     )
 
-    rec = client.getOne("Posts", dbName=demo_db, branchName="main")
+    rec = client.getFirst("Posts", dbName=demo_db, branchName="main")
     assert rec["title"] == "Hello world"
