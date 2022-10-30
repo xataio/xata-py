@@ -88,7 +88,11 @@ class XataClient:
 
         self.dbName = self.getDatabaseNameIfConfigured()
         self.branchName = self.getBranchNameIfConfigured()
-        # print (f"API key: {self.api_key}, location: {self.api_key_location}, workspaceId: {self.workspace_id}")
+        # print (
+        #   f"API key: {self.api_key}, "
+        #   f"location: {self.api_key_location}, "
+        #   f"workspaceId: {self.workspace_id}"
+        # )
 
     def getApiKey(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
@@ -103,7 +107,8 @@ class XataClient:
                 return f.read().strip(), "profile"
 
         raise Exception(
-            f"No API key found. Searched in `XATA_API_KEY` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
+            f"No API key found. Searched in `XATA_API_KEY` env, "
+            f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
         )
 
     def getWorkspaceId(self) -> tuple[str, WorkspaceIdLocation]:
@@ -115,7 +120,8 @@ class XataClient:
             workspaceID, _ = self.parseDatabaseUrl(self.config.get("databaseURL"))
             return workspaceID, "config"
         raise Exception(
-            f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, `{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
+            f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
+            f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
         )
 
     def getDatabaseNameIfConfigured(self) -> str:

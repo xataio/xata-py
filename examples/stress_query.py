@@ -1,3 +1,4 @@
+import threading
 import time
 
 from xata import XataClient
@@ -25,8 +26,6 @@ def run_query_loop(threadId):
             print(f"Rate limited {threadId}:", e)
             time.sleep(1)
 
-
-import threading
 
 threads = []
 for i in range(50):

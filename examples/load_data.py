@@ -1,4 +1,4 @@
-import json
+import threading
 
 from faker import Faker
 
@@ -36,7 +36,6 @@ def load_data():
 
 
 # run load_data in 10 parallel threads
-import threading
 
 threads = []
 for i in range(10):

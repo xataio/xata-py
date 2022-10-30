@@ -36,7 +36,7 @@ jobs:
         run: "flake8 \
         --format='::error file=%(path)s,line=%(row)d,col=%(col)d::\
         [flake8] %(code)s: %(text)s'"
-          
+
       - name: Test with pytest
         env:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
