@@ -27,6 +27,7 @@ jobs:
         run: |
           python3 -m pip install -U poetry
           poetry install
+          poetry shell
 
       - name: Lint
         run: |
