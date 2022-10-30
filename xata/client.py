@@ -85,12 +85,18 @@ class XataClient:
         else:
             self.api_key, self.api_key_location = api_key, "parameter"
         if workspace_id is None:
-            self.workspace_id, self.region, self.workspace_id_location = self.getWorkspaceId()
+            (
+                self.workspace_id,
+                self.region,
+                self.workspace_id_location,
+            ) = self.getWorkspaceId()
         else:
             self.workspace_id = workspace_id, "parameter"
             self.region = region
         self.base_url = f"https://{self.workspace_id}.{region}.{base_url_domain}"
-        self.control_plane_url = f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
+        self.control_plane_url = (
+            f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
+        )
 
         self.dbName = self.getDatabaseNameIfConfigured()
         self.branchName = self.getBranchNameIfConfigured()
@@ -119,11 +125,17 @@ class XataClient:
 
     def getWorkspaceId(self) -> tuple[str, str, WorkspaceIdLocation]:
         if os.environ.get("XATA_WORKSPACE_ID") is not None:
-            return os.environ.get("XATA_WORKSPACE_ID"), os.environ.get("XATA_REGION", DEFAULT_REGION), "env"
+            return (
+                os.environ.get("XATA_WORKSPACE_ID"),
+                os.environ.get("XATA_REGION", DEFAULT_REGION),
+                "env",
+            )
 
         self.ensureConfigRead()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, region, _ = self.parseDatabaseUrl(self.config.get("databaseURL"))
+            workspaceID, region, _ = self.parseDatabaseUrl(
+                self.config.get("databaseURL")
+            )
             return workspaceID, region, "config"
         raise Exception(
             f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
@@ -143,9 +155,8 @@ class XataClient:
 
     def request(self, method, urlPath, cp=False, headers={}, **kwargs):
         headers["Authorization"] = f"Bearer {self.api_key}"
-        base_url = self.base_url if cp == False else self.control_plane_url      
+        base_url = self.base_url if not cp else self.control_plane_url
         url = urljoin(base_url, urlPath.lstrip("/"))
-        print("URL", url)
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
             if resp.status_code == 401:
