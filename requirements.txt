@@ -1,5 +1,0 @@
-requests
-python-dotenv
-pytest
-sphinx
-sphinx-rtd-theme

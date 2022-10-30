@@ -6,7 +6,7 @@
 Python SDK for Xata
 ===================
 
-This is a the official low-level Python client for the Xata_ service.  
+This is a the official low-level Python client for the Xata_ service.
 Xata is a Serverless Database that is as easy to use as a spreadsheet, has the
 data integrity of PostgreSQL, and the search and analytics functionality of
 Elasticsearch.
@@ -20,7 +20,7 @@ Install the `xata` package from PyPI:
 .. code-block:: bash
 
     $ pip install xata
-    
+
 While not strictly required, we recommend installing the Xata_CLI_ and initializing
 your project with the `xata init` command:
 
