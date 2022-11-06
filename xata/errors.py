@@ -1,4 +1,3 @@
-
 class UnauthorizedException(Exception):
     pass
 
@@ -6,13 +5,16 @@ class UnauthorizedException(Exception):
 class RateLimitException(Exception):
     pass
 
+
 class RecordNotFoundException(Exception):
     id: str
+
     def __init__(self, id: str):
         self.id = id
 
     def __str__(self) -> str:
         return f"Record with id {self.id} not found"
+
 
 class BadRequestException(Exception):
     status_code: int

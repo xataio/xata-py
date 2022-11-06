@@ -254,6 +254,13 @@ class XataClient:
             )
         return db_name, branch_name
 
+    def set_db_and_branch_names(self, db_name: str = None, branch_name: str = None):
+        if db_name is not None:
+            self.db_name = db_name
+
+        if branch_name is not None:
+            self.branch_name = branch_name
+
     def query(
         self,
         table: str,
@@ -343,6 +350,9 @@ class XataClient:
                             from the client obejct is used.
         :return: A record as a dictionary or None if it doesn't exist.
         """
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         result = self.get(
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", expect_codes=[404]
         )
