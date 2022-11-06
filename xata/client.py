@@ -131,6 +131,14 @@ class XataClient:
                 "env",
             )
 
+        envVals = dotenv_values(".env")
+        if envVals.get("XATA_WORKSPACE_ID") is not None:
+            return (
+                envVals.get("XATA_WORKSPACE_ID"),
+                envVals.get("XATA_REGION", DEFAULT_REGION),
+                "dotenv",
+            )
+
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
             workspaceID, region, _ = self.parse_database_url(
@@ -371,7 +379,7 @@ class XataClient:
         :meta public:
         :param table: The name of the table to query.
         :param id: The ID of the record to create or update.
-        :param record: The record to create, as dict.
+        :param record: The record to create or the keys/values to use to update, as dict.
         :param dbName: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branchName: The name of the branch to query. If not provided, the branch name
@@ -379,7 +387,34 @@ class XataClient:
         :return: The ID of the created or updated record.
         """
         dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
-        result = self.patch(
+        result = self.post(
+            f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", json=record
+        )
+        return result.json()["id"]
+
+    def create_or_replace(
+        self,
+        table: str,
+        id: str,
+        record: dict,
+        dbName: str = None,
+        branchName: str = None,
+    ) -> str:
+        """Create or replace a record in a table. If a record with the same id already
+        exists, it will be relaced completely.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param id: The ID of the record to create or replace.
+        :param record: The record to create or replace, as dict.
+        :param dbName: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branchName: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :return: The ID of the created or updated record.
+        """
+        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        result = self.put(
             f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]

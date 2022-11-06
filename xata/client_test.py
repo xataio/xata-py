@@ -113,3 +113,54 @@ def test_create_with_id(client: XataClient, demo_db: string):
 
     rec = client.get_first("Posts", dbName=demo_db, branchName="main")
     assert rec["title"] == "Hello world"
+
+
+def test_create_or_update(client: XataClient, demo_db: string):
+    recId = client.create_or_update(
+        "Posts",
+        "helloWorld",
+        record={"title": "Hello world"},
+        dbName=demo_db,
+        branchName="main",
+    )
+    assert recId == "helloWorld"
+
+    recId = client.create_or_update(
+        "Posts",
+        "helloWorld",
+        record={"slug": "hello_world"},
+        dbName=demo_db,
+        branchName="main",
+    )
+    assert recId == "helloWorld"
+
+    record = client.get_first(
+        "Posts", filter={"id": "helloWorld"}, dbName=demo_db, branchName="main"
+    )
+    assert {"title": "Hello world", "slug": "hello_world"}.items() <= record.items()
+
+
+def test_create_or_replace(client: XataClient, demo_db: string):
+    recId = client.create_or_replace(
+        "Posts",
+        "helloWorld",
+        record={"title": "Hello world"},
+        dbName=demo_db,
+        branchName="main",
+    )
+    assert recId == "helloWorld"
+
+    recId = client.create_or_replace(
+        "Posts",
+        "helloWorld",
+        record={"slug": "hello_world"},
+        dbName=demo_db,
+        branchName="main",
+    )
+    assert recId == "helloWorld"
+
+    record = client.get_first(
+        "Posts", filter={"id": "helloWorld"}, dbName=demo_db, branchName="main"
+    )
+    assert {"slug": "hello_world"}.items() <= record.items()
+    assert record.get("title") is None
