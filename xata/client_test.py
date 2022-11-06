@@ -8,13 +8,13 @@ from xata.client import BadRequestException
 from . import XataClient
 
 
-def create_demo_db(client, dbName):
-    client.put(f"/dbs/{dbName}", cp=True, json={"region": "us-east-1"})
+def create_demo_db(client, db_name):
+    client.put(f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
 
-    client.put(f"/db/{dbName}:main/tables/Posts")
-    client.put(f"/db/{dbName}:main/tables/Users")
+    client.put(f"/db/{db_name}:main/tables/Posts")
+    client.put(f"/db/{db_name}:main/tables/Users")
     client.put(
-        f"/db/{dbName}:main/tables/Posts/schema",
+        f"/db/{db_name}:main/tables/Posts/schema",
         json={
             "columns": [
                 {"name": "title", "type": "string"},
@@ -35,7 +35,7 @@ def create_demo_db(client, dbName):
     )
 
     client.put(
-        f"/db/{dbName}:main/tables/Users/schema",
+        f"/db/{db_name}:main/tables/Users/schema",
         json={
             "columns": [
                 {"name": "name", "type": "string"},
@@ -46,8 +46,8 @@ def create_demo_db(client, dbName):
     )
 
 
-def delete_db(client, dbName):
-    client.delete(f"/dbs/{dbName}", cp=True)
+def delete_db(client, db_name):
+    client.delete(f"/dbs/{db_name}", cp=True)
 
 
 def get_random_string(length):
@@ -62,17 +62,17 @@ def client() -> XataClient:
 
 @pytest.fixture
 def demo_db(client: XataClient) -> string:
-    dbName = f"sdk-py-e2e-test-{get_random_string(6)}"
-    create_demo_db(client, dbName)
-    yield dbName
-    delete_db(client, dbName)
+    db_name = f"sdk-py-e2e-test-{get_random_string(6)}"
+    create_demo_db(client, db_name)
+    yield db_name
+    delete_db(client, db_name)
 
 
 def test_create_and_query(client: XataClient, demo_db: string):
     client.create(
         "Posts",
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
         record={
             "title": "Hello world",
             "labels": ["hello", "world"],
@@ -81,7 +81,7 @@ def test_create_and_query(client: XataClient, demo_db: string):
         },
     )
 
-    rec = client.get_first("Posts", dbName=demo_db, branchName="main")
+    rec = client.get_first("Posts", db_name=demo_db, branch_name="main")
     assert rec["title"] == "Hello world"
     assert rec["labels"] == ["hello", "world"]
     assert rec["slug"] == "hello-world"
@@ -91,8 +91,8 @@ def test_create_and_query(client: XataClient, demo_db: string):
 def test_create_with_id(client: XataClient, demo_db: string):
     client.create(
         "Posts",
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
         id="helloWorld",
         record={"title": "Hello world"},
     )
@@ -100,8 +100,8 @@ def test_create_with_id(client: XataClient, demo_db: string):
     with pytest.raises(BadRequestException) as exc:
         client.create(
             "Posts",
-            dbName=demo_db,
-            branchName="main",
+            db_name=demo_db,
+            branch_name="main",
             id="helloWorld",
             record={"title": "Hello new world"},
         )
@@ -111,7 +111,7 @@ def test_create_with_id(client: XataClient, demo_db: string):
         == "record with ID [helloWorld] already exists in table [Posts]"
     )
 
-    rec = client.get_first("Posts", dbName=demo_db, branchName="main")
+    rec = client.get_first("Posts", db_name=demo_db, branch_name="main")
     assert rec["title"] == "Hello world"
 
 
@@ -120,8 +120,8 @@ def test_create_or_update(client: XataClient, demo_db: string):
         "Posts",
         "helloWorld",
         record={"title": "Hello world"},
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
     )
     assert recId == "helloWorld"
 
@@ -129,13 +129,13 @@ def test_create_or_update(client: XataClient, demo_db: string):
         "Posts",
         "helloWorld",
         record={"slug": "hello_world"},
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
     )
     assert recId == "helloWorld"
 
     record = client.get_first(
-        "Posts", filter={"id": "helloWorld"}, dbName=demo_db, branchName="main"
+        "Posts", filter={"id": "helloWorld"}, db_name=demo_db, branch_name="main"
     )
     assert {"title": "Hello world", "slug": "hello_world"}.items() <= record.items()
 
@@ -145,8 +145,8 @@ def test_create_or_replace(client: XataClient, demo_db: string):
         "Posts",
         "helloWorld",
         record={"title": "Hello world"},
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
     )
     assert recId == "helloWorld"
 
@@ -154,28 +154,29 @@ def test_create_or_replace(client: XataClient, demo_db: string):
         "Posts",
         "helloWorld",
         record={"slug": "hello_world"},
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
     )
     assert recId == "helloWorld"
 
     record = client.get_by_id(
-        "Posts", "helloWorld", dbName=demo_db, branchName="main"
+        "Posts", "helloWorld", db_name=demo_db, branch_name="main"
     )
     assert {"slug": "hello_world"}.items() <= record.items()
     assert record.get("title") is None
+
 
 def test_create_and_get(client: XataClient, demo_db: string):
     recId = client.create(
         "Posts",
         record={"title": "Hello world"},
-        dbName=demo_db,
-        branchName="main",
+        db_name=demo_db,
+        branch_name="main",
     )
     assert recId is not None
 
-    rec = client.get_by_id("Posts", recId, dbName=demo_db, branchName="main")
+    rec = client.get_by_id("Posts", recId, db_name=demo_db, branch_name="main")
     assert {"title": "Hello world"}.items() <= rec.items()
 
-    rec = client.get_by_id("Posts", "something", dbName=demo_db, branchName="main")
+    rec = client.get_by_id("Posts", "something", db_name=demo_db, branch_name="main")
     assert rec is None

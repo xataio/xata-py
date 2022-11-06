@@ -98,8 +98,8 @@ class XataClient:
             f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
         )
 
-        self.dbName = self.get_database_name_if_configured()
-        self.branchName = self.get_branch_name_if_configured()
+        self.db_name = self.get_database_name_if_configured()
+        self.branch_name = self.get_branch_name_if_configured()
         # print (
         #   f"API key: {self.api_key}, "
         #   f"location: {self.api_key_location}, "
@@ -153,8 +153,8 @@ class XataClient:
     def get_database_name_if_configured(self) -> str:
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            _, dbName = self.parse_database_url(self.config.get("databaseURL"))
-            return dbName
+            _, db_name = self.parse_database_url(self.config.get("databaseURL"))
+            return db_name
         return None
 
     def get_branch_name_if_configured(self) -> str:
@@ -255,24 +255,24 @@ class XataClient:
             body["page"] = page
         return body
 
-    def db_and_branch_names_from_params(self, dbName, branchName) -> tuple[str, str]:
-        dbName = dbName or self.dbName
-        branchName = branchName or self.branchName
-        if dbName is None:
+    def db_and_branch_names_from_params(self, db_name, branch_name) -> tuple[str, str]:
+        db_name = db_name or self.db_name
+        branch_name = branch_name or self.branch_name
+        if db_name is None:
             raise Exception(
                 "Database name is not configured. Please set it via `xata init` or pass it as a parameter."
             )
-        if branchName is None:
+        if branch_name is None:
             raise Exception(
                 "Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter."
             )
-        return dbName, branchName
+        return db_name, branch_name
 
     def query(
         self,
         table: str,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
         columns: list[str] = None,
         filter: dict = None,
         sort: dict = None,
@@ -282,9 +282,9 @@ class XataClient:
 
         :meta public:
         :param table: The name of the table to query.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                     from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :param columns: A list of column names to return. If not provided, all columns are returned.
         :param filter: A filter expression to apply to the query.
@@ -293,16 +293,20 @@ class XataClient:
         :return: A page of results.
         """
 
-        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         body = self.request_body_frompParams(columns, filter, sort, page)
-        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        result = self.post(
+            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        )
         return result.json()
 
     def get_first(
         self,
         table: str,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
         columns: list[str] = None,
         filter: dict = None,
         sort: dict = None,
@@ -311,9 +315,9 @@ class XataClient:
 
         :meta public:
         :param table: The name of the table to query.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :param columns: A list of column names to return. If not provided, all columns are returned.
         :param filter: A filter expression to apply to the query.
@@ -322,9 +326,13 @@ class XataClient:
         """
 
         page = {"size": 1}
-        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         body = self.request_body_frompParams(columns, filter, sort, page)
-        result = self.post(f"/db/{dbName}:{branchName}/tables/{table}/query", json=body)
+        result = self.post(
+            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        )
         data = result.json()
         if len(data.get("records", [])) == 0:
             return None
@@ -334,8 +342,8 @@ class XataClient:
         self,
         table: str,
         id: str,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Optional[dict]:
         """Get a specific record by its ID. Returns None if an record with that ID
         doesn't exist.
@@ -343,13 +351,15 @@ class XataClient:
         :meta public:
         :param table: The name of the table to query.
         :param id: The ID of the record to get.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :return: A record as a dictionary or None if it doesn't exist.
         """
-        result = self.get(f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", expect_codes=[404])
+        result = self.get(
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", expect_codes=[404]
+        )
         if result.status_code == 404:
             return None
         return result.json()
@@ -359,8 +369,8 @@ class XataClient:
         table: str,
         record: dict,
         id: str = None,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> str:
         """Create a record in a table. If an ID is not provided, one will be generated.
         If the ID is provided and a record with that ID already exists, an error is returned.
@@ -369,24 +379,26 @@ class XataClient:
         :param table: The name of the table to query.
         :param id: The ID of the record to create. If not provided, one will be generated.
         :param record: The record to create, as dict.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :return: The ID of the created record.
         """
 
-        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         if id is not None:
             self.put(
-                f"/db/{dbName}:{branchName}/tables/{table}/data/{id}",
+                f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
                 params=dict(createOnly=True),
                 json=record,
             )
             return id
 
         result = self.post(
-            f"/db/{dbName}:{branchName}/tables/{table}/data", json=record
+            f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
         )
         return result.json()["id"]
 
@@ -395,8 +407,8 @@ class XataClient:
         table: str,
         id: str,
         record: dict,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> str:
         """Create or updated a record in a table. If a record with the same id already
         exists, it will be updated. Only the provided columns in record are replaced, is
@@ -406,15 +418,17 @@ class XataClient:
         :param table: The name of the table to query.
         :param id: The ID of the record to create or update.
         :param record: The record to create or the keys/values to use to update, as dict.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :return: The ID of the created or updated record.
         """
-        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         result = self.post(
-            f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", json=record
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
 
@@ -423,8 +437,8 @@ class XataClient:
         table: str,
         id: str,
         record: dict,
-        dbName: str = None,
-        branchName: str = None,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> str:
         """Create or replace a record in a table. If a record with the same id already
         exists, it will be relaced completely.
@@ -433,14 +447,16 @@ class XataClient:
         :param table: The name of the table to query.
         :param id: The ID of the record to create or replace.
         :param record: The record to create or replace, as dict.
-        :param dbName: The name of the database to query. If not provided, the database name
+        :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
-        :param branchName: The name of the branch to query. If not provided, the branch name
+        :param branch_name: The name of the branch to query. If not provided, the branch name
                             from the client obejct is used.
         :return: The ID of the created or updated record.
         """
-        dbName, branchName = self.db_and_branch_names_from_params(dbName, branchName)
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
         result = self.put(
-            f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", json=record
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
