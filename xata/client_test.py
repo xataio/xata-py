@@ -3,9 +3,8 @@ import string
 
 import pytest
 
-from xata.client import BadRequestException
-
 from . import XataClient
+from .errors import BadRequestException, RecordNotFoundException
 
 
 def create_demo_db(client, db_name):
@@ -180,3 +179,98 @@ def test_create_and_get(client: XataClient, demo_db: string):
 
     rec = client.get_by_id("Posts", "something", db_name=demo_db, branch_name="main")
     assert rec is None
+
+
+def test_update(client: XataClient, demo_db: string):
+    recId = client.create(
+        "Posts",
+        record={"title": "Hello world"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+
+    record = client.update(
+        "Posts",
+        recId,
+        record={"slug": "hello_world"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+    assert {"title": "Hello world", "slug": "hello_world"}.items() <= record.items()
+
+    record = client.update(
+        "Posts",
+        recId,
+        record={"title": "Hi World"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+    assert {"title": "Hi World", "slug": "hello_world"}.items() <= record.items()
+
+    record = client.update(
+        "Posts",
+        "TEST",
+        record={"title": "Hi World"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+    assert record is None
+
+
+def test_update_ifVersion(client: XataClient, demo_db: string):
+    recId = client.create(
+        "Posts",
+        record={"title": "Hello world"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+
+    record = client.update(
+        "Posts",
+        recId,
+        record={"slug": "hello_world"},
+        ifVersion=0,
+        db_name=demo_db,
+        branch_name="main",
+    )
+    assert {"title": "Hello world", "slug": "hello_world"}.items() <= record.items()
+
+    client.update(
+        "Posts",
+        recId,
+        record={"slug": "hello_world_one"},
+        ifVersion=1,
+        db_name=demo_db,
+        branch_name="main",
+    )
+
+    record = client.get_by_id("Posts", recId, db_name=demo_db, branch_name="main")
+    assert {"title": "Hello world", "slug": "hello_world_one"}.items() <= record.items()
+
+    client.update(
+        "Posts",
+        recId,
+        record={"slug": "hello_world_two"},
+        ifVersion=1,
+        db_name=demo_db,
+        branch_name="main",
+    )
+
+    record = client.get_by_id("Posts", recId, db_name=demo_db, branch_name="main")
+    assert {"title": "Hello world", "slug": "hello_world_one"}.items() <= record.items()
+
+
+def test_delete_record(client: XataClient, demo_db: string):
+    recId = client.create(
+        "Posts",
+        record={"title": "Hello world"},
+        db_name=demo_db,
+        branch_name="main",
+    )
+
+    record = client.delete_record("Posts", recId, db_name=demo_db, branch_name="main")
+    assert {"title": "Hello world"}.items() <= record.items()
+
+    with pytest.raises(RecordNotFoundException) as exc:
+        client.delete_record("Posts", recId, db_name=demo_db, branch_name="main")
+    assert exc is not None

@@ -6,6 +6,13 @@ from urllib.parse import urljoin
 import requests
 from dotenv import dotenv_values
 
+from .errors import (
+    BadRequestException,
+    RateLimitException,
+    RecordNotFoundException,
+    UnauthorizedException,
+)
+
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
 DEFAULT_CONTROL_PLANE_DOMAIN = "api.xata.io"
@@ -14,27 +21,6 @@ CONFIG_LOCATION = ".xatarc"
 
 ApiKeyLocation = Literal["env", "dotenv", "profile", "parameter"]
 WorkspaceIdLocation = Literal["parameter", "env", "config"]
-
-
-class UnauthorizedException(Exception):
-    pass
-
-
-class RateLimitException(Exception):
-    pass
-
-
-class BadRequestException(Exception):
-    status_code: int
-    message: str
-
-    def __init__(self, status_code, message):
-        self.status_code = status_code
-        self.message = message
-        super().__init__(message)
-
-    def __str__(self) -> str:
-        return f"Bad request: {self.status_code} {self.message}"
 
 
 class ServerErrorException(Exception):
@@ -460,3 +446,76 @@ class XataClient:
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
+
+    def update(
+        self,
+        table: str,
+        id: str,
+        record: dict,
+        ifVersion: Optional[int] = None,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Optional[dict]:
+        """Updates the record with the given key-value pairs in the record. The columns
+        that aren't explicitely provided are left unchanged. If no record with the given
+        id exists, None is returned. If the ifVersion condition is not respected, None is
+        returned.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param id: The ID of the record to update.
+        :param record: The key-value pairs to update.
+        :param ifVersion: Only perform the update if the version of the record matches this value.
+        :param db_name: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branch_name: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :return: The updated record.
+        """
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
+        params = {"columns": "*"}
+        if ifVersion is not None:
+            params["ifVersion"] = str(ifVersion)
+        result = self.patch(
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
+            params=params,
+            json=record,
+            expect_codes=[422, 404],
+        )
+        if result.status_code == 404:
+            return (
+                None  # TODO: I would prefer to raise here, but there is a backend issue
+            )
+        if result.status_code == 422:
+            return None
+        return result.json()
+
+    def delete_record(
+        self, table: str, id: str, db_name: str = None, branch_name: str = None
+    ) -> Optional[dict]:
+        """Deletes the record with the given ID. Returns the record as it was just before
+        deletion. If no record with the given ID exists, raises RecordNotFoundException.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param id: The ID of the record to delete.
+        :param db_name: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branch_name: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :return: The deleted record.
+        """
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
+        params = {"columns": "*"}
+        result = self.delete(
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
+            params=params,
+            expect_codes=[404],
+        )
+        if result.status_code == 404:
+            raise RecordNotFoundException(id)
+        return result.json()
