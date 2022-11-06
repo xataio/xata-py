@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Literal
+from typing import Literal, Optional
 from urllib.parse import urljoin
 
 import requests
@@ -161,12 +161,14 @@ class XataClient:
         # TODO: resolve branch name by the current git branch
         return os.environ.get("XATA_BRANCH")
 
-    def request(self, method, urlPath, cp=False, headers={}, **kwargs):
+    def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
         headers["Authorization"] = f"Bearer {self.api_key}"
         base_url = self.base_url if not cp else self.control_plane_url
         url = urljoin(base_url, urlPath.lstrip("/"))
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
+            if resp.status_code in expect_codes:
+                return resp
             if resp.status_code == 401:
                 raise UnauthorizedException(
                     f"Unauthorized: {resp.json()} API key location: {self.api_key_location}"
@@ -327,6 +329,30 @@ class XataClient:
         if len(data.get("records", [])) == 0:
             return None
         return data.get("records")[0]
+
+    def get_by_id(
+        self,
+        table: str,
+        id: str,
+        dbName: str = None,
+        branchName: str = None,
+    ) -> Optional[dict]:
+        """Get a specific record by its ID. Returns None if an record with that ID
+        doesn't exist.
+
+        :meta public:
+        :param table: The name of the table to query.
+        :param id: The ID of the record to get.
+        :param dbName: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branchName: The name of the branch to query. If not provided, the branch name
+                            from the client obejct is used.
+        :return: A record as a dictionary or None if it doesn't exist.
+        """
+        result = self.get(f"/db/{dbName}:{branchName}/tables/{table}/data/{id}", expect_codes=[404])
+        if result.status_code == 404:
+            return None
+        return result.json()
 
     def create(
         self,

@@ -159,8 +159,23 @@ def test_create_or_replace(client: XataClient, demo_db: string):
     )
     assert recId == "helloWorld"
 
-    record = client.get_first(
-        "Posts", filter={"id": "helloWorld"}, dbName=demo_db, branchName="main"
+    record = client.get_by_id(
+        "Posts", "helloWorld", dbName=demo_db, branchName="main"
     )
     assert {"slug": "hello_world"}.items() <= record.items()
     assert record.get("title") is None
+
+def test_create_and_get(client: XataClient, demo_db: string):
+    recId = client.create(
+        "Posts",
+        record={"title": "Hello world"},
+        dbName=demo_db,
+        branchName="main",
+    )
+    assert recId is not None
+
+    rec = client.get_by_id("Posts", recId, dbName=demo_db, branchName="main")
+    assert {"title": "Hello world"}.items() <= rec.items()
+
+    rec = client.get_by_id("Posts", "something", dbName=demo_db, branchName="main")
+    assert rec is None
