@@ -81,7 +81,7 @@ def test_create_and_query(client: XataClient, demo_db: string):
         },
     )
 
-    rec = client.getFirst("Posts", dbName=demo_db, branchName="main")
+    rec = client.get_first("Posts", dbName=demo_db, branchName="main")
     assert rec["title"] == "Hello world"
     assert rec["labels"] == ["hello", "world"]
     assert rec["slug"] == "hello-world"
@@ -111,5 +111,5 @@ def test_create_with_id(client: XataClient, demo_db: string):
         == "record with ID [helloWorld] already exists in table [Posts]"
     )
 
-    rec = client.getFirst("Posts", dbName=demo_db, branchName="main")
+    rec = client.get_first("Posts", dbName=demo_db, branchName="main")
     assert rec["title"] == "Hello world"
