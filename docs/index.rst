@@ -45,7 +45,7 @@ Example Usage
     client.create("Posts", record={"title": "Hello World", "slug": "hello-world"})
 
     # get one record
-    post = client.getFirst("Posts", filter={"slug": "hello-world"})
+    post = client.get_first("Posts", filter={"slug": "hello-world"})
     print(post)
 
     # make a query

@@ -14,8 +14,8 @@ def run_query_loop(threadId):
         try:
             res = client.query(
                 "titles",
-                dbName="imdb",
-                branchName="main",
+                db_name="imdb",
+                branch_name="main",
                 filter={"primaryTitle": {"$contains": "testingtest"}},
             )
 
