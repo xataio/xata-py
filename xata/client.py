@@ -222,7 +222,7 @@ class XataClient:
         """
         return self.request("PATCH", urlPath, headers=headers, **kwargs)
 
-    def request_body_frompParams(
+    def request_body_from_params(
         self,
         columns: list[str] = None,
         filter: dict = None,
@@ -289,7 +289,7 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        body = self.request_body_frompParams(columns, filter, sort, page)
+        body = self.request_body_from_params(columns, filter, sort, page)
         result = self.post(
             f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
@@ -322,7 +322,7 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        body = self.request_body_frompParams(columns, filter, sort, page)
+        body = self.request_body_from_params(columns, filter, sort, page)
         result = self.post(
             f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
