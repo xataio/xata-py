@@ -1,9 +1,9 @@
-from xata import XataClient
 import random
 
+from xata import XataClient
+
 client = XataClient(
-    db_url="https://xata-uq2d57.eu-west-1.xata.sh/db/nextjsconf22",
-    branch_name="main"
+    db_url="https://xata-uq2d57.eu-west-1.xata.sh/db/nextjsconf22", branch_name="main"
 )
 
 
