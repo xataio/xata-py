@@ -37,8 +37,8 @@ class ServerErrorException(Exception):
 
 
 class XataClient:
-    """This is the Xata Client. When initialised, it will attempt to read the relevant
-    configuraiton (API key, workspace ID, database name, branch name) from the following
+    """This is the Xata Client. When initialized, it will attempt to read the relevant
+    configuration (API key, workspace ID, database name, branch name) from the following
     sources in order:
 
     * parameters passed to the constructor
@@ -48,9 +48,14 @@ class XataClient:
 
     :meta public:
     :param api_key: API key to use for authentication.
+    :param db_url: The database URL to use. If this is specified,
+                   then workspace_id, region and db_name must not be specified.
     :param workspace_id: The workspace ID to use.
+    :param region: The region to use.
+    :param db_name: The database name to use.
+    :param branch_name: The branch name to use.
     :param base_url_domain: The domain to use for the base URL. Defaults to xata.sh.
-
+    :param control_plane_domain: The domain to use for the control plane. Defaults to api.xata.io.
     """
 
     configRead: bool = False
@@ -63,8 +68,17 @@ class XataClient:
         control_plane_domain: str = DEFAULT_CONTROL_PLANE_DOMAIN,
         region: str = DEFAULT_REGION,
         workspace_id: str = None,
+        db_name: str = None,
+        db_url: str = None,
+        branch_name: str = None,
     ):
-        """Constructor method"""
+        """Constructor for the XataClient."""
+        if db_url is not None:
+            if workspace_id is not None or db_name is not None:
+                raise Exception(
+                    "Cannot specify both db_url and workspace_id/region/db_name"
+                )
+            workspace_id, region, db_name = self.parse_database_url(db_url)
 
         if api_key is None:
             self.api_key, self.api_key_location = self.get_api_key()
@@ -77,15 +91,20 @@ class XataClient:
                 self.workspace_id_location,
             ) = self.get_workspace_id()
         else:
-            self.workspace_id = workspace_id, "parameter"
+            self.workspace_id = workspace_id
+            self.workspace_id_location = "parameter"
             self.region = region
         self.base_url = f"https://{self.workspace_id}.{region}.{base_url_domain}"
         self.control_plane_url = (
             f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
         )
 
-        self.db_name = self.get_database_name_if_configured()
-        self.branch_name = self.get_branch_name_if_configured()
+        self.db_name = (
+            self.get_database_name_if_configured() if db_name is None else db_name
+        )
+        self.branch_name = (
+            self.get_branch_name_if_configured() if branch_name is None else branch_name
+        )
         # print (
         #   f"API key: {self.api_key}, "
         #   f"location: {self.api_key_location}, "
