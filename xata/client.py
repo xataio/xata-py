@@ -105,14 +105,14 @@ class XataClient:
         self.branch_name = (
             self.get_branch_name_if_configured() if branch_name is None else branch_name
         )
-        #print (
+        # print (
         #   f"API key: {self.api_key}, "
         #   f"location: {self.api_key_location}, "
         #   f"workspaceId: {self.workspace_id}, "
         #   f"region: {self.region}, "
         #   f"dbName: {self.db_name}, "
         #   f"branchName: {self.branch_name}"
-        #)
+        # )
 
     def get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
