@@ -94,7 +94,7 @@ class XataClient:
             self.workspace_id = workspace_id
             self.workspace_id_location = "parameter"
             self.region = region
-        self.base_url = f"https://{self.workspace_id}.{region}.{base_url_domain}"
+        self.base_url = f"https://{self.workspace_id}.{self.region}.{base_url_domain}"
         self.control_plane_url = (
             f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
         )
@@ -105,11 +105,14 @@ class XataClient:
         self.branch_name = (
             self.get_branch_name_if_configured() if branch_name is None else branch_name
         )
-        # print (
+        #print (
         #   f"API key: {self.api_key}, "
         #   f"location: {self.api_key_location}, "
-        #   f"workspaceId: {self.workspace_id}"
-        # )
+        #   f"workspaceId: {self.workspace_id}, "
+        #   f"region: {self.region}, "
+        #   f"dbName: {self.db_name}, "
+        #   f"branchName: {self.branch_name}"
+        #)
 
     def get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
@@ -158,7 +161,7 @@ class XataClient:
     def get_database_name_if_configured(self) -> str:
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            _, db_name = self.parse_database_url(self.config.get("databaseURL"))
+            _, _, db_name = self.parse_database_url(self.config.get("databaseURL"))
             return db_name
         return None
 
