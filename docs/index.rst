@@ -39,7 +39,7 @@ Example Usage
 
     import xata
 
-    client = xata.Client()
+    client = xata.client.XataClient()
 
     # create a record
     client.create("Posts", record={"title": "Hello World", "slug": "hello-world"})
