@@ -41,9 +41,9 @@ class TestClient(unittest.TestCase):
         assert "env" == cfg["apiKeyLocation"]
 
     def test_init_api_key_via_xatarc(self):
-        api_key = "xatarc_ABCDEF123456789"
+        # api_key = "xatarc_ABCDEF123456789"
         # TODO
-        assert True == True
+        pass
 
     def test_init_db_url(self):
         db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
@@ -59,10 +59,10 @@ class TestClient(unittest.TestCase):
 
     def test_init_db_url_invalid_combinations(self):
         with pytest.raises(Exception):
-            c = XataClient(db_url="db_url", workspace_id="ws_id")
+            XataClient(db_url="db_url", workspace_id="ws_id")
 
         with pytest.raises(Exception):
-            c = XataClient(db_url="db_url", db_name="db_name")
+            XataClient(db_url="db_url", db_name="db_name")
 
         with pytest.raises(Exception):
-            c = XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
+            XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
