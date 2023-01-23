@@ -32,7 +32,11 @@ jobs:
         run: |
           export PIP_USER=0; poetry run pre-commit run --all-files
 
-      - name: Test with pytest
+      - name: Unit Tests
+        run: |
+          poetry run pytest -v --tb=short tests/unit-tests/
+
+      - name: Integration Tests
         env:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
           XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
