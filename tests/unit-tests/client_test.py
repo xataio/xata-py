@@ -20,7 +20,7 @@ class TestXataClient(unittest.TestCase):
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
-        client = XataClient(api_key=api_key, workspace_id='ws_id')
+        client = XataClient(api_key=api_key, workspace_id="ws_id")
         cfg = client.get_config()
 
         assert "apiKey" in cfg
@@ -32,7 +32,7 @@ class TestXataClient(unittest.TestCase):
         api_key = "envvar_ABCDEF123456789"
         os.environ["XATA_API_KEY"] = api_key
 
-        client = XataClient(workspace_id='ws_id')
+        client = XataClient(workspace_id="ws_id")
         cfg = client.get_config()
 
         assert "apiKey" in cfg
