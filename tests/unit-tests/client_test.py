@@ -6,21 +6,21 @@ import pytest
 from xata.client import XataClient
 
 
-class TestClient(unittest.TestCase):
+class TestXataClient(unittest.TestCase):
 
     """
     'apiKey': self.api_key,
     'location': self.api_key_location,
-          'workspaceId': self.workspace_id,
-          'region': self.region,
-          'dbName': self.db_name,
-          'branchName': self.branch_name,
+    'workspaceId': self.workspace_id,
+    'region': self.region,
+    'dbName': self.db_name,
+    'branchName': self.branch_name,
     """
 
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
-        client = XataClient(api_key=api_key)
+        client = XataClient(api_key=api_key, workspace_id='ws_id')
         cfg = client.get_config()
 
         assert "apiKey" in cfg
@@ -32,7 +32,7 @@ class TestClient(unittest.TestCase):
         api_key = "envvar_ABCDEF123456789"
         os.environ["XATA_API_KEY"] = api_key
 
-        client = XataClient()
+        client = XataClient(workspace_id='ws_id')
         cfg = client.get_config()
 
         assert "apiKey" in cfg
@@ -42,6 +42,11 @@ class TestClient(unittest.TestCase):
 
     def test_init_api_key_via_xatarc(self):
         # api_key = "xatarc_ABCDEF123456789"
+        # TODO
+        pass
+
+    def test_init_api_key_via_dotenv(self):
+        # api_key = "dotenv_ABCDEF123456789"
         # TODO
         pass
 
