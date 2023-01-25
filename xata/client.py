@@ -105,8 +105,7 @@ class XataClient:
         self.branch_name = (
             self.get_branch_name_if_configured() if branch_name is None else branch_name
         )
-
-    #        self.headers = {"authorization": f"Bearer {self.api_key}"}
+        self.headers = {"authorization": f"Bearer {self.api_key}"}
 
     def get_config(self) -> dict:
         """
@@ -177,11 +176,11 @@ class XataClient:
         return os.environ.get("XATA_BRANCH")
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
-        self.headers = {"authorization": f"Bearer {self.api_key}"}
-        #        headers = {
-        #            **headers,
-        #            **self.headers,
-        #        }  # TODO use "|" when client py min version >= 3.9
+        # headers = {"authorization": f"Bearer {self.api_key}"}
+        headers = {
+            **headers,
+            **self.headers,
+        }  # TODO use "|" when client py min version >= 3.9
 
         base_url = self.base_url if not cp else self.control_plane_url
         url = urljoin(base_url, urlPath.lstrip("/"))
