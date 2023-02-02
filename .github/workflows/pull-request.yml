@@ -25,13 +25,13 @@ jobs:
           python3 -m pip install -U poetry
           poetry install
 
-#      - name: Lint
-#        run: |
-#          export PIP_USER=0; poetry run pre-commit run --all-files
+      - name: Lint
+        run: |
+          export PIP_USER=0; poetry run pre-commit run --all-files
 
-#      - name: Unit Tests
-#        run: |
-#          poetry run pytest -v --tb=short tests/unit-tests/
+      - name: Unit Tests
+        run: |
+          poetry run pytest -v --tb=short tests/unit-tests/
 
       - name: Integration Tests
         env:
