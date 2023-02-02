@@ -4,7 +4,7 @@ install: ## Install dependencies
 	poetry install
 
 lint: ## Linter
-	poetry run pre-commit run --all-files
+	export PIP_USER=0; poetry run pre-commit run --all-files
 
 test: | unit-tests integration-tests ## Run unit & integration tests
 
