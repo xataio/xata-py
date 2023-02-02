@@ -9,13 +9,9 @@ on:
   pull_request:
     branches: ["main"]
 
-permissions:
-  contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: "qa-tests"
 
     steps:
       - uses: actions/checkout@v3
