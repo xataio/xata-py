@@ -3,8 +3,8 @@ import string
 
 import pytest
 
-from . import XataClient
-from .errors import BadRequestException, RecordNotFoundException
+from xata.client import XataClient
+from xata.errors import BadRequestException, RecordNotFoundException
 
 
 def create_demo_db(client, db_name):

@@ -105,14 +105,20 @@ class XataClient:
         self.branch_name = (
             self.get_branch_name_if_configured() if branch_name is None else branch_name
         )
-        # print (
-        #   f"API key: {self.api_key}, "
-        #   f"location: {self.api_key_location}, "
-        #   f"workspaceId: {self.workspace_id}, "
-        #   f"region: {self.region}, "
-        #   f"dbName: {self.db_name}, "
-        #   f"branchName: {self.branch_name}"
-        # )
+        self.headers = {"authorization": f"Bearer {self.api_key}"}
+
+    def get_config(self) -> dict:
+        """
+        Get the configuration
+        """
+        return {
+            "apiKey": self.api_key,
+            "apiKeyLocation": self.api_key_location,
+            "workspaceId": self.workspace_id,
+            "region": self.region,
+            "dbName": self.db_name,
+            "branchName": self.branch_name,
+        }
 
     def get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
@@ -170,7 +176,12 @@ class XataClient:
         return os.environ.get("XATA_BRANCH")
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
-        headers["Authorization"] = f"Bearer {self.api_key}"
+        # headers = {"authorization": f"Bearer {self.api_key}"}
+        headers = {
+            **headers,
+            **self.headers,
+        }  # TODO use "|" when client py min version >= 3.9
+
         base_url = self.base_url if not cp else self.control_plane_url
         url = urljoin(base_url, urlPath.lstrip("/"))
         resp = requests.request(method, url, headers=headers, **kwargs)

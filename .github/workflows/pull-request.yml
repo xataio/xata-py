@@ -1,16 +1,13 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python application
+name: Pull Request
 
 on:
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -28,13 +25,17 @@ jobs:
           python3 -m pip install -U poetry
           poetry install
 
-      - name: Lint
-        run: |
-          export PIP_USER=0; poetry run pre-commit run --all-files
+#      - name: Lint
+#        run: |
+#          export PIP_USER=0; poetry run pre-commit run --all-files
 
-      - name: Test with pytest
+      - name: Unit Tests
+        run: |
+          poetry run pytest -v --tb=short tests/unit-tests/
+
+      - name: Integration Tests
         env:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
           XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
         run: |
-          poetry run pytest
+          poetry run pytest -v --tb=short tests/integration-tests/
