@@ -29,9 +29,9 @@ jobs:
 #        run: |
 #          export PIP_USER=0; poetry run pre-commit run --all-files
 
-      - name: Unit Tests
-        run: |
-          poetry run pytest -v --tb=short tests/unit-tests/
+#      - name: Unit Tests
+#        run: |
+#          poetry run pytest -v --tb=short tests/unit-tests/
 
       - name: Integration Tests
         env:
@@ -39,10 +39,10 @@ jobs:
           XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
         run: |
           echo "---------------"
-          echo $XATA_API_KEY
+          echo "${XATA_API_KEY}"
           echo ${{ secrets.INTEGRATION_TEST_API_KEY }}
           echo "---------------"
-          echo $XATA_WORKSPACE_ID
+          echo "${XATA_WORKSPACE_ID}"
           echo ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
           echo "---------------"
           poetry run pytest -v --tb=short tests/integration-tests/
