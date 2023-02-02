@@ -71,3 +71,4 @@ class TestXataClient(unittest.TestCase):
 
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
+
