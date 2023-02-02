@@ -38,11 +38,4 @@ jobs:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
           XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
         run: |
-          echo "---------------"
-          echo "${XATA_API_KEY}"
-          echo ${{ secrets.INTEGRATION_TEST_API_KEY }}
-          echo "---------------"
-          echo "${XATA_WORKSPACE_ID}"
-          echo ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
-          echo "---------------"
           poetry run pytest -v --tb=short tests/integration-tests/
