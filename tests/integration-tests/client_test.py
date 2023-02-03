@@ -412,9 +412,8 @@ def test_search_table_with_no_hits(
 def test_search_table_errorcases(client: XataClient, demo_db: string, posts: list[str]):
     result = client.search_table("MissingTable", "hello")
     assert "message" in result
-    assert result['message'] == f"table [{demo_db}:main/MissingTable] not found"
+    assert result["message"] == f"table [{demo_db}:main/MissingTable] not found"
 
     with pytest.raises(BadRequestException) as exc:
         client.search_table("Posts", "invalid", {"i-am": "invalid"})
     assert exc is not None
-
