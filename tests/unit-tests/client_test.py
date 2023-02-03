@@ -9,6 +9,7 @@ import pytest
 from xata.client import XataClient
 
 PATTERNS_UUID4 = re.compile(r"^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$", re.IGNORECASE)
+PATTERNS_SDK_VERSION = re.compile(r"^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$")
 
 
 class TestXataClient(unittest.TestCase):
@@ -87,3 +88,11 @@ class TestXataClient(unittest.TestCase):
 
         assert headers1["x-xata-client-id"] != headers2["x-xata-client-id"]
         assert headers1["x-xata-session-id"] != headers2["x-xata-session-id"]
+
+    def test_sdk_version(self):
+        db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert "version" in cfg
+        assert PATTERNS_SDK_VERSION.match(cfg["version"])

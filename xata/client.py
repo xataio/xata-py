@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import importlib.metadata
 import json
 import os
 import uuid
@@ -14,6 +16,8 @@ from .errors import (
     RecordNotFoundException,
     UnauthorizedException,
 )
+
+SDK_VERSION = importlib.metadata.version(__package__ or __name__)
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
@@ -124,6 +128,7 @@ class XataClient:
             "region": self.region,
             "dbName": self.db_name,
             "branchName": self.branch_name,
+            "version": SDK_VERSION,
         }
 
     def get_headers(self) -> dict:
