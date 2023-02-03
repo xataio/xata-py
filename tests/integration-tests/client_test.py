@@ -95,6 +95,15 @@ def posts() -> list[str]:
     ]
 
 
+def _wait_until_records_are_indexed(table: str):
+    """
+    Wait for the records to be index in order to able to search them
+    """
+    # TODO remove in favour of wait loop with aggs
+    # when aggs are available
+    time.sleep(10)
+
+
 # ------------------------------------------------------- #
 #
 # Create
@@ -339,10 +348,73 @@ def test_search_errorcases(client: XataClient, demo_db: string, posts: list[str]
     assert exc is not None
 
 
-def _wait_until_records_are_indexed(table: str):
-    """
-    Wait for the records to be index in order to able to search them
-    """
-    # TODO remove in favour of wait loop with aggs
-    # when aggs are available
-    time.sleep(10)
+# ------------------------------------------------------- #
+#
+# Search Table
+#
+# ------------------------------------------------------- #
+def test_search_table_simple(client: XataClient, demo_db: string, posts: list[str]):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search_table("Posts", "hello")
+    assert "records" in result
+    assert len(result["records"]) == len(posts)
+
+    result = client.search_table("Posts", "apples")
+    assert "records" in result
+    assert len(result["records"]) == 1
+
+
+def test_search_table_with_params(
+    client: XataClient, demo_db: string, posts: list[str]
+):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search_table(
+        "Posts",
+        "hello",
+        {
+            "fuzziness": 1,
+            "prefix": "phrase",
+        },
+    )
+    assert "records" in result
+    assert len(result["records"]) == len(posts)
+
+    result = client.search_table(
+        "Posts",
+        "apples and bananas",
+        {
+            "fuzziness": 0,
+            "prefix": "phrase",
+        },
+    )
+    assert "records" in result
+    assert len(result["records"]) == 1
+
+
+def test_search_table_with_no_hits(
+    client: XataClient, demo_db: string, posts: list[str]
+):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search_table("Posts", "watermelon")
+    assert "records" in result
+    assert len(result["records"]) == 0
+
+
+def test_search_table_errorcases(client: XataClient, demo_db: string, posts: list[str]):
+    result = client.search_table("MissingTable", "hello")
+    assert "message" in result
+    assert result['message'] == f"table [{demo_db}:main/MissingTable] not found"
+
+    with pytest.raises(BadRequestException) as exc:
+        client.search_table("Posts", "invalid", {"i-am": "invalid"})
+    assert exc is not None
+
