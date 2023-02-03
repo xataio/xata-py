@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+import uuid
 from typing import Literal, Optional
 from urllib.parse import urljoin
 
@@ -106,7 +107,11 @@ class XataClient:
         self.branch_name = (
             self.get_branch_name_if_configured() if branch_name is None else branch_name
         )
-        self.headers = {"authorization": f"Bearer {self.api_key}"}
+        self.headers = {
+            "authorization": f"Bearer {self.api_key}",
+            "x-xata-client-id": str(uuid.uuid4()),
+            "x-xata-session-id": str(uuid.uuid4()),
+        }
 
     def get_config(self) -> dict:
         """
@@ -120,6 +125,12 @@ class XataClient:
             "dbName": self.db_name,
             "branchName": self.branch_name,
         }
+
+    def get_headers(self) -> dict:
+        """
+        Get the static headers that are iniatilized on client init.
+        """
+        return self.headers
 
     def get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:

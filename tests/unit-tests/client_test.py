@@ -1,24 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import unittest
 
 import pytest
 
 from xata.client import XataClient
 
+PATTERNS_UUID4 = re.compile(r"^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$", re.IGNORECASE)
+
 
 class TestXataClient(unittest.TestCase):
-
-    """
-    'apiKey': self.api_key,
-    'location': self.api_key_location,
-    'workspaceId': self.workspace_id,
-    'region': self.region,
-    'dbName': self.db_name,
-    'branchName': self.branch_name,
-    """
-
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
@@ -73,3 +66,16 @@ class TestXataClient(unittest.TestCase):
 
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
+
+    def test_init_telemetry_headers(self):
+        api_key = "this-key-42"
+        client1 = XataClient(api_key=api_key, workspace_id="ws_id")
+        headers = client1.get_headers()
+
+        assert len(headers) == 3
+        assert "authorization" in headers
+        assert headers["authorization"] == f"Bearer {api_key}"
+        assert "x-xata-client-id" in headers
+        assert PATTERNS_UUID4.match(headers["x-xata-client-id"])
+        assert "x-xata-session-id" in headers
+        assert PATTERNS_UUID4.match(headers["x-xata-session-id"])
