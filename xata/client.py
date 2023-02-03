@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import os
 from typing import Literal, Optional
@@ -311,7 +312,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                     from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :param columns: A list of column names to return. If not provided, all columns are returned.
         :param filter: A filter expression to apply to the query.
         :param sort: A sort expression to apply to the query.
@@ -344,7 +345,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :param columns: A list of column names to return. If not provided, all columns are returned.
         :param filter: A filter expression to apply to the query.
         :param sort: A sort expression to apply to the query.
@@ -380,7 +381,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: A record as a dictionary or None if it doesn't exist.
         """
         db_name, branch_name = self.db_and_branch_names_from_params(
@@ -411,7 +412,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: The ID of the created record.
         """
 
@@ -450,7 +451,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: The ID of the created or updated record.
         """
         db_name, branch_name = self.db_and_branch_names_from_params(
@@ -479,7 +480,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: The ID of the created or updated record.
         """
         db_name, branch_name = self.db_and_branch_names_from_params(
@@ -512,7 +513,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: The updated record.
         """
         db_name, branch_name = self.db_and_branch_names_from_params(
@@ -547,7 +548,7 @@ class XataClient:
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
-                            from the client obejct is used.
+                        from the client obejct is used.
         :return: The deleted record.
         """
         db_name, branch_name = self.db_and_branch_names_from_params(
@@ -561,4 +562,45 @@ class XataClient:
         )
         if result.status_code == 404:
             raise RecordNotFoundException(id)
+        return result.json()
+
+    def search(
+        self,
+        query: str,
+        params: dict = {},
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Optional[dict]:
+        """This endpoint performs full text search across an entire database branch.
+
+        API docs: https://xata.io/docs/api-reference/db/db_branch_name/search#free-text-search
+
+        :meta public:
+        :param query: search string
+        :param params: more granular search criteria, see API docs for options
+        :param db_name: The name of the database to query. If not provided, the database name
+                        from the client obejct is used.
+        :param branch_name: The name of the branch to query. If not provided, the branch name
+                        from the client obejct is used.
+
+        :return set of matching records
+        """
+        db_name, branch_name = self.db_and_branch_names_from_params(
+            db_name, branch_name
+        )
+        params["query"] = query.strip()
+        result = self.post(
+            f"/db/{db_name}:{branch_name}/search",
+            params=params,
+            expect_codes=[404],
+        )
+
+        if result.status_code == 400:
+            raise BadRequestException(result.status_code, result.json()["message"])
+        if result.status_code == 403:
+            raise UnauthorizedException()
+        if result.status_code == 404:
+            raise RecordNotFoundException(query)
+        if result.status_code >= 500:
+            raise Exception(result.json())
         return result.json()
