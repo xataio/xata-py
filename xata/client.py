@@ -115,6 +115,7 @@ class XataClient:
             "authorization": f"Bearer {self.api_key}",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
+            # TODO: x-xata-agent
         }
 
     def get_config(self) -> dict:
