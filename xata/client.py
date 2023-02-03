@@ -567,7 +567,7 @@ class XataClient:
     def search(
         self,
         query: str,
-        params: dict = {},
+        query_params: dict = {},
         db_name: str = None,
         branch_name: str = None,
     ) -> Optional[dict]:
@@ -577,7 +577,7 @@ class XataClient:
 
         :meta public:
         :param query: search string
-        :param params: more granular search criteria, see API docs for options
+        :param query_params: more granular search criteria, see API docs for options
         :param db_name: The name of the database to query. If not provided, the database name
                         from the client obejct is used.
         :param branch_name: The name of the branch to query. If not provided, the branch name
@@ -588,11 +588,11 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        params["query"] = query.strip()
+        query_params["query"] = query.strip()
         result = self.post(
             f"/db/{db_name}:{branch_name}/search",
-            params=params,
-            expect_codes=[404],
+            json=query_params,
+            expect_codes=[400, 403, 404, 500],
         )
 
         if result.status_code == 400:

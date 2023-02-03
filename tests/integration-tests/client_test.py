@@ -2,6 +2,7 @@
 
 import random
 import string
+import time
 
 import pytest
 
@@ -70,6 +71,35 @@ def demo_db(client: XataClient) -> string:
     delete_db(client, db_name)
 
 
+@pytest.fixture
+def posts() -> list[str]:
+    return [
+        {
+            "title": "Hello world",
+            "labels": ["hello", "world"],
+            "slug": "hello-world",
+            "text": "This is a test post",
+        },
+        {
+            "title": "HeLLo universe",
+            "labels": ["hello", "universe"],
+            "slug": "hello-universe",
+            "text": "hello, is it me you're looking for?",
+        },
+        {
+            "title": "HELlO internet",
+            "labels": ["hello", "internet"],
+            "slug": "hello-internet",
+            "text": "I like to eat apples and bananas",
+        },
+    ]
+
+
+# ------------------------------------------------------- #
+#
+# Create
+#
+# ------------------------------------------------------- #
 def test_create_and_query(client: XataClient, demo_db: string):
     client.create(
         "Posts",
@@ -164,6 +194,11 @@ def test_create_and_get(client: XataClient, demo_db: string):
     assert rec is None
 
 
+# ------------------------------------------------------- #
+#
+# Update
+#
+# ------------------------------------------------------- #
 def test_update(client: XataClient, demo_db: string):
     recId = client.create(
         "Posts",
@@ -227,6 +262,11 @@ def test_update_ifVersion(client: XataClient, demo_db: string):
     assert {"title": "Hello world", "slug": "hello_world_one"}.items() <= record.items()
 
 
+# ------------------------------------------------------- #
+#
+# Delete
+#
+# ------------------------------------------------------- #
 def test_delete_record(client: XataClient, demo_db: string):
     recId = client.create("Posts", record={"title": "Hello world"})
 
@@ -236,3 +276,73 @@ def test_delete_record(client: XataClient, demo_db: string):
     with pytest.raises(RecordNotFoundException) as exc:
         client.delete_record("Posts", recId)
     assert exc is not None
+
+
+# ------------------------------------------------------- #
+#
+# Search
+#
+# ------------------------------------------------------- #
+def test_search_simple(client: XataClient, demo_db: string, posts: list[str]):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search("hello")
+    assert "records" in result
+    assert len(result["records"]) == len(posts)
+
+    result = client.search("apples")
+    assert "records" in result
+    assert len(result["records"]) == 1
+
+
+def test_search_with_params(client: XataClient, demo_db: string, posts: list[str]):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search(
+        "hello",
+        {
+            "fuzziness": 1,
+            "prefix": "phrase",
+        },
+    )
+    assert "records" in result
+    assert len(result["records"]) == len(posts)
+
+    result = client.search(
+        "apples and bananas",
+        {
+            "fuzziness": 0,
+            "prefix": "phrase",
+        },
+    )
+    assert "records" in result
+    assert len(result["records"]) == 1
+
+
+def test_search_with_no_hits(client: XataClient, demo_db: string, posts: list[str]):
+    for post in posts:
+        client.create("Posts", record=post)
+    _wait_until_records_are_indexed("Posts")
+
+    result = client.search("12345")
+    assert "records" in result
+    assert len(result["records"]) == 0
+
+
+def test_search_errorcases(client: XataClient, demo_db: string, posts: list[str]):
+    with pytest.raises(BadRequestException) as exc:
+        client.search("invalid", {"i-am": "invalid"})
+    assert exc is not None
+
+
+def _wait_until_records_are_indexed(table: str):
+    """
+    Wait for the records to be index in order to able to search them
+    """
+    # TODO remove in favour of wait loop with aggs
+    # when aggs are available
+    time.sleep(10)
