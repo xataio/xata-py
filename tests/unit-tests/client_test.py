@@ -70,12 +70,20 @@ class TestXataClient(unittest.TestCase):
     def test_init_telemetry_headers(self):
         api_key = "this-key-42"
         client1 = XataClient(api_key=api_key, workspace_id="ws_id")
-        headers = client1.get_headers()
+        headers1 = client1.get_headers()
 
-        assert len(headers) == 3
-        assert "authorization" in headers
-        assert headers["authorization"] == f"Bearer {api_key}"
-        assert "x-xata-client-id" in headers
-        assert PATTERNS_UUID4.match(headers["x-xata-client-id"])
-        assert "x-xata-session-id" in headers
-        assert PATTERNS_UUID4.match(headers["x-xata-session-id"])
+        assert len(headers1) == 3
+        assert "authorization" in headers1
+        assert headers1["authorization"] == f"Bearer {api_key}"
+        assert "x-xata-client-id" in headers1
+        assert PATTERNS_UUID4.match(headers1["x-xata-client-id"])
+        assert "x-xata-session-id" in headers1
+        assert PATTERNS_UUID4.match(headers1["x-xata-session-id"])
+        assert headers1["x-xata-client-id"] != headers1["x-xata-session-id"]
+
+        api_key = "this-key-42"
+        client2 = XataClient(api_key=api_key, workspace_id="ws_id")
+        headers2 = client2.get_headers()
+
+        assert headers1["x-xata-client-id"] != headers2["x-xata-client-id"]
+        assert headers1["x-xata-session-id"] != headers2["x-xata-session-id"]
