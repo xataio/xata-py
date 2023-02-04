@@ -68,7 +68,16 @@ class TestXataClient(unittest.TestCase):
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
 
-    def test_init_telemetry_headers(self):
+    def test_sdk_version(self):
+        db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert "version" in cfg
+        assert PATTERNS_SDK_VERSION.match(cfg["version"])
+        assert SDK_VERSION == cfg["version"]
+
+    def test_telemetry_headers(self):
         api_key = "this-key-42"
         client1 = XataClient(api_key=api_key, workspace_id="ws_id")
         headers1 = client1.get_headers()
@@ -91,12 +100,3 @@ class TestXataClient(unittest.TestCase):
         assert headers1["x-xata-client-id"] != headers2["x-xata-client-id"]
         assert headers1["x-xata-session-id"] != headers2["x-xata-session-id"]
         assert headers1['x-xata-agent'] == headers2['x-xata-agent']
-
-    def test_sdk_version(self):
-        db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
-        client = XataClient(db_url=db_url)
-        cfg = client.get_config()
-
-        assert "version" in cfg
-        assert PATTERNS_SDK_VERSION.match(cfg["version"])
-        assert SDK_VERSION == cfg["version"]
