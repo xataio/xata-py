@@ -7,46 +7,45 @@
 
 from requests import Response
 
-from ..namespace import Namespace
+from xata.namespace import Namespace
 
 
 class Users(Namespace):
 
     base_url = "https://api.xata.io"
-    scope = "core"
+    scope    = "core"
 
-    def getUser(
-        self,
-    ) -> Response:
-        """
-        Return details of the user making the request
-        path: /user
-        method: GET
+    def getUser(self, ) -> Response:
+       """
+       Return details of the user making the request
+       path: /user
+       method: GET
 
-        """
-        url_path = "/user"
-        return self.request("GET", url_path)
+       :return Response
+       """
+       url_path = "/user"
+       return self.request("GET", url_path)
 
     def updateUser(self, payload: dict) -> Response:
-        """
-        Update user info
-        path: /user
-        method: PUT
+       """
+       Update user info
+       path: /user
+       method: PUT
 
-        :param payload: dict Request Body
-        """
-        url_path = "/user"
-        headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+       :param payload: dict Request Body
+       :return Response
+       """
+       url_path = "/user"
+       headers = {"content-type": "application/json"}
+       return self.request("PUT", url_path, payload, headers)
 
-    def deleteUser(
-        self,
-    ) -> Response:
-        """
-        Delete the user making the request
-        path: /user
-        method: DELETE
+    def deleteUser(self, ) -> Response:
+       """
+       Delete the user making the request
+       path: /user
+       method: DELETE
 
-        """
-        url_path = "/user"
-        return self.request("DELETE", url_path)
+       :return Response
+       """
+       url_path = "/user"
+       return self.request("DELETE", url_path)

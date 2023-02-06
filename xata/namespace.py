@@ -20,9 +20,7 @@ class Namespace:
     def get_base_url(self) -> str:
         if self.is_control_plane == False:
             return self.base_url
-        return self.base_url
-            .replace("{workspaceId}", self.client.get_config()["workspaceId"])
-            .replace("{regionId}", self.client.get_config()["region"])
+        return self.base_url.replace("{workspaceId}", self.client.get_config()["workspaceId"]).replace("{regionId}", self.client.get_config()["region"])
 
     def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None) -> Response:
         headers = { **headers, **self.client.get_headers(), }  # TODO use "|" when client py min version >= 3.9

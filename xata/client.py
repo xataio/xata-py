@@ -22,7 +22,6 @@ from .namespaces.core.invites import Invites
 from .namespaces.core.users import Users
 from .namespaces.core.workspaces import Workspaces
 from .namespaces.workspace.branch import Branch
-from .namespaces.workspace.database import Database
 from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
 from .namespaces.workspace.search_and_filter import Search_and_filter
@@ -740,16 +739,6 @@ class XataClient:
         if "branch" not in self.namespaces:
             self.namespaces["branch"] = Branch(self)
         return self.namespaces["branch"]
-
-    def database(self) -> Database:
-        """
-        Database Namespace
-        scope: workspace
-        :return Database
-        """
-        if "database" not in self.namespaces:
-            self.namespaces["database"] = Database(self)
-        return self.namespaces["database"]
 
     def migrations(self) -> Migrations:
         """

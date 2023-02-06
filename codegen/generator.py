@@ -163,6 +163,8 @@ def resolve_references(spec: dict) -> dict:
                     component["type"] = "str"
                 if component["type"].lower() == "object":
                     component["type"] = "dict"
+                if component["type"].lower() == "array":
+                    component["type"] = "list"
             references[f"#/components/{k}/{name}"] = component
     return references
 
