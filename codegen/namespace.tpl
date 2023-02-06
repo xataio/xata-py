@@ -6,7 +6,9 @@
 # ------------------------------------------------------- #
 
 from requests import Response
+
 from ..namespace import Namespace
+
 
 class ${class_name}(Namespace):
 

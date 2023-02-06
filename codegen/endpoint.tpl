@@ -12,7 +12,7 @@
        % endfor
        :return Response
        """
-       % if params['has_path_params'] : 
+       % if params['has_path_params'] :
        url_path = f"${path}"
        % else :
        url_path = "${path}"

@@ -7,7 +7,7 @@ lint: ## Linter
 	export PIP_USER=0; poetry run pre-commit run --all-files
 
 code-gen: ## Generate endpoints from OpenAPI specs
-	mkdir -vp codegen/ws/$(scope) 
+	mkdir -vp codegen/ws/$(scope)
 	rm -Rfv codegen/ws/$(scope)/*
 	python codegen/generator.py --scope=$(scope)
 

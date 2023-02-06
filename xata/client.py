@@ -212,7 +212,7 @@ class XataClient:
         }  # TODO use "|" when client py min version >= 3.9
 
         base_url = self.base_url if not cp else self.control_plane_url
-        #url = urljoin(base_url, urlPath.lstrip("/"))
+        # url = urljoin(base_url, urlPath.lstrip("/"))
         url = f"https://api.xata.io{urlPath}"
 
         print("#############")
@@ -740,7 +740,7 @@ class XataClient:
         if "branch" not in self.namespaces:
             self.namespaces["branch"] = Branch(self)
         return self.namespaces["branch"]
-    
+
     def database(self) -> Database:
         """
         Database Namespace
@@ -750,7 +750,7 @@ class XataClient:
         if "database" not in self.namespaces:
             self.namespaces["database"] = Database(self)
         return self.namespaces["database"]
-    
+
     def migrations(self) -> Migrations:
         """
         Migrations Namespace
@@ -760,7 +760,7 @@ class XataClient:
         if "migrations" not in self.namespaces:
             self.namespaces["migrations"] = Migrations(self)
         return self.namespaces["migrations"]
-    
+
     def records(self) -> Records:
         """
         Records Namespace
@@ -780,7 +780,7 @@ class XataClient:
         if "search_and_filter" not in self.namespaces:
             self.namespaces["search_and_filter"] = Search_and_filter(self)
         return self.namespaces["search_and_filter"]
-    
+
     def search_and_filter(self) -> Table:
         """
         Table Namespace
