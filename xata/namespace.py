@@ -18,12 +18,19 @@ class Namespace:
         return self.scope
 
     def get_base_url(self) -> str:
-        if self.is_control_plane == False:
+        if self.is_control_plane == True:
             return self.base_url
-        return self.base_url.replace("{workspaceId}", self.client.get_config()["workspaceId"]).replace("{regionId}", self.client.get_config()["region"])
+        return self.base_url.replace(
+            "{workspaceId}", self.client.get_config()["workspaceId"]
+        ).replace("{regionId}", self.client.get_config()["region"])
 
-    def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None) -> Response:
-        headers = { **headers, **self.client.get_headers(), }  # TODO use "|" when client py min version >= 3.9
+    def request(
+        self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None
+    ) -> Response:
+        headers = {
+            **headers,
+            **self.client.get_headers(),
+        }  # TODO use "|" when client py min version >= 3.9
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
 
         if payload == None:
