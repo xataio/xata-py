@@ -13,4 +13,4 @@ from xata.namespace import Namespace
 class ${class_name}(Namespace):
 
     base_url = "${spec_base_url}"
-    scope    = "${spec_scope}"
+    scope = "${spec_scope}"
