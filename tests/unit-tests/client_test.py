@@ -6,7 +6,7 @@ import unittest
 
 import pytest
 
-from xata.client import XataClient, SDK_VERSION
+from xata.client import SDK_VERSION, XataClient
 
 PATTERNS_UUID4 = re.compile(r"^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$", re.IGNORECASE)
 PATTERNS_SDK_VERSION = re.compile(r"^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$")
@@ -91,7 +91,7 @@ class TestXataClient(unittest.TestCase):
         assert PATTERNS_UUID4.match(headers1["x-xata-session-id"])
         assert headers1["x-xata-client-id"] != headers1["x-xata-session-id"]
         assert "x-xata-agent" in headers1
-        assert headers1['x-xata-agent'] == f"client=PY_SDK;version={SDK_VERSION};"
+        assert headers1["x-xata-agent"] == f"client=PY_SDK;version={SDK_VERSION};"
 
         api_key = "this-key-42"
         client2 = XataClient(api_key=api_key, workspace_id="ws_id")
@@ -99,4 +99,4 @@ class TestXataClient(unittest.TestCase):
 
         assert headers1["x-xata-client-id"] != headers2["x-xata-client-id"]
         assert headers1["x-xata-session-id"] != headers2["x-xata-session-id"]
-        assert headers1['x-xata-agent'] == headers2['x-xata-agent']
+        assert headers1["x-xata-agent"] == headers2["x-xata-agent"]

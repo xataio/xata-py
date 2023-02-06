@@ -16,8 +16,19 @@ from .errors import (
     RecordNotFoundException,
     UnauthorizedException,
 )
+from .namespaces.core.authentication import Authentication
+from .namespaces.core.databases import Databases
+from .namespaces.core.invites import Invites
+from .namespaces.core.users import Users
+from .namespaces.core.workspaces import Workspaces
+from .namespaces.workspace.branch import Branch
+from .namespaces.workspace.database import Database
+from .namespaces.workspace.migrations import Migrations
+from .namespaces.workspace.records import Records
+from .namespaces.workspace.search_and_filter import Search_and_filter
+from .namespaces.workspace.table import Table
 
-SDK_VERSION = importlib.metadata.version(__package__ or __name__)
+# SDK_VERSION = importlib.metadata.version(__package__ or __name__)
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
@@ -66,6 +77,7 @@ class XataClient:
 
     configRead: bool = False
     config = None
+    namespaces = {}
 
     def __init__(
         self,
@@ -115,7 +127,7 @@ class XataClient:
             "authorization": f"Bearer {self.api_key}",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
-            "x-xata-agent": f"client=PY_SDK;version={SDK_VERSION};",
+            "x-xata-agent": f"client=PY_SDK;",  # version={SDK_VERSION};",
         }
 
     def get_config(self) -> dict:
@@ -129,7 +141,7 @@ class XataClient:
             "region": self.region,
             "dbName": self.db_name,
             "branchName": self.branch_name,
-            "version": SDK_VERSION,
+            #            "version": SDK_VERSION,
         }
 
     def get_headers(self) -> dict:
@@ -194,14 +206,20 @@ class XataClient:
         return os.environ.get("XATA_BRANCH")
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
-        # headers = {"authorization": f"Bearer {self.api_key}"}
         headers = {
             **headers,
             **self.headers,
         }  # TODO use "|" when client py min version >= 3.9
 
         base_url = self.base_url if not cp else self.control_plane_url
-        url = urljoin(base_url, urlPath.lstrip("/"))
+        #url = urljoin(base_url, urlPath.lstrip("/"))
+        url = f"https://api.xata.io{urlPath}"
+
+        print("#############")
+        print(url)
+        print(int(cp))
+        print("#############")
+
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
             if resp.status_code in expect_codes:
@@ -650,3 +668,125 @@ class XataClient:
         if result.status_code == 400:
             raise BadRequestException(result.status_code, result.json()["message"])
         return result.json()
+
+    # --------------------------------------------------- #
+    #
+    # Namespace: CORE
+    #
+    # --------------------------------------------------- #
+
+    def authentication(self) -> Authentication:
+        """
+        Authentication Namespace
+        scope: core
+        :return Authentication
+        """
+        if "authentication" not in self.namespaces:
+            self.namespaces["authentication"] = Authentication(self)
+        return self.namespaces["authentication"]
+
+    def databases(self) -> Databases:
+        """
+        Databases Namespace
+        scope: core
+        :return Databases
+        """
+        if "databases" not in self.namespaces:
+            self.namespaces["databases"] = Databases(self)
+        return self.namespaces["databases"]
+
+    def invites(self) -> Invites:
+        """
+        Invites Namespace
+        scope: core
+        :return Invites
+        """
+        if "invites" not in self.namespaces:
+            self.namespaces["invites"] = Invites(self)
+        return self.namespaces["invites"]
+
+    def users(self) -> Users:
+        """
+        Users Namespace
+        scope: core
+        :return Users
+        """
+        if "users" not in self.namespaces:
+            self.namespaces["users"] = Users(self)
+        return self.namespaces["users"]
+
+    def workspaces(self) -> Workspaces:
+        """
+        Workspaces Namespace
+        scope: core
+        :return Workspaces
+        """
+        if "workspaces" not in self.namespaces:
+            self.namespaces["workspaces"] = Workspaces(self)
+        return self.namespaces["workspaces"]
+
+    # --------------------------------------------------- #
+    #
+    # Namespace: WORKSPACE
+    #
+    # --------------------------------------------------- #
+
+    def branch(self) -> Branch:
+        """
+        Branch Namespace
+        scope: workspace
+        :return Branch
+        """
+        if "branch" not in self.namespaces:
+            self.namespaces["branch"] = Branch(self)
+        return self.namespaces["branch"]
+    
+    def database(self) -> Database:
+        """
+        Database Namespace
+        scope: workspace
+        :return Database
+        """
+        if "database" not in self.namespaces:
+            self.namespaces["database"] = Database(self)
+        return self.namespaces["database"]
+    
+    def migrations(self) -> Migrations:
+        """
+        Migrations Namespace
+        scope: workspace
+        :return Migrations
+        """
+        if "migrations" not in self.namespaces:
+            self.namespaces["migrations"] = Migrations(self)
+        return self.namespaces["migrations"]
+    
+    def records(self) -> Records:
+        """
+        Records Namespace
+        scope: workspace
+        :return Records
+        """
+        if "records" not in self.namespaces:
+            self.namespaces["records"] = Records(self)
+        return self.namespaces["records"]
+
+    def search_and_filter(self) -> Search_and_filter:
+        """
+        Search_and_Filter Namespace
+        scope: workspace
+        :return Search_and_filter
+        """
+        if "search_and_filter" not in self.namespaces:
+            self.namespaces["search_and_filter"] = Search_and_filter(self)
+        return self.namespaces["search_and_filter"]
+    
+    def search_and_filter(self) -> Table:
+        """
+        Table Namespace
+        scope: workspace
+        :return Table
+        """
+        if "table" not in self.namespaces:
+            self.namespaces["table"] = Table(self)
+        return self.namespaces["table"]
