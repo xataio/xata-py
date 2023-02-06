@@ -11,6 +11,9 @@ code-gen: ## Generate endpoints from OpenAPI specs
 	rm -Rfv codegen/ws/$(scope)/*
 	python codegen/generator.py --scope=$(scope)
 
+code-gen-copy: ## Copy generated endpoints to target dir
+	cp -fv codegen/ws/$(scope)/*.py xata/namespaces/$(scope)/.
+
 test: | unit-tests integration-tests ## Run unit & integration tests
 
 unit-tests: ## Run unit tests
