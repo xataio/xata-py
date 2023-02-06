@@ -90,6 +90,21 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
             )
 
 
+def prune_empty_namespaces(spec: dict) -> list[str]:
+    n_spaces = {}
+    for n in spec["tags"]:
+        n_spaces[n["name"]] = 0
+    for p in spec["paths"].values():
+        for method in HTTP_METHODS:
+            if method in p:
+                n_spaces[p[method]["tags"][0]] += 1
+    namespaces = []
+    for n in spec["tags"]:
+        if n_spaces[n["name"]] > 0:
+            namespaces.append(n)
+    return namespaces
+
+
 def generate_endpoint(
     path: str, method: str, endpoint: dict, parameters: list, references: dict
 ) -> str:
@@ -182,11 +197,10 @@ if __name__ == "__main__":
 
     # filter out endpointless namespaces
     logging.info(
-        "filtering %d namespaces to ensure endpoints exist .." % len(spec["tags"])
+        "pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"])
     )
     namespaces = spec["tags"]
-    #    namespaces = {}
-    # TODO
+    namespaces = prune_empty_namespaces(spec)
 
     # resolve references
     logging.info("resolving references ..")
@@ -196,7 +210,7 @@ if __name__ == "__main__":
     logging.info("generating %d namespaces .." % len(namespaces))
     it = 1
     for n in namespaces:
-        logging.info("[%2d/%2d] creating %s" % (it, len(spec["tags"]), n["name"]))
+        logging.info("[%2d/%2d] creating %s" % (it, len(namespaces), n["name"]))
         generate_namespace(n, scope, spec["info"]["version"], SPECS[scope]["base_url"])
         it += 1
 
