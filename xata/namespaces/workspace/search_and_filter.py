@@ -773,12 +773,10 @@ class Search_and_filter(Namespace):
           }
         }
         ```
-
                path: /db/{db_branch_name}/tables/{table_name}/query
                method: POST
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response
@@ -794,7 +792,6 @@ class Search_and_filter(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -811,12 +808,10 @@ class Search_and_filter(Namespace):
         The endpoint accepts a `query` parameter that is used for the free text search and a set of structured filters (via the `filter` parameter) that are applied before the search. The `filter` parameter uses the same syntax as the [query endpoint](/api-reference/db/db_branch_name/tables/table_name/) with the following exceptions:
         * filters `$contains`, `$startsWith`, `$endsWith` don't work on columns of type `text`
         * filtering on columns of type `multiple` is currently unsupported
-
                path: /db/{db_branch_name}/tables/{table_name}/search
                method: POST
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response
@@ -891,12 +886,10 @@ class Search_and_filter(Namespace):
 
         `page.size`: tells Xata how many records to return. If unspecified, Xata
         will return the default size.
-
                path: /db/{db_branch_name}/tables/{table_name}/summarize
                method: POST
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response
@@ -917,12 +910,10 @@ class Search_and_filter(Namespace):
         (e.g for cardinality), and is generally faster and can do more complex aggregations.
 
         For usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
-
                path: /db/{db_branch_name}/tables/{table_name}/aggregate
                method: POST
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response

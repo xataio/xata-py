@@ -22,7 +22,6 @@ class Records(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -39,7 +38,6 @@ class Records(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param columns: list Column filters
         :param payload: dict Request Body
@@ -58,7 +56,6 @@ class Records(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param columns: list Column filters
@@ -81,7 +78,6 @@ class Records(Namespace):
         method: PUT
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param columns: list Column filters
@@ -106,7 +102,6 @@ class Records(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param columns: list Column filters
@@ -126,7 +121,6 @@ class Records(Namespace):
         method: DELETE
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param columns: list Column filters
@@ -149,7 +143,6 @@ class Records(Namespace):
         method: PATCH
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param columns: list Column filters
@@ -169,7 +162,6 @@ class Records(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param columns: list Column filters
         :param payload: dict Request Body

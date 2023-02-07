@@ -22,7 +22,6 @@ class Migrations(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -37,7 +36,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -54,7 +52,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -69,7 +66,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -86,7 +82,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -103,7 +98,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param branch_name: str The Database Name
         :param payload: dict Request Body
         :return Response
@@ -119,7 +113,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -134,7 +127,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -149,7 +141,6 @@ class Migrations(Namespace):
         method: POST
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """

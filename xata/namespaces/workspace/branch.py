@@ -34,7 +34,6 @@ class Branch(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
@@ -47,7 +46,6 @@ class Branch(Namespace):
         method: PUT
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -62,7 +60,6 @@ class Branch(Namespace):
         method: DELETE
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
@@ -75,7 +72,6 @@ class Branch(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :return Response
         """
         url_path = f"/db/{db_branch_name}/metadata"
@@ -88,7 +84,6 @@ class Branch(Namespace):
         method: PUT
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param payload: dict Request Body
         :return Response
         """
@@ -103,7 +98,6 @@ class Branch(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :return Response
         """
         url_path = f"/db/{db_branch_name}/stats"
@@ -133,7 +127,6 @@ class Branch(Namespace):
           ]
         }
         ```
-
                path: /dbs/{db_name}/gitbranches
                method: GET
 
@@ -158,7 +151,6 @@ class Branch(Namespace):
           "xataBranch": "fix_bug"
         }
         ```
-
                path: /dbs/{db_name}/gitbranches
                method: POST
 
@@ -179,7 +171,6 @@ class Branch(Namespace):
         ```json
         // DELETE https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123
         ```
-
                path: /dbs/{db_name}/gitbranches
                method: DELETE
 
@@ -214,7 +205,6 @@ class Branch(Namespace):
           }
         }
         ```
-
                path: /dbs/{db_name}/resolvebranch
                method: GET
 
