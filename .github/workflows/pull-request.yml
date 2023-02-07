@@ -25,6 +25,11 @@ jobs:
           python3 -m pip install -U poetry
           poetry install
 
+      - name: Install license-header-checker
+        run: curl -s https://raw.githubusercontent.com/lluissm/license-header-checker/master/install.sh | bash
+      - name: Run license check
+        run: ./bin/license-header-checker -a -r .github/license-header.txt . py && [[ -z `git status -s` ]]      
+
 #      - name: Lint
 #        run: |
 #          export PIP_USER=0; poetry run pre-commit run --all-files
