@@ -13,8 +13,8 @@ from .errors import (
     BadRequestException,
     RateLimitException,
     RecordNotFoundException,
-    UnauthorizedException,
     ServerErrorException,
+    UnauthorizedException,
 )
 from .namespaces.core.authentication import Authentication
 from .namespaces.core.databases import Databases
@@ -65,7 +65,7 @@ class XataClient:
 
     configRead: bool = False
     config = None
-    namespaces = {} # lazy loading container for the namespaces
+    namespaces = {}  # lazy loading container for the namespaces
 
     def __init__(
         self,
