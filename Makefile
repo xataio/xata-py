@@ -6,6 +6,18 @@ install: ## Install dependencies
 lint: ## Linter
 	export PIP_USER=0; poetry run pre-commit run --all-files
 
+api-docs: ## Generate the API documentation
+	mkdir -vp api-docs && rm -Rfv api-docs/*
+	poetry run pdoc3 --html -o api-docs/. xata/.
+
+code-gen: ## Generate endpoints from OpenAPI specs
+	mkdir -vp codegen/ws/$(scope)
+	rm -Rfv codegen/ws/$(scope)/*
+	python codegen/generator.py --scope=$(scope)
+
+code-gen-copy: ## Copy generated endpoints to target dir
+	cp -fv codegen/ws/$(scope)/*.py xata/namespaces/$(scope)/.
+
 test: | unit-tests integration-tests ## Run unit & integration tests
 
 unit-tests: ## Run unit tests
