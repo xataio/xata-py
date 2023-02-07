@@ -30,7 +30,8 @@ class BadRequestException(Exception):
 
     def __str__(self) -> str:
         return f"Bad request: {self.status_code} {self.message}"
-    
+
+
 class ServerErrorException(Exception):
     status_code: int
     message: str
