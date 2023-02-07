@@ -212,13 +212,7 @@ class XataClient:
         }  # TODO use "|" when client py min version >= 3.9
 
         base_url = self.base_url if not cp else self.control_plane_url
-        # url = urljoin(base_url, urlPath.lstrip("/"))
-        url = f"https://api.xata.io{urlPath}"
-
-        print("#############")
-        print(url)
-        print(int(cp))
-        print("#############")
+        url = urljoin(base_url, urlPath.lstrip("/"))
 
         resp = requests.request(method, url, headers=headers, **kwargs)
         if resp.status_code > 299:
