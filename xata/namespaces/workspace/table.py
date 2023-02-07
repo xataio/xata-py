@@ -43,6 +43,34 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("DELETE", url_path)
 
+    def updateTable(
+        self, db_branch_name: str, table_name: str, payload: dict
+    ) -> Response:
+        """
+               Update table. Currently there is only one update operation supported: renaming the table by providing a new name.
+
+        In the example below, we rename a table from “users” to “people”:
+
+        ```json
+        // PATCH /db/test:main/tables/users
+
+        {
+          "name": "people"
+        }
+        ```
+               path: /db/{db_branch_name}/tables/{table_name}
+               method: PATCH
+
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+
+               :param table_name: str The Table name
+               :param payload: dict Request Body
+               :return Response
+        """
+        url_path = f"/db/{db_branch_name}/tables/{table_name}"
+        headers = {"content-type": "application/json"}
+        return self.request("PATCH", url_path, payload, headers)
+
     def getTableSchema(self, db_branch_name: str, table_name: str) -> Response:
         """
         Get table schema
@@ -145,3 +173,23 @@ class Table(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("DELETE", url_path)
+
+    def updateColumn(
+        self, db_branch_name: str, table_name: str, column_name: str, payload: dict
+    ) -> Response:
+        """
+        Update column with partial data. Can be used for renaming the column by providing a new "name" field. To refer to sub-objects, the column name can contain dots. For example `address.country`.
+
+        path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
+        method: PATCH
+
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+
+        :param table_name: str The Table name
+        :param column_name: str The Column name
+        :param payload: dict Request Body
+        :return Response
+        """
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
+        headers = {"content-type": "application/json"}
+        return self.request("PATCH", url_path, payload, headers)

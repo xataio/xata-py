@@ -135,6 +135,31 @@ class Records(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         return self.request("DELETE", url_path)
 
+    def updateRecordWithID(
+        self,
+        db_branch_name: str,
+        table_name: str,
+        record_id: str,
+        columns: list,
+        payload: dict,
+    ) -> Response:
+        """
+        Update record with ID
+        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        method: PATCH
+
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param columns: list Column filters
+        :param payload: dict Request Body
+        :return Response
+        """
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
+        headers = {"content-type": "application/json"}
+        return self.request("PATCH", url_path, payload, headers)
+
     def bulkInsertTableRecords(
         self, db_branch_name: str, table_name: str, columns: list, payload: dict
     ) -> Response:

@@ -44,6 +44,24 @@ class Invites(Namespace):
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         return self.request("DELETE", url_path)
 
+    def updateWorkspaceMemberInvite(
+        self, workspace_id: str, invite_id: str, payload: dict
+    ) -> Response:
+        """
+        This operation provides a way to update an existing invite. Updates are performed in-place; they do not change the invite link, the expiry time, nor do they re-notify the recipient of the invite.
+
+        path: /workspaces/{workspace_id}/invites/{invite_id}
+        method: PATCH
+
+        :param workspace_id: str Workspace ID
+        :param invite_id: str Invite identifier
+        :param payload: dict Request Body
+        :return Response
+        """
+        url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
+        headers = {"content-type": "application/json"}
+        return self.request("PATCH", url_path, payload, headers)
+
     def acceptWorkspaceMemberInvite(
         self, workspace_id: str, invite_key: str
     ) -> Response:

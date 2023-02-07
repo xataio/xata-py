@@ -70,6 +70,23 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
+    def updateDatabaseMetadata(
+        self, workspace_id: str, db_name: str, payload: dict
+    ) -> Response:
+        """
+        Update the color of the selected database
+        path: /workspaces/{workspace_id}/dbs/{db_name}
+        method: PATCH
+
+        :param workspace_id: str Workspace ID
+        :param db_name: str The Database Name
+        :param payload: dict Request Body
+        :return Response
+        """
+        url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
+        headers = {"content-type": "application/json"}
+        return self.request("PATCH", url_path, payload, headers)
+
     def listRegions(self, workspace_id: str) -> Response:
         """
         List regions available to create a database on
