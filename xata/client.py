@@ -65,7 +65,7 @@ class XataClient:
 
     configRead: bool = False
     config = None
-    namespaces = {}
+    namespaces = {} # lazy loading container for the namespaces
 
     def __init__(
         self,
@@ -113,6 +113,7 @@ class XataClient:
         )
         self.headers = {
             "authorization": f"Bearer {self.api_key}",
+            "user-agent": f"xataio/xata-py:{__version__}",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
             "x-xata-agent": f"client=PY_SDK;version={__version__};",
