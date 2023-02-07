@@ -52,9 +52,9 @@ def generate_namespace(
     """
     vars = {
         "class_name": namespace["x-displayName"].replace(" ", "_").lower().capitalize(),
-        "class_description": namespace["description"]
+        "class_description": namespace["description"].strip()
         if "description" in namespace
-        else namespace["x-displayName"],
+        else namespace["x-displayName"].strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
         "spec_base_url": spec_base_url,
@@ -112,10 +112,10 @@ def generate_endpoint(
     Generate a single endpoint
     """
     vars = {
-        "operation_id": endpoint["operationId"],
-        "description": endpoint["description"]
+        "operation_id": endpoint["operationId"].strip(),
+        "description": endpoint["description"].strip()
         if "description" in endpoint
-        else endpoint["summary"],
+        else endpoint["summary"].strip(),
         "http_method": method.upper(),
         "path": path.lower(),
         "params": get_endpoint_params(path, endpoint, parameters, references),
@@ -144,9 +144,9 @@ def get_endpoint_params(
                 exit(11)
             skel["list"].append(
                 {
-                    "name": references[r["$ref"]]["name"],
+                    "name": references[r["$ref"]]["name"].strip(),
                     "type": references[references[r["$ref"]]["schema"]["$ref"]]["type"],
-                    "description": references[r["$ref"]]["description"],
+                    "description": references[r["$ref"]]["description"].strip(),
                 }
             )
 
@@ -223,3 +223,4 @@ if __name__ == "__main__":
         )
         generate_endpoints(path, endpoints, references)
         it += 1
+    logging.info("done.")

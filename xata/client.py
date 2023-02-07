@@ -13,8 +13,8 @@ from .errors import (
     BadRequestException,
     RateLimitException,
     RecordNotFoundException,
-    UnauthorizedException,
     ServerErrorException,
+    UnauthorizedException,
 )
 from .namespaces.core.authentication import Authentication
 from .namespaces.core.databases import Databases

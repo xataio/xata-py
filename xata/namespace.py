@@ -18,7 +18,7 @@ class Namespace:
         return self.scope
 
     def get_base_url(self) -> str:
-        if self.is_control_plane == True:
+        if self.is_control_plane:
             return self.base_url
         return self.base_url.replace(
             "{workspaceId}", self.client.get_config()["workspaceId"]
@@ -33,7 +33,7 @@ class Namespace:
         }  # TODO use "|" when client py min version >= 3.9
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
 
-        if payload == None:
+        if payload is None:
             resp = request(http_method, url, headers=headers)
         else:
             resp = request(http_method, url, headers=headers, json=payload)

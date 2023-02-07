@@ -22,7 +22,6 @@ class Table(Namespace):
         method: PUT
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :return Response
         """
@@ -36,7 +35,6 @@ class Table(Namespace):
         method: DELETE
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :return Response
         """
@@ -62,7 +60,6 @@ class Table(Namespace):
                method: PATCH
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response
@@ -78,7 +75,6 @@ class Table(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :return Response
         """
@@ -94,7 +90,6 @@ class Table(Namespace):
         method: PUT
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param payload: dict Request Body
         :return Response
@@ -107,12 +102,10 @@ class Table(Namespace):
         """
                Retrieves the list of table columns and their definition. This endpoint returns the column list with object columns being reported with their
         full dot-separated path (flattened).
-
                path: /db/{db_branch_name}/tables/{table_name}/columns
                method: GET
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :return Response
         """
@@ -126,12 +119,10 @@ class Table(Namespace):
                Adds a new column to the table. The body of the request should contain the column definition. In the column definition, the 'name' field should
         contain the full path separated by dots. If the parent objects do not exists, they will be automatically created. For example,
         passing `"name": "address.city"` will auto-create the `address` object if it doesn't exist.
-
                path: /db/{db_branch_name}/tables/{table_name}/columns
                method: POST
 
                :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
                :param table_name: str The Table name
                :param payload: dict Request Body
                :return Response
@@ -149,7 +140,6 @@ class Table(Namespace):
         method: GET
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param column_name: str The Column name
         :return Response
@@ -166,7 +156,6 @@ class Table(Namespace):
         method: DELETE
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param column_name: str The Column name
         :return Response
@@ -179,12 +168,10 @@ class Table(Namespace):
     ) -> Response:
         """
         Update column with partial data. Can be used for renaming the column by providing a new "name" field. To refer to sub-objects, the column name can contain dots. For example `address.country`.
-
         path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         method: PATCH
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param payload: dict Request Body
