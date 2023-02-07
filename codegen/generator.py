@@ -19,7 +19,7 @@ logging.basicConfig(
 )
 
 WS_DIR = "codegen/ws"  # TODO use path from py
-HTTP_METHODS = ["get", "put", "post", "delete"]
+HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
         "spec_url": "https://xata.io/api/openapi?scope=core",
