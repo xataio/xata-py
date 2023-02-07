@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import importlib.metadata
 import json
 import os
 import uuid
@@ -27,7 +26,9 @@ from .namespaces.workspace.records import Records
 from .namespaces.workspace.search_and_filter import Search_and_filter
 from .namespaces.workspace.table import Table
 
-# SDK_VERSION = importlib.metadata.version(__package__ or __name__)
+# TODO this is a manual task, to keep in sync with pyproject.toml
+# could/should be automated to keep in sync
+__version__ = "0.2.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
@@ -126,7 +127,7 @@ class XataClient:
             "authorization": f"Bearer {self.api_key}",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
-            "x-xata-agent": f"client=PY_SDK;",  # version={SDK_VERSION};",
+            "x-xata-agent": f"client=PY_SDK;version={__version__};",
         }
 
     def get_config(self) -> dict:
@@ -140,7 +141,7 @@ class XataClient:
             "region": self.region,
             "dbName": self.db_name,
             "branchName": self.branch_name,
-            #            "version": SDK_VERSION,
+            "version": __version__,
         }
 
     def get_headers(self) -> dict:

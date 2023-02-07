@@ -6,7 +6,7 @@ import unittest
 
 import pytest
 
-from xata.client import SDK_VERSION, XataClient
+from xata.client import XataClient, __version__
 
 PATTERNS_UUID4 = re.compile(r"^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$", re.IGNORECASE)
 PATTERNS_SDK_VERSION = re.compile(r"^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$")
@@ -75,7 +75,7 @@ class TestXataClient(unittest.TestCase):
 
         assert "version" in cfg
         assert PATTERNS_SDK_VERSION.match(cfg["version"])
-        assert SDK_VERSION == cfg["version"]
+        assert __version__ == cfg["version"]
 
     def test_telemetry_headers(self):
         api_key = "this-key-42"
@@ -91,7 +91,7 @@ class TestXataClient(unittest.TestCase):
         assert PATTERNS_UUID4.match(headers1["x-xata-session-id"])
         assert headers1["x-xata-client-id"] != headers1["x-xata-session-id"]
         assert "x-xata-agent" in headers1
-        assert headers1["x-xata-agent"] == f"client=PY_SDK;version={SDK_VERSION};"
+        assert headers1["x-xata-agent"] == f"client=PY_SDK;version={__version__};"
 
         api_key = "this-key-42"
         client2 = XataClient(api_key=api_key, workspace_id="ws_id")
