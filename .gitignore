@@ -112,6 +112,8 @@ ipython_config.py
 .pdm.toml
 
 codegen/ws/*
+.DS_Store
+api-docs/*
 
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
