@@ -30,3 +30,15 @@ class BadRequestException(Exception):
 
     def __str__(self) -> str:
         return f"Bad request: {self.status_code} {self.message}"
+    
+class ServerErrorException(Exception):
+    status_code: int
+    message: str
+
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
+        super().__init__(message)
+
+    def __str__(self) -> str:
+        return f"Server error: {self.status_code} {self.message}"
