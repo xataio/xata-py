@@ -765,7 +765,7 @@ class XataClient:
             self.namespaces["search_and_filter"] = Search_and_filter(self)
         return self.namespaces["search_and_filter"]
 
-    def search_and_filter(self) -> Table:
+    def table(self) -> Table:
         """
         Table Namespace
         scope: workspace
