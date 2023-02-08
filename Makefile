@@ -10,6 +10,10 @@ api-docs: ## Generate the API documentation
 	mkdir -vp api-docs && rm -Rfv api-docs/*
 	poetry run pdoc3 --html -o api-docs/. xata/.
 
+license-headers-check: ## Check if all *.py files have a license header
+	curl -s https://raw.githubusercontent.com/lluissm/license-header-checker/master/install.sh | bash
+	./bin/license-header-checker -a .github/license-header.txt . py
+
 code-gen: ## Generate endpoints from OpenAPI specs
 	mkdir -vp codegen/ws/$(scope)
 	rm -Rfv codegen/ws/$(scope)/*
