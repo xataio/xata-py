@@ -20,8 +20,13 @@
 import time
 import string
 import random
+from datetime import datetime
 
+from requests import Response
 from xata.client import XataClient
+
+def get_db_name() -> str:
+    return f"{datetime.today().strftime('%Y-%d-%m')}-sdk-py-e2e-test-{get_random_string(6)}"
 
 def wait_until_records_are_indexed(table: str):
     """
@@ -74,5 +79,5 @@ def create_demo_db(client: XataClient, db_name: string):
     )
 
 
-def delete_db(client, db_name):
-    client.delete(f"/dbs/{db_name}", cp=True)
+def delete_db(client, db_name) -> Response:
+    return client.databases().deleteDatabase(client.get_config()['workspaceId'], db_name)

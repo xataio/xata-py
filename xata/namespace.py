@@ -50,6 +50,9 @@ class Namespace:
         }  # TODO use "|" when client py min version >= 3.9
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
 
+        print("##########")
+        print(url)
+
         if payload is None:
             resp = request(http_method, url, headers=headers)
         else:

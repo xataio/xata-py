@@ -29,10 +29,21 @@ class TestClass(object):
 
     @classmethod
     def setup_class(self):
-        self.db_name = f"sdk-py-e2e-test-{utils.get_random_string(6)}"
+        self.db_name = utils.get_db_name()
+        self.branch_name = "main"
         self.client = XataClient()
         utils.create_demo_db(self.client, self.db_name)
-        self.client.set_db_and_branch_names(self.db_name, "main")
+        self.client.set_db_and_branch_names(self.db_name, self.branch_name)
+        utils.wait_until_records_are_indexed("Posts")
+        """
+        r = self.client.records().bulkInsertTableRecords(
+            self.branch_name,
+            "Posts",
+            [], # ["title", "labels", "slug", "text"],
+            {"records": self.get_posts()}
+        )
+        assert r.status_code == 200
+        """
 
         for post in self.get_posts():
             self.client.create("Posts", record=post)
@@ -40,7 +51,8 @@ class TestClass(object):
 
     @classmethod
     def teardown_class(self):
-        utils.delete_db(self.client, self.db_name)
+        r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], self.db_name)
+        assert r.status_code == 200
 
     def test_search_simple(self):
         result = self.client.search("hello")
