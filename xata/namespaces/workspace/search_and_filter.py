@@ -802,7 +802,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchBranch(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -816,7 +816,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -837,7 +837,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def summarizeTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -915,7 +915,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def aggregateTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -939,4 +939,4 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)

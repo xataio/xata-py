@@ -58,7 +58,7 @@ class Workspaces(Namespace):
         """
         url_path = "/workspaces"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getWorkspace(self, workspace_id: str) -> Response:
         """
@@ -84,7 +84,7 @@ class Workspaces(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def deleteWorkspace(self, workspace_id: str) -> Response:
         """
@@ -115,7 +115,6 @@ class Workspaces(Namespace):
     ) -> Response:
         """
         Update a workspace member role. Workspaces must always have at least one owner, so this operation will fail if trying to remove owner role from the last owner in the workspace.
-
         path: /workspaces/{workspace_id}/members/{user_id}
         method: PUT
 
@@ -126,7 +125,7 @@ class Workspaces(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def removeWorkspaceMember(self, workspace_id: str, user_id: str) -> Response:
         """
