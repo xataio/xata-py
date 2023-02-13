@@ -18,6 +18,10 @@
 #
 
 import time
+import string
+import random
+
+from xata.client import XataClient
 
 def wait_until_records_are_indexed(table: str):
     """
@@ -26,3 +30,49 @@ def wait_until_records_are_indexed(table: str):
     # TODO remove in favour of wait loop with aggs
     # when aggs are available
     time.sleep(10)
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    return "".join(random.choice(letters) for i in range(length))
+
+
+def create_demo_db(client: XataClient, db_name: string):
+    client.put(f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
+
+    client.put(f"/db/{db_name}:main/tables/Posts")
+    client.put(f"/db/{db_name}:main/tables/Users")
+    client.put(
+        f"/db/{db_name}:main/tables/Posts/schema",
+        json={
+            "columns": [
+                {"name": "title", "type": "string"},
+                {"name": "labels", "type": "multiple"},
+                {"name": "slug", "type": "string"},
+                {"name": "text", "type": "text"},
+                {
+                    "name": "author",
+                    "type": "link",
+                    "link": {
+                        "table": "Users",
+                    },
+                },
+                {"name": "createdAt", "type": "datetime"},
+                {"name": "views", "type": "int"},
+            ]
+        },
+    )
+
+    client.put(
+        f"/db/{db_name}:main/tables/Users/schema",
+        json={
+            "columns": [
+                {"name": "name", "type": "string"},
+                {"name": "email", "type": "email"},
+                {"name": "bio", "type": "text"},
+            ]
+        },
+    )
+
+
+def delete_db(client, db_name):
+    client.delete(f"/dbs/{db_name}", cp=True)

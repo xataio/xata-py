@@ -17,9 +17,8 @@
 # under the License.
 #
 
-import random
 import string
-import time
+import utils
 
 import pytest
 
@@ -69,11 +68,6 @@ def delete_db(client, db_name):
     client.delete(f"/dbs/{db_name}", cp=True)
 
 
-def get_random_string(length):
-    letters = string.ascii_lowercase
-    return "".join(random.choice(letters) for i in range(length))
-
-
 @pytest.fixture
 def client() -> XataClient:
     return XataClient()
@@ -81,35 +75,9 @@ def client() -> XataClient:
 
 @pytest.fixture
 def demo_db(client: XataClient) -> string:
-    db_name = f"sdk-py-e2e-test-{get_random_string(6)}"
+    db_name = f"sdk-py-e2e-test-{utils.get_random_string(6)}"
     create_demo_db(client, db_name)
     client.set_db_and_branch_names(db_name, "main")
     yield db_name
     delete_db(client, db_name)
 
-
-@pytest.fixture
-def posts() -> list[str]:
-    """
-    List of three Posts
-    """
-    return [
-        {
-            "title": "Hello world",
-            "labels": ["hello", "world"],
-            "slug": "hello-world",
-            "text": "This is a test post",
-        },
-        {
-            "title": "HeLLo universe",
-            "labels": ["hello", "universe"],
-            "slug": "hello-universe",
-            "text": "hello, is it me you're looking for?",
-        },
-        {
-            "title": "HELlO internet",
-            "labels": ["hello", "internet"],
-            "slug": "hello-internet",
-            "text": "I like to eat apples and bananas",
-        },
-    ]

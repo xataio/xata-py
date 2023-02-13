@@ -29,37 +29,30 @@ class TestClass(object):
 
     @classmethod
     def setup_class(self):
-        pass
+        self.db_name = f"sdk-py-e2e-test-{utils.get_random_string(6)}"
+        self.client = XataClient()
+        utils.create_demo_db(self.client, self.db_name)
+        self.client.set_db_and_branch_names(self.db_name, "main")
+
+        for post in self.get_posts():
+            self.client.create("Posts", record=post)
+        utils.wait_until_records_are_indexed("Posts")
 
     @classmethod
     def teardown_class(self):
-        pass
+        utils.delete_db(self.client, self.db_name)
 
-    # ------------------------------------------------------- #
-    #
-    # Search
-    #
-    # ------------------------------------------------------- #
-    def test_search_simple(self, client: XataClient, demo_db: string, posts: list[str]):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search("hello")
+    def test_search_simple(self):
+        result = self.client.search("hello")
         assert "records" in result
-        assert len(result["records"]) == len(posts)
+        assert len(result["records"]) == len(self.get_posts())
 
-        result = client.search("apples")
+        result = self.client.search("apples")
         assert "records" in result
         assert len(result["records"]) == 1
 
-
-    def test_search_with_params(self, client: XataClient, demo_db: string, posts: list[str]):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search(
+    def test_search_with_params(self):
+        result = self.client.search(
             "hello",
             {
                 "fuzziness": 1,
@@ -67,9 +60,9 @@ class TestClass(object):
             },
         )
         assert "records" in result
-        assert len(result["records"]) == len(posts)
+        assert len(result["records"]) == len(self.get_posts())
 
-        result = client.search(
+        result = self.client.search(
             "apples and bananas",
             {
                 "fuzziness": 0,
@@ -80,19 +73,15 @@ class TestClass(object):
         assert len(result["records"]) == 1
 
 
-    def test_search_with_no_hits(self, client: XataClient, demo_db: string, posts: list[str]):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search("12345")
+    def test_search_with_no_hits(self):
+        result = self.client.search("12345")
         assert "records" in result
         assert len(result["records"]) == 0
 
 
-    def test_search_errorcases(client: XataClient, demo_db: string, posts: list[str]):
+    def test_search_errorcases(self):
         with pytest.raises(BadRequestException) as exc:
-            client.search("invalid", {"i-am": "invalid"})
+            self.client.search("invalid", {"i-am": "invalid"})
         assert exc is not None
 
 
@@ -101,28 +90,18 @@ class TestClass(object):
     # Search Table
     #
     # ------------------------------------------------------- #
-    def test_search_table_simple(self, client: XataClient, demo_db: string, posts: list[str]):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search_table("Posts", "hello")
+    def test_search_table_simple(self):
+        result = self.client.search_table("Posts", "hello")
         assert "records" in result
-        assert len(result["records"]) == len(posts)
+        assert len(result["records"]) == len(self.get_posts())
 
-        result = client.search_table("Posts", "apples")
+        result = self.client.search_table("Posts", "apples")
         assert "records" in result
         assert len(result["records"]) == 1
 
 
-    def test_search_table_with_params(
-        client: XataClient, demo_db: string, posts: list[str]
-    ):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search_table(
+    def test_search_table_with_params(self):
+        result = self.client.search_table(
             "Posts",
             "hello",
             {
@@ -131,9 +110,9 @@ class TestClass(object):
             },
         )
         assert "records" in result
-        assert len(result["records"]) == len(posts)
+        assert len(result["records"]) == len(self.get_posts())
 
-        result = client.search_table(
+        result = self.client.search_table(
             "Posts",
             "apples and bananas",
             {
@@ -145,23 +124,42 @@ class TestClass(object):
         assert len(result["records"]) == 1
 
 
-    def test_search_table_with_no_hits(self,
-        client: XataClient, demo_db: string, posts: list[str]
-    ):
-        for post in posts:
-            client.create("Posts", record=post)
-        utils.wait_until_records_are_indexed("Posts")
-
-        result = client.search_table("Posts", "watermelon")
+    def test_search_table_with_no_hits(self):
+        result = self.client.search_table("Posts", "watermelon")
         assert "records" in result
         assert len(result["records"]) == 0
 
-
-    def test_search_table_errorcases(self, client: XataClient, demo_db: string, posts: list[str]):
-        result = client.search_table("MissingTable", "hello")
+    def test_search_table_errorcases(self):
+        result = self.client.search_table("MissingTable", "hello")
         assert "message" in result
-        assert result["message"] == f"table [{demo_db}:main/MissingTable] not found"
+        assert result["message"] == f"table [{self.db_name}:main/MissingTable] not found"
 
         with pytest.raises(BadRequestException) as exc:
-            client.search_table("Posts", "invalid", {"i-am": "invalid"})
+            self.client.search_table("Posts", "invalid", {"i-am": "invalid"})
         assert exc is not None
+
+    @classmethod
+    def get_posts(self) -> list[str]:
+        """
+        List of three Posts
+        """
+        return [
+            {
+                "title": "Hello world",
+                "labels": ["hello", "world"],
+                "slug": "hello-world",
+                "text": "This is a test post",
+            },
+            {
+                "title": "HeLLo universe",
+                "labels": ["hello", "universe"],
+                "slug": "hello-universe",
+                "text": "hello, is it me you're looking for?",
+            },
+            {
+                "title": "HELlO internet",
+                "labels": ["hello", "internet"],
+                "slug": "hello-internet",
+                "text": "I like to eat apples and bananas",
+            },
+        ]
