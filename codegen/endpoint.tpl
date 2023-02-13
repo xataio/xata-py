@@ -19,7 +19,7 @@
        % endif
        % if params['has_payload'] :
        headers = {"content-type": "application/json"}
-       return self.request("${http_method}", url_path, payload, headers)
+       return self.request("${http_method}", url_path, headers, payload)
        % else :
        return self.request("${http_method}", url_path)
        % endif

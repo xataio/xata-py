@@ -1,22 +1,3 @@
-#
-# Licensed to Xatabase, Inc under one or more contributor
-# license agreements. See the NOTICE file distributed with
-# this work for additional information regarding copyright
-# ownership. Xatabase, Inc licenses this file to you under the
-# Apache License, Version 2.0 (the "License"); you may not
-# use this file except in compliance with the License. You
-# may obtain a copy of the License at
-#
-#   http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-#
-
 # ------------------------------------------------------- #
 # Search_and_filter
 # APIs for searching, querying, filtering, and aggregating records.
@@ -802,7 +783,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchBranch(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -816,7 +797,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -837,7 +818,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def summarizeTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -915,7 +896,7 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def aggregateTable(
         self, db_branch_name: str, table_name: str, payload: dict
@@ -939,4 +920,4 @@ class Search_and_filter(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
