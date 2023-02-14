@@ -40,8 +40,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/migrations
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/migrations"
@@ -54,8 +55,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/migrations/plan
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/migrations/plan"
@@ -70,8 +72,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/migrations/execute
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/migrations/execute"
@@ -84,8 +87,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/history
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/history"
@@ -100,8 +104,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/compare
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/compare"
@@ -116,9 +121,10 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/compare/{branch_name}
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param branch_name: str The Database Name
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param branch_name: str The Database Name [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/compare/{branch_name}"
@@ -131,8 +137,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/update
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/update"
@@ -145,8 +152,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/preview
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/preview"
@@ -159,8 +167,9 @@ class Migrations(Namespace):
         path: /db/{db_branch_name}/schema/apply
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/schema/apply"

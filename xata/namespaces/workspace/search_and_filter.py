@@ -795,9 +795,10 @@ class Search_and_filter(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/query
                method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
@@ -810,8 +811,9 @@ class Search_and_filter(Namespace):
         path: /db/{db_branch_name}/search
         method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/search"
@@ -830,9 +832,10 @@ class Search_and_filter(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/search
                method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
@@ -908,9 +911,10 @@ class Search_and_filter(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/summarize
                method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
@@ -932,9 +936,10 @@ class Search_and_filter(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/aggregate
                method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"

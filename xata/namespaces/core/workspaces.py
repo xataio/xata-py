@@ -42,6 +42,7 @@ class Workspaces(Namespace):
         path: /workspaces
         method: GET
 
+
         :return Response
         """
         url_path = "/workspaces"
@@ -53,7 +54,8 @@ class Workspaces(Namespace):
         path: /workspaces
         method: POST
 
-        :param payload: dict Request Body
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = "/workspaces"
@@ -66,7 +68,8 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}
         method: GET
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}"
@@ -78,8 +81,9 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}
         method: PUT
 
-        :param workspace_id: str Workspace ID
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}"
@@ -92,7 +96,8 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}
         method: DELETE
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}"
@@ -104,7 +109,8 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}/members
         method: GET
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/members"
@@ -118,9 +124,10 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}/members/{user_id}
         method: PUT
 
-        :param workspace_id: str Workspace ID
-        :param user_id: str UserID
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param user_id: str UserID [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
@@ -133,8 +140,9 @@ class Workspaces(Namespace):
         path: /workspaces/{workspace_id}/members/{user_id}
         method: DELETE
 
-        :param workspace_id: str Workspace ID
-        :param user_id: str UserID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param user_id: str UserID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"

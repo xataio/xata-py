@@ -40,7 +40,8 @@ class Branch(Namespace):
         path: /dbs/{db_name}
         method: GET
 
-        :param db_name: str The Database Name
+        :param db_name: str The Database Name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/dbs/{db_name}"
@@ -52,7 +53,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
@@ -64,8 +66,9 @@ class Branch(Namespace):
         path: /db/{db_branch_name}
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
@@ -78,7 +81,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}
         method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
@@ -90,7 +94,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/metadata
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/metadata"
@@ -102,8 +107,9 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/metadata
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/metadata"
@@ -116,7 +122,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/stats
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/stats"
@@ -149,7 +156,8 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: GET
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
@@ -173,8 +181,9 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: POST
 
-               :param db_name: str The Database Name
-               :param payload: dict Request Body
+               :param db_name: str The Database Name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
@@ -193,7 +202,8 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: DELETE
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
@@ -227,7 +237,8 @@ class Branch(Namespace):
                path: /dbs/{db_name}/resolvebranch
                method: GET
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/resolvebranch"

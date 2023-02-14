@@ -170,17 +170,18 @@ def get_endpoint_params(
                 {
                     "name": references[r["$ref"]]["name"].strip(),
                     "type": t,
+                    "trueType": references[references[r["$ref"]]["schema"]["$ref"]][
+                        "type"
+                    ],
                     "description": references[r["$ref"]]["description"].strip(),
                     "in": references[r["$ref"]]["in"],
                     "required": references[r["$ref"]]["required"],
                 }
             )
-            counter_path = (
-                (counter_path + 1) if references[r["$ref"]]["in"] == "path" else 0
-            )
-            counter_query = (
-                (counter_query + 1) if references[r["$ref"]]["in"] == "query" else 0
-            )
+            if references[r["$ref"]]["in"] == "path":
+                counter_path += 1
+            if references[r["$ref"]]["in"] == "query":
+                counter_query += 1
             if not references[r["$ref"]]["required"]:
                 skel["has_optional_params"] = True
         skel["has_path_params"] = counter_path > 0

@@ -17,7 +17,19 @@
        url_path = "${path}"
        % endif
        % if params['has_query_params'] :
-       # TODO handle query params
+       query_params = []
+       % for param in params['list']:
+       % if param['in'] == 'query':
+       if ${param['name']} is not None:
+         % if param['trueType'] == 'list' :
+         query_params.append("${param['name']}=%s" % ",".join(${param['name']}))
+         % else :
+         query_params.append(f"${param['name']}={${param['name']}}")
+         % endif
+       % endif
+       % endfor
+       if query_params:
+         url_path += "?" + "&".join(query_params)
        % endif
        % if params['has_payload'] :
        headers = {"content-type": "application/json"}

@@ -42,6 +42,7 @@ class Users(Namespace):
         path: /user
         method: GET
 
+
         :return Response
         """
         url_path = "/user"
@@ -53,7 +54,8 @@ class Users(Namespace):
         path: /user
         method: PUT
 
-        :param payload: dict Request Body
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = "/user"
@@ -67,6 +69,7 @@ class Users(Namespace):
         Delete the user making the request
         path: /user
         method: DELETE
+
 
         :return Response
         """

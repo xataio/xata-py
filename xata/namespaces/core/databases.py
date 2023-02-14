@@ -40,7 +40,8 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/dbs
         method: GET
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/dbs"
@@ -52,8 +53,9 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/dbs/{db_name}
         method: GET
 
-        :param workspace_id: str Workspace ID
-        :param db_name: str The Database Name
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param db_name: str The Database Name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
@@ -67,9 +69,10 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/dbs/{db_name}
         method: PUT
 
-        :param workspace_id: str Workspace ID
-        :param db_name: str The Database Name
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param db_name: str The Database Name [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
@@ -82,8 +85,9 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/dbs/{db_name}
         method: DELETE
 
-        :param workspace_id: str Workspace ID
-        :param db_name: str The Database Name
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param db_name: str The Database Name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
@@ -97,9 +101,10 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/dbs/{db_name}
         method: PATCH
 
-        :param workspace_id: str Workspace ID
-        :param db_name: str The Database Name
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param db_name: str The Database Name [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
@@ -112,7 +117,8 @@ class Databases(Namespace):
         path: /workspaces/{workspace_id}/regions
         method: GET
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str Workspace ID [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/regions"
