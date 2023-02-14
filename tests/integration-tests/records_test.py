@@ -19,6 +19,7 @@
 
 import utils
 
+from faker import Faker
 from xata.client import XataClient
 
 
@@ -28,6 +29,7 @@ class TestClass(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.fake = Faker()
 
         # create database
         r = self.client.databases().createDatabase(
@@ -66,7 +68,39 @@ class TestClass(object):
         )
         assert r.status_code == 200
 
-    def test_bulk(self):
+    def test_insert_record(self):
+        """
+        POST /db/{db_branch_name}/tables/{table_name}/data
+        """
+        record = {
+            "title": self.fake.company(),
+            "labels": [self.fake.domain_word(), self.fake.domain_word()],
+            "slug": self.fake.catch_phrase(),
+            "text": self.fake.text(),
+        }
+        r = self.client.records().insertRecord(self.client.get_db_branch_name(), "Posts", [], record)
+        assert r.status_code == 201
+        assert "id" in r.json()
+        assert "xata" in r.json()
+        assert "version" in r.json()["xata"]
+        assert r.json()["xata"]["version"] == 0
+
+        r = self.client.records().insertRecord(self.client.get_db_branch_name(), "NonExistingTable", [], record)
+        assert r.status_code == 404
+
+        r = self.client.records().insertRecord("NonExistingDbBranchName", "Posts", [], record)
+        assert r.status_code == 400
+
+    # TODO: GET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+    # TODO: PUT /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+    # TODO: PATCH /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+    # TODO: DELET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+    # TODO: POST /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+
+    def test_bulk_insert_table_records(self):
+        """
+        POST /db/{db_branch_name}/tables/{table_name}/bulk
+        """
         r = self.client.records().bulkInsertTableRecords(
             self.client.get_db_branch_name(),
             "Posts",
@@ -74,3 +108,5 @@ class TestClass(object):
             {"records": utils.get_posts()},
         )
         assert r.status_code == 200
+
+    # TODO: /db/{db_branch_name}/transaction
