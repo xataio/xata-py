@@ -6,16 +6,18 @@
        method: ${http_method}
 
        % for param in params['list']:
-       % if param != "self":
-       :param ${param['name']}: ${param['type']} ${param['description']}
-       % endif
+       :param ${param['name']}: ${param['type']} ${param['description']} [in: ${param['in']}, req: ${param['required']}]
        % endfor
+
        :return Response
        """
        % if params['has_path_params'] :
        url_path = f"${path}"
        % else :
        url_path = "${path}"
+       % endif
+       % if params['has_query_params'] :
+       # TODO handle query params
        % endif
        % if params['has_payload'] :
        headers = {"content-type": "application/json"}

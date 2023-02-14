@@ -152,27 +152,57 @@ def get_endpoint_params(
     skel = {
         "list": [],
         "has_path_params": False,
+        "has_query_params": False,
         "has_payload": False,
+        "has_optional_params": False,
     }
     if len(parameters) > 0:
-        skel["has_path_params"] = True
+        counter_path = 0
+        counter_query = 0
         for r in parameters:
             if r["$ref"] not in references:
                 logging.error("could resolve reference %s in the lookup." % r["$ref"])
                 exit(11)
+            t = references[references[r["$ref"]]["schema"]["$ref"]]["type"]
+            if not references[r["$ref"]]["required"]:
+                t = f"{t} = None"
             skel["list"].append(
                 {
                     "name": references[r["$ref"]]["name"].strip(),
-                    "type": references[references[r["$ref"]]["schema"]["$ref"]]["type"],
+                    "type": t,
                     "description": references[r["$ref"]]["description"].strip(),
+                    "in": references[r["$ref"]]["in"],
+                    "required": references[r["$ref"]]["required"],
                 }
             )
+            counter_path = (
+                (counter_path + 1) if references[r["$ref"]]["in"] == "path" else 0
+            )
+            counter_query = (
+                (counter_query + 1) if references[r["$ref"]]["in"] == "query" else 0
+            )
+            if not references[r["$ref"]]["required"]:
+                skel["has_optional_params"] = True
+        skel["has_path_params"] = counter_path > 0
+        skel["has_query_params"] = counter_query > 0
 
     if "requestBody" in endpoint:
         skel["list"].append(
-            {"name": "payload", "type": "dict", "description": "Request Body"}
+            {
+                "name": "payload",
+                "type": "dict",
+                "description": "content",
+                "in": "requestBody",
+                "required": True,  # TODO get required
+            }
         )
         skel["has_payload"] = True
+
+    # reorder for optional params to be last
+    if skel["has_optional_params"]:
+        skel["list"] = [e for e in skel["list"] if e["required"]] + [
+            e for e in skel["list"] if not e["required"]
+        ]
     return skel
 
 
