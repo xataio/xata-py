@@ -44,17 +44,29 @@ class TestClass(object):
         r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], self.db_name)
         assert r.status_code == 200
 
-    def test_create_table(self):
-        r = self.client.table().createTable(self.client.get_db_branch_name(), "Posts")
-        assert r.status_code == 201
-
-    def test_set_table_schema(self):
-        r = self.client.table().setTableSchema(self.client.get_db_branch_name(), "Posts", {
+    @pytest.fixture
+    def columns(self) -> dict:
+        return {
             "columns": [
                 {"name": "title", "type": "string"},
                 {"name": "labels", "type": "multiple"},
                 {"name": "slug", "type": "string"},
                 {"name": "text", "type": "text"},
             ]
-        })
+        }
+
+    def test_create_table(self):
+        r = self.client.table().createTable(self.client.get_db_branch_name(), "Posts")
+        assert r.status_code == 201
+
+    def test_set_table_schema(self, columns: dict):
+        r = self.client.table().setTableSchema(self.client.get_db_branch_name(), "Posts", columns)
         assert r.status_code == 200
+
+    def test_get_table_schema(self, columns):
+        r = self.client.table().getTableSchema(self.client.get_db_branch_name(), "Posts")
+        assert r.status_code == 200
+        assert columns == r.json()
+
+        r = self.client.table().getTableSchema(self.client.get_db_branch_name(), "NonExistingTable")
+        assert r.status_code == 404
