@@ -17,9 +17,6 @@
 # under the License.
 #
 
-import string
-
-import pytest
 import utils
 
 from xata.client import XataClient

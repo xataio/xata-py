@@ -17,8 +17,6 @@
 # under the License.
 #
 
-import string
-
 import pytest
 import utils
 

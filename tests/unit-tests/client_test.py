@@ -124,7 +124,6 @@ class TestXataClient(unittest.TestCase):
 
     def test_get_and_set_db_branch_name(self):
         db_name = "db-123"
-        db_url = ""
         branch_name = "fancy-new-feature-branch"
 
         client = XataClient(
@@ -139,9 +138,9 @@ class TestXataClient(unittest.TestCase):
         assert client.get_db_branch_name() == f"{db_name}:different-branch"
 
         client.set_db_and_branch_names("different-db")
-        assert client.get_db_branch_name() == f"different-db:different-branch"
+        assert client.get_db_branch_name() == "different-db:different-branch"
 
         client.set_db_and_branch_names(db_name, branch_name)
         assert client.get_db_branch_name() == f"{db_name}:{branch_name}"
         assert client.get_db_branch_name("foo") == f"foo:{branch_name}"
-        assert client.get_db_branch_name("foo", "bar") == f"foo:bar"
+        assert client.get_db_branch_name("foo", "bar") == "foo:bar"

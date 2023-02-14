@@ -17,15 +17,12 @@
 # under the License.
 #
 
-import string
-
 import utils
-import pytest
 
 from xata.client import XataClient
 
-class TestClass(object):
 
+class TestClass(object):
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -33,10 +30,14 @@ class TestClass(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().createDatabase(self.client.get_config()['workspaceId'], self.db_name, {
-            "region": self.client.get_config()["region"],
-            "branchName": self.client.get_config()["branchName"],
-        })
+        r = self.client.databases().createDatabase(
+            self.client.get_config()["workspaceId"],
+            self.db_name,
+            {
+                "region": self.client.get_config()["region"],
+                "branchName": self.client.get_config()["branchName"],
+            },
+        )
         assert r.status_code == 201
 
         # create table posts
@@ -44,19 +45,25 @@ class TestClass(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(self.client.get_db_branch_name(), "Posts", {
-            "columns": [
-                {"name": "title", "type": "string"},
-                {"name": "labels", "type": "multiple"},
-                {"name": "slug", "type": "string"},
-                {"name": "text", "type": "text"},
-            ]
-        })
+        r = self.client.table().setTableSchema(
+            self.client.get_db_branch_name(),
+            "Posts",
+            {
+                "columns": [
+                    {"name": "title", "type": "string"},
+                    {"name": "labels", "type": "multiple"},
+                    {"name": "slug", "type": "string"},
+                    {"name": "text", "type": "text"},
+                ]
+            },
+        )
         assert r.status_code == 200
 
     @classmethod
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], self.db_name)
+        r = self.client.databases().deleteDatabase(
+            self.client.get_config()["workspaceId"], self.db_name
+        )
         assert r.status_code == 200
 
     def test_get_branch_list(self):
@@ -93,7 +100,7 @@ class TestClass(object):
                 "repository": "github.com/xataio/xata-py",
                 "branch": "integration-testing-%s" % utils.get_random_string(6),
                 "stage": "testing",
-            }
+            },
         }
         """
         r = self.client.branch().createBranch(self.client.get_db_branch_name(), payload)
