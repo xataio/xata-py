@@ -19,13 +19,13 @@
 
 import string
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
 
-class TestClass(object):
 
+class TestClass(object):
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -45,7 +45,7 @@ class TestClass(object):
         r = self.client.authentication().getUserAPIKeys()
         assert r.status_code == 200
         count = len(r.json()["keys"])
-        
+
         r = self.client.authentication().createUserAPIKey(self.new_api_key)
         assert r.status_code == 201
         assert "name" in r.json()

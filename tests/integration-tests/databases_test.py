@@ -19,13 +19,13 @@
 
 import string
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
 
-class TestClass(object):
 
+class TestClass(object):
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -33,14 +33,20 @@ class TestClass(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
     def test_create_database(self):
-        r = self.client.databases().createDatabase(self.client.get_config()['workspaceId'], self.db_name, {
-            "region": self.client.get_config()["region"],
-            "branchName": self.client.get_config()["branchName"],
-        })
+        r = self.client.databases().createDatabase(
+            self.client.get_config()["workspaceId"],
+            self.db_name,
+            {
+                "region": self.client.get_config()["region"],
+                "branchName": self.client.get_config()["branchName"],
+            },
+        )
         assert r.status_code == 201
 
     def test_list_databases(self):
-        r = self.client.databases().getDatabaseList(self.client.get_config()['workspaceId'])
+        r = self.client.databases().getDatabaseList(
+            self.client.get_config()["workspaceId"]
+        )
         assert r.status_code == 200
         assert "databases" in r.json()
         assert len(r.json()["databases"]) > 0
@@ -56,7 +62,9 @@ class TestClass(object):
         assert r.status_code == 401
 
     def test_get_database_metadata(self):
-        r = self.client.databases().getDatabaseMetadata(self.client.get_config()['workspaceId'], self.db_name)
+        r = self.client.databases().getDatabaseMetadata(
+            self.client.get_config()["workspaceId"], self.db_name
+        )
         assert r.status_code == 200
         assert "name" in r.json()
         assert "region" in r.json()
@@ -64,17 +72,25 @@ class TestClass(object):
         assert r.json()["name"] == self.db_name
         assert r.json()["region"] == self.client.get_config()["region"]
 
-        r = self.client.databases().getDatabaseMetadata("NonExistingWorkspaceId", self.db_name)
+        r = self.client.databases().getDatabaseMetadata(
+            "NonExistingWorkspaceId", self.db_name
+        )
         assert r.status_code == 401
 
-        r = self.client.databases().getDatabaseMetadata(self.client.get_config()['workspaceId'], "NonExistingDatabase")
+        r = self.client.databases().getDatabaseMetadata(
+            self.client.get_config()["workspaceId"], "NonExistingDatabase"
+        )
         assert r.status_code == 404
 
     def test_update_database_metadata(self):
         metadata = {"ui": {"color": "green"}}
-        r_old = self.client.databases().getDatabaseMetadata(self.client.get_config()['workspaceId'], self.db_name)
+        r_old = self.client.databases().getDatabaseMetadata(
+            self.client.get_config()["workspaceId"], self.db_name
+        )
         assert r_old.status_code == 200
-        r_new = self.client.databases().updateDatabaseMetadata(self.client.get_config()['workspaceId'], self.db_name, metadata)
+        r_new = self.client.databases().updateDatabaseMetadata(
+            self.client.get_config()["workspaceId"], self.db_name, metadata
+        )
         assert r_new.status_code == 200
         assert "name" in r_new.json()
         assert "region" in r_new.json()
@@ -85,31 +101,43 @@ class TestClass(object):
         assert r_old.json() != r_new.json()
         assert r_new.json()["ui"] == metadata["ui"]
 
-        r = self.client.databases().updateDatabaseMetadata(self.client.get_config()['workspaceId'], self.db_name, {})
+        r = self.client.databases().updateDatabaseMetadata(
+            self.client.get_config()["workspaceId"], self.db_name, {}
+        )
         assert r.status_code == 400
-        r = self.client.databases().updateDatabaseMetadata(self.client.get_config()['workspaceId'], "NonExistingDatabase", metadata)
+        r = self.client.databases().updateDatabaseMetadata(
+            self.client.get_config()["workspaceId"], "NonExistingDatabase", metadata
+        )
         assert r.status_code == 400
 
-        r = self.client.databases().updateDatabaseMetadata("NonExistingWorkspaceId", self.db_name, metadata)
+        r = self.client.databases().updateDatabaseMetadata(
+            "NonExistingWorkspaceId", self.db_name, metadata
+        )
         assert r.status_code == 401
 
     # run last for cleanup
     def test_delete_database(self):
-        r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], self.db_name)
+        r = self.client.databases().deleteDatabase(
+            self.client.get_config()["workspaceId"], self.db_name
+        )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
 
-        r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], "NonExistingDatabase")
+        r = self.client.databases().deleteDatabase(
+            self.client.get_config()["workspaceId"], "NonExistingDatabase"
+        )
         assert r.status_code == 404
 
-        r = self.client.databases().deleteDatabase("NonExistingWorkspaceId", self.db_name)
+        r = self.client.databases().deleteDatabase(
+            "NonExistingWorkspaceId", self.db_name
+        )
         assert r.status_code == 401
 
     def test_get_available_regions(self):
-        r = self.client.databases().listRegions(self.client.get_config()['workspaceId'])
+        r = self.client.databases().listRegions(self.client.get_config()["workspaceId"])
         assert r.status_code == 200
         assert "regions" in r.json()
         assert len(r.json()["regions"]) == 3
-        
+
         r = self.client.databases().listRegions("NonExistingWorkspaceId")
         assert r.status_code == 401

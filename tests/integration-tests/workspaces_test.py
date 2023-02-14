@@ -19,10 +19,11 @@
 
 import string
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
+
 
 class TestClass(object):
 
@@ -49,10 +50,12 @@ class TestClass(object):
         assert "role" in r.json()["workspaces"][0]
 
     def test_create_new_workspace(self):
-        r = self.client.workspaces().createWorkspace({
-            "name": self.workspace_name,
-            "slug": "sluginator",
-        })
+        r = self.client.workspaces().createWorkspace(
+            {
+                "name": self.workspace_name,
+                "slug": "sluginator",
+            }
+        )
         assert r.status_code == 201
         assert "id" in r.json()
         assert "name" in r.json()
@@ -86,7 +89,9 @@ class TestClass(object):
             "name": "new-workspace-name",
             "slug": "super-duper-new-slug",
         }
-        r = self.client.workspaces().updateWorkspace(pytest.workspaces["workspace"]["id"], payload)
+        r = self.client.workspaces().updateWorkspace(
+            pytest.workspaces["workspace"]["id"], payload
+        )
         assert r.status_code == 200
         assert "name" in r.json()
         assert "slug" in r.json()
@@ -96,14 +101,20 @@ class TestClass(object):
         assert r.json()["name"] == payload["name"]
         assert r.json()["slug"] == payload["slug"]
 
-        r = self.client.workspaces().updateWorkspace(pytest.workspaces["workspace"]["id"], {"name": "only-a-name"})
+        r = self.client.workspaces().updateWorkspace(
+            pytest.workspaces["workspace"]["id"], {"name": "only-a-name"}
+        )
         assert r.status_code == 200
 
-        r = self.client.workspaces().updateWorkspace(pytest.workspaces["workspace"]["id"], {"slug": "only-a-slug"})
+        r = self.client.workspaces().updateWorkspace(
+            pytest.workspaces["workspace"]["id"], {"slug": "only-a-slug"}
+        )
         assert r.status_code == 400
 
     def test_delete_workspace(self):
-        r = self.client.workspaces().deleteWorkspace(pytest.workspaces["workspace"]["id"])
+        r = self.client.workspaces().deleteWorkspace(
+            pytest.workspaces["workspace"]["id"]
+        )
         assert r.status_code == 204
         pytest.workspaces["workspace"] = None
 
@@ -114,7 +125,9 @@ class TestClass(object):
     # Workspace Member Ops
     #
     def test_get_workspace_members(self):
-        r = self.client.workspaces().getWorkspaceMembersList(self.client.get_config()["workspaceId"])
+        r = self.client.workspaces().getWorkspaceMembersList(
+            self.client.get_config()["workspaceId"]
+        )
         assert r.status_code == 200
         assert "members" in r.json()
         assert "invites" in r.json()
@@ -130,7 +143,11 @@ class TestClass(object):
         assert r.status_code == 403
 
     def test_update_workspace_member(self):
-        payload = {"role": "owner" if pytest.workspaces["member"]["role"] == "maintainer" else "owner"}
+        payload = {
+            "role": "owner"
+            if pytest.workspaces["member"]["role"] == "maintainer"
+            else "owner"
+        }
 
         """
         r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], pytest.workspaces["member"]["userId"], payload)
@@ -140,14 +157,25 @@ class TestClass(object):
         assert r.status_code == 204
         """
 
-        r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], pytest.workspaces["member"]["userId"], {"role": "spiderman"})
+        r = self.client.workspaces().updateWorkspaceMemberRole(
+            self.client.get_config()["workspaceId"],
+            pytest.workspaces["member"]["userId"],
+            {"role": "spiderman"},
+        )
         assert r.status_code == 400
-        r = self.client.workspaces().updateWorkspaceMemberRole("NonExistingWorkspaceId", pytest.workspaces["member"]["userId"], payload)
+        r = self.client.workspaces().updateWorkspaceMemberRole(
+            "NonExistingWorkspaceId", pytest.workspaces["member"]["userId"], payload
+        )
         assert r.status_code == 403
-        r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], "NonExistingUserId", payload)
+        r = self.client.workspaces().updateWorkspaceMemberRole(
+            self.client.get_config()["workspaceId"], "NonExistingUserId", payload
+        )
         assert r.status_code == 403
-        r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], pytest.workspaces["member"]["userId"], {})
+        r = self.client.workspaces().updateWorkspaceMemberRole(
+            self.client.get_config()["workspaceId"],
+            pytest.workspaces["member"]["userId"],
+            {},
+        )
         assert r.status_code == 400
 
         pytest.workspaces["member"] = None
-

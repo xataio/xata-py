@@ -19,13 +19,13 @@
 
 import string
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
 
-class TestClass(object):
 
+class TestClass(object):
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -61,6 +61,6 @@ class TestClass(object):
         r = self.client.users().updateUser(user)
         assert r.status_code == 200
         assert r.json()["fullname"] == prev.json()["fullname"]
-        
+
         r = self.client.users().updateUser({})
         assert r.status_code == 400

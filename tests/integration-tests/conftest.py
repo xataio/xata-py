@@ -24,11 +24,16 @@ import utils
 
 from xata.client import XataClient
 
+
 def pytest_configure():
     pytest.workspaces = {
         "workspace": None,
         "member": None,
     }
+    pytest.branch = {
+        "branch": None,
+    }
+
 
 def create_demo_db(client: XataClient, db_name: string):
     client.put(f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
