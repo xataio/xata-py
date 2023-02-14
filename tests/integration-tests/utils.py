@@ -17,16 +17,19 @@
 # under the License.
 #
 
-import time
-import string
 import random
+import string
+import time
 from datetime import datetime
 
 from requests import Response
+
 from xata.client import XataClient
+
 
 def get_db_name() -> str:
     return f"{datetime.today().strftime('%Y-%d-%m')}-sdk-py-e2e-test-{get_random_string(6)}"
+
 
 def wait_until_records_are_indexed(table: str):
     """
@@ -36,9 +39,36 @@ def wait_until_records_are_indexed(table: str):
     # when aggs are available
     time.sleep(10)
 
+
 def get_random_string(length):
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(length))
+
+
+def get_posts() -> list[str]:
+    """
+    List of three Posts
+    """
+    return [
+        {
+            "title": "Hello world",
+            "labels": ["hello", "world"],
+            "slug": "hello-world",
+            "text": "This is a test post",
+        },
+        {
+            "title": "HeLLo universe",
+            "labels": ["hello", "universe"],
+            "slug": "hello-universe",
+            "text": "hello, is it me you're looking for?",
+        },
+        {
+            "title": "HELlO internet",
+            "labels": ["hello", "internet"],
+            "slug": "hello-internet",
+            "text": "I like to eat apples and bananas",
+        },
+    ]
 
 
 def create_demo_db(client: XataClient, db_name: string):
@@ -80,4 +110,6 @@ def create_demo_db(client: XataClient, db_name: string):
 
 
 def delete_db(client, db_name) -> Response:
-    return client.databases().deleteDatabase(client.get_config()['workspaceId'], db_name)
+    return client.databases().deleteDatabase(
+        client.get_config()["workspaceId"], db_name
+    )

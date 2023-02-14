@@ -30,7 +30,6 @@ PATTERNS_SDK_VERSION = re.compile(r"^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$")
 
 
 class TestXataClient(unittest.TestCase):
-
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
@@ -128,7 +127,12 @@ class TestXataClient(unittest.TestCase):
         db_url = ""
         branch_name = "fancy-new-feature-branch"
 
-        client = XataClient(api_key="api_key", workspace_id="ws_id", db_name=db_name, branch_name=branch_name)
+        client = XataClient(
+            api_key="api_key",
+            workspace_id="ws_id",
+            db_name=db_name,
+            branch_name=branch_name,
+        )
         assert client.get_db_branch_name() == f"{db_name}:{branch_name}"
 
         client.set_db_and_branch_names(None, "different-branch")
@@ -141,4 +145,3 @@ class TestXataClient(unittest.TestCase):
         assert client.get_db_branch_name() == f"{db_name}:{branch_name}"
         assert client.get_db_branch_name("foo") == f"foo:{branch_name}"
         assert client.get_db_branch_name("foo", "bar") == f"foo:bar"
-

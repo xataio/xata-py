@@ -18,9 +18,9 @@
 #
 
 import string
-import utils
 
 import pytest
+import utils
 
 from xata.client import XataClient
 from xata.errors import BadRequestException, RecordNotFoundException
@@ -80,4 +80,3 @@ def demo_db(client: XataClient) -> string:
     client.set_db_and_branch_names(db_name, "main")
     yield db_name
     delete_db(client, db_name)
-

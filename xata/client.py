@@ -210,7 +210,7 @@ class XataClient:
     def get_branch_name_if_configured(self) -> str:
         # TODO: resolve branch name by the current git branch
         return os.environ.get("XATA_BRANCH")
-    
+
     def get_db_branch_name(self, db_name: str = None, branch_name: str = None) -> str:
         """
         Get Database with branch name, format: {db_name}:{branch_name}
@@ -222,9 +222,9 @@ class XataClient:
         :return str
         """
         if db_name is None:
-            db_name = self.get_config()['dbName']
+            db_name = self.get_config()["dbName"]
         if branch_name is None:
-            branch_name = self.get_config()['branchName']
+            branch_name = self.get_config()["branchName"]
         return f"{db_name}:{branch_name}"
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):

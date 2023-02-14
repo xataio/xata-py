@@ -19,14 +19,14 @@
 
 import string
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
 from xata.errors import BadRequestException
 
-class TestClass(object):
 
+class TestClass(object):
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -36,21 +36,23 @@ class TestClass(object):
         r = self.client.records().bulkInsertTableRecords(
             self.client.get_db_branch_name(),
             "Posts",
-            [], # ["title", "labels", "slug", "text"],
-            {"records": self.get_posts()}
+            [],  # ["title", "labels", "slug", "text"],
+            {"records": utils.get_posts()},
         )
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
     @classmethod
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.client.get_config()['workspaceId'], self.db_name)
+        r = self.client.databases().deleteDatabase(
+            self.client.get_config()["workspaceId"], self.db_name
+        )
         assert r.status_code == 200
 
     def test_search_simple(self):
         result = self.client.search("hello")
         assert "records" in result
-        assert len(result["records"]) == len(self.get_posts())
+        assert len(result["records"]) == len(utils.get_posts())
 
         result = self.client.search("apples")
         assert "records" in result
@@ -65,7 +67,7 @@ class TestClass(object):
             },
         )
         assert "records" in result
-        assert len(result["records"]) == len(self.get_posts())
+        assert len(result["records"]) == len(utils.get_posts())
 
         result = self.client.search(
             "apples and bananas",
@@ -77,18 +79,15 @@ class TestClass(object):
         assert "records" in result
         assert len(result["records"]) == 1
 
-
     def test_search_with_no_hits(self):
         result = self.client.search("12345")
         assert "records" in result
         assert len(result["records"]) == 0
 
-
     def test_search_errorcases(self):
         with pytest.raises(BadRequestException) as exc:
             self.client.search("invalid", {"i-am": "invalid"})
         assert exc is not None
-
 
     # ------------------------------------------------------- #
     #
@@ -98,12 +97,11 @@ class TestClass(object):
     def test_search_table_simple(self):
         result = self.client.search_table("Posts", "hello")
         assert "records" in result
-        assert len(result["records"]) == len(self.get_posts())
+        assert len(result["records"]) == len(utils.get_posts())
 
         result = self.client.search_table("Posts", "apples")
         assert "records" in result
         assert len(result["records"]) == 1
-
 
     def test_search_table_with_params(self):
         result = self.client.search_table(
@@ -115,7 +113,7 @@ class TestClass(object):
             },
         )
         assert "records" in result
-        assert len(result["records"]) == len(self.get_posts())
+        assert len(result["records"]) == len(utils.get_posts())
 
         result = self.client.search_table(
             "Posts",
@@ -128,7 +126,6 @@ class TestClass(object):
         assert "records" in result
         assert len(result["records"]) == 1
 
-
     def test_search_table_with_no_hits(self):
         result = self.client.search_table("Posts", "watermelon")
         assert "records" in result
@@ -137,34 +134,10 @@ class TestClass(object):
     def test_search_table_errorcases(self):
         result = self.client.search_table("MissingTable", "hello")
         assert "message" in result
-        assert result["message"] == f"table [{self.db_name}:main/MissingTable] not found"
+        assert (
+            result["message"] == f"table [{self.db_name}:main/MissingTable] not found"
+        )
 
         with pytest.raises(BadRequestException) as exc:
             self.client.search_table("Posts", "invalid", {"i-am": "invalid"})
         assert exc is not None
-
-    @classmethod
-    def get_posts(self) -> list[str]:
-        """
-        List of three Posts
-        """
-        return [
-            {
-                "title": "Hello world",
-                "labels": ["hello", "world"],
-                "slug": "hello-world",
-                "text": "This is a test post",
-            },
-            {
-                "title": "HeLLo universe",
-                "labels": ["hello", "universe"],
-                "slug": "hello-universe",
-                "text": "hello, is it me you're looking for?",
-            },
-            {
-                "title": "HELlO internet",
-                "labels": ["hello", "internet"],
-                "slug": "hello-internet",
-                "text": "I like to eat apples and bananas",
-            },
-        ]
