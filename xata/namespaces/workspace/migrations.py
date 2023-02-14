@@ -46,7 +46,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/migrations"
         headers = {"content-type": "application/json"}
-        return self.request("GET", url_path, payload, headers)
+        return self.request("GET", url_path, headers, payload)
 
     def getBranchMigrationPlan(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -60,7 +60,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/migrations/plan"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def executeBranchMigrationPlan(
         self, db_branch_name: str, payload: dict
@@ -76,7 +76,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/migrations/execute"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getBranchSchemaHistory(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -90,7 +90,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/history"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def compareBranchWithUserSchema(
         self, db_branch_name: str, payload: dict
@@ -106,7 +106,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/compare"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def compareBranchSchemas(
         self, db_branch_name: str, branch_name: str, payload: dict
@@ -123,7 +123,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/compare/{branch_name}"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def updateBranchSchema(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -137,7 +137,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/update"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def previewBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -151,7 +151,7 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/preview"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def applyBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
         """
@@ -165,4 +165,4 @@ class Migrations(Namespace):
         """
         url_path = f"/db/{db_branch_name}/schema/apply"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)

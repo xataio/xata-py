@@ -46,7 +46,7 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/transaction"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def insertRecord(
         self, db_branch_name: str, table_name: str, columns: list, payload: dict
@@ -64,7 +64,7 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getRecord(
         self, db_branch_name: str, table_name: str, record_id: str, columns: list
@@ -105,7 +105,7 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def upsertRecordWithID(
         self,
@@ -129,7 +129,7 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def deleteRecord(
         self, db_branch_name: str, table_name: str, record_id: str, columns: list
@@ -170,7 +170,7 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, payload, headers)
+        return self.request("PATCH", url_path, headers, payload)
 
     def bulkInsertTableRecords(
         self, db_branch_name: str, table_name: str, columns: list, payload: dict
@@ -188,4 +188,4 @@ class Records(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/bulk"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)

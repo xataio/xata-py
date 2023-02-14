@@ -85,7 +85,7 @@ class Table(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, payload, headers)
+        return self.request("PATCH", url_path, headers, payload)
 
     def getTableSchema(self, db_branch_name: str, table_name: str) -> Response:
         """
@@ -115,7 +115,7 @@ class Table(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def getTableColumns(self, db_branch_name: str, table_name: str) -> Response:
         """
@@ -148,7 +148,7 @@ class Table(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getColumn(
         self, db_branch_name: str, table_name: str, column_name: str
@@ -198,4 +198,4 @@ class Table(Namespace):
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, payload, headers)
+        return self.request("PATCH", url_path, headers, payload)

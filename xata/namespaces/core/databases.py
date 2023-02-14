@@ -74,7 +74,7 @@ class Databases(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def deleteDatabase(self, workspace_id: str, db_name: str) -> Response:
         """
@@ -104,7 +104,7 @@ class Databases(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, payload, headers)
+        return self.request("PATCH", url_path, headers, payload)
 
     def listRegions(self, workspace_id: str) -> Response:
         """

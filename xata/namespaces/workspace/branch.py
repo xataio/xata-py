@@ -70,7 +70,7 @@ class Branch(Namespace):
         """
         url_path = f"/db/{db_branch_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def deleteBranch(self, db_branch_name: str) -> Response:
         """
@@ -108,7 +108,7 @@ class Branch(Namespace):
         """
         url_path = f"/db/{db_branch_name}/metadata"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, payload, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def getBranchStats(self, db_branch_name: str) -> Response:
         """
@@ -179,7 +179,7 @@ class Branch(Namespace):
         """
         url_path = f"/dbs/{db_name}/gitbranches"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, payload, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def removeGitBranchesEntry(self, db_name: str) -> Response:
         """
