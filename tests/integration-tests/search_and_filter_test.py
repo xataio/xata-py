@@ -31,22 +31,15 @@ class TestClass(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
-        self.client = XataClient()
+        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
         utils.create_demo_db(self.client, self.db_name)
-        self.client.set_db_and_branch_names(self.db_name, self.branch_name)
-        utils.wait_until_records_are_indexed("Posts")
-        """
         r = self.client.records().bulkInsertTableRecords(
-            self.branch_name,
+            self.client.get_db_branch_name(),
             "Posts",
             [], # ["title", "labels", "slug", "text"],
             {"records": self.get_posts()}
         )
         assert r.status_code == 200
-        """
-
-        for post in self.get_posts():
-            self.client.create("Posts", record=post)
         utils.wait_until_records_are_indexed("Posts")
 
     @classmethod
