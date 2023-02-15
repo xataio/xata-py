@@ -37,11 +37,11 @@ class Migrations(Namespace):
     def getBranchMigrationHistory(self, db_branch_name: str, payload: dict) -> Response:
         """
         Get branch migration history [deprecated]
-        path: /db/{db_branch_name}/migrations
-        method: GET
+        Path: /db/{db_branch_name}/migrations
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -52,11 +52,11 @@ class Migrations(Namespace):
     def getBranchMigrationPlan(self, db_branch_name: str, payload: dict) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
-        path: /db/{db_branch_name}/migrations/plan
-        method: POST
+        Path: /db/{db_branch_name}/migrations/plan
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -69,11 +69,11 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Apply a migration plan to the branch
-        path: /db/{db_branch_name}/migrations/execute
-        method: POST
+        Path: /db/{db_branch_name}/migrations/execute
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -84,11 +84,11 @@ class Migrations(Namespace):
     def getBranchSchemaHistory(self, db_branch_name: str, payload: dict) -> Response:
         """
         Query schema history.
-        path: /db/{db_branch_name}/schema/history
-        method: POST
+        Path: /db/{db_branch_name}/schema/history
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -101,11 +101,11 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Compare branch with user schema.
-        path: /db/{db_branch_name}/schema/compare
-        method: POST
+        Path: /db/{db_branch_name}/schema/compare
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -118,12 +118,12 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Compare branch schemas.
-        path: /db/{db_branch_name}/schema/compare/{branch_name}
-        method: POST
+        Path: /db/{db_branch_name}/schema/compare/{branch_name}
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param branch_name: str The Database Name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param branch_name: str The Database Name
+        :param payload: dict content
 
         :return Response
         """
@@ -134,11 +134,11 @@ class Migrations(Namespace):
     def updateBranchSchema(self, db_branch_name: str, payload: dict) -> Response:
         """
         Update Branch schema
-        path: /db/{db_branch_name}/schema/update
-        method: POST
+        Path: /db/{db_branch_name}/schema/update
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -149,11 +149,11 @@ class Migrations(Namespace):
     def previewBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
         """
         Preview branch schema edits.
-        path: /db/{db_branch_name}/schema/preview
-        method: POST
+        Path: /db/{db_branch_name}/schema/preview
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -164,11 +164,11 @@ class Migrations(Namespace):
     def applyBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
         """
         Apply edit script.
-        path: /db/{db_branch_name}/schema/apply
-        method: POST
+        Path: /db/{db_branch_name}/schema/apply
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """

@@ -37,11 +37,11 @@ class Invites(Namespace):
     def inviteWorkspaceMember(self, workspace_id: str, payload: dict) -> Response:
         """
         Invite some user to join the workspace with the given role
-        path: /workspaces/{workspace_id}/invites
-        method: POST
+        Path: /workspaces/{workspace_id}/invites
+        Method: POST
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param workspace_id: str Workspace ID
+        :param payload: dict content
 
         :return Response
         """
@@ -53,12 +53,13 @@ class Invites(Namespace):
         self, workspace_id: str, invite_id: str
     ) -> Response:
         """
-        This operation provides a way to cancel invites by deleting them. Already accepted invites cannot be deleted.
-        path: /workspaces/{workspace_id}/invites/{invite_id}
-        method: DELETE
+        This operation provides a way to cancel invites by deleting them.  Already accepted
+        invites cannot be deleted.
+        Path: /workspaces/{workspace_id}/invites/{invite_id}
+        Method: DELETE
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param invite_id: str Invite identifier [in: path, req: True]
+        :param workspace_id: str Workspace ID
+        :param invite_id: str Invite identifier
 
         :return Response
         """
@@ -69,13 +70,15 @@ class Invites(Namespace):
         self, workspace_id: str, invite_id: str, payload: dict
     ) -> Response:
         """
-        This operation provides a way to update an existing invite. Updates are performed in-place; they do not change the invite link, the expiry time, nor do they re-notify the recipient of the invite.
-        path: /workspaces/{workspace_id}/invites/{invite_id}
-        method: PATCH
+        This operation provides a way to update an existing invite.  Updates are performed in-
+        place; they do not change the invite link, the expiry time, nor do they re-notify the
+        recipient of the invite.
+        Path: /workspaces/{workspace_id}/invites/{invite_id}
+        Method: PATCH
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param invite_id: str Invite identifier [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param workspace_id: str Workspace ID
+        :param invite_id: str Invite identifier
+        :param payload: dict content
 
         :return Response
         """
@@ -87,12 +90,13 @@ class Invites(Namespace):
         self, workspace_id: str, invite_key: str
     ) -> Response:
         """
-        Accept the invitation to join a workspace. If the operation succeeds the user will be a member of the workspace
-        path: /workspaces/{workspace_id}/invites/{invite_key}/accept
-        method: POST
+        Accept the invitation to join a workspace.  If the operation succeeds the user will be a
+        member of the workspace
+        Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
+        Method: POST
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param invite_key: str Invite Key (secret) for the invited user [in: path, req: True]
+        :param workspace_id: str Workspace ID
+        :param invite_key: str Invite Key (secret) for the invited user
 
         :return Response
         """
@@ -103,12 +107,13 @@ class Invites(Namespace):
         self, workspace_id: str, invite_id: str
     ) -> Response:
         """
-        This operation provides a way to resend an Invite notification. Invite notifications can only be sent for Invites not yet accepted.
-        path: /workspaces/{workspace_id}/invites/{invite_id}/resend
-        method: POST
+        This operation provides a way to resend an Invite notification.  Invite notifications can
+        only be sent for Invites not yet accepted.
+        Path: /workspaces/{workspace_id}/invites/{invite_id}/resend
+        Method: POST
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param invite_id: str Invite identifier [in: path, req: True]
+        :param workspace_id: str Workspace ID
+        :param invite_id: str Invite identifier
 
         :return Response
         """

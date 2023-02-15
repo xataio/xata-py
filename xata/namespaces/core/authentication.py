@@ -39,8 +39,8 @@ class Authentication(Namespace):
     ) -> Response:
         """
         Retrieve a list of existing user API keys
-        path: /user/keys
-        method: GET
+        Path: /user/keys
+        Method: GET
 
 
         :return Response
@@ -51,10 +51,10 @@ class Authentication(Namespace):
     def createUserAPIKey(self, key_name: str) -> Response:
         """
         Create and return new API key
-        path: /user/keys/{key_name}
-        method: POST
+        Path: /user/keys/{key_name}
+        Method: POST
 
-        :param key_name: str API Key name [in: path, req: True]
+        :param key_name: str API Key name
 
         :return Response
         """
@@ -64,10 +64,10 @@ class Authentication(Namespace):
     def deleteUserAPIKey(self, key_name: str) -> Response:
         """
         Delete an existing API key
-        path: /user/keys/{key_name}
-        method: DELETE
+        Path: /user/keys/{key_name}
+        Method: DELETE
 
-        :param key_name: str API Key name [in: path, req: True]
+        :param key_name: str API Key name
 
         :return Response
         """

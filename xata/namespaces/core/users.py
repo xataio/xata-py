@@ -39,8 +39,8 @@ class Users(Namespace):
     ) -> Response:
         """
         Return details of the user making the request
-        path: /user
-        method: GET
+        Path: /user
+        Method: GET
 
 
         :return Response
@@ -51,10 +51,10 @@ class Users(Namespace):
     def updateUser(self, payload: dict) -> Response:
         """
         Update user info
-        path: /user
-        method: PUT
+        Path: /user
+        Method: PUT
 
-        :param payload: dict content [in: requestBody, req: True]
+        :param payload: dict content
 
         :return Response
         """
@@ -67,8 +67,8 @@ class Users(Namespace):
     ) -> Response:
         """
         Delete the user making the request
-        path: /user
-        method: DELETE
+        Path: /user
+        Method: DELETE
 
 
         :return Response
