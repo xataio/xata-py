@@ -17,11 +17,12 @@
 # under the License.
 #
 
-import utils
 import pytest
-
+import utils
 from faker import Faker
+
 from xata.client import XataClient
+
 
 class TestClass(object):
     @classmethod
@@ -85,24 +86,32 @@ class TestClass(object):
         """
         POST /db/{db_branch_name}/tables/{table_name}/data
         """
-        r = self.client.records().insertRecord(self.client.get_db_branch_name(), "Posts", record)
+        r = self.client.records().insertRecord(
+            self.client.get_db_branch_name(), "Posts", record
+        )
         assert r.status_code == 201
         assert "id" in r.json()
         assert "xata" in r.json()
         assert "version" in r.json()["xata"]
         assert r.json()["xata"]["version"] == 0
 
-        r = self.client.records().insertRecord(self.client.get_db_branch_name(), "NonExistingTable", record)
+        r = self.client.records().insertRecord(
+            self.client.get_db_branch_name(), "NonExistingTable", record
+        )
         assert r.status_code == 404
 
-        r = self.client.records().insertRecord("NonExistingDbBranchName", "Posts", record)
+        r = self.client.records().insertRecord(
+            "NonExistingDbBranchName", "Posts", record
+        )
         assert r.status_code == 400
 
     def test_insert_record_with_id(self, record: dict):
         """
         PUT /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().insertRecordWithID(self.client.get_db_branch_name(), "Posts", self.record_id, record)
+        r = self.client.records().insertRecordWithID(
+            self.client.get_db_branch_name(), "Posts", self.record_id, record
+        )
         assert r.status_code == 201
         assert "id" in r.json()
         assert "xata" in r.json()
@@ -110,21 +119,37 @@ class TestClass(object):
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == 0
 
-        r = self.client.records().insertRecordWithID(self.client.get_db_branch_name(), "Posts", self.record_id, record, createOnly=False)
+        r = self.client.records().insertRecordWithID(
+            self.client.get_db_branch_name(),
+            "Posts",
+            self.record_id,
+            record,
+            createOnly=False,
+        )
         assert r.status_code == 200
         assert r.json()["xata"]["version"] == 1
 
-        r = self.client.records().insertRecordWithID(self.client.get_db_branch_name(), "Posts", self.record_id, record, createOnly=True)
+        r = self.client.records().insertRecordWithID(
+            self.client.get_db_branch_name(),
+            "Posts",
+            self.record_id,
+            record,
+            createOnly=True,
+        )
         assert r.status_code == 422
-        
-        r = self.client.records().insertRecordWithID(self.client.get_db_branch_name(), "Posts", "", record)
+
+        r = self.client.records().insertRecordWithID(
+            self.client.get_db_branch_name(), "Posts", "", record
+        )
         assert r.status_code == 404
 
     def test_get_record(self, record: dict):
         """
         GET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", self.record_id)
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", self.record_id
+        )
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
@@ -133,44 +158,63 @@ class TestClass(object):
         assert len(r.json().keys()) == len(record.keys()) + 2
         keep = r.json()
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", self.record_id, columns=["id", "slug"])
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(),
+            "Posts",
+            self.record_id,
+            columns=["id", "slug"],
+        )
         assert r.status_code == 200
         assert r.json()["id"] == self.record_id
         assert r.json()["slug"] == keep["slug"]
         assert len(r.json().keys()) == 3
         assert r.json() != keep
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", "#######")
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", "#######"
+        )
         assert r.status_code == 404
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "NonExistingTable", self.record_id)
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "NonExistingTable", self.record_id
+        )
         assert r.status_code == 404
 
     def test_update_record(self, record: dict):
         """
         PATCH /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        proof = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", self.record_id)
+        proof = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", self.record_id
+        )
         assert proof.status_code == 200
 
-        r = self.client.records().updateRecordWithID(self.client.get_db_branch_name(), "Posts", self.record_id, record)
+        r = self.client.records().updateRecordWithID(
+            self.client.get_db_branch_name(), "Posts", self.record_id, record
+        )
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == proof.json()["xata"]["version"] + 1
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", self.record_id)
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", self.record_id
+        )
         assert r.status_code == 200
         assert r.json()["slug"] == record["slug"]
         assert r.json()["slug"] != proof.json()["slug"]
         assert r.json()["title"] == record["title"]
         assert r.json()["title"] != proof.json()["title"]
 
-        r = self.client.records().updateRecordWithID(self.client.get_db_branch_name(), "NonExistingTable", self.record_id, record)
+        r = self.client.records().updateRecordWithID(
+            self.client.get_db_branch_name(), "NonExistingTable", self.record_id, record
+        )
         assert r.status_code == 404
 
-        r = self.client.records().updateRecordWithID(self.client.get_db_branch_name(), "Posts", "NonExistingRecordId", record)
+        r = self.client.records().updateRecordWithID(
+            self.client.get_db_branch_name(), "Posts", "NonExistingRecordId", record
+        )
         assert r.status_code == 404
 
     def test_upsert_record(self, record: dict):
@@ -178,20 +222,28 @@ class TestClass(object):
         POST /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         rec_id = utils.get_random_string(24)
-        r = self.client.records().upsertRecordWithID(self.client.get_db_branch_name(), "Posts", rec_id, record)
+        r = self.client.records().upsertRecordWithID(
+            self.client.get_db_branch_name(), "Posts", rec_id, record
+        )
         assert r.status_code == 201
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", rec_id)
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", rec_id
+        )
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         proof = r.json()
 
         update = self._get_record()
         assert record != update
-        r = self.client.records().upsertRecordWithID(self.client.get_db_branch_name(), "Posts", rec_id, update)
+        r = self.client.records().upsertRecordWithID(
+            self.client.get_db_branch_name(), "Posts", rec_id, update
+        )
         assert r.status_code == 200
 
-        r = self.client.records().getRecord(self.client.get_db_branch_name(), "Posts", rec_id)
+        r = self.client.records().getRecord(
+            self.client.get_db_branch_name(), "Posts", rec_id
+        )
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         assert r.json() != proof
@@ -200,10 +252,14 @@ class TestClass(object):
         """
         DELETE /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().deleteRecord(self.client.get_db_branch_name(), "Posts", self.record_id)
+        r = self.client.records().deleteRecord(
+            self.client.get_db_branch_name(), "Posts", self.record_id
+        )
         assert r.status_code == 204
 
-        r = self.client.records().deleteRecord(self.client.get_db_branch_name(), "Posts", self.record_id)
+        r = self.client.records().deleteRecord(
+            self.client.get_db_branch_name(), "Posts", self.record_id
+        )
         assert r.status_code == 204
 
     def test_bulk_insert_table_records(self):
