@@ -147,14 +147,6 @@ class TestClass(object):
             else "owner"
         }
 
-        """
-        r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], pytest.workspaces["member"]["userId"], payload)
-        assert r.status_code == 204
-
-        r = self.client.workspaces().updateWorkspaceMemberRole(self.client.get_config()["workspaceId"], pytest.workspaces["member"]["userId"], pytest.workspaces["member"]["role"])
-        assert r.status_code == 204
-        """
-
         r = self.client.workspaces().updateWorkspaceMemberRole(
             self.client.get_config()["workspaceId"],
             pytest.workspaces["member"]["userId"],
