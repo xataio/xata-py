@@ -40,8 +40,9 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
@@ -53,8 +54,9 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}
         method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
@@ -78,9 +80,10 @@ class Table(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}
                method: PATCH
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
@@ -93,8 +96,9 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}/schema
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
@@ -108,9 +112,10 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}/schema
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
@@ -124,8 +129,9 @@ class Table(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/columns
                method: GET
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
@@ -141,9 +147,10 @@ class Table(Namespace):
                path: /db/{db_branch_name}/tables/{table_name}/columns
                method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-               :param table_name: str The Table name
-               :param payload: dict Request Body
+               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+               :param table_name: str The Table name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
@@ -158,9 +165,10 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
-        :param column_name: str The Column name
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+        :param column_name: str The Column name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
@@ -174,9 +182,10 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
-        :param column_name: str The Column name
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+        :param column_name: str The Column name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
@@ -190,10 +199,11 @@ class Table(Namespace):
         path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param table_name: str The Table name
-        :param column_name: str The Column name
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param table_name: str The Table name [in: path, req: True]
+        :param column_name: str The Column name [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"

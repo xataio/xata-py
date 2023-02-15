@@ -40,8 +40,9 @@ class Invites(Namespace):
         path: /workspaces/{workspace_id}/invites
         method: POST
 
-        :param workspace_id: str Workspace ID
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/invites"
@@ -56,8 +57,9 @@ class Invites(Namespace):
         path: /workspaces/{workspace_id}/invites/{invite_id}
         method: DELETE
 
-        :param workspace_id: str Workspace ID
-        :param invite_id: str Invite identifier
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param invite_id: str Invite identifier [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
@@ -71,9 +73,10 @@ class Invites(Namespace):
         path: /workspaces/{workspace_id}/invites/{invite_id}
         method: PATCH
 
-        :param workspace_id: str Workspace ID
-        :param invite_id: str Invite identifier
-        :param payload: dict Request Body
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param invite_id: str Invite identifier [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
@@ -88,8 +91,9 @@ class Invites(Namespace):
         path: /workspaces/{workspace_id}/invites/{invite_key}/accept
         method: POST
 
-        :param workspace_id: str Workspace ID
-        :param invite_key: str Invite Key (secret) for the invited user
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param invite_key: str Invite Key (secret) for the invited user [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_key}/accept"
@@ -103,8 +107,9 @@ class Invites(Namespace):
         path: /workspaces/{workspace_id}/invites/{invite_id}/resend
         method: POST
 
-        :param workspace_id: str Workspace ID
-        :param invite_id: str Invite identifier
+        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param invite_id: str Invite identifier [in: path, req: True]
+
         :return Response
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}/resend"

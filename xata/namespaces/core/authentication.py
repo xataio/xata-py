@@ -42,6 +42,7 @@ class Authentication(Namespace):
         path: /user/keys
         method: GET
 
+
         :return Response
         """
         url_path = "/user/keys"
@@ -53,7 +54,8 @@ class Authentication(Namespace):
         path: /user/keys/{key_name}
         method: POST
 
-        :param key_name: str API Key name
+        :param key_name: str API Key name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/user/keys/{key_name}"
@@ -65,7 +67,8 @@ class Authentication(Namespace):
         path: /user/keys/{key_name}
         method: DELETE
 
-        :param key_name: str API Key name
+        :param key_name: str API Key name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/user/keys/{key_name}"

@@ -40,7 +40,8 @@ class Branch(Namespace):
         path: /dbs/{db_name}
         method: GET
 
-        :param db_name: str The Database Name
+        :param db_name: str The Database Name [in: path, req: True]
+
         :return Response
         """
         url_path = f"/dbs/{db_name}"
@@ -52,36 +53,47 @@ class Branch(Namespace):
         path: /db/{db_branch_name}
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
         return self.request("GET", url_path)
 
-    def createBranch(self, db_branch_name: str, payload: dict) -> Response:
+    def createBranch(
+        self, db_branch_name: str, payload: dict, _from: str = None
+    ) -> Response:
         """
         Create Database branch
         path: /db/{db_branch_name}
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+        :param _from: str = None Name of source branch to branch the new schema from [in: query, req: False]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
+        if _from is not None:
+            url_path += "?from={_from}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteBranch(self, db_branch_name: str) -> Response:
+    def deleteBranch(self, db_branch_name: str, _from: str = None) -> Response:
         """
         Delete the branch in the database and all its resources
         path: /db/{db_branch_name}
         method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param _from: str = None Name of source branch to branch the new schema from [in: query, req: False]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
+        if _from is not None:
+            url_path += "?from={_from}"
         return self.request("DELETE", url_path)
 
     def getBranchMetadata(self, db_branch_name: str) -> Response:
@@ -90,7 +102,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/metadata
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/metadata"
@@ -102,8 +115,9 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/metadata
         method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param payload: dict Request Body
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param payload: dict content [in: requestBody, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/metadata"
@@ -116,7 +130,8 @@ class Branch(Namespace):
         path: /db/{db_branch_name}/stats
         method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+
         :return Response
         """
         url_path = f"/db/{db_branch_name}/stats"
@@ -149,7 +164,8 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: GET
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
@@ -173,15 +189,16 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: POST
 
-               :param db_name: str The Database Name
-               :param payload: dict Request Body
+               :param db_name: str The Database Name [in: path, req: True]
+               :param payload: dict content [in: requestBody, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def removeGitBranchesEntry(self, db_name: str) -> Response:
+    def removeGitBranchesEntry(self, db_name: str, gitBranch: str) -> Response:
         """
                Removes an entry from the mapping of git branches to Xata branches. The name of the git branch must be passed as a query parameter. If the git branch is not found, the endpoint returns a 404 status code.
 
@@ -193,13 +210,19 @@ class Branch(Namespace):
                path: /dbs/{db_name}/gitbranches
                method: DELETE
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+               :param gitBranch: str The Git Branch to remove from the mapping [in: query, req: True]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
+        if gitBranch is not None:
+            url_path += "?gitBranch={gitBranch}"
         return self.request("DELETE", url_path)
 
-    def resolveBranch(self, db_name: str) -> Response:
+    def resolveBranch(
+        self, db_name: str, gitBranch: str = None, fallbackBranch: str = None
+    ) -> Response:
         """
                In order to resolve the database branch, the following algorithm is used:
         * if the `gitBranch` was provided and is found in the [git branches mapping](/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned
@@ -227,8 +250,18 @@ class Branch(Namespace):
                path: /dbs/{db_name}/resolvebranch
                method: GET
 
-               :param db_name: str The Database Name
+               :param db_name: str The Database Name [in: path, req: True]
+               :param gitBranch: str = None The Git Branch [in: query, req: False]
+               :param fallbackBranch: str = None Default branch to fallback to [in: query, req: False]
+
                :return Response
         """
         url_path = f"/dbs/{db_name}/resolvebranch"
+        query_params = []
+        if gitBranch is not None:
+            query_params.append(f"gitBranch={gitBranch}")
+        if fallbackBranch is not None:
+            query_params.append(f"fallbackBranch={fallbackBranch}")
+        if query_params:
+            url_path += "?" + "&".join(query_params)
         return self.request("GET", url_path)
