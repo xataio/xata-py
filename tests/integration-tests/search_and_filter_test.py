@@ -34,7 +34,6 @@ class TestClass(object):
         r = self.client.records().bulkInsertTableRecords(
             self.client.get_db_branch_name(),
             "Posts",
-            [],  # ["title", "labels", "slug", "text"],
             {"records": utils.get_posts()},
         )
         assert r.status_code == 200
