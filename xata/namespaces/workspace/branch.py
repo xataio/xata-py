@@ -37,10 +37,10 @@ class Branch(Namespace):
     def getBranchList(self, db_name: str) -> Response:
         """
         List all available Branches
-        path: /dbs/{db_name}
-        method: GET
+        Path: /dbs/{db_name}
+        Method: GET
 
-        :param db_name: str The Database Name [in: path, req: True]
+        :param db_name: str The Database Name
 
         :return Response
         """
@@ -50,10 +50,10 @@ class Branch(Namespace):
     def getBranchDetails(self, db_branch_name: str) -> Response:
         """
         Get branch schema and metadata
-        path: /db/{db_branch_name}
-        method: GET
+        Path: /db/{db_branch_name}
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
 
         :return Response
         """
@@ -65,12 +65,12 @@ class Branch(Namespace):
     ) -> Response:
         """
         Create Database branch
-        path: /db/{db_branch_name}
-        method: PUT
+        Path: /db/{db_branch_name}
+        Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param _from: str = None Name of source branch to branch the new schema from [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
+        :param _from: str = None Name of source branch to branch the new schema from
 
         :return Response
         """
@@ -83,10 +83,10 @@ class Branch(Namespace):
     def deleteBranch(self, db_branch_name: str) -> Response:
         """
         Delete the branch in the database and all its resources
-        path: /db/{db_branch_name}
-        method: DELETE
+        Path: /db/{db_branch_name}
+        Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
 
         :return Response
         """
@@ -96,10 +96,10 @@ class Branch(Namespace):
     def getBranchMetadata(self, db_branch_name: str) -> Response:
         """
         Get Branch Metadata
-        path: /db/{db_branch_name}/metadata
-        method: GET
+        Path: /db/{db_branch_name}/metadata
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
 
         :return Response
         """
@@ -109,11 +109,11 @@ class Branch(Namespace):
     def updateBranchMetadata(self, db_branch_name: str, payload: dict) -> Response:
         """
         Update the branch metadata
-        path: /db/{db_branch_name}/metadata
-        method: PUT
+        Path: /db/{db_branch_name}/metadata
+        Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -124,10 +124,10 @@ class Branch(Namespace):
     def getBranchStats(self, db_branch_name: str) -> Response:
         """
         Get branch usage metrics.
-        path: /db/{db_branch_name}/stats
-        method: GET
+        Path: /db/{db_branch_name}/stats
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
 
         :return Response
         """
@@ -136,60 +136,38 @@ class Branch(Namespace):
 
     def getGitBranchesMapping(self, db_name: str) -> Response:
         """
-               Lists all the git branches in the mapping, and their associated Xata branches.
+        Lists all the git branches in the mapping, and their associated Xata branches.  Example
+        response:  ```json {   "mappings": [       {         "gitBranch": "main",
+        "xataBranch": "main"       },       {         "gitBranch": "gitBranch1",
+        "xataBranch": "xataBranch1"       }       {         "gitBranch": "xataBranch2",
+        "xataBranch": "xataBranch2"       }   ] } ```
+        Path: /dbs/{db_name}/gitbranches
+        Method: GET
 
-        Example response:
+        :param db_name: str The Database Name
 
-        ```json
-        {
-          "mappings": [
-              {
-                "gitBranch": "main",
-                "xataBranch": "main"
-              },
-              {
-                "gitBranch": "gitBranch1",
-                "xataBranch": "xataBranch1"
-              }
-              {
-                "gitBranch": "xataBranch2",
-                "xataBranch": "xataBranch2"
-              }
-          ]
-        }
-        ```
-               path: /dbs/{db_name}/gitbranches
-               method: GET
-
-               :param db_name: str The Database Name [in: path, req: True]
-
-               :return Response
+        :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
         return self.request("GET", url_path)
 
     def addGitBranchesEntry(self, db_name: str, payload: dict) -> Response:
         """
-               Adds an entry to the mapping of git branches to Xata branches. The git branch and the Xata branch must be present in the body of the request. If the Xata branch doesn't exist, a 400 error is returned.
+        Adds an entry to the mapping of git branches to Xata branches.  The git branch and the
+        Xata branch must be present in the body of the request.  If the Xata branch doesn't exist,
+        a 400 error is returned.  If the git branch is already present in the mapping, the old
+        entry is overwritten, and a warning message is included in the response.  If the git
+        branch is added and didn't exist before, the response code is 204. If the git branch
+        existed and it was overwritten, the response code is 201.  Example request:  ```json //
+        POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches {   "gitBranch": "fix/bug123",
+        "xataBranch": "fix_bug" } ```
+        Path: /dbs/{db_name}/gitbranches
+        Method: POST
 
-        If the git branch is already present in the mapping, the old entry is overwritten, and a warning message is included in the response. If the git branch is added and didn't exist before, the response code is 204. If the git branch existed and it was overwritten, the response code is 201.
+        :param db_name: str The Database Name
+        :param payload: dict content
 
-        Example request:
-
-        ```json
-        // POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches
-        {
-          "gitBranch": "fix/bug123",
-          "xataBranch": "fix_bug"
-        }
-        ```
-               path: /dbs/{db_name}/gitbranches
-               method: POST
-
-               :param db_name: str The Database Name [in: path, req: True]
-               :param payload: dict content [in: requestBody, req: True]
-
-               :return Response
+        :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
         headers = {"content-type": "application/json"}
@@ -197,20 +175,17 @@ class Branch(Namespace):
 
     def removeGitBranchesEntry(self, db_name: str, gitBranch: str) -> Response:
         """
-               Removes an entry from the mapping of git branches to Xata branches. The name of the git branch must be passed as a query parameter. If the git branch is not found, the endpoint returns a 404 status code.
+        Removes an entry from the mapping of git branches to Xata branches.  The name of the git
+        branch must be passed as a query parameter.  If the git branch is not found, the endpoint
+        returns a 404 status code.  Example request:  ```json // DELETE https://tutorial-
+        ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
+        Path: /dbs/{db_name}/gitbranches
+        Method: DELETE
 
-        Example request:
+        :param db_name: str The Database Name
+        :param gitBranch: str The Git Branch to remove from the mapping
 
-        ```json
-        // DELETE https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123
-        ```
-               path: /dbs/{db_name}/gitbranches
-               method: DELETE
-
-               :param db_name: str The Database Name [in: path, req: True]
-               :param gitBranch: str The Git Branch to remove from the mapping [in: query, req: True]
-
-               :return Response
+        :return Response
         """
         url_path = f"/dbs/{db_name}/gitbranches"
         if gitBranch is not None:
@@ -221,37 +196,24 @@ class Branch(Namespace):
         self, db_name: str, gitBranch: str = None, fallbackBranch: str = None
     ) -> Response:
         """
-               In order to resolve the database branch, the following algorithm is used:
-        * if the `gitBranch` was provided and is found in the [git branches mapping](/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned
-        * else, if a Xata branch with the exact same name as `gitBranch` exists, return it
-        * else, if `fallbackBranch` is provided and a branch with that name exists, return it
-        * else, return the default branch of the DB (`main` or the first branch)
+        In order to resolve the database branch, the following algorithm is used: * if the
+        `gitBranch` was provided and is found in the [git branches mapping](/api-
+        reference/dbs/db_name/gitBranches), the associated Xata branch is returned * else, if a
+        Xata branch with the exact same name as `gitBranch` exists, return it * else, if
+        `fallbackBranch` is provided and a branch with that name exists, return it * else, return
+        the default branch of the DB (`main` or the first branch)  Example call:  ```json // GET
+        https://tutorial-
+        ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg ```
+        Example response:  ```json {   "branch": "main",   "reason": {     "code":
+        "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
+        Path: /dbs/{db_name}/resolvebranch
+        Method: GET
 
-        Example call:
+        :param db_name: str The Database Name
+        :param gitBranch: str = None The Git Branch
+        :param fallbackBranch: str = None Default branch to fallback to
 
-        ```json
-        // GET https://tutorial-ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg
-        ```
-
-        Example response:
-
-        ```json
-        {
-          "branch": "main",
-          "reason": {
-            "code": "DEFAULT_BRANCH",
-            "message": "Default branch for this database (main)"
-          }
-        }
-        ```
-               path: /dbs/{db_name}/resolvebranch
-               method: GET
-
-               :param db_name: str The Database Name [in: path, req: True]
-               :param gitBranch: str = None The Git Branch [in: query, req: False]
-               :param fallbackBranch: str = None Default branch to fallback to [in: query, req: False]
-
-               :return Response
+        :return Response
         """
         url_path = f"/dbs/{db_name}/resolvebranch"
         query_params = []

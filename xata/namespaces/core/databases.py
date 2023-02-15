@@ -37,10 +37,10 @@ class Databases(Namespace):
     def getDatabaseList(self, workspace_id: str) -> Response:
         """
         List all databases available in your Workspace.
-        path: /workspaces/{workspace_id}/dbs
-        method: GET
+        Path: /workspaces/{workspace_id}/dbs
+        Method: GET
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param workspace_id: str Workspace ID
 
         :return Response
         """
@@ -50,11 +50,11 @@ class Databases(Namespace):
     def getDatabaseMetadata(self, workspace_id: str, db_name: str) -> Response:
         """
         Retrieve metadata of the given database
-        path: /workspaces/{workspace_id}/dbs/{db_name}
-        method: GET
+        Path: /workspaces/{workspace_id}/dbs/{db_name}
+        Method: GET
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param db_name: str The Database Name [in: path, req: True]
+        :param workspace_id: str Workspace ID
+        :param db_name: str The Database Name
 
         :return Response
         """
@@ -66,12 +66,12 @@ class Databases(Namespace):
     ) -> Response:
         """
         Create Database with identifier name
-        path: /workspaces/{workspace_id}/dbs/{db_name}
-        method: PUT
+        Path: /workspaces/{workspace_id}/dbs/{db_name}
+        Method: PUT
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param db_name: str The Database Name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param workspace_id: str Workspace ID
+        :param db_name: str The Database Name
+        :param payload: dict content
 
         :return Response
         """
@@ -82,11 +82,11 @@ class Databases(Namespace):
     def deleteDatabase(self, workspace_id: str, db_name: str) -> Response:
         """
         Delete a database and all of its branches and tables permanently.
-        path: /workspaces/{workspace_id}/dbs/{db_name}
-        method: DELETE
+        Path: /workspaces/{workspace_id}/dbs/{db_name}
+        Method: DELETE
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param db_name: str The Database Name [in: path, req: True]
+        :param workspace_id: str Workspace ID
+        :param db_name: str The Database Name
 
         :return Response
         """
@@ -98,12 +98,12 @@ class Databases(Namespace):
     ) -> Response:
         """
         Update the color of the selected database
-        path: /workspaces/{workspace_id}/dbs/{db_name}
-        method: PATCH
+        Path: /workspaces/{workspace_id}/dbs/{db_name}
+        Method: PATCH
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
-        :param db_name: str The Database Name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param workspace_id: str Workspace ID
+        :param db_name: str The Database Name
+        :param payload: dict content
 
         :return Response
         """
@@ -114,10 +114,10 @@ class Databases(Namespace):
     def listRegions(self, workspace_id: str) -> Response:
         """
         List regions available to create a database on
-        path: /workspaces/{workspace_id}/regions
-        method: GET
+        Path: /workspaces/{workspace_id}/regions
+        Method: GET
 
-        :param workspace_id: str Workspace ID [in: path, req: True]
+        :param workspace_id: str Workspace ID
 
         :return Response
         """

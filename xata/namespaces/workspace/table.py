@@ -36,12 +36,13 @@ class Table(Namespace):
 
     def createTable(self, db_branch_name: str, table_name: str) -> Response:
         """
-        Creates a new table with the given name. Returns 422 if a table with the same name already exists.
-        path: /db/{db_branch_name}/tables/{table_name}
-        method: PUT
+        Creates a new table with the given name.  Returns 422 if a table with the same name
+        already exists.
+        Path: /db/{db_branch_name}/tables/{table_name}
+        Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
 
         :return Response
         """
@@ -51,11 +52,11 @@ class Table(Namespace):
     def deleteTable(self, db_branch_name: str, table_name: str) -> Response:
         """
         Deletes the table with the given name.
-        path: /db/{db_branch_name}/tables/{table_name}
-        method: DELETE
+        Path: /db/{db_branch_name}/tables/{table_name}
+        Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
 
         :return Response
         """
@@ -66,25 +67,17 @@ class Table(Namespace):
         self, db_branch_name: str, table_name: str, payload: dict
     ) -> Response:
         """
-               Update table. Currently there is only one update operation supported: renaming the table by providing a new name.
+        Update table.  Currently there is only one update operation supported: renaming the table
+        by providing a new name.  In the example below, we rename a table from “users” to
+        “people”:  ```json // PATCH /db/test:main/tables/users  {   "name": "people" } ```
+        Path: /db/{db_branch_name}/tables/{table_name}
+        Method: PATCH
 
-        In the example below, we rename a table from “users” to “people”:
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param payload: dict content
 
-        ```json
-        // PATCH /db/test:main/tables/users
-
-        {
-          "name": "people"
-        }
-        ```
-               path: /db/{db_branch_name}/tables/{table_name}
-               method: PATCH
-
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-               :param table_name: str The Table name [in: path, req: True]
-               :param payload: dict content [in: requestBody, req: True]
-
-               :return Response
+        :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         headers = {"content-type": "application/json"}
@@ -93,11 +86,11 @@ class Table(Namespace):
     def getTableSchema(self, db_branch_name: str, table_name: str) -> Response:
         """
         Get table schema
-        path: /db/{db_branch_name}/tables/{table_name}/schema
-        method: GET
+        Path: /db/{db_branch_name}/tables/{table_name}/schema
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
 
         :return Response
         """
@@ -109,12 +102,12 @@ class Table(Namespace):
     ) -> Response:
         """
         Update table schema
-        path: /db/{db_branch_name}/tables/{table_name}/schema
-        method: PUT
+        Path: /db/{db_branch_name}/tables/{table_name}/schema
+        Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param payload: dict content
 
         :return Response
         """
@@ -124,15 +117,16 @@ class Table(Namespace):
 
     def getTableColumns(self, db_branch_name: str, table_name: str) -> Response:
         """
-               Retrieves the list of table columns and their definition. This endpoint returns the column list with object columns being reported with their
-        full dot-separated path (flattened).
-               path: /db/{db_branch_name}/tables/{table_name}/columns
-               method: GET
+        Retrieves the list of table columns and their definition.  This endpoint returns the
+        column list with object columns being reported with their full dot-separated path
+        (flattened).
+        Path: /db/{db_branch_name}/tables/{table_name}/columns
+        Method: GET
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-               :param table_name: str The Table name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
 
-               :return Response
+        :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
@@ -141,17 +135,19 @@ class Table(Namespace):
         self, db_branch_name: str, table_name: str, payload: dict
     ) -> Response:
         """
-               Adds a new column to the table. The body of the request should contain the column definition. In the column definition, the 'name' field should
-        contain the full path separated by dots. If the parent objects do not exists, they will be automatically created. For example,
-        passing `"name": "address.city"` will auto-create the `address` object if it doesn't exist.
-               path: /db/{db_branch_name}/tables/{table_name}/columns
-               method: POST
+        Adds a new column to the table.  The body of the request should contain the column
+        definition.  In the column definition, the 'name' field should contain the full path
+        separated by dots.  If the parent objects do not exists, they will be automatically
+        created.  For example, passing `"name": "address.city"` will auto-create the `address`
+        object if it doesn't exist.
+        Path: /db/{db_branch_name}/tables/{table_name}/columns
+        Method: POST
 
-               :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-               :param table_name: str The Table name [in: path, req: True]
-               :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param payload: dict content
 
-               :return Response
+        :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         headers = {"content-type": "application/json"}
@@ -161,13 +157,14 @@ class Table(Namespace):
         self, db_branch_name: str, table_name: str, column_name: str
     ) -> Response:
         """
-        Get the definition of a single column. To refer to sub-objects, the column name can contain dots. For example `address.country`.
-        path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
-        method: GET
+        Get the definition of a single column.  To refer to sub-objects, the column name can
+        contain dots.  For example `address.country`.
+        Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param column_name: str The Column name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param column_name: str The Column name
 
         :return Response
         """
@@ -178,13 +175,14 @@ class Table(Namespace):
         self, db_branch_name: str, table_name: str, column_name: str
     ) -> Response:
         """
-        Deletes the specified column. To refer to sub-objects, the column name can contain dots. For example `address.country`.
-        path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
-        method: DELETE
+        Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
+        For example `address.country`.
+        Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
+        Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param column_name: str The Column name [in: path, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param column_name: str The Column name
 
         :return Response
         """
@@ -195,14 +193,16 @@ class Table(Namespace):
         self, db_branch_name: str, table_name: str, column_name: str, payload: dict
     ) -> Response:
         """
-        Update column with partial data. Can be used for renaming the column by providing a new "name" field. To refer to sub-objects, the column name can contain dots. For example `address.country`.
-        path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
-        method: PATCH
+        Update column with partial data.  Can be used for renaming the column by providing a new
+        "name" field.  To refer to sub-objects, the column name can contain dots.  For example
+        `address.country`.
+        Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
+        Method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param column_name: str The Column name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param column_name: str The Column name
+        :param payload: dict content
 
         :return Response
         """

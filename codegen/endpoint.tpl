@@ -1,12 +1,14 @@
 
     def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> Response:
        """
-       ${description}
-       path: ${path}
-       method: ${http_method}
+       % for line in description :
+       ${line}
+       % endfor
+       Path: ${path}
+       Method: ${http_method}
 
        % for param in params['list']:
-       :param ${param['nameParam']}: ${param['type']} ${param['description']} [in: ${param['in']}, req: ${param['required']}]
+       :param ${param['nameParam']}: ${param['type']} ${param['description']}
        % endfor
 
        :return Response

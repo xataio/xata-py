@@ -37,11 +37,11 @@ class Records(Namespace):
     def branchTransaction(self, db_branch_name: str, payload: dict) -> Response:
         """
         Execute a transaction on a branch
-        path: /db/{db_branch_name}/transaction
-        method: POST
+        Path: /db/{db_branch_name}/transaction
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param payload: dict content
 
         :return Response
         """
@@ -54,13 +54,13 @@ class Records(Namespace):
     ) -> Response:
         """
         Insert a new Record into the Table
-        path: /db/{db_branch_name}/tables/{table_name}/data
-        method: POST
+        Path: /db/{db_branch_name}/tables/{table_name}/data
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param payload: dict content
+        :param columns: list = None Column filters
 
         :return Response
         """
@@ -75,13 +75,13 @@ class Records(Namespace):
     ) -> Response:
         """
         Retrieve record by ID
-        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
-        method: GET
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param record_id: str The Record name [in: path, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param columns: list = None Column filters
 
         :return Response
         """
@@ -101,17 +101,19 @@ class Records(Namespace):
         ifVersion: int = None,
     ) -> Response:
         """
-        By default, IDs are auto-generated when data is insterted into Xata. Sending a request to this endpoint allows us to insert a record with a pre-existing ID, bypassing the default automatic ID generation.
-        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
-        method: PUT
+        By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
+        this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
+        automatic ID generation.
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param record_id: str The Record name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
-        :param createOnly: bool = None  [in: query, req: False]
-        :param ifVersion: int = None  [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param payload: dict content
+        :param columns: list = None Column filters
+        :param createOnly: bool = None
+        :param ifVersion: int = None
 
         :return Response
         """
@@ -139,15 +141,15 @@ class Records(Namespace):
     ) -> Response:
         """
         Upsert record with ID
-        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
-        method: POST
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param record_id: str The Record name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
-        :param ifVersion: int = None  [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param payload: dict content
+        :param columns: list = None Column filters
+        :param ifVersion: int = None
 
         :return Response
         """
@@ -167,13 +169,13 @@ class Records(Namespace):
     ) -> Response:
         """
         Delete record from table
-        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
-        method: DELETE
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param record_id: str The Record name [in: path, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param columns: list = None Column filters
 
         :return Response
         """
@@ -193,15 +195,15 @@ class Records(Namespace):
     ) -> Response:
         """
         Update record with ID
-        path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
-        method: PATCH
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
+        Method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param record_id: str The Record name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
-        :param ifVersion: int = None  [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param payload: dict content
+        :param columns: list = None Column filters
+        :param ifVersion: int = None
 
         :return Response
         """
@@ -221,13 +223,13 @@ class Records(Namespace):
     ) -> Response:
         """
         Bulk insert records
-        path: /db/{db_branch_name}/tables/{table_name}/bulk
-        method: POST
+        Path: /db/{db_branch_name}/tables/{table_name}/bulk
+        Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param table_name: str The Table name [in: path, req: True]
-        :param payload: dict content [in: requestBody, req: True]
-        :param columns: list = None Column filters [in: query, req: False]
+        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param table_name: str The Table name
+        :param payload: dict content
+        :param columns: list = None Column filters
 
         :return Response
         """

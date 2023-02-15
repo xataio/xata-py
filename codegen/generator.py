@@ -24,6 +24,7 @@
 
 import argparse
 import logging
+import textwrap
 
 import requests
 from mako.template import Template
@@ -150,7 +151,9 @@ def generate_endpoint(
 
     vars = {
         "operation_id": endpoint["operationId"].strip(),
-        "description": desc,
+        "description": textwrap.wrap(
+            desc, width=90, expand_tabs=True, fix_sentence_endings=True
+        ),
         "http_method": method.upper(),
         "path": path.lower(),
         "params": endpointParams,
