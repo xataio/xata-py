@@ -121,3 +121,26 @@ class TestXataClient(unittest.TestCase):
 
         assert headers1["x-xata-agent"] == headers2["x-xata-agent"]
         assert headers1["user-agent"] == headers2["user-agent"]
+
+    def test_get_and_set_db_branch_name(self):
+        db_name = "db-123"
+        branch_name = "fancy-new-feature-branch"
+
+        client = XataClient(
+            api_key="api_key",
+            workspace_id="ws_id",
+            db_name=db_name,
+            branch_name=branch_name,
+        )
+        assert client.get_db_branch_name() == f"{db_name}:{branch_name}"
+
+        client.set_db_and_branch_names(None, "different-branch")
+        assert client.get_db_branch_name() == f"{db_name}:different-branch"
+
+        client.set_db_and_branch_names("different-db")
+        assert client.get_db_branch_name() == "different-db:different-branch"
+
+        client.set_db_and_branch_names(db_name, branch_name)
+        assert client.get_db_branch_name() == f"{db_name}:{branch_name}"
+        assert client.get_db_branch_name("foo") == f"foo:{branch_name}"
+        assert client.get_db_branch_name("foo", "bar") == "foo:bar"

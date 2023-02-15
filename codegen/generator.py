@@ -99,9 +99,9 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
     """
     Generate the endpoints of a namespace
     """
+    params = endpoints["parameters"] if "parameters" in endpoints else []
     for method in HTTP_METHODS:
         if method in endpoints:
-            params = endpoints["parameters"] if "parameters" in endpoints else []
             out = generate_endpoint(path, method, endpoints[method], params, references)
             file_name = "%s/%s.py" % (
                 WS_DIR,
@@ -138,23 +138,28 @@ def generate_endpoint(
     Generate a single endpoint
     """
     if "parameters" in endpoint:
-        parameters += endpoint["parameters"]
+        endpointParams = get_endpoint_params(
+            path, endpoint, parameters + endpoint["parameters"], references
+        )
+    else:
+        endpointParams = get_endpoint_params(path, endpoint, parameters, references)
+    if "description" in endpoint:
+        desc = endpoint["description"].strip()
+    else:
+        desc = endpoint["summary"].strip()
 
     vars = {
         "operation_id": endpoint["operationId"].strip(),
-        "description": endpoint["description"].strip()
-        if "description" in endpoint
-        else endpoint["summary"].strip(),
+        "description": desc,
         "http_method": method.upper(),
         "path": path.lower(),
-        "params": get_endpoint_params(path, endpoint, parameters, references),
+        "params": endpointParams,
         "request_body": get_endpoint_request_body(endpoint),
-        #        "responses": list(endpoint["responses"].keys()),
+        # "responses": list(endpoint["responses"].keys()),
     }
-    out = Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(
+    return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(
         **vars
     )
-    return out
 
 
 def get_endpoint_params(
@@ -168,8 +173,6 @@ def get_endpoint_params(
         "has_optional_params": 0,
     }
     if len(parameters) > 0:
-        counter_path = 0
-        counter_query = 0
         for r in parameters:
             # if not in ref -> endpoint specific params
             # else if name not in r -> method specific params

@@ -80,20 +80,17 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteBranch(self, db_branch_name: str, _from: str = None) -> Response:
+    def deleteBranch(self, db_branch_name: str) -> Response:
         """
         Delete the branch in the database and all its resources
         path: /db/{db_branch_name}
         method: DELETE
 
         :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`. [in: path, req: True]
-        :param _from: str = None Name of source branch to branch the new schema from [in: query, req: False]
 
         :return Response
         """
         url_path = f"/db/{db_branch_name}"
-        if _from is not None:
-            url_path += "?from={_from}"
         return self.request("DELETE", url_path)
 
     def getBranchMetadata(self, db_branch_name: str) -> Response:

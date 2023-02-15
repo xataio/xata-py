@@ -37,6 +37,7 @@ class Namespace:
     def get_base_url(self) -> str:
         if self.is_control_plane:
             return self.base_url
+        # Base URL must be build on the fly as the region & workspace Id can change
         return self.base_url.replace(
             "{workspaceId}", self.client.get_config()["workspaceId"]
         ).replace("{regionId}", self.client.get_config()["region"])
@@ -49,10 +50,6 @@ class Namespace:
             **self.client.get_headers(),
         }  # TODO use "|" when client py min version >= 3.9
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
-
-        print("##########")
-        print(url_path)
-        print("##########")
 
         if payload is None:
             resp = request(http_method, url, headers=headers)

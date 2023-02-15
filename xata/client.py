@@ -46,7 +46,7 @@ from .namespaces.workspace.table import Table
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
@@ -211,6 +211,22 @@ class XataClient:
         # TODO: resolve branch name by the current git branch
         return os.environ.get("XATA_BRANCH")
 
+    def get_db_branch_name(self, db_name: str = None, branch_name: str = None) -> str:
+        """
+        Get Database with branch name, format: {db_name}:{branch_name}
+        The name can be build with passed params or from config or a combination of both
+
+        :param db_name: str
+        :branch_name: str
+
+        :return str
+        """
+        if db_name is None:
+            db_name = self.get_config()["dbName"]
+        if branch_name is None:
+            branch_name = self.get_config()["branchName"]
+        return f"{db_name}:{branch_name}"
+
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
         headers = {
             **headers,
@@ -326,7 +342,6 @@ class XataClient:
     def set_db_and_branch_names(self, db_name: str = None, branch_name: str = None):
         if db_name is not None:
             self.db_name = db_name
-
         if branch_name is not None:
             self.branch_name = branch_name
 
