@@ -48,6 +48,14 @@ SPECS = {
         "base_url": "https://{workspaceId}.{regionId}.xata.sh",
     },
 }
+TYPE_REPLACEMENTS = {
+    "integer": "int",
+    "boolean": "bool",
+    "array": "list",
+    "object": "dict",
+    "string": "str",
+}
+RESERVED_WORDS = ["from"]
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -129,6 +137,9 @@ def generate_endpoint(
     """
     Generate a single endpoint
     """
+    if "parameters" in endpoint:
+        parameters += endpoint["parameters"]
+
     vars = {
         "operation_id": endpoint["operationId"].strip(),
         "description": endpoint["description"].strip()
@@ -151,46 +162,55 @@ def get_endpoint_params(
 ) -> list:
     skel = {
         "list": [],
-        "has_path_params": False,
-        "has_query_params": False,
+        "has_path_params": 0,
+        "has_query_params": 0,
         "has_payload": False,
-        "has_optional_params": False,
+        "has_optional_params": 0,
     }
     if len(parameters) > 0:
         counter_path = 0
         counter_query = 0
         for r in parameters:
-            if r["$ref"] not in references:
+            # if not in ref -> endpoint specific params
+            # else if name not in r -> method specific params
+            # else fail with code: 11
+            p = None
+            if "$ref" in r and r["$ref"] in references:
+                p = references[r["$ref"]]
+                p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+            elif "name" in r:
+                p = r
+                p["type"] = type_replacement(r["schema"]["type"])
+            else:
                 logging.error("could resolve reference %s in the lookup." % r["$ref"])
                 exit(11)
-            t = references[references[r["$ref"]]["schema"]["$ref"]]["type"]
-            if not references[r["$ref"]]["required"]:
-                t = f"{t} = None"
-            skel["list"].append(
-                {
-                    "name": references[r["$ref"]]["name"].strip(),
-                    "type": t,
-                    "trueType": references[references[r["$ref"]]["schema"]["$ref"]][
-                        "type"
-                    ],
-                    "description": references[r["$ref"]]["description"].strip(),
-                    "in": references[r["$ref"]]["in"],
-                    "required": references[r["$ref"]]["required"],
-                }
-            )
-            if references[r["$ref"]]["in"] == "path":
-                counter_path += 1
-            if references[r["$ref"]]["in"] == "query":
-                counter_query += 1
-            if not references[r["$ref"]]["required"]:
-                skel["has_optional_params"] = True
-        skel["has_path_params"] = counter_path > 0
-        skel["has_query_params"] = counter_query > 0
+
+            if "required" not in p:
+                p["required"] = False
+            if "description" not in p:
+                p["description"] = ""
+
+            p["name"] = p["name"].strip()
+            p["nameParam"] = replace_reserved_words(p["name"])
+            p["description"] = p["description"].strip()
+            p["trueType"] = p["type"]
+            if not p["required"]:
+                p["type"] += " = None"
+
+            skel["list"].append(p)
+
+            if p["in"] == "path":
+                skel["has_path_params"] += 1
+            if p["in"] == "query":
+                skel["has_query_params"] += 1
+            if not p["required"]:
+                skel["has_optional_params"] += 1
 
     if "requestBody" in endpoint:
         skel["list"].append(
             {
                 "name": "payload",
+                "nameParam": "payload",
                 "type": "dict",
                 "description": "content",
                 "in": "requestBody",
@@ -198,6 +218,13 @@ def get_endpoint_params(
             }
         )
         skel["has_payload"] = True
+
+    # Remove duplicates
+    tmp = {}
+    for p in skel["list"]:
+        if p["name"].lower() not in tmp:
+            tmp[p["name"].lower()] = p
+    skel["list"] = tmp.values()
 
     # reorder for optional params to be last
     if skel["has_optional_params"]:
@@ -223,14 +250,23 @@ def resolve_references(spec: dict) -> dict:
     for k, group in spec["components"].items():
         for name, component in group.items():
             if "type" in component:
-                if component["type"].lower() == "string":
-                    component["type"] = "str"
-                if component["type"].lower() == "object":
-                    component["type"] = "dict"
-                if component["type"].lower() == "array":
-                    component["type"] = "list"
+                component["type"] = type_replacement(component["type"])
             references[f"#/components/{k}/{name}"] = component
     return references
+
+
+def type_replacement(t: str) -> str:
+    origType = t.lower()
+    for isType, replacement in TYPE_REPLACEMENTS.items():
+        if origType == isType:
+            return replacement
+    return origType
+
+
+def replace_reserved_words(n: str) -> str:
+    if n.lower() in RESERVED_WORDS:
+        return f"_{n}"
+    return n
 
 
 if __name__ == "__main__":

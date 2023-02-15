@@ -65,11 +65,8 @@ class Records(Namespace):
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data"
-        query_params = []
         if columns is not None:
-            query_params.append("columns=%s" % ",".join(columns))
-        if query_params:
-            url_path += "?" + "&".join(query_params)
+            url_path += "?columns=%s" % ",".join(columns)
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
@@ -89,11 +86,8 @@ class Records(Namespace):
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
-        query_params = []
         if columns is not None:
-            query_params.append("columns=%s" % ",".join(columns))
-        if query_params:
-            url_path += "?" + "&".join(query_params)
+            url_path += "?columns=%s" % ",".join(columns)
         return self.request("GET", url_path)
 
     def insertRecordWithID(
@@ -103,6 +97,8 @@ class Records(Namespace):
         record_id: str,
         payload: dict,
         columns: list = None,
+        createOnly: bool = None,
+        ifVersion: int = None,
     ) -> Response:
         """
         By default, IDs are auto-generated when data is insterted into Xata. Sending a request to this endpoint allows us to insert a record with a pre-existing ID, bypassing the default automatic ID generation.
@@ -114,6 +110,8 @@ class Records(Namespace):
         :param record_id: str The Record name [in: path, req: True]
         :param payload: dict content [in: requestBody, req: True]
         :param columns: list = None Column filters [in: query, req: False]
+        :param createOnly: bool = None  [in: query, req: False]
+        :param ifVersion: int = None  [in: query, req: False]
 
         :return Response
         """
@@ -121,6 +119,10 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
+        if createOnly is not None:
+            query_params.append(f"createOnly={createOnly}")
+        if ifVersion is not None:
+            query_params.append(f"ifVersion={ifVersion}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
@@ -133,6 +135,8 @@ class Records(Namespace):
         record_id: str,
         payload: dict,
         columns: list = None,
+        createOnly: bool = None,
+        ifVersion: int = None,
     ) -> Response:
         """
         Upsert record with ID
@@ -144,6 +148,8 @@ class Records(Namespace):
         :param record_id: str The Record name [in: path, req: True]
         :param payload: dict content [in: requestBody, req: True]
         :param columns: list = None Column filters [in: query, req: False]
+        :param createOnly: bool = None  [in: query, req: False]
+        :param ifVersion: int = None  [in: query, req: False]
 
         :return Response
         """
@@ -151,13 +157,23 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
+        if createOnly is not None:
+            query_params.append(f"createOnly={createOnly}")
+        if ifVersion is not None:
+            query_params.append(f"ifVersion={ifVersion}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def deleteRecord(
-        self, db_branch_name: str, table_name: str, record_id: str, columns: list = None
+        self,
+        db_branch_name: str,
+        table_name: str,
+        record_id: str,
+        columns: list = None,
+        createOnly: bool = None,
+        ifVersion: int = None,
     ) -> Response:
         """
         Delete record from table
@@ -168,6 +184,8 @@ class Records(Namespace):
         :param table_name: str The Table name [in: path, req: True]
         :param record_id: str The Record name [in: path, req: True]
         :param columns: list = None Column filters [in: query, req: False]
+        :param createOnly: bool = None  [in: query, req: False]
+        :param ifVersion: int = None  [in: query, req: False]
 
         :return Response
         """
@@ -175,6 +193,10 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
+        if createOnly is not None:
+            query_params.append(f"createOnly={createOnly}")
+        if ifVersion is not None:
+            query_params.append(f"ifVersion={ifVersion}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         return self.request("DELETE", url_path)
@@ -186,6 +208,8 @@ class Records(Namespace):
         record_id: str,
         payload: dict,
         columns: list = None,
+        createOnly: bool = None,
+        ifVersion: int = None,
     ) -> Response:
         """
         Update record with ID
@@ -197,6 +221,8 @@ class Records(Namespace):
         :param record_id: str The Record name [in: path, req: True]
         :param payload: dict content [in: requestBody, req: True]
         :param columns: list = None Column filters [in: query, req: False]
+        :param createOnly: bool = None  [in: query, req: False]
+        :param ifVersion: int = None  [in: query, req: False]
 
         :return Response
         """
@@ -204,6 +230,10 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
+        if createOnly is not None:
+            query_params.append(f"createOnly={createOnly}")
+        if ifVersion is not None:
+            query_params.append(f"ifVersion={ifVersion}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
@@ -225,10 +255,7 @@ class Records(Namespace):
         :return Response
         """
         url_path = f"/db/{db_branch_name}/tables/{table_name}/bulk"
-        query_params = []
         if columns is not None:
-            query_params.append("columns=%s" % ",".join(columns))
-        if query_params:
-            url_path += "?" + "&".join(query_params)
+            url_path += "?columns=%s" % ",".join(columns)
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
