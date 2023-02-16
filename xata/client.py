@@ -46,12 +46,13 @@ from .namespaces.workspace.table import Table
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_BASE_URL_DOMAIN = "xata.sh"
 DEFAULT_CONTROL_PLANE_DOMAIN = "api.xata.io"
 DEFAULT_REGION = "us-east-1"
+DEFAULT_BRANCH_NAME = "main"
 CONFIG_LOCATION = ".xatarc"
 
 ApiKeyLocation = Literal["env", "dotenv", "profile", "parameter"]
@@ -75,7 +76,7 @@ class XataClient:
     :param workspace_id: The workspace ID to use.
     :param region: The region to use.
     :param db_name: The database name to use.
-    :param branch_name: The branch name to use.
+    :param branch_name: The branch name to use. Defaults to `main`
     :param base_url_domain: The domain to use for the base URL. Defaults to xata.sh.
     :param control_plane_domain: The domain to use for the control plane. Defaults to api.xata.io.
     """
@@ -93,7 +94,7 @@ class XataClient:
         workspace_id: str = None,
         db_name: str = None,
         db_url: str = None,
-        branch_name: str = None,
+        branch_name: str = DEFAULT_BRANCH_NAME,
     ):
         """Constructor for the XataClient."""
         if db_url is not None:
@@ -222,9 +223,9 @@ class XataClient:
         :return str
         """
         if db_name is None:
-            db_name = self.get_config()["dbName"]
+            db_name = self.db_name
         if branch_name is None:
-            branch_name = self.get_config()["branchName"]
+            branch_name = self.branch_name
         return f"{db_name}:{branch_name}"
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):

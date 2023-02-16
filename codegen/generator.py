@@ -57,6 +57,7 @@ TYPE_REPLACEMENTS = {
     "string": "str",
 }
 RESERVED_WORDS = ["from"]
+REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -174,19 +175,53 @@ def get_endpoint_params(
         "has_query_params": 0,
         "has_payload": False,
         "has_optional_params": 0,
+        "smart_db_branch_name": False,
     }
     if len(parameters) > 0:
+        # Check for convience param swaps
+        curatedParamList = []
         for r in parameters:
-            # if not in ref -> endpoint specific params
-            # else if name not in r -> method specific params
-            # else fail with code: 11
+            if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
+                logging.info(
+                    ">> adding smart value for %s"
+                    % "#/components/parameters/DBBranchNameParam"
+                )
+                # push two new params to cover for string creation
+                curatedParamList.append(
+                    {
+                        "name": "db_name",
+                        "in": "path",
+                        "schema": {"type": "string"},
+                        "type": "str",
+                        "description": "The name of the database to query. Default: database name from the client.",
+                        "required": False,
+                    }
+                )
+                curatedParamList.append(
+                    {
+                        "name": "branch_name",
+                        "in": "path",
+                        "schema": {"type": "string"},
+                        "type": "str",
+                        "description": "The name of the branch to query. Default: branch name from the client.",
+                        "required": False,
+                    }
+                )
+                skel["smart_db_branch_name"] = True
+            else:
+                curatedParamList.append(r)
+
+        for r in curatedParamList:
             p = None
+            # if not in ref -> endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
                 p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+            # else if name not in r -> method specific params
             elif "name" in r:
                 p = r
                 p["type"] = type_replacement(r["schema"]["type"])
+            # else fail with code: 11
             else:
                 logging.error("could resolve reference %s in the lookup." % r["$ref"])
                 exit(11)

@@ -47,90 +47,112 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def getBranchDetails(self, db_branch_name: str) -> Response:
+    def getBranchDetails(
+        self, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Get branch schema and metadata
         Path: /db/{db_branch_name}
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         return self.request("GET", url_path)
 
     def createBranch(
-        self, db_branch_name: str, payload: dict, _from: str = None
+        self,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+        _from: str = None,
     ) -> Response:
         """
         Create Database branch
         Path: /db/{db_branch_name}
         Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param _from: str = None Name of source branch to branch the new schema from
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         if _from is not None:
             url_path += "?from={_from}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteBranch(self, db_branch_name: str) -> Response:
+    def deleteBranch(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Delete the branch in the database and all its resources
         Path: /db/{db_branch_name}
         Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         return self.request("DELETE", url_path)
 
-    def getBranchMetadata(self, db_branch_name: str) -> Response:
+    def getBranchMetadata(
+        self, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Get Branch Metadata
         Path: /db/{db_branch_name}/metadata
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
         return self.request("GET", url_path)
 
-    def updateBranchMetadata(self, db_branch_name: str, payload: dict) -> Response:
+    def updateBranchMetadata(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Update the branch metadata
         Path: /db/{db_branch_name}/metadata
         Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getBranchStats(self, db_branch_name: str) -> Response:
+    def getBranchStats(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch usage metrics.
         Path: /db/{db_branch_name}/stats
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/stats"
         return self.request("GET", url_path)
 

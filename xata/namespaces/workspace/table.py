@@ -34,37 +34,49 @@ class Table(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def createTable(self, db_branch_name: str, table_name: str) -> Response:
+    def createTable(
+        self, table_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Creates a new table with the given name.  Returns 422 if a table with the same name
         already exists.
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("PUT", url_path)
 
-    def deleteTable(self, db_branch_name: str, table_name: str) -> Response:
+    def deleteTable(
+        self, table_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Deletes the table with the given name.
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("DELETE", url_path)
 
     def updateTable(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Update table.  Currently there is only one update operation supported: renaming the table
@@ -73,49 +85,63 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def getTableSchema(self, db_branch_name: str, table_name: str) -> Response:
+    def getTableSchema(
+        self, table_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Get table schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         return self.request("GET", url_path)
 
     def setTableSchema(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Update table schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getTableColumns(self, db_branch_name: str, table_name: str) -> Response:
+    def getTableColumns(
+        self, table_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Retrieves the list of table columns and their definition.  This endpoint returns the
         column list with object columns being reported with their full dot-separated path
@@ -123,16 +149,22 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
 
     def addTableColumn(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
@@ -143,18 +175,24 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def getColumn(
-        self, db_branch_name: str, table_name: str, column_name: str
+        self,
+        table_name: str,
+        column_name: str,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Get the definition of a single column.  To refer to sub-objects, the column name can
@@ -162,17 +200,23 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param column_name: str The Column name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("GET", url_path)
 
     def deleteColumn(
-        self, db_branch_name: str, table_name: str, column_name: str
+        self,
+        table_name: str,
+        column_name: str,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
@@ -180,17 +224,24 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param column_name: str The Column name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("DELETE", url_path)
 
     def updateColumn(
-        self, db_branch_name: str, table_name: str, column_name: str, payload: dict
+        self,
+        table_name: str,
+        column_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Update column with partial data.  Can be used for renaming the column by providing a new
@@ -199,13 +250,15 @@ class Table(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)

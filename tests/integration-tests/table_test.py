@@ -36,7 +36,7 @@ class TestClass(object):
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
+                "branchName": self.branch_name,
             },
         )
         assert r.status_code == 201
@@ -67,7 +67,9 @@ class TestClass(object):
     # Table Ops
     #
     def test_create_table(self):
-        r = self.client.table().createTable(self.client.get_db_branch_name(), "Posts")
+        r = self.client.table().createTable(
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 201
         assert r.json()["status"] == "completed"
         assert r.json()["tableName"] == "Posts"
@@ -75,12 +77,15 @@ class TestClass(object):
 
     def test_update_table(self):
         r = self.client.table().createTable(
-            self.client.get_db_branch_name(), "RenameMe"
+            "RenameMe", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 201
 
         r = self.client.table().updateTable(
-            self.client.get_db_branch_name(), "RenameMe", {"name": "NewName"}
+            "RenameMe",
+            {"name": "NewName"},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
@@ -89,18 +94,18 @@ class TestClass(object):
 
     def test_delete_table(self):
         r = self.client.table().createTable(
-            self.client.get_db_branch_name(), "DeleteMe"
+            "DeleteMe", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 201
 
         r = self.client.table().deleteTable(
-            self.client.get_db_branch_name(), "DeleteMe"
+            "DeleteMe", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
 
         r = self.client.table().deleteTable(
-            self.client.get_db_branch_name(), "NonExistingTable"
+            "NonExistingTable", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 404
 
@@ -109,24 +114,27 @@ class TestClass(object):
     #
     def test_set_table_schema(self, columns: dict):
         r = self.client.table().setTableSchema(
-            self.client.get_db_branch_name(), "Posts", columns
+            "Posts", columns, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
 
         r = self.client.table().setTableSchema(
-            self.client.get_db_branch_name(), "NonExistingTable", columns
+            "NonExistingTable",
+            columns,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
     def test_get_table_schema(self, columns):
         r = self.client.table().getTableSchema(
-            self.client.get_db_branch_name(), "Posts"
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert columns == r.json()
 
         r = self.client.table().getTableSchema(
-            self.client.get_db_branch_name(), "NonExistingTable"
+            "NonExistingTable", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 404
 
@@ -135,19 +143,19 @@ class TestClass(object):
     #
     def test_get_table_columns(self, columns: dict):
         r = self.client.table().getTableColumns(
-            self.client.get_db_branch_name(), "Posts"
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert r.json() == columns
 
         r = self.client.table().getTableColumns(
-            self.client.get_db_branch_name(), "NonExistingTable"
+            "NonExistingTable", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 404
 
     def test_add_column(self, columns: dict, new_column: dict):
         r = self.client.table().addTableColumn(
-            self.client.get_db_branch_name(), "Posts", new_column
+            "Posts", new_column, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
@@ -155,47 +163,63 @@ class TestClass(object):
         assert "parentMigrationID" in r.json()
 
         r = self.client.table().getTableColumns(
-            self.client.get_db_branch_name(), "Posts"
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         columns["columns"].append(new_column)
         assert r.json() == columns
 
         r = self.client.table().addTableColumn(
-            self.client.get_db_branch_name(), "NonExistingTable", {"name": "foo"}
+            "NonExistingTable",
+            {"name": "foo"},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.table().addTableColumn(
-            self.client.get_db_branch_name(), "Posts", {"name": "foo"}
+            "Posts", {"name": "foo"}, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 400
         r = self.client.table().addTableColumn(
-            self.client.get_db_branch_name(), "Posts", {"type": "bar"}
+            "Posts", {"type": "bar"}, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 400
 
     def test_get_column(self, new_column: dict):
         r = self.client.table().getColumn(
-            self.client.get_db_branch_name(), "Posts", new_column["name"]
+            "Posts",
+            new_column["name"],
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
         assert r.json() == new_column
 
         r = self.client.table().getColumn(
-            self.client.get_db_branch_name(), "Posts", "NonExistingColumn"
+            "Posts",
+            "NonExistingColumn",
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.table().getColumn(
-            self.client.get_db_branch_name(), "NonExistingTable", new_column["name"]
+            "NonExistingTable",
+            new_column["name"],
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
     def test_update_column(self, new_column: dict):
         newer_column = {"name": "a-newer-column"}
         r = self.client.table().updateColumn(
-            self.client.get_db_branch_name(), "Posts", new_column["name"], newer_column
+            "Posts",
+            new_column["name"],
+            newer_column,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
@@ -203,40 +227,57 @@ class TestClass(object):
         assert "parentMigrationID" in r.json()
 
         r = self.client.table().getColumn(
-            self.client.get_db_branch_name(), "Posts", newer_column["name"]
+            "Posts",
+            newer_column["name"],
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
 
         r = self.client.table().updateColumn(
-            self.client.get_db_branch_name(), "Posts", newer_column["name"], {}
+            "Posts",
+            newer_column["name"],
+            {},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 400
 
         r = self.client.table().updateColumn(
-            self.client.get_db_branch_name(), "Posts", new_column["name"], newer_column
+            "Posts",
+            new_column["name"],
+            newer_column,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
         r = self.client.table().updateColumn(
-            self.client.get_db_branch_name(),
             "NonExistingTable",
             new_column["name"],
             newer_column,
         )
         assert r.status_code == 404
         r = self.client.table().updateColumn(
-            self.client.get_db_branch_name(), "Posts", "NonExistingColumn", newer_column
+            "Posts",
+            "NonExistingColumn",
+            newer_column,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
     def test_delete_column(self, columns: dict):
         r = self.client.table().getTableColumns(
-            self.client.get_db_branch_name(), "Posts"
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert (len(r.json()["columns"]) - 1) == len(columns["columns"])
 
         r = self.client.table().deleteColumn(
-            self.client.get_db_branch_name(), "Posts", "a-newer-column"
+            "Posts",
+            "a-newer-column",
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
@@ -244,12 +285,15 @@ class TestClass(object):
         assert "parentMigrationID" in r.json()
 
         r = self.client.table().getColumn(
-            self.client.get_db_branch_name(), "Posts", "a-newer-column"
+            "Posts",
+            "a-newer-column",
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.table().getTableColumns(
-            self.client.get_db_branch_name(), "Posts"
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert r.json() == columns

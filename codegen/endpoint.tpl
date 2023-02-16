@@ -13,6 +13,9 @@
 
        :return Response
        """
+       % if params['smart_db_branch_name'] :
+       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+       % endif
        % if params['has_path_params'] :
        url_path = f"${path}"
        % else :
