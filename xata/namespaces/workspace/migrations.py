@@ -34,144 +34,173 @@ class Migrations(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def getBranchMigrationHistory(self, db_branch_name: str, payload: dict) -> Response:
+    def getBranchMigrationHistory(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Get branch migration history [deprecated]
         Path: /db/{db_branch_name}/migrations
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations"
         headers = {"content-type": "application/json"}
         return self.request("GET", url_path, headers, payload)
 
-    def getBranchMigrationPlan(self, db_branch_name: str, payload: dict) -> Response:
+    def getBranchMigrationPlan(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
         Path: /db/{db_branch_name}/migrations/plan
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations/plan"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def executeBranchMigrationPlan(
-        self, db_branch_name: str, payload: dict
+        self, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
         Apply a migration plan to the branch
         Path: /db/{db_branch_name}/migrations/execute
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations/execute"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getBranchSchemaHistory(self, db_branch_name: str, payload: dict) -> Response:
+    def getBranchSchemaHistory(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Query schema history.
         Path: /db/{db_branch_name}/schema/history
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/history"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def compareBranchWithUserSchema(
-        self, db_branch_name: str, payload: dict
+        self, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
         Compare branch with user schema.
         Path: /db/{db_branch_name}/schema/compare
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/compare"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def compareBranchSchemas(
-        self, db_branch_name: str, branch_name: str, payload: dict
+        self, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
         Compare branch schemas.
         Path: /db/{db_branch_name}/schema/compare/{branch_name}
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
-        :param branch_name: str The Database Name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/compare/{branch_name}"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def updateBranchSchema(self, db_branch_name: str, payload: dict) -> Response:
+    def updateBranchSchema(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Update Branch schema
         Path: /db/{db_branch_name}/schema/update
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/update"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def previewBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
+    def previewBranchSchemaEdit(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Preview branch schema edits.
         Path: /db/{db_branch_name}/schema/preview
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/preview"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def applyBranchSchemaEdit(self, db_branch_name: str, payload: dict) -> Response:
+    def applyBranchSchemaEdit(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Apply edit script.
         Path: /db/{db_branch_name}/schema/apply
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/apply"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)

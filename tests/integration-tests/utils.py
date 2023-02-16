@@ -28,7 +28,7 @@ from xata.client import XataClient
 
 
 def get_db_name() -> str:
-    return f"{datetime.today().strftime('%Y-%d-%m')}-sdk-py-e2e-test-{get_random_string(6)}"
+    return f"sdk-py-e2e-test-{get_random_string(6)}"
 
 
 def wait_until_records_are_indexed(table: str):

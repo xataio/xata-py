@@ -34,36 +34,47 @@ class Records(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def branchTransaction(self, db_branch_name: str, payload: dict) -> Response:
+    def branchTransaction(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Execute a transaction on a branch
         Path: /db/{db_branch_name}/transaction
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/transaction"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def insertRecord(
-        self, db_branch_name: str, table_name: str, payload: dict, columns: list = None
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+        columns: list = None,
     ) -> Response:
         """
         Insert a new Record into the Table
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data"
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)
@@ -71,20 +82,27 @@ class Records(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def getRecord(
-        self, db_branch_name: str, table_name: str, record_id: str, columns: list = None
+        self,
+        table_name: str,
+        record_id: str,
+        db_name: str = None,
+        branch_name: str = None,
+        columns: list = None,
     ) -> Response:
         """
         Retrieve record by ID
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: GET
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param record_id: str The Record name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)
@@ -92,10 +110,11 @@ class Records(Namespace):
 
     def insertRecordWithID(
         self,
-        db_branch_name: str,
         table_name: str,
         record_id: str,
         payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
         columns: list = None,
         createOnly: bool = None,
         ifVersion: int = None,
@@ -107,16 +126,18 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
         :param createOnly: bool = None
         :param ifVersion: int = None
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         query_params = []
         if columns is not None:
@@ -132,10 +153,11 @@ class Records(Namespace):
 
     def upsertRecordWithID(
         self,
-        db_branch_name: str,
         table_name: str,
         record_id: str,
         payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
         columns: list = None,
         ifVersion: int = None,
     ) -> Response:
@@ -144,15 +166,17 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
         :param ifVersion: int = None
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         query_params = []
         if columns is not None:
@@ -165,20 +189,27 @@ class Records(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def deleteRecord(
-        self, db_branch_name: str, table_name: str, record_id: str, columns: list = None
+        self,
+        table_name: str,
+        record_id: str,
+        db_name: str = None,
+        branch_name: str = None,
+        columns: list = None,
     ) -> Response:
         """
         Delete record from table
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: DELETE
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param record_id: str The Record name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)
@@ -186,10 +217,11 @@ class Records(Namespace):
 
     def updateRecordWithID(
         self,
-        db_branch_name: str,
         table_name: str,
         record_id: str,
         payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
         columns: list = None,
         ifVersion: int = None,
     ) -> Response:
@@ -198,15 +230,17 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
         :param ifVersion: int = None
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
         query_params = []
         if columns is not None:
@@ -219,20 +253,27 @@ class Records(Namespace):
         return self.request("PATCH", url_path, headers, payload)
 
     def bulkInsertTableRecords(
-        self, db_branch_name: str, table_name: str, payload: dict, columns: list = None
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+        columns: list = None,
     ) -> Response:
         """
         Bulk insert records
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/bulk"
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)

@@ -222,9 +222,9 @@ class XataClient:
         :return str
         """
         if db_name is None:
-            db_name = self.get_config()["dbName"]
+            db_name = self.db_name
         if branch_name is None:
-            branch_name = self.get_config()["branchName"]
+            branch_name = self.branch_name
         return f"{db_name}:{branch_name}"
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):

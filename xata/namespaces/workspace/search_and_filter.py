@@ -35,7 +35,11 @@ class Search_and_filter(Namespace):
     scope = "workspace"
 
     def queryTable(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         The Query Table API can be used to retrieve all records in a table.  The API support
@@ -207,33 +211,43 @@ class Search_and_filter(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def searchBranch(self, db_branch_name: str, payload: dict) -> Response:
+    def searchBranch(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Run a free text search operation across the database branch.
         Path: /db/{db_branch_name}/search
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def searchTable(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         Run a free text search operation in a particular table.  The endpoint accepts a `query`
@@ -246,18 +260,24 @@ class Search_and_filter(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def summarizeTable(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         This endpoint allows you to (optionally) define groups, and then to run calculations on
@@ -296,18 +316,24 @@ class Search_and_filter(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def aggregateTable(
-        self, db_branch_name: str, table_name: str, payload: dict
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> Response:
         """
         This endpoint allows you to run aggragations (analytics) on the data from one table.
@@ -320,12 +346,14 @@ class Search_and_filter(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
 
-        :param db_branch_name: str The DBBranchName matches the pattern `{db_name}:{branch_name}`.
         :param table_name: str The Table name
         :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
         """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)

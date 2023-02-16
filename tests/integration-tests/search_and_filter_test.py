@@ -24,13 +24,12 @@ from xata.client import XataClient
 
 
 class TestClass(object):
-    @classmethod
     def setup_class(self):
+        self.fake = Faker()
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.fake = Faker()
         self.record_id = utils.get_random_string(24)
+        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
         r = self.client.databases().createDatabase(
@@ -44,12 +43,13 @@ class TestClass(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable(self.client.get_db_branch_name(), "Posts")
+        r = self.client.table().createTable(
+            "Posts", db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 201
 
         # create schema
         r = self.client.table().setTableSchema(
-            self.client.get_db_branch_name(),
             "Posts",
             {
                 "columns": [
@@ -59,11 +59,12 @@ class TestClass(object):
                     {"name": "text", "type": "text"},
                 ]
             },
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
 
         # ingests posts
-        self.fake = Faker()
         self.posts = [
             {
                 "title": self.fake.company(),
@@ -74,14 +75,14 @@ class TestClass(object):
             for i in range(10)
         ]
         r = self.client.records().bulkInsertTableRecords(
-            self.client.get_db_branch_name(),
             "Posts",
             {"records": self.posts},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
-    @classmethod
     def teardown_class(self):
         r = self.client.databases().deleteDatabase(
             self.client.get_config()["workspaceId"], self.db_name
@@ -98,7 +99,7 @@ class TestClass(object):
             "page": {"size": 5},
         }
         r = self.client.search_and_filter().queryTable(
-            self.client.get_db_branch_name(), "Posts", payload
+            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert "records" in r.json()
@@ -111,12 +112,18 @@ class TestClass(object):
         assert "text" not in r.json()["records"][0]
 
         r = self.client.search_and_filter().queryTable(
-            self.client.get_db_branch_name(), "NonExistingTable", payload
+            "NonExistingTable",
+            payload,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.search_and_filter().queryTable(
-            self.client.get_db_branch_name(), "Posts", {"columns": [""]}
+            "Posts",
+            {"columns": [""]},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 400
 
@@ -126,7 +133,7 @@ class TestClass(object):
         """
         payload = {"query": self.posts[0]["title"]}
         r = self.client.search_and_filter().searchBranch(
-            self.client.get_db_branch_name(), payload
+            payload, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert "records" in r.json()
@@ -137,12 +144,14 @@ class TestClass(object):
         assert r.json()["records"][0]["title"] == self.posts[0]["title"]
 
         r = self.client.search_and_filter().searchBranch(
-            self.client.get_db_branch_name(), {"tables": [""], "query": "woopsie!"}
+            {"tables": [""], "query": "woopsie!"},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 500
 
         r = self.client.search_and_filter().searchBranch(
-            self.client.get_db_branch_name(), {"invalid": "query"}
+            {"invalid": "query"}, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 400
 
@@ -152,7 +161,7 @@ class TestClass(object):
         """
         payload = {"query": self.posts[0]["title"]}
         r = self.client.search_and_filter().searchTable(
-            self.client.get_db_branch_name(), "Posts", payload
+            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert "records" in r.json()
@@ -163,17 +172,23 @@ class TestClass(object):
         assert r.json()["records"][0]["title"] == self.posts[0]["title"]
 
         r = self.client.search_and_filter().searchTable(
-            self.client.get_db_branch_name(), "Posts", {}
+            "Posts", {}, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
 
         r = self.client.search_and_filter().searchTable(
-            self.client.get_db_branch_name(), "NonExistingTable", payload
+            "NonExistingTable",
+            payload,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.search_and_filter().searchTable(
-            self.client.get_db_branch_name(), "Posts", {"invalid": "query"}
+            "Posts",
+            {"invalid": "query"},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 400
 
@@ -183,14 +198,17 @@ class TestClass(object):
         """
         payload = {"columns": ["title", "slug"]}
         r = self.client.search_and_filter().summarizeTable(
-            self.client.get_db_branch_name(), "Posts", payload
+            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert "summaries" in r.json()
         assert len(r.json()["summaries"]) > 1
 
         r = self.client.search_and_filter().summarizeTable(
-            self.client.get_db_branch_name(), "NonExistingTable", payload
+            "NonExistingTable",
+            payload,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
@@ -200,7 +218,7 @@ class TestClass(object):
         """
         payload = {"aggs": {"titles": {"count": "*"}}}
         r = self.client.search_and_filter().aggregateTable(
-            self.client.get_db_branch_name(), "Posts", payload
+            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
         )
         assert r.status_code == 200
         assert "aggs" in r.json()
@@ -208,11 +226,17 @@ class TestClass(object):
         assert r.json()["aggs"]["titles"] == len(self.posts)
 
         r = self.client.search_and_filter().aggregateTable(
-            self.client.get_db_branch_name(), "NonExistingTable", payload
+            "NonExistingTable",
+            payload,
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 404
 
         r = self.client.search_and_filter().aggregateTable(
-            self.client.get_db_branch_name(), "Posts", {"aggs": {"foo": "bar"}}
+            "Posts",
+            {"aggs": {"foo": "bar"}},
+            db_name=self.db_name,
+            branch_name=self.branch_name,
         )
         assert r.status_code == 400

@@ -32,7 +32,7 @@ class Namespace:
 
     def get_scope(self) -> str:
         return self.scope
-    
+
     def is_control_plane(self) -> bool:
         return self.get_scope() == "core"
 

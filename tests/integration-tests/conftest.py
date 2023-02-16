@@ -33,6 +33,10 @@ def pytest_configure():
     pytest.branch = {
         "branch": None,
     }
+    pytest.table = {
+        "client": None,
+        "db_name": None,
+    }
 
 
 def create_demo_db(client: XataClient, db_name: string):
