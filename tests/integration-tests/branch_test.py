@@ -18,12 +18,13 @@
 #
 
 import utils
+import pytest
 
 from xata.client import XataClient
 
 
 class TestClass(object):
-    @classmethod
+
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -58,7 +59,6 @@ class TestClass(object):
         )
         assert r.status_code == 200
 
-    @classmethod
     def teardown_class(self):
         r = self.client.databases().deleteDatabase(
             self.client.get_config()["workspaceId"], self.db_name
@@ -105,20 +105,17 @@ class TestClass(object):
             payload, branch_name="new-super-duper-feature"
         )
         assert r.status_code == 201
-
-        """
         assert "databaseName" in r.json()
         assert "branchName" in r.json()
         assert "status" in r.json()
         assert r.json()["databaseName"] == self.client.get_config()["dbName"]
-        assert r.json()["branchName"] == payload["metadata"]["branch"]
+        assert r.json()["branchName"] == "new-super-duper-feature"
         assert r.json()["status"] == "completed"
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().createBranch(self.client.get_db_branch_name(), payload)
-        assert r.status_code == 422
-        """
+        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
+        assert r.status_code == 400
 
         r = self.client.branch().createBranch(
             payload, db_name="NOPE", branch_name=self.branch_name
