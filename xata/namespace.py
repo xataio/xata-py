@@ -29,13 +29,15 @@ class Namespace:
 
     def __init__(self, client):
         self.client = client
-        self.is_control_plane = self.get_scope() == "core"
 
     def get_scope(self) -> str:
         return self.scope
+    
+    def is_control_plane(self) -> bool:
+        return self.get_scope() == "core"
 
     def get_base_url(self) -> str:
-        if self.is_control_plane:
+        if self.is_control_plane():
             return self.base_url
         # Base URL must be build on the fly as the region & workspace Id can change
         return self.base_url.replace(
