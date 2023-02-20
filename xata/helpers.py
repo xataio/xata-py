@@ -46,7 +46,10 @@ class BulkProcessor(object):
             processing_timeout: float = DEFAULT_PROCESSING_TIMEOUT
         ):
         """
-        Constructor
+        BulkProcessor: Abstraction for bulk ingestion of records.
+        
+        :stability alpha
+
 
         :param client: XataClient
         :param thread_pool_size: int
