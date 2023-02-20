@@ -27,6 +27,7 @@
 
 import os
 import sys
+#import sphinx_rtd_theme
 
 project = "xata-py"
 copyright = "2022, Xatabase Inc."
@@ -44,7 +45,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+# html_theme = "sphinx_rtd_theme"
 # html_static_path = ['_static']
 
 sys.path.insert(0, os.path.abspath(".."))
