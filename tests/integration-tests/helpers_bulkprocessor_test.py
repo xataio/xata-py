@@ -18,6 +18,7 @@
 #
 
 import time
+
 import pytest
 import utils
 from faker import Faker
@@ -82,14 +83,22 @@ class TestClass(object):
 
     def test_bulk_insert_records(self, record: dict):
         pt = 2
-        bp = BulkProcessor(self.client, thread_pool_size=1, batch_size=5, flush_interval=1, processing_timeout=pt)
-        bp.put_records('Posts', [self._get_record() for x in range(10)])
+        bp = BulkProcessor(
+            self.client,
+            thread_pool_size=1,
+            batch_size=5,
+            flush_interval=1,
+            processing_timeout=pt,
+        )
+        bp.put_records("Posts", [self._get_record() for x in range(10)])
 
         # wait until indexed :shrug:
         time.sleep(pt)
-        utils.wait_until_records_are_indexed('Posts')
+        utils.wait_until_records_are_indexed("Posts")
 
-        r = self.client.search_and_filter().searchTable('Posts', {}, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().searchTable(
+            "Posts", {}, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) > 0
