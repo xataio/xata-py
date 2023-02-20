@@ -17,14 +17,13 @@
 # under the License.
 #
 
-import utils
 import pytest
+import utils
 
 from xata.client import XataClient
 
 
 class TestClass(object):
-
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -114,7 +113,9 @@ class TestClass(object):
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
+        r = self.client.branch().createBranch(
+            payload, branch_name="the-incredible-hulk", _from="avengers"
+        )
         assert r.status_code == 400
 
         r = self.client.branch().createBranch(

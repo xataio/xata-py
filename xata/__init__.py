@@ -19,4 +19,4 @@
 
 from .client import XataClient
 
-__all__ = ("XataClient",)
+__all__ = ("XataClient", "BulkProcessor")

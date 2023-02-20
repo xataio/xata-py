@@ -17,15 +17,14 @@
 # under the License.
 #
 
-import os
 import unittest
 
 import utils
 
 from xata.client import XataClient, __version__
 
-class TestXataClient(unittest.TestCase):
 
+class TestXataClient(unittest.TestCase):
     def test_sdk_version(self):
         db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
         client = XataClient(db_url=db_url)
@@ -63,7 +62,7 @@ class TestXataClient(unittest.TestCase):
         ws_id = "ws-idddddd"
         db_name = "my_db-042"
         branch_name = "super-duper-feature"
-        region="r-e-g-i-o-n-1"
+        region = "r-e-g-i-o-n-1"
 
         client = XataClient(
             api_key=api_key,
@@ -75,7 +74,7 @@ class TestXataClient(unittest.TestCase):
 
         conf = client.get_config()
         assert len(conf) == 7
-        
+
         assert "dbName" in conf
         assert "branchName" in conf
         assert "apiKey" in conf
@@ -94,12 +93,11 @@ class TestXataClient(unittest.TestCase):
 
         client.set_db_and_branch_names("avengers", "where-is-the-hulk")
         assert client.get_config() != conf
-        
+
         assert client.get_config()["dbName"] != conf["dbName"]
         assert client.get_config()["branchName"] != conf["branchName"]
-        
+
         assert client.get_config()["dbName"] == "avengers"
         assert client.get_config()["branchName"] == "where-is-the-hulk"
 
         assert client.get_config()["apiKey"] == conf["apiKey"]
-        
