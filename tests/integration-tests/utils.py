@@ -20,7 +20,6 @@
 import random
 import string
 import time
-from datetime import datetime
 
 from requests import Response
 

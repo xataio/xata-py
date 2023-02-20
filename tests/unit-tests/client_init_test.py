@@ -19,9 +19,11 @@
 
 import os
 import unittest
+
 import pytest
 
-from xata.client import XataClient, __version__
+from xata.client import XataClient
+
 
 class TestXataClient(unittest.TestCase):
     def test_init_api_key_with_params(self):

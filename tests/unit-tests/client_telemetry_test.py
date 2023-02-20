@@ -25,7 +25,6 @@ from xata.client import XataClient, __version__
 
 
 class TestXataClient(unittest.TestCase):
-
     def test_telemetry_headers(self):
         api_key = "this-key-42"
         client1 = XataClient(api_key=api_key, workspace_id="ws_id")
