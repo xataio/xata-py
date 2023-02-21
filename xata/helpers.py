@@ -109,10 +109,10 @@ class BulkProcessor(object):
                 if r.status_code != 200:
                     self.logger.error(
                         "thread #%d: unable to process batch for table '%s', with error: %d - %s"
-                        % (id, batch["table"], r.status_code, r.json()["message"])
+                        % (id, batch["table"], r.status_code, r.json())
                     )
                     # TODO add records to batch again or callback
-                    raise Exception(r.json()["message"])
+                    raise Exception(r.json())
 
                 self.logger.debug(
                     "thread #%d: pushed a batch of %d records to table %s"
@@ -165,7 +165,9 @@ class BulkProcessor(object):
         self.logger.debug("flushing queue with %d records .." % (self.records.size()))
         self.records.set_flush_interval(0)
         self.processing_timeout = 0
+
         while self.stats["queue"] > 0:
+            self.logger.debug("flushing queue with %d records." % self.stats["queue"])
             time.sleep(self.processing_timeout / len(self.thread_workers) + 0.01)
 
     class Records(object):
