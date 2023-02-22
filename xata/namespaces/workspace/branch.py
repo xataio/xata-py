@@ -163,14 +163,14 @@ class Branch(Namespace):
         "xataBranch": "main"       },       {         "gitBranch": "gitBranch1",
         "xataBranch": "xataBranch1"       }       {         "gitBranch": "xataBranch2",
         "xataBranch": "xataBranch2"       }   ] } ```
-        Path: /dbs/{db_name}/gitbranches
+        Path: /dbs/{db_name}/gitBranches
         Method: GET
 
         :param db_name: str The Database Name
 
         :return Response
         """
-        url_path = f"/dbs/{db_name}/gitbranches"
+        url_path = f"/dbs/{db_name}/gitBranches"
         return self.request("GET", url_path)
 
     def addGitBranchesEntry(self, db_name: str, payload: dict) -> Response:
@@ -183,7 +183,7 @@ class Branch(Namespace):
         existed and it was overwritten, the response code is 201.  Example request:  ```json //
         POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches {   "gitBranch": "fix/bug123",
         "xataBranch": "fix_bug" } ```
-        Path: /dbs/{db_name}/gitbranches
+        Path: /dbs/{db_name}/gitBranches
         Method: POST
 
         :param db_name: str The Database Name
@@ -191,7 +191,7 @@ class Branch(Namespace):
 
         :return Response
         """
-        url_path = f"/dbs/{db_name}/gitbranches"
+        url_path = f"/dbs/{db_name}/gitBranches"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
@@ -201,7 +201,7 @@ class Branch(Namespace):
         branch must be passed as a query parameter.  If the git branch is not found, the endpoint
         returns a 404 status code.  Example request:  ```json // DELETE https://tutorial-
         ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
-        Path: /dbs/{db_name}/gitbranches
+        Path: /dbs/{db_name}/gitBranches
         Method: DELETE
 
         :param db_name: str The Database Name
@@ -209,7 +209,7 @@ class Branch(Namespace):
 
         :return Response
         """
-        url_path = f"/dbs/{db_name}/gitbranches"
+        url_path = f"/dbs/{db_name}/gitBranches"
         if gitBranch is not None:
             url_path += "?gitBranch={gitBranch}"
         return self.request("DELETE", url_path)
@@ -228,7 +228,7 @@ class Branch(Namespace):
         ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg ```
         Example response:  ```json {   "branch": "main",   "reason": {     "code":
         "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
-        Path: /dbs/{db_name}/resolvebranch
+        Path: /dbs/{db_name}/resolveBranch
         Method: GET
 
         :param db_name: str The Database Name
@@ -237,7 +237,7 @@ class Branch(Namespace):
 
         :return Response
         """
-        url_path = f"/dbs/{db_name}/resolvebranch"
+        url_path = f"/dbs/{db_name}/resolveBranch"
         query_params = []
         if gitBranch is not None:
             query_params.append(f"gitBranch={gitBranch}")
