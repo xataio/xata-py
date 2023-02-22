@@ -272,6 +272,33 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
+    def vectorSearchTable(
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        This endpoint can be used to perform vector-based similarity searches in a table.  It can
+        be used for implementing semantic search and product recommendation.  To use this
+        endpoint, you need a column of type vector.  The input vector must have the same dimension
+        as the vector column.
+        Path: /db/{db_branch_name}/tables/{table_name}/vectorsearch
+        Method: POST
+
+        :param table_name: str The Table name
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorsearch"
+        headers = {"content-type": "application/json"}
+        return self.request("POST", url_path, headers, payload)
+
     def summarizeTable(
         self,
         table_name: str,
