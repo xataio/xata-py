@@ -284,7 +284,7 @@ class Search_and_filter(Namespace):
         be used for implementing semantic search and product recommendation.  To use this
         endpoint, you need a column of type vector.  The input vector must have the same dimension
         as the vector column.
-        Path: /db/{db_branch_name}/tables/{table_name}/vectorsearch
+        Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
 
         :param table_name: str The Table name
@@ -295,7 +295,7 @@ class Search_and_filter(Namespace):
         :return Response
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-        url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorsearch"
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorSearch"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
