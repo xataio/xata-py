@@ -156,7 +156,7 @@ def generate_endpoint(
             desc, width=90, expand_tabs=True, fix_sentence_endings=True
         ),
         "http_method": method.upper(),
-        "path": path.lower(),
+        "path": path,
         "params": endpointParams,
         "request_body": get_endpoint_request_body(endpoint),
         # "responses": list(endpoint["responses"].keys()),
