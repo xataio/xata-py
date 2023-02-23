@@ -18,7 +18,6 @@
 #
 
 import utils
-from faker import Faker
 
 from xata.client import XataClient
 
@@ -56,7 +55,11 @@ class TestClass(object):
             {
                 "columns": [
                     {"name": "full_name", "type": "string"},
-                    {"name": "full_name_vec", "type": "vector", "vector": {"dimension": 4}},
+                    {
+                        "name": "full_name_vec",
+                        "type": "vector",
+                        "vector": {"dimension": 4},
+                    },
                 ]
             },
             db_name=self.db_name,
@@ -65,10 +68,10 @@ class TestClass(object):
         assert r.status_code == 200
 
         self.users = [
-            { 'full_name': 'r1', 'full_name_vec': [0.1, 0.2, 0.3, 0.5] },
-            { 'full_name': 'r2', 'full_name_vec': [4, 3, 2, 1] },
-            { 'full_name': 'r3', 'full_name_vec': [0.5, 0.2, 0.3, 0.1] },
-            { 'full_name': 'r4', 'full_name_vec': [1, 2, 3, 4] }
+            {"full_name": "r1", "full_name_vec": [0.1, 0.2, 0.3, 0.5]},
+            {"full_name": "r2", "full_name_vec": [4, 3, 2, 1]},
+            {"full_name": "r3", "full_name_vec": [0.5, 0.2, 0.3, 0.1]},
+            {"full_name": "r4", "full_name_vec": [1, 2, 3, 4]},
         ]
 
         r = self.client.records().bulkInsertTableRecords(
@@ -91,24 +94,28 @@ class TestClass(object):
             "column": "full_name_vec",
             "queryVector": [1, 2, 3, 4],
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         rec1 = r.json()["records"]
         assert len(rec1) == 4
         res_order = [x["full_name"] for x in rec1]
-        assert res_order == ['r4', 'r1', 'r2', 'r3']
+        assert res_order == ["r4", "r1", "r2", "r3"]
 
         payload = {
             "column": "full_name_vec",
             "queryVector": [0.4, 0.3, 0.2, 0.1],
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         rec2 = r.json()["records"]
         assert len(rec2) == 4
         res_order = [x["full_name"] for x in rec2]
-        assert res_order == ['r2', 'r3', 'r4', 'r1']
+        assert res_order == ["r2", "r3", "r4", "r1"]
         assert rec1 != rec2
 
     def test_vector_search_table_size_param(self):
@@ -117,7 +124,9 @@ class TestClass(object):
             "queryVector": [1, 2, 3, 4],
             "size": 2,
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 2
@@ -127,7 +136,9 @@ class TestClass(object):
             "queryVector": [1, 2, 3, 4],
             "size": 1000,
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 4
@@ -136,49 +147,47 @@ class TestClass(object):
         payload = {
             "column": "full_name_vec",
             "queryVector": [1, 2, 3, 4],
-            "similarityFunction": "l1", # euclidian
+            "similarityFunction": "l1",  # euclidian
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         res_order = [x["full_name"] for x in r.json()["records"]]
-        assert res_order[0:2] == ['r4', 'r2'] # only test the first two items
+        assert res_order[0:2] == ["r4", "r2"]  # only test the first two items
         # TODO ^ flaky test, better fine grained data set to query
         # assumption tie breaker between r3 and r1 flips
-    
+
     def test_vector_search_table_filter_param(self):
         payload = {
             "column": "full_name_vec",
             "queryVector": [1, 2, 3, 4],
-            "filter": {
-                "full_name": { 
-                    "$any": ['r3', 'r4'] 
-                }
-            }
+            "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 2
         res_order = [x["full_name"] for x in r.json()["records"]]
-        assert res_order == ['r4', 'r3']
+        assert res_order == ["r4", "r3"]
 
     def test_vector_search_table_filter_and_size_param(self):
         payload = {
             "column": "full_name_vec",
             "queryVector": [1, 2, 3, 4],
             "size": 1,
-            "filter": {
-                "full_name": { 
-                    "$any": ['r3', 'r4'] 
-                }
-            }
+            "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 1
-        assert r.json()["records"][0]["full_name"] == 'r4'
+        assert r.json()["records"][0]["full_name"] == "r4"
 
     def test_vector_search_table_filter_and_size_and_similarity_param(self):
         payload = {
@@ -186,14 +195,12 @@ class TestClass(object):
             "queryVector": [1, 2, 3, 4],
             "similarityFunction": "l1",
             "size": 1,
-            "filter": {
-                "full_name": { 
-                    "$any": ['r3', 'r4'] 
-                }
-            }
+            "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable("users", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().vectorSearchTable(
+            "users", payload, db_name=self.db_name, branch_name=self.branch_name
+        )
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 1
-        assert r.json()["records"][0]["full_name"] == 'r4'
+        assert r.json()["records"][0]["full_name"] == "r4"
