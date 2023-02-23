@@ -376,6 +376,12 @@ class XataClient:
         if branch_name is not None:
             self.branch_name = branch_name
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.search_and_filter().queryTable(:table, :body)",
+    )
     def query(
         self,
         table: str,
@@ -386,7 +392,8 @@ class XataClient:
         sort: dict = None,
         page: dict = None,
     ) -> dict:
-        """Query a table.
+        """
+        Please use: client.search_and_filter().queryTable()
 
         :meta public:
         :param table: The name of the table to query.
@@ -400,7 +407,6 @@ class XataClient:
         :param page: A page expression to apply to the query.
         :return: A page of results.
         """
-
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
@@ -410,6 +416,12 @@ class XataClient:
         )
         return result.json()
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details='No direct replacement. Use `{"size": 1}` with client.search_and_filter().queryTable()',
+    )
     def get_first(
         self,
         table: str,
@@ -432,7 +444,6 @@ class XataClient:
         :param sort: A sort expression to apply to the query.
         :return: A record as a dictionary.
         """
-
         page = {"size": 1}
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
@@ -446,6 +457,12 @@ class XataClient:
             return None
         return data.get("records")[0]
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().getRecord(:table, :id)",
+    )
     def get_by_id(
         self,
         table: str,
@@ -453,10 +470,9 @@ class XataClient:
         db_name: str = None,
         branch_name: str = None,
     ) -> Optional[dict]:
-        """Get a specific record by its ID. Returns None if an record with that ID
-        doesn't exist.
+        """
+        Please use: client.records().getRecord(<id>)
 
-        :meta public:
         :param table: The name of the table to query.
         :param id: The ID of the record to get.
         :param db_name: The name of the database to query. If not provided, the database name
@@ -475,6 +491,12 @@ class XataClient:
             return None
         return result.json()
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().insertRecord(:table) or client.records().insertRecordWithId(:table, :id)",
+    )
     def create(
         self,
         table: str,
@@ -483,10 +505,11 @@ class XataClient:
         db_name: str = None,
         branch_name: str = None,
     ) -> str:
-        """Create a record in a table. If an ID is not provided, one will be generated.
+        """
+        Please use: client.records().insertRecord(:table) or client.records().insertRecordWithId(:table, :id)
+        Create a record in a table. If an ID is not provided, one will be generated.
         If the ID is provided and a record with that ID already exists, an error is returned.
 
-        :meta public:
         :param table: The name of the table to query.
         :param id: The ID of the record to create. If not provided, one will be generated.
         :param record: The record to create, as dict.
@@ -496,7 +519,6 @@ class XataClient:
                         from the client obejct is used.
         :return: The ID of the created record.
         """
-
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
@@ -513,6 +535,12 @@ class XataClient:
         )
         return result.json()["id"]
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().upsertRecordWithID(:table, :id)",
+    )
     def create_or_update(
         self,
         table: str,
@@ -521,7 +549,8 @@ class XataClient:
         db_name: str = None,
         branch_name: str = None,
     ) -> str:
-        """Create or updated a record in a table. If a record with the same id already
+        """
+        Create or updated a record in a table. If a record with the same id already
         exists, it will be updated. Only the provided columns in record are replaced, is
         a column is not present explicitely in record, it is not updated.
 
@@ -543,6 +572,12 @@ class XataClient:
         )
         return result.json()["id"]
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().insertRecordWithID(:table, :id)",
+    )
     def create_or_replace(
         self,
         table: str,
@@ -572,6 +607,12 @@ class XataClient:
         )
         return result.json()["id"]
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().updateRecordWithID(:table, :id)",
+    )
     def update(
         self,
         table: str,
@@ -617,6 +658,12 @@ class XataClient:
             return None
         return result.json()
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.records().deleteRecord(:table, :id)",
+    )
     def delete_record(
         self, table: str, id: str, db_name: str = None, branch_name: str = None
     ) -> Optional[dict]:
@@ -645,6 +692,12 @@ class XataClient:
             raise RecordNotFoundException(id)
         return result.json()
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.search_and_filter().searchBranch(:payload)",
+    )
     def search(
         self,
         query: str,
@@ -680,6 +733,12 @@ class XataClient:
             raise BadRequestException(result.status_code, result.json()["message"])
         return result.json()
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="client.search_and_filter().searchTable(:payload)",
+    )
     def search_table(
         self,
         table_name: str,
