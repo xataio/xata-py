@@ -23,6 +23,7 @@ import uuid
 from typing import Literal, Optional
 from urllib.parse import urljoin
 
+import deprecation
 import requests
 from dotenv import dotenv_values
 
@@ -272,14 +273,25 @@ class XataClient:
         region = parts[1]
         return workspaceId, region, db
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="No replacement, function is superfluous",
+    )
     def get(self, urlPath, headers={}, **kwargs):
         """Send a GET request to the Xata API. This is a wrapper around
         the `requests` library and accepts the same parameters as the `get`
         method of the `requests` library.
         """
-
         return self.request("GET", urlPath, headers=headers, **kwargs)
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="No replacement, function is superfluous",
+    )
     def post(self, urlPath, headers={}, **kwargs):
         """Send a POST request to the Xata API. This is a wrapper around
         the `requests` library and accepts the same parameters as the `post`
@@ -287,6 +299,12 @@ class XataClient:
         """
         return self.request("POST", urlPath, headers=headers, **kwargs)
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="No replacement, function is superfluous",
+    )
     def put(self, urlPath, headers={}, **kwargs):
         """Send a PUT request to the Xata API. This is a wrapper around
         the `requests` library and accepts the same parameters as the `put`
@@ -294,6 +312,12 @@ class XataClient:
         """
         return self.request("PUT", urlPath, headers=headers, **kwargs)
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="No replacement, function is superfluous",
+    )
     def delete(self, urlPath, headers={}, **kwargs):
         """Send a DELETE request to the Xata API. This is a wrapper around
         the `requests` library and accepts the same parameters as the `delete`
@@ -301,6 +325,12 @@ class XataClient:
         """
         return self.request("DELETE", urlPath, headers=headers, **kwargs)
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details="No replacement, function is superfluous",
+    )
     def patch(self, urlPath, headers={}, **kwargs):
         """Send a PATCH request to the Xata API. This is a wrapper around
         the `requests` library and accepts the same parameters as the `patch`
