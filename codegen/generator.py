@@ -25,9 +25,12 @@
 import argparse
 import logging
 import textwrap
-
+import hashlib
+import json
 import requests
+
 from mako.template import Template
+from typing import Dict, Any
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
@@ -309,7 +312,21 @@ def replace_reserved_words(n: str) -> str:
         return f"_{n}"
     return n
 
+def checksum(dictionary: Dict[str, Any]) -> str:
+    """
+    MD5 hash of a dictionary.
+    credit: https://www.doc.ic.ac.uk/~nuric/coding/how-to-hash-a-dictionary-in-python.html
+    """
+    dhash = hashlib.md5()
+    # We need to sort arguments so {'a': 1, 'b': 2} is
+    # the same as {'b': 2, 'a': 1}
+    encoded = json.dumps(dictionary, sort_keys=True).encode()
+    dhash.update(encoded)
+    return dhash.hexdigest()
 
+# ------------------------------------------------------- #
+#                         MAIN                            #
+# ------------------------------------------------------- #
 if __name__ == "__main__":
     scope = args.scope.lower().strip()
     logging.info("starting codegen for scope: %s .." % scope)
@@ -320,6 +337,14 @@ if __name__ == "__main__":
 
     # fetch spec
     spec = fetch_openapi_specs(SPECS[scope]["spec_url"])
+    
+    # check for changes
+    this_csum = checksum(spec)
+    with open(f"codegen/checksums/{scope}.txt", 'r') as file:
+        last_csum = file.read().rstrip()
+    if this_csum == last_csum:
+        logging.info("no specification changes detected, nothing new to generate. stopping here.")
+        exit(0)
 
     # filter out endpointless namespaces
     logging.info(
@@ -349,4 +374,10 @@ if __name__ == "__main__":
         )
         generate_endpoints(path, endpoints, references)
         it += 1
+
+    # Store new checksum
+    logging.info("persisting spec checksum '%s'" % this_csum)
+    with open(f"codegen/checksums/{scope}.txt", 'w') as file:
+        file.write(this_csum)
+
     logging.info("done.")
