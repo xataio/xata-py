@@ -41,13 +41,13 @@ class Users(Namespace):
         Return details of the user making the request
         Path: /user
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
 
         :return Response
         """
@@ -59,13 +59,13 @@ class Users(Namespace):
         Update user info
         Path: /user
         Method: PUT
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param payload: dict content
 
         :return Response
@@ -81,13 +81,12 @@ class Users(Namespace):
         Delete the user making the request
         Path: /user
         Method: DELETE
-        Responses:
+        Response status codes:
         - 204: No Content
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
 
         :return Response
         """

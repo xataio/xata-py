@@ -6,11 +6,18 @@
        % endfor
        Path: ${path}
        Method: ${http_method}
-       Responses:
+       Response status codes:
        % for rc in params['response_codes']:
        - ${rc["code"]}: ${rc["description"]}
        % endfor
-
+       % if len(params['response_content_types']) > 1 :
+       Response content types:
+       % for rc in params['response_content_types']:
+       - ${rc["content_type"]}
+       % endfor
+       % elif len(params['response_content_types']) == 1 :
+       Response content type: ${params['response_content_types'][0]["content_type"]}
+       % endif
        % for param in params['list']:
        :param ${param['nameParam']}: ${param['type']} ${param['description']}
        % endfor

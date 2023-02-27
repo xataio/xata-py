@@ -210,13 +210,12 @@ class Search_and_filter(Namespace):
         10,     "before": "end"   } } ```
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -236,14 +235,13 @@ class Search_and_filter(Namespace):
         Run a free text search operation across the database branch.
         Path: /db/{db_branch_name}/search
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 503: Unexpected Error
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -272,13 +270,12 @@ class Search_and_filter(Namespace):
         unsupported
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -305,13 +302,12 @@ class Search_and_filter(Namespace):
         as the vector column.
         Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -336,14 +332,16 @@ class Search_and_filter(Namespace):
         will stream the results back as SSE's.
         Path: /db/{db_branch_name}/tables/{table_name}/ask
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Response to the question
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 503: Unexpected Error
         - 5XX: Unexpected Error
-
+        Response content types:
+        - application/json
+        - text/event-stream
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -399,13 +397,12 @@ class Search_and_filter(Namespace):
         how many records to return.  If unspecified, Xata will return the default size.
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -435,13 +432,12 @@ class Search_and_filter(Namespace):
         usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.

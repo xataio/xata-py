@@ -41,13 +41,15 @@ class Records(Namespace):
         Execute a transaction on a branch
         Path: /db/{db_branch_name}/transaction
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Returns the results of a successful transaction.
         - 400: Returns errors from a failed transaction.
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content types:
+        - application/json
+        - application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -71,13 +73,12 @@ class Records(Namespace):
         Insert a new Record into the Table
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
-        Responses:
+        Response status codes:
         - 201: Record ID and version
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -105,13 +106,12 @@ class Records(Namespace):
         Retrieve record by ID
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: GET
-        Responses:
+        Response status codes:
         - 200: Table Record Reponse
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -143,7 +143,7 @@ class Records(Namespace):
         automatic ID generation.
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
-        Responses:
+        Response status codes:
         - 200: Record ID and version
         - 201: Record ID and version
         - 400: Bad Request
@@ -151,7 +151,6 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -191,7 +190,7 @@ class Records(Namespace):
         Upsert record with ID
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Record ID and version
         - 201: Record ID and version
         - 400: Bad Request
@@ -199,7 +198,6 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -234,14 +232,13 @@ class Records(Namespace):
         Delete record from table
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: DELETE
-        Responses:
+        Response status codes:
         - 200: Table Record Reponse
         - 204: No Content
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -270,14 +267,13 @@ class Records(Namespace):
         Update record with ID
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
-        Responses:
+        Response status codes:
         - 200: Record ID and version
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -312,14 +308,13 @@ class Records(Namespace):
         Bulk insert records
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Response with multiple errors of the bulk execution
         - 401: Authentication Error
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.

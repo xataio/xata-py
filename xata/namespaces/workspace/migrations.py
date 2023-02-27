@@ -41,13 +41,13 @@ class Migrations(Namespace):
         Get branch migration history [deprecated]
         Path: /db/{db_branch_name}/migrations
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -66,13 +66,12 @@ class Migrations(Namespace):
         Compute a migration plan from a target schema the branch should be migrated too.
         Path: /db/{db_branch_name}/migrations/plan
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Example response
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -91,13 +90,12 @@ class Migrations(Namespace):
         Apply a migration plan to the branch
         Path: /db/{db_branch_name}/migrations/execute
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -116,13 +114,13 @@ class Migrations(Namespace):
         Query schema history.
         Path: /db/{db_branch_name}/schema/history
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -141,13 +139,12 @@ class Migrations(Namespace):
         Compare branch with user schema.
         Path: /db/{db_branch_name}/schema/compare
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema comparison response.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -166,13 +163,12 @@ class Migrations(Namespace):
         Compare branch schemas.
         Path: /db/{db_branch_name}/schema/compare/{branch_name}
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema comparison response.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -191,13 +187,12 @@ class Migrations(Namespace):
         Update Branch schema
         Path: /db/{db_branch_name}/schema/update
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -216,13 +211,13 @@ class Migrations(Namespace):
         Preview branch schema edits.
         Path: /db/{db_branch_name}/schema/preview
         Method: POST
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -241,13 +236,12 @@ class Migrations(Namespace):
         Apply edit script.
         Path: /db/{db_branch_name}/schema/apply
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.

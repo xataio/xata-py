@@ -42,7 +42,7 @@ class Table(Namespace):
         already exists.
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PUT
-        Responses:
+        Response status codes:
         - 201: Created
         - 204: No Content
         - 400: Bad Request
@@ -50,7 +50,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -68,13 +68,13 @@ class Table(Namespace):
         Deletes the table with the given name.
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: DELETE
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Not Found
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -98,14 +98,13 @@ class Table(Namespace):
         “people”:  ```json // PATCH /db/test:main/tables/users  {   "name": "people" } ```
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PATCH
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -125,13 +124,13 @@ class Table(Namespace):
         Get table schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -153,7 +152,7 @@ class Table(Namespace):
         Update table schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: PUT
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 204: No Content
         - 400: Bad Request
@@ -161,7 +160,6 @@ class Table(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -183,13 +181,13 @@ class Table(Namespace):
         (flattened).
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -215,13 +213,12 @@ class Table(Namespace):
         object if it doesn't exist.
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: POST
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -246,13 +243,13 @@ class Table(Namespace):
         contain dots.  For example `address.country`.
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -276,13 +273,12 @@ class Table(Namespace):
         For example `address.country`.
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: DELETE
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -308,13 +304,12 @@ class Table(Namespace):
         `address.country`.
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: PATCH
-        Responses:
+        Response status codes:
         - 200: Schema migration response with ID and migration status.
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param payload: dict content

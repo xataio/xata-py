@@ -39,12 +39,12 @@ class Databases(Namespace):
         List all databases available in your Workspace.
         Path: /workspaces/{workspace_id}/dbs
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
 
         :return Response
@@ -57,13 +57,13 @@ class Databases(Namespace):
         Retrieve metadata of the given database
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
 
@@ -79,14 +79,14 @@ class Databases(Namespace):
         Create Database with identifier name
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PUT
-        Responses:
+        Response status codes:
         - 201: Created
         - 400: Bad Request
         - 401: Authentication Error
         - 422: Example response
         - 423: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
@@ -102,13 +102,13 @@ class Databases(Namespace):
         Delete a database and all of its branches and tables permanently.
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: DELETE
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
 
@@ -124,13 +124,13 @@ class Databases(Namespace):
         Update the color of the selected database
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PATCH
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
@@ -146,12 +146,12 @@ class Databases(Namespace):
         List regions available to create a database on
         Path: /workspaces/{workspace_id}/regions
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param workspace_id: str Workspace ID
 
         :return Response

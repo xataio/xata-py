@@ -41,13 +41,13 @@ class Authentication(Namespace):
         Retrieve a list of existing user API keys
         Path: /user/keys
         Method: GET
-        Responses:
+        Response status codes:
         - 200: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
 
         :return Response
         """
@@ -59,13 +59,13 @@ class Authentication(Namespace):
         Create and return new API key
         Path: /user/keys/{key_name}
         Method: POST
-        Responses:
+        Response status codes:
         - 201: OK
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
+        Response content type: application/json
         :param key_name: str API Key name
 
         :return Response
@@ -78,13 +78,12 @@ class Authentication(Namespace):
         Delete an existing API key
         Path: /user/keys/{key_name}
         Method: DELETE
-        Responses:
+        Response status codes:
         - 204: No Content
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-
         :param key_name: str API Key name
 
         :return Response
