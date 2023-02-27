@@ -37,6 +37,7 @@ class Invites(Namespace):
     def inviteWorkspaceMember(self, workspace_id: str, payload: dict) -> Response:
         """
         Invite some user to join the workspace with the given role
+
         Path: /workspaces/{workspace_id}/invites
         Method: POST
         Response status codes:
@@ -47,11 +48,11 @@ class Invites(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param payload: dict content
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/invites"
         headers = {"content-type": "application/json"}
@@ -63,6 +64,7 @@ class Invites(Namespace):
         """
         This operation provides a way to cancel invites by deleting them.  Already accepted
         invites cannot be deleted.
+
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: DELETE
         Response status codes:
@@ -87,6 +89,7 @@ class Invites(Namespace):
         This operation provides a way to update an existing invite.  Updates are performed in-
         place; they do not change the invite link, the expiry time, nor do they re-notify the
         recipient of the invite.
+
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: PATCH
         Response status codes:
@@ -97,12 +100,12 @@ class Invites(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
         :param payload: dict content
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         headers = {"content-type": "application/json"}
@@ -114,6 +117,7 @@ class Invites(Namespace):
         """
         Accept the invitation to join a workspace.  If the operation succeeds the user will be a
         member of the workspace
+
         Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
         Method: POST
         Response status codes:
@@ -137,6 +141,7 @@ class Invites(Namespace):
         """
         This operation provides a way to resend an Invite notification.  Invite notifications can
         only be sent for Invites not yet accepted.
+
         Path: /workspaces/{workspace_id}/invites/{invite_id}/resend
         Method: POST
         Response status codes:

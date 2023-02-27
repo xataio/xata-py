@@ -294,6 +294,11 @@ def get_endpoint_params(
                         )
 
     # Remove duplicates
+    tmp = {}
+    for p in skel["list"]:
+        if p["name"].lower() not in tmp:
+            tmp[p["name"].lower()] = p
+    skel["list"] = tmp.values()
 
     # reorder for optional params to be last
     if skel["has_optional_params"]:

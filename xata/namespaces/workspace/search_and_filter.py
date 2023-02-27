@@ -208,6 +208,7 @@ class Search_and_filter(Namespace):
         or `page.before="end"`, we still allow `filter` and `sort` to be set.  Example of getting
         the last page:  ```json POST /db/demo:main/tables/table/query {   "page": {     "size":
         10,     "before": "end"   } } ```
+
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
         Response status codes:
@@ -233,6 +234,7 @@ class Search_and_filter(Namespace):
     ) -> Response:
         """
         Run a free text search operation across the database branch.
+
         Path: /db/{db_branch_name}/search
         Method: POST
         Response status codes:
@@ -268,6 +270,7 @@ class Search_and_filter(Namespace):
         with the following exceptions: * filters `$contains`, `$startsWith`, `$endsWith` don't
         work on columns of type `text` * filtering on columns of type `multiple` is currently
         unsupported
+
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
         Response status codes:
@@ -300,6 +303,7 @@ class Search_and_filter(Namespace):
         be used for implementing semantic search and product recommendation.  To use this
         endpoint, you need a column of type vector.  The input vector must have the same dimension
         as the vector column.
+
         Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
         Response status codes:
@@ -330,6 +334,7 @@ class Search_and_filter(Namespace):
         """
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
         will stream the results back as SSE's.
+
         Path: /db/{db_branch_name}/tables/{table_name}/ask
         Method: POST
         Response status codes:
@@ -339,15 +344,15 @@ class Search_and_filter(Namespace):
         - 404: Example response
         - 503: Unexpected Error
         - 5XX: Unexpected Error
-        Response content types:
-        - application/json
-        - text/event-stream
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content types:
+        - application/json
+        - text/event-stream
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
@@ -395,6 +400,7 @@ class Search_and_filter(Namespace):
         This is a much slower to use than `filter`. We recommend using  `filter` wherever possible
         and `summariesFilter` when it's not  possible to use `filter`.  `page.size`: tells Xata
         how many records to return.  If unspecified, Xata will return the default size.
+
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
         Response status codes:
@@ -430,6 +436,7 @@ class Search_and_filter(Namespace):
         store that is more appropiate for analytics, makes use of approximative algorithms  (e.g
         for cardinality), and is generally faster and can do more complex aggregations.  For
         usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
+
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
         Response status codes:

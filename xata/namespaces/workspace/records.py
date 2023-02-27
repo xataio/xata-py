@@ -39,6 +39,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Execute a transaction on a branch
+
         Path: /db/{db_branch_name}/transaction
         Method: POST
         Response status codes:
@@ -47,14 +48,12 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content types:
-        - application/json
-        - application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/transaction"
@@ -71,6 +70,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Insert a new Record into the Table
+
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
         Response status codes:
@@ -104,6 +104,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Retrieve record by ID
+
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: GET
         Response status codes:
@@ -141,6 +142,7 @@ class Records(Namespace):
         By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
         this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
         automatic ID generation.
+
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
         Response status codes:
@@ -188,6 +190,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Upsert record with ID
+
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
         Response status codes:
@@ -230,6 +233,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Delete record from table
+
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: DELETE
         Response status codes:
@@ -265,6 +269,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Update record with ID
+
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
         Response status codes:
@@ -306,6 +311,7 @@ class Records(Namespace):
     ) -> Response:
         """
         Bulk insert records
+
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
         Response status codes:

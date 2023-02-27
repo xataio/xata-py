@@ -37,6 +37,7 @@ class Branch(Namespace):
     def getBranchList(self, db_name: str) -> Response:
         """
         List all available Branches
+
         Path: /dbs/{db_name}
         Method: GET
         Response status codes:
@@ -45,10 +46,10 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str The Database Name
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
@@ -58,6 +59,7 @@ class Branch(Namespace):
     ) -> Response:
         """
         Get branch schema and metadata
+
         Path: /db/{db_branch_name}
         Method: GET
         Response status codes:
@@ -66,11 +68,11 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
@@ -85,6 +87,7 @@ class Branch(Namespace):
     ) -> Response:
         """
         Create Database branch
+
         Path: /db/{db_branch_name}
         Method: PUT
         Response status codes:
@@ -94,13 +97,13 @@ class Branch(Namespace):
         - 404: Example response
         - 423: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param _from: str = None Name of source branch to branch the new schema from
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
@@ -112,6 +115,7 @@ class Branch(Namespace):
     def deleteBranch(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Delete the branch in the database and all its resources
+
         Path: /db/{db_branch_name}
         Method: DELETE
         Response status codes:
@@ -121,11 +125,11 @@ class Branch(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
@@ -136,6 +140,7 @@ class Branch(Namespace):
     ) -> Response:
         """
         Get Branch Metadata
+
         Path: /db/{db_branch_name}/metadata
         Method: GET
         Response status codes:
@@ -144,11 +149,11 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
@@ -159,6 +164,7 @@ class Branch(Namespace):
     ) -> Response:
         """
         Update the branch metadata
+
         Path: /db/{db_branch_name}/metadata
         Method: PUT
         Response status codes:
@@ -181,6 +187,7 @@ class Branch(Namespace):
     def getBranchStats(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch usage metrics.
+
         Path: /db/{db_branch_name}/stats
         Method: GET
         Response status codes:
@@ -189,11 +196,11 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/stats"
@@ -206,6 +213,7 @@ class Branch(Namespace):
         "xataBranch": "main"       },       {         "gitBranch": "gitBranch1",
         "xataBranch": "xataBranch1"       }       {         "gitBranch": "xataBranch2",
         "xataBranch": "xataBranch2"       }   ] } ```
+
         Path: /dbs/{db_name}/gitBranches
         Method: GET
         Response status codes:
@@ -213,10 +221,10 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str The Database Name
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         return self.request("GET", url_path)
@@ -231,6 +239,7 @@ class Branch(Namespace):
         existed and it was overwritten, the response code is 201.  Example request:  ```json //
         POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches {   "gitBranch": "fix/bug123",
         "xataBranch": "fix_bug" } ```
+
         Path: /dbs/{db_name}/gitBranches
         Method: POST
         Response status codes:
@@ -239,11 +248,11 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str The Database Name
         :param payload: dict content
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         headers = {"content-type": "application/json"}
@@ -255,6 +264,7 @@ class Branch(Namespace):
         branch must be passed as a query parameter.  If the git branch is not found, the endpoint
         returns a 404 status code.  Example request:  ```json // DELETE https://tutorial-
         ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
+
         Path: /dbs/{db_name}/gitBranches
         Method: DELETE
         Response status codes:
@@ -287,6 +297,7 @@ class Branch(Namespace):
         ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg ```
         Example response:  ```json {   "branch": "main",   "reason": {     "code":
         "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
+
         Path: /dbs/{db_name}/resolveBranch
         Method: GET
         Response status codes:
@@ -294,12 +305,12 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param db_name: str The Database Name
         :param gitBranch: str = None The Git Branch
         :param fallbackBranch: str = None Default branch to fallback to
 
         :return Response
+        Response content type: application/json
         """
         url_path = f"/dbs/{db_name}/resolveBranch"
         query_params = []

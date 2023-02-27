@@ -39,6 +39,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Get branch migration history [deprecated]
+
         Path: /db/{db_branch_name}/migrations
         Method: GET
         Response status codes:
@@ -47,12 +48,12 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations"
@@ -64,6 +65,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
+
         Path: /db/{db_branch_name}/migrations/plan
         Method: POST
         Response status codes:
@@ -88,6 +90,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Apply a migration plan to the branch
+
         Path: /db/{db_branch_name}/migrations/execute
         Method: POST
         Response status codes:
@@ -112,6 +115,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Query schema history.
+
         Path: /db/{db_branch_name}/schema/history
         Method: POST
         Response status codes:
@@ -120,12 +124,12 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/history"
@@ -137,6 +141,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Compare branch with user schema.
+
         Path: /db/{db_branch_name}/schema/compare
         Method: POST
         Response status codes:
@@ -161,6 +166,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Compare branch schemas.
+
         Path: /db/{db_branch_name}/schema/compare/{branch_name}
         Method: POST
         Response status codes:
@@ -185,6 +191,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Update Branch schema
+
         Path: /db/{db_branch_name}/schema/update
         Method: POST
         Response status codes:
@@ -209,6 +216,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Preview branch schema edits.
+
         Path: /db/{db_branch_name}/schema/preview
         Method: POST
         Response status codes:
@@ -217,12 +225,12 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
-        Response content type: application/json
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
+        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/preview"
@@ -234,6 +242,7 @@ class Migrations(Namespace):
     ) -> Response:
         """
         Apply edit script.
+
         Path: /db/{db_branch_name}/schema/apply
         Method: POST
         Response status codes:
