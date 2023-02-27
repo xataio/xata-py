@@ -228,7 +228,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchBranch(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -255,7 +255,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def searchTable(
         self,
@@ -292,7 +292,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def vectorSearchTable(
         self,
@@ -326,7 +326,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorSearch"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def askTable(
         self,
@@ -367,7 +367,7 @@ class Search_and_filter(Namespace):
             "content-type": "application/json",
             "accept": response_content_type,
         }
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def summarizeTable(
         self,
@@ -430,7 +430,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def aggregateTable(
         self,
@@ -467,4 +467,4 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)

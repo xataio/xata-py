@@ -76,7 +76,7 @@ class Users(Namespace):
         """
         url_path = "/user"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def deleteUser(
         self,

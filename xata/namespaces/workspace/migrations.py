@@ -59,7 +59,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations"
         headers = {"content-type": "application/json"}
-        return self.request("GET", url_path, headers)
+        return self.request("GET", url_path, headers, payload)
 
     def getBranchMigrationPlan(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -85,7 +85,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations/plan"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def executeBranchMigrationPlan(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -111,7 +111,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/migrations/execute"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getBranchSchemaHistory(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -138,7 +138,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/history"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def compareBranchWithUserSchema(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -164,7 +164,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/compare"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def compareBranchSchemas(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -190,7 +190,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/compare/{branch_name}"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def updateBranchSchema(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -216,7 +216,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/update"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def previewBranchSchemaEdit(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -243,7 +243,7 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/preview"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def applyBranchSchemaEdit(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -269,4 +269,4 @@ class Migrations(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/schema/apply"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)

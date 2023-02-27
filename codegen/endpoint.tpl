@@ -66,10 +66,10 @@
            "content-type": "application/json",
            "accept": response_content_type,
        }
-       return self.request("${http_method}", url_path, headers)
+       return self.request("${http_method}", url_path, headers, payload)
        % elif params['has_payload']:
        headers = {"content-type": "application/json"}
-       return self.request("${http_method}", url_path, headers)
+       return self.request("${http_method}", url_path, headers, payload)
        % elif len(params['response_content_types']) > 1:
        headers = {"accept": response_content_type}
        return self.request("${http_method}", url_path, headers)

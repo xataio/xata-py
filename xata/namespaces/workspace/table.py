@@ -121,7 +121,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers)
+        return self.request("PATCH", url_path, headers, payload)
 
     def getTableSchema(
         self, table_name: str, db_name: str = None, branch_name: str = None
@@ -180,7 +180,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def getTableColumns(
         self, table_name: str, db_name: str = None, branch_name: str = None
@@ -243,7 +243,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def getColumn(
         self,
@@ -341,4 +341,4 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers)
+        return self.request("PATCH", url_path, headers, payload)

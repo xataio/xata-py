@@ -113,7 +113,7 @@ class Branch(Namespace):
         if _from is not None:
             url_path += "?from={_from}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def deleteBranch(self, db_name: str = None, branch_name: str = None) -> Response:
         """
@@ -188,7 +188,7 @@ class Branch(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers)
+        return self.request("PUT", url_path, headers, payload)
 
     def getBranchStats(self, db_name: str = None, branch_name: str = None) -> Response:
         """
@@ -265,7 +265,7 @@ class Branch(Namespace):
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def removeGitBranchesEntry(self, db_name: str, gitBranch: str) -> Response:
         """

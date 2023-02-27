@@ -57,7 +57,7 @@ class Invites(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/invites"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers)
+        return self.request("POST", url_path, headers, payload)
 
     def cancelWorkspaceMemberInvite(
         self, workspace_id: str, invite_id: str
@@ -112,7 +112,7 @@ class Invites(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers)
+        return self.request("PATCH", url_path, headers, payload)
 
     def acceptWorkspaceMemberInvite(
         self, workspace_id: str, invite_key: str
