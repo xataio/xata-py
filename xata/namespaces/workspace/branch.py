@@ -39,6 +39,12 @@ class Branch(Namespace):
         List all available Branches
         Path: /dbs/{db_name}
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
 
@@ -54,6 +60,12 @@ class Branch(Namespace):
         Get branch schema and metadata
         Path: /db/{db_branch_name}
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -75,6 +87,13 @@ class Branch(Namespace):
         Create Database branch
         Path: /db/{db_branch_name}
         Method: PUT
+        Responses:
+        - 201: Created
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 423: Example response
+        - 5XX: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -95,6 +114,13 @@ class Branch(Namespace):
         Delete the branch in the database and all its resources
         Path: /db/{db_branch_name}
         Method: DELETE
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 409: Example response
+        - 5XX: Unexpected Error
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -112,6 +138,12 @@ class Branch(Namespace):
         Get Branch Metadata
         Path: /db/{db_branch_name}/metadata
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -129,6 +161,12 @@ class Branch(Namespace):
         Update the branch metadata
         Path: /db/{db_branch_name}/metadata
         Method: PUT
+        Responses:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -146,6 +184,12 @@ class Branch(Namespace):
         Get branch usage metrics.
         Path: /db/{db_branch_name}/stats
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Example response
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -165,6 +209,11 @@ class Branch(Namespace):
         "xataBranch": "xataBranch2"       }   ] } ```
         Path: /dbs/{db_name}/gitBranches
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
 
@@ -185,6 +234,12 @@ class Branch(Namespace):
         "xataBranch": "fix_bug" } ```
         Path: /dbs/{db_name}/gitBranches
         Method: POST
+        Responses:
+        - 201: Operation was successful with warnings
+        - 204: Operation was successful without warnings
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
         :param payload: dict content
@@ -203,6 +258,12 @@ class Branch(Namespace):
         ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
         Path: /dbs/{db_name}/gitBranches
         Method: DELETE
+        Responses:
+        - 204: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: The git branch was not found in the mapping
+        - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
         :param gitBranch: str The Git Branch to remove from the mapping
@@ -230,6 +291,11 @@ class Branch(Namespace):
         "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
         Path: /dbs/{db_name}/resolveBranch
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
         :param gitBranch: str = None The Git Branch

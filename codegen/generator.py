@@ -271,16 +271,25 @@ def get_endpoint_params(
             desc = ""
             if "description" in endpoint["responses"][code]:
                 desc = endpoint["responses"][code]["description"].strip()
-            elif "$ref" in endpoint["responses"][code] and endpoint["responses"][code]["$ref"] in references:
-                desc = references[endpoint["responses"][code]["$ref"]]["description"].strip()
-            skel["response_codes"].append({
-                "code": code,
-                "description": desc,
-            })
+            elif (
+                "$ref" in endpoint["responses"][code]
+                and endpoint["responses"][code]["$ref"] in references
+            ):
+                desc = references[endpoint["responses"][code]["$ref"]][
+                    "description"
+                ].strip()
+            skel["response_codes"].append(
+                {
+                    "code": code,
+                    "description": desc,
+                }
+            )
             # get content types
             if "content" in endpoint["responses"][code]:
                 for ct in endpoint["responses"][code]["content"]:
-                    skel["response_content_types"].append({"content_type": ct, "code": code})
+                    skel["response_content_types"].append(
+                        {"content_type": ct, "code": code}
+                    )
 
     # Remove duplicates
     tmp = {}

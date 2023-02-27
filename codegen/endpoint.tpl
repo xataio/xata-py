@@ -6,7 +6,7 @@
        % endfor
        Path: ${path}
        Method: ${http_method}
-       Responses: 
+       Responses:
        % for rc in params['response_codes']:
        - ${rc["code"]}: ${rc["description"]}
        % endfor

@@ -39,6 +39,14 @@ class Invites(Namespace):
         Invite some user to join the workspace with the given role
         Path: /workspaces/{workspace_id}/invites
         Method: POST
+        Responses:
+        - 201: Created
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 409: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param payload: dict content
@@ -57,6 +65,13 @@ class Invites(Namespace):
         invites cannot be deleted.
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: DELETE
+        Responses:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
@@ -75,6 +90,14 @@ class Invites(Namespace):
         recipient of the invite.
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: PATCH
+        Responses:
+        - 200: Updated successfully.
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 422: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
@@ -94,6 +117,13 @@ class Invites(Namespace):
         member of the workspace
         Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
         Method: POST
+        Responses:
+        - 204: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param invite_key: str Invite Key (secret) for the invited user
@@ -111,6 +141,13 @@ class Invites(Namespace):
         only be sent for Invites not yet accepted.
         Path: /workspaces/{workspace_id}/invites/{invite_id}/resend
         Method: POST
+        Responses:
+        - 204: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier

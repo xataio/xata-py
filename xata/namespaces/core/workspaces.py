@@ -41,6 +41,12 @@ class Workspaces(Namespace):
         Retrieve the list of workspaces the user belongs to
         Path: /workspaces
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
 
         :return Response
@@ -53,6 +59,12 @@ class Workspaces(Namespace):
         Creates a new workspace with the user requesting it as its single owner.
         Path: /workspaces
         Method: POST
+        Responses:
+        - 201: Created
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param payload: dict content
 
@@ -67,6 +79,13 @@ class Workspaces(Namespace):
         Retrieve workspace info from a workspace ID
         Path: /workspaces/{workspace_id}
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
 
@@ -80,6 +99,13 @@ class Workspaces(Namespace):
         Update workspace info
         Path: /workspaces/{workspace_id}
         Method: PUT
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param payload: dict content
@@ -95,6 +121,13 @@ class Workspaces(Namespace):
         Delete the workspace with the provided ID
         Path: /workspaces/{workspace_id}
         Method: DELETE
+        Responses:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
 
@@ -108,6 +141,13 @@ class Workspaces(Namespace):
         Retrieve the list of members of the given workspace
         Path: /workspaces/{workspace_id}/members
         Method: GET
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
 
@@ -124,6 +164,13 @@ class Workspaces(Namespace):
         operation will fail if trying to remove owner role from the last owner in the workspace.
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: PUT
+        Responses:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param user_id: str UserID
@@ -140,6 +187,13 @@ class Workspaces(Namespace):
         Remove the member from the workspace
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: DELETE
+        Responses:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param user_id: str UserID

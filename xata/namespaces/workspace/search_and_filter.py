@@ -210,6 +210,12 @@ class Search_and_filter(Namespace):
         10,     "before": "end"   } } ```
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -230,6 +236,13 @@ class Search_and_filter(Namespace):
         Run a free text search operation across the database branch.
         Path: /db/{db_branch_name}/search
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 503: Unexpected Error
+        - 5XX: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -259,6 +272,12 @@ class Search_and_filter(Namespace):
         unsupported
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -286,6 +305,12 @@ class Search_and_filter(Namespace):
         as the vector column.
         Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -296,6 +321,38 @@ class Search_and_filter(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorSearch"
+        headers = {"content-type": "application/json"}
+        return self.request("POST", url_path, headers, payload)
+
+    def askTable(
+        self,
+        table_name: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
+        will stream the results back as SSE's.
+        Path: /db/{db_branch_name}/tables/{table_name}/ask
+        Method: POST
+        Responses:
+        - 200: Response to the question
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 503: Unexpected Error
+        - 5XX: Unexpected Error
+
+        :param table_name: str The Table name
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
@@ -342,6 +399,12 @@ class Search_and_filter(Namespace):
         how many records to return.  If unspecified, Xata will return the default size.
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -372,6 +435,12 @@ class Search_and_filter(Namespace):
         usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
+        Responses:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
