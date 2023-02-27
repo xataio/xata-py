@@ -271,23 +271,29 @@ def get_endpoint_params(
             desc = ""
             if "description" in endpoint["responses"][code]:
                 desc = endpoint["responses"][code]["description"].strip()
-            elif"$ref" in endpoint["responses"][code] and endpoint["responses"][code]["$ref"] in references:
-                desc = references[endpoint["responses"][code]["$ref"]]["description"].strip()
-            skel["response_codes"].append({
+            elif (
+                "$ref" in endpoint["responses"][code]
+                and endpoint["responses"][code]["$ref"] in references
+            ):
+                desc = references[endpoint["responses"][code]["$ref"]][
+                    "description"
+                ].strip()
+            skel["response_codes"].append(
+                {
                     "code": code,
                     "description": desc,
-                })
+                }
+            )
             # get content types
-            if "content" in endpoint["responses"][code] and (code >= 200 and code <= 299):
-                for ct in endpoint["responses"][code]["content"]:
-                    skel["response_content_types"].append({"content_type": ct, "code": code})
+            if "content" in endpoint["responses"][code]:
+                int_code = int(code)
+                if int_code >= 200 and int_code <= 299:
+                    for ct in endpoint["responses"][code]["content"]:
+                        skel["response_content_types"].append(
+                            {"content_type": ct, "code": code}
+                        )
 
     # Remove duplicates
-    tmp = {}
-    for p in skel["list"]:
-        if p["name"].lower() not in tmp:
-            tmp[p["name"].lower()] = p
-    skel["list"] = tmp.values()
 
     # reorder for optional params to be last
     if skel["has_optional_params"]:
