@@ -529,7 +529,8 @@ class XataClient:
             db_name, branch_name
         )
         if id is not None:
-            self.put(
+            self.request(
+                "PUT",
                 f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
                 params=dict(createOnly=True),
                 json=record,
@@ -612,8 +613,10 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.put(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
+        result = self.request(
+            "PUT",
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
+            json=record
         )
         return result.json()["id"]
 
