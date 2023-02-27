@@ -488,8 +488,10 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.get(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", expect_codes=[404]
+        result = self.request(
+            "GET", 
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
+            expect_codes=[404]
         )
         if result.status_code == 404:
             return None
@@ -652,7 +654,8 @@ class XataClient:
         params = {"columns": "*"}
         if ifVersion is not None:
             params["ifVersion"] = str(ifVersion)
-        result = self.patch(
+        result = self.request(
+            "PATCH", 
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             json=record,
@@ -691,7 +694,8 @@ class XataClient:
             db_name, branch_name
         )
         params = {"columns": "*"}
-        result = self.delete(
+        result = self.request(
+            "DELETE", 
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             expect_codes=[404],
