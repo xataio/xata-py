@@ -45,7 +45,7 @@ def create_demo_db(client: XataClient, db_name: string):
     client.request("PUT", f"/db/{db_name}:main/tables/Posts")
     client.request("PUT", f"/db/{db_name}:main/tables/Users")
     client.request(
-        "PUT", 
+        "PUT",
         f"/db/{db_name}:main/tables/Posts/schema",
         json={
             "columns": [
@@ -67,7 +67,7 @@ def create_demo_db(client: XataClient, db_name: string):
     )
 
     client.request(
-        "PUT", 
+        "PUT",
         f"/db/{db_name}:main/tables/Users/schema",
         json={
             "columns": [

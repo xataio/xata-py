@@ -347,9 +347,7 @@ class XataClient:
         )
         body = self.request_body_from_params(columns, filter, sort, page)
         result = self.request(
-            "POST", 
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", 
-            json=body
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
         return result.json()
 
@@ -387,9 +385,7 @@ class XataClient:
         )
         body = self.request_body_from_params(columns, filter, sort, page)
         result = self.request(
-            "POST", 
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", 
-            json=body
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
         data = result.json()
         if len(data.get("records", [])) == 0:
@@ -424,9 +420,9 @@ class XataClient:
             db_name, branch_name
         )
         result = self.request(
-            "GET", 
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
-            expect_codes=[404]
+            "GET",
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
+            expect_codes=[404],
         )
         if result.status_code == 404:
             return None
@@ -473,9 +469,7 @@ class XataClient:
             return id
 
         result = self.request(
-            "POST", 
-            f"/db/{db_name}:{branch_name}/tables/{table}/data", 
-            json=record
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
         )
         return result.json()["id"]
 
@@ -512,9 +506,7 @@ class XataClient:
             db_name, branch_name
         )
         result = self.request(
-            "POST", 
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
-            json=record
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
 
@@ -549,9 +541,7 @@ class XataClient:
             db_name, branch_name
         )
         result = self.request(
-            "PUT",
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
-            json=record
+            "PUT", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
 
@@ -593,7 +583,7 @@ class XataClient:
         if ifVersion is not None:
             params["ifVersion"] = str(ifVersion)
         result = self.request(
-            "PATCH", 
+            "PATCH",
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             json=record,
@@ -633,7 +623,7 @@ class XataClient:
         )
         params = {"columns": "*"}
         result = self.request(
-            "DELETE", 
+            "DELETE",
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             expect_codes=[404],
@@ -674,7 +664,7 @@ class XataClient:
         )
         query_params["query"] = query.strip()
         result = self.request(
-            "POST", 
+            "POST",
             f"/db/{db_name}:{branch_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],
@@ -716,7 +706,7 @@ class XataClient:
         )
         query_params["query"] = query.strip()
         result = self.request(
-            "POST", 
+            "POST",
             f"/db/{db_name}:{branch_name}/tables/{table_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],
