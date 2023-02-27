@@ -48,15 +48,16 @@ class Invites(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/invites"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def cancelWorkspaceMemberInvite(
         self, workspace_id: str, invite_id: str
@@ -74,6 +75,7 @@ class Invites(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
 
@@ -100,16 +102,17 @@ class Invites(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers, payload)
+        return self.request("PATCH", url_path, headers)
 
     def acceptWorkspaceMemberInvite(
         self, workspace_id: str, invite_key: str
@@ -127,6 +130,7 @@ class Invites(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
         :param invite_key: str Invite Key (secret) for the invited user
 
@@ -151,6 +155,7 @@ class Invites(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
 

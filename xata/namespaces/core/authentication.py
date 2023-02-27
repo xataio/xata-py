@@ -48,9 +48,10 @@ class Authentication(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
 
         :return Response
-        Response content type: application/json
         """
         url_path = "/user/keys"
         return self.request("GET", url_path)
@@ -67,10 +68,11 @@ class Authentication(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param key_name: str API Key name
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("POST", url_path)
@@ -87,6 +89,7 @@ class Authentication(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param key_name: str API Key name
 
         :return Response

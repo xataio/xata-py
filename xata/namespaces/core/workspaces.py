@@ -48,9 +48,10 @@ class Workspaces(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
 
         :return Response
-        Response content type: application/json
         """
         url_path = "/workspaces"
         return self.request("GET", url_path)
@@ -67,14 +68,15 @@ class Workspaces(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = "/workspaces"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def getWorkspace(self, workspace_id: str) -> Response:
         """
@@ -89,10 +91,11 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}"
         return self.request("GET", url_path)
@@ -110,15 +113,16 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def deleteWorkspace(self, workspace_id: str) -> Response:
         """
@@ -133,6 +137,7 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
 
         :return Response
@@ -153,10 +158,11 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
@@ -177,6 +183,7 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
         :param user_id: str UserID
         :param payload: dict content
@@ -185,7 +192,7 @@ class Workspaces(Namespace):
         """
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def removeWorkspaceMember(self, workspace_id: str, user_id: str) -> Response:
         """
@@ -200,6 +207,7 @@ class Workspaces(Namespace):
         - 403: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param workspace_id: str Workspace ID
         :param user_id: str UserID
 

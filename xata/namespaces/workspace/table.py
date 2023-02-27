@@ -51,12 +51,13 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
@@ -76,12 +77,13 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Not Found
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
@@ -108,6 +110,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -118,7 +121,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers, payload)
+        return self.request("PATCH", url_path, headers)
 
     def getTableSchema(
         self, table_name: str, db_name: str = None, branch_name: str = None
@@ -134,12 +137,13 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
@@ -165,6 +169,7 @@ class Table(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -175,7 +180,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def getTableColumns(
         self, table_name: str, db_name: str = None, branch_name: str = None
@@ -193,12 +198,13 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param table_name: str The Table name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
@@ -226,6 +232,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -236,7 +243,7 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def getColumn(
         self,
@@ -257,13 +264,14 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
@@ -288,6 +296,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -320,6 +329,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param column_name: str The Column name
         :param payload: dict content
@@ -331,4 +341,4 @@ class Table(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers, payload)
+        return self.request("PATCH", url_path, headers)

@@ -48,9 +48,10 @@ class Users(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
 
         :return Response
-        Response content type: application/json
         """
         url_path = "/user"
         return self.request("GET", url_path)
@@ -67,14 +68,15 @@ class Users(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = "/user"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def deleteUser(
         self,
@@ -90,6 +92,7 @@ class Users(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
 
         :return Response
         """

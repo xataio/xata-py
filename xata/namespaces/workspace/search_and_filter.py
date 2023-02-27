@@ -217,6 +217,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -227,7 +228,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def searchBranch(
         self, payload: dict, db_name: str = None, branch_name: str = None
@@ -244,6 +245,7 @@ class Search_and_filter(Namespace):
         - 404: Example response
         - 503: Unexpected Error
         - 5XX: Unexpected Error
+
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
@@ -253,7 +255,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def searchTable(
         self,
@@ -279,6 +281,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -289,7 +292,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def vectorSearchTable(
         self,
@@ -312,6 +315,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -322,7 +326,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorSearch"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def askTable(
         self,
@@ -330,6 +334,7 @@ class Search_and_filter(Namespace):
         payload: dict,
         db_name: str = None,
         branch_name: str = None,
+        response_content_type: str = "application/json",
     ) -> Response:
         """
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
@@ -344,20 +349,25 @@ class Search_and_filter(Namespace):
         - 404: Example response
         - 503: Unexpected Error
         - 5XX: Unexpected Error
+        Responses:
+        - application/json
+        - text/event-stream
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param response_content_type: str = "application/json" Content type of the response. Default: application/json
 
         :return Response
-        Response content types:
-        - application/json
-        - text/event-stream
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
-        headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        headers = {
+            "content-type": "application/json",
+            "accept": response_content_type,
+        }
+        return self.request("POST", url_path, headers)
 
     def summarizeTable(
         self,
@@ -409,6 +419,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -419,7 +430,7 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def aggregateTable(
         self,
@@ -445,6 +456,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -455,4 +467,4 @@ class Search_and_filter(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)

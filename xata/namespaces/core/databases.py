@@ -45,10 +45,11 @@ class Databases(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
@@ -65,11 +66,12 @@ class Databases(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
@@ -89,16 +91,17 @@ class Databases(Namespace):
         - 422: Example response
         - 423: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def deleteDatabase(self, workspace_id: str, db_name: str) -> Response:
         """
@@ -112,11 +115,12 @@ class Databases(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
@@ -135,16 +139,17 @@ class Databases(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers, payload)
+        return self.request("PATCH", url_path, headers)
 
     def listRegions(self, workspace_id: str) -> Response:
         """
@@ -157,10 +162,11 @@ class Databases(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param workspace_id: str Workspace ID
 
         :return Response
-        Response content type: application/json
         """
         url_path = f"/workspaces/{workspace_id}/regions"
         return self.request("GET", url_path)

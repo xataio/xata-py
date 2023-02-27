@@ -11,19 +11,20 @@
        % for rc in params['response_codes']:
        - ${rc["code"]}: ${rc["description"]}
        % endfor
+       % if len(params['response_content_types']) > 1 :
+       Responses:
+       % for rc in params['response_content_types']:
+       - ${rc["content_type"]}
+       % endfor
+       % elif len(params['response_content_types']) == 1 :
+       Response: ${params['response_content_types'][0]["content_type"]}
+       % endif
+
        % for param in params['list']:
        :param ${param['nameParam']}: ${param['type']} ${param['description']}
        % endfor
 
        :return Response
-       % if len(params['response_content_types']) > 1 :
-       Response content types:
-       % for rc in params['response_content_types']:
-       - ${rc["content_type"]}
-       % endfor
-       % elif len(params['response_content_types']) == 1 :
-       Response content type: ${params['response_content_types'][0]["content_type"]}
-       % endif
        """
        % if params['smart_db_branch_name'] :
        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
@@ -60,9 +61,18 @@
        % endif
        % endfor
        % endif
-       % if params['has_payload'] :
+       % if params['has_payload'] and len(params['response_content_types']) > 1:
+       headers = {
+           "content-type": "application/json",
+           "accept": response_content_type,
+       }
+       return self.request("${http_method}", url_path, headers)
+       % elif params['has_payload']:
        headers = {"content-type": "application/json"}
-       return self.request("${http_method}", url_path, headers, payload)
+       return self.request("${http_method}", url_path, headers)
+       % elif len(params['response_content_types']) > 1:
+       headers = {"accept": response_content_type}
+       return self.request("${http_method}", url_path, headers)
        % else :
        return self.request("${http_method}", url_path)
        % endif

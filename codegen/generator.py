@@ -161,7 +161,7 @@ def generate_endpoint(
         "http_method": method.upper(),
         "path": path,
         "params": endpointParams,
-        "request_body": get_endpoint_request_body(endpoint),
+        # "request_body": get_endpoint_request_body(endpoint),
         # "responses": list(endpoint["responses"].keys()),
     }
     return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(
@@ -292,6 +292,21 @@ def get_endpoint_params(
                         skel["response_content_types"].append(
                             {"content_type": ct, "code": code}
                         )
+    # Multiple Response Content types require option for users
+    if len(skel["response_content_types"]) > 1:
+        skel["has_optional_params"] = True
+        ct = skel["response_content_types"][0]["content_type"].lower().strip()
+        skel["list"].append(
+            {
+                "name": "response_content_type",
+                "nameParam": "response_content_type",
+                "type": 'str = "%s"' % ct,
+                "trueType": "str",
+                "description": "Content type of the response. Default: %s" % ct,
+                "in": "responseBody",
+                "required": False,
+            }
+        )
 
     # Remove duplicates
     tmp = {}
@@ -306,14 +321,6 @@ def get_endpoint_params(
             e for e in skel["list"] if not e["required"]
         ]
     return skel
-
-
-def get_endpoint_request_body(endpoint) -> dict:
-    if "requestBody" not in endpoint:
-        return {}
-    return {
-        #     "mimetype": endpoint["requestBody"]["content"].keys()[0]
-    }
 
 
 def resolve_references(spec: dict) -> dict:

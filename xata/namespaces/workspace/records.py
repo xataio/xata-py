@@ -48,17 +48,18 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        Response: application/json
+
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :return Response
-        Response content type: application/json
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/transaction"
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def insertRecord(
         self,
@@ -79,6 +80,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -92,7 +94,7 @@ class Records(Namespace):
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def getRecord(
         self,
@@ -113,6 +115,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -153,6 +156,7 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -176,7 +180,7 @@ class Records(Namespace):
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers)
 
     def upsertRecordWithID(
         self,
@@ -201,6 +205,7 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -221,7 +226,7 @@ class Records(Namespace):
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
 
     def deleteRecord(
         self,
@@ -243,6 +248,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -279,6 +285,7 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param payload: dict content
@@ -299,7 +306,7 @@ class Records(Namespace):
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
-        return self.request("PATCH", url_path, headers, payload)
+        return self.request("PATCH", url_path, headers)
 
     def bulkInsertTableRecords(
         self,
@@ -321,6 +328,7 @@ class Records(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+
         :param table_name: str The Table name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -334,4 +342,4 @@ class Records(Namespace):
         if columns is not None:
             url_path += "?columns=%s" % ",".join(columns)
         headers = {"content-type": "application/json"}
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers)
