@@ -411,8 +411,10 @@ class XataClient:
             db_name, branch_name
         )
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        result = self.request(
+            "POST", 
+            f"/db/{db_name}:{branch_name}/tables/{table}/query", 
+            json=body
         )
         return result.json()
 
@@ -449,8 +451,10 @@ class XataClient:
             db_name, branch_name
         )
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        result = self.request(
+            "POST", 
+            f"/db/{db_name}:{branch_name}/tables/{table}/query", 
+            json=body
         )
         data = result.json()
         if len(data.get("records", [])) == 0:
@@ -530,8 +534,10 @@ class XataClient:
             )
             return id
 
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
+        result = self.request(
+            "POST", 
+            f"/db/{db_name}:{branch_name}/tables/{table}/data", 
+            json=record
         )
         return result.json()["id"]
 
@@ -567,8 +573,10 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
+        result = self.request(
+            "POST", 
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", 
+            json=record
         )
         return result.json()["id"]
 
@@ -723,7 +731,8 @@ class XataClient:
             db_name, branch_name
         )
         query_params["query"] = query.strip()
-        result = self.post(
+        result = self.request(
+            "POST", 
             f"/db/{db_name}:{branch_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],
@@ -764,7 +773,8 @@ class XataClient:
             db_name, branch_name
         )
         query_params["query"] = query.strip()
-        result = self.post(
+        result = self.request(
+            "POST", 
             f"/db/{db_name}:{branch_name}/tables/{table_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],
