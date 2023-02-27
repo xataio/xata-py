@@ -273,71 +273,6 @@ class XataClient:
         region = parts[1]
         return workspaceId, region, db
 
-    @deprecation.deprecated(
-        deprecated_in="0.7.0",
-        removed_in="1.0",
-        current_version=__version__,
-        details="No replacement, function is superfluous",
-    )
-    def get(self, urlPath, headers={}, **kwargs):
-        """Send a GET request to the Xata API. This is a wrapper around
-        the `requests` library and accepts the same parameters as the `get`
-        method of the `requests` library.
-        """
-        return self.request("GET", urlPath, headers=headers, **kwargs)
-
-    @deprecation.deprecated(
-        deprecated_in="0.7.0",
-        removed_in="1.0",
-        current_version=__version__,
-        details="No replacement, function is superfluous",
-    )
-    def post(self, urlPath, headers={}, **kwargs):
-        """Send a POST request to the Xata API. This is a wrapper around
-        the `requests` library and accepts the same parameters as the `post`
-        method of the `requests` library.
-        """
-        return self.request("POST", urlPath, headers=headers, **kwargs)
-
-    @deprecation.deprecated(
-        deprecated_in="0.7.0",
-        removed_in="1.0",
-        current_version=__version__,
-        details="No replacement, function is superfluous",
-    )
-    def put(self, urlPath, headers={}, **kwargs):
-        """Send a PUT request to the Xata API. This is a wrapper around
-        the `requests` library and accepts the same parameters as the `put`
-        method of the `requests` library.
-        """
-        return self.request("PUT", urlPath, headers=headers, **kwargs)
-
-    @deprecation.deprecated(
-        deprecated_in="0.7.0",
-        removed_in="1.0",
-        current_version=__version__,
-        details="No replacement, function is superfluous",
-    )
-    def delete(self, urlPath, headers={}, **kwargs):
-        """Send a DELETE request to the Xata API. This is a wrapper around
-        the `requests` library and accepts the same parameters as the `delete`
-        method of the `requests` library.
-        """
-        return self.request("DELETE", urlPath, headers=headers, **kwargs)
-
-    @deprecation.deprecated(
-        deprecated_in="0.7.0",
-        removed_in="1.0",
-        current_version=__version__,
-        details="No replacement, function is superfluous",
-    )
-    def patch(self, urlPath, headers={}, **kwargs):
-        """Send a PATCH request to the Xata API. This is a wrapper around
-        the `requests` library and accepts the same parameters as the `patch`
-        method of the `requests` library.
-        """
-        return self.request("PATCH", urlPath, headers=headers, **kwargs)
-
     def request_body_from_params(
         self,
         columns: list[str] = None,
@@ -411,8 +346,8 @@ class XataClient:
             db_name, branch_name
         )
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        result = self.request(
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
         return result.json()
 
@@ -449,8 +384,8 @@ class XataClient:
             db_name, branch_name
         )
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
+        result = self.request(
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
         )
         data = result.json()
         if len(data.get("records", [])) == 0:
@@ -484,8 +419,10 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.get(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", expect_codes=[404]
+        result = self.request(
+            "GET",
+            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
+            expect_codes=[404],
         )
         if result.status_code == 404:
             return None
@@ -523,15 +460,16 @@ class XataClient:
             db_name, branch_name
         )
         if id is not None:
-            self.put(
+            self.request(
+                "PUT",
                 f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
                 params=dict(createOnly=True),
                 json=record,
             )
             return id
 
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
+        result = self.request(
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
         )
         return result.json()["id"]
 
@@ -567,8 +505,8 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.post(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
+        result = self.request(
+            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
 
@@ -602,8 +540,8 @@ class XataClient:
         db_name, branch_name = self.db_and_branch_names_from_params(
             db_name, branch_name
         )
-        result = self.put(
-            f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
+        result = self.request(
+            "PUT", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
         )
         return result.json()["id"]
 
@@ -644,7 +582,8 @@ class XataClient:
         params = {"columns": "*"}
         if ifVersion is not None:
             params["ifVersion"] = str(ifVersion)
-        result = self.patch(
+        result = self.request(
+            "PATCH",
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             json=record,
@@ -683,7 +622,8 @@ class XataClient:
             db_name, branch_name
         )
         params = {"columns": "*"}
-        result = self.delete(
+        result = self.request(
+            "DELETE",
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
             params=params,
             expect_codes=[404],
@@ -723,7 +663,8 @@ class XataClient:
             db_name, branch_name
         )
         query_params["query"] = query.strip()
-        result = self.post(
+        result = self.request(
+            "POST",
             f"/db/{db_name}:{branch_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],
@@ -764,7 +705,8 @@ class XataClient:
             db_name, branch_name
         )
         query_params["query"] = query.strip()
-        result = self.post(
+        result = self.request(
+            "POST",
             f"/db/{db_name}:{branch_name}/tables/{table_name}/search",
             json=query_params,
             expect_codes=[200, 400, 403, 404, 500],

@@ -40,11 +40,12 @@ def pytest_configure():
 
 
 def create_demo_db(client: XataClient, db_name: string):
-    client.put(f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
+    client.request("PUT", f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
 
-    client.put(f"/db/{db_name}:main/tables/Posts")
-    client.put(f"/db/{db_name}:main/tables/Users")
-    client.put(
+    client.request("PUT", f"/db/{db_name}:main/tables/Posts")
+    client.request("PUT", f"/db/{db_name}:main/tables/Users")
+    client.request(
+        "PUT",
         f"/db/{db_name}:main/tables/Posts/schema",
         json={
             "columns": [
@@ -65,7 +66,8 @@ def create_demo_db(client: XataClient, db_name: string):
         },
     )
 
-    client.put(
+    client.request(
+        "PUT",
         f"/db/{db_name}:main/tables/Users/schema",
         json={
             "columns": [
@@ -78,7 +80,9 @@ def create_demo_db(client: XataClient, db_name: string):
 
 
 def delete_db(client, db_name):
-    client.delete(f"/dbs/{db_name}", cp=True)
+    return client.databases().deleteDatabase(
+        client.get_config()["workspaceId"], db_name
+    )
 
 
 @pytest.fixture
