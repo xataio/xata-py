@@ -21,10 +21,6 @@ import random
 import string
 import time
 
-from requests import Response
-
-from xata.client import XataClient
-
 
 def get_db_name() -> str:
     return f"sdk-py-e2e-test-{get_random_string(6)}"
