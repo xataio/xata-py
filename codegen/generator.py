@@ -161,8 +161,6 @@ def generate_endpoint(
         "http_method": method.upper(),
         "path": path,
         "params": endpointParams,
-        # "request_body": get_endpoint_request_body(endpoint),
-        # "responses": list(endpoint["responses"].keys()),
     }
     return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(
         **vars
