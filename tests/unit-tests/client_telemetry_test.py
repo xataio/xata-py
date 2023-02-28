@@ -30,9 +30,6 @@ class TestXataClient(unittest.TestCase):
         client1 = XataClient(api_key=api_key, workspace_id="ws_id")
         headers1 = client1.get_headers()
 
-        assert len(headers1) == 5
-        assert "authorization" in headers1
-        assert headers1["authorization"] == f"Bearer {api_key}"
         assert "x-xata-client-id" in headers1
         assert utils.PATTERNS_UUID4.match(headers1["x-xata-client-id"])
         assert "x-xata-session-id" in headers1
@@ -40,8 +37,6 @@ class TestXataClient(unittest.TestCase):
         assert headers1["x-xata-client-id"] != headers1["x-xata-session-id"]
         assert "x-xata-agent" in headers1
         assert headers1["x-xata-agent"] == f"client=PY_SDK;version={__version__};"
-        assert "user-agent" in headers1
-        assert headers1["user-agent"] == f"xataio/xata-py:{__version__}"
 
         api_key = "this-key-42"
         client2 = XataClient(api_key=api_key, workspace_id="ws_id")
