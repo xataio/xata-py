@@ -31,7 +31,7 @@ unit-tests-cov: ## Unit tests coverage
 	poetry run pytest --cov=xata tests/unit-tests
 
 integration-tests: ## Run integration tests
-	poetry run pytest -v --tb=short tests/integration-tests/
+	poetry run pytest -v --tb=short -W ignore::DeprecationWarning tests/integration-tests/
 
 integration-tests-cov: ## Integration tests coverage
 	poetry run pytest --cov=xata tests/integration-tests/
