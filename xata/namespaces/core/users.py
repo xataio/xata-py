@@ -39,8 +39,16 @@ class Users(Namespace):
     ) -> Response:
         """
         Return details of the user making the request
+
         Path: /user
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
 
         :return Response
@@ -51,8 +59,16 @@ class Users(Namespace):
     def updateUser(self, payload: dict) -> Response:
         """
         Update user info
+
         Path: /user
         Method: PUT
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param payload: dict content
 
@@ -67,8 +83,15 @@ class Users(Namespace):
     ) -> Response:
         """
         Delete the user making the request
+
         Path: /user
         Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
 
         :return Response

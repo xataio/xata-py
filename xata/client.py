@@ -158,6 +158,28 @@ class XataClient:
         """
         return self.headers
 
+    def set_header(self, name: str, value: str):
+        """
+        Set a header value. Every name is lower case and overwrites existing values.
+        This can be useful for some proxies that require certain headers.
+
+        :param name: str
+        :param value: str
+        """
+        self.headers[name.lower().strip()] = value
+
+    def delete_header(self, name: str) -> bool:
+        """
+        Delete a header from the scope. A header name will be lowercased.
+        :param name: str
+        :return bool
+        """
+        name = name.lower().strip()
+        if name not in self.headers:
+            return False
+        del self.headers[name]
+        return True
+
     def get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
             return os.environ.get("XATA_API_KEY"), "env"

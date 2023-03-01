@@ -4,8 +4,21 @@
        % for line in description :
        ${line}
        % endfor
+
        Path: ${path}
        Method: ${http_method}
+       Response status codes:
+       % for rc in params['response_codes']:
+       - ${rc["code"]}: ${rc["description"]}
+       % endfor
+       % if len(params['response_content_types']) > 1 :
+       Responses:
+       % for rc in params['response_content_types']:
+       - ${rc["content_type"]}
+       % endfor
+       % elif len(params['response_content_types']) == 1 :
+       Response: ${params['response_content_types'][0]["content_type"]}
+       % endif
 
        % for param in params['list']:
        :param ${param['nameParam']}: ${param['type']} ${param['description']}
@@ -48,9 +61,18 @@
        % endif
        % endfor
        % endif
-       % if params['has_payload'] :
+       % if params['has_payload'] and len(params['response_content_types']) > 1:
+       headers = {
+           "content-type": "application/json",
+           "accept": response_content_type,
+       }
+       return self.request("${http_method}", url_path, headers, payload)
+       % elif params['has_payload']:
        headers = {"content-type": "application/json"}
        return self.request("${http_method}", url_path, headers, payload)
+       % elif len(params['response_content_types']) > 1:
+       headers = {"accept": response_content_type}
+       return self.request("${http_method}", url_path, headers)
        % else :
        return self.request("${http_method}", url_path)
        % endif

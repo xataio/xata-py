@@ -37,8 +37,15 @@ class Databases(Namespace):
     def getDatabaseList(self, workspace_id: str) -> Response:
         """
         List all databases available in your Workspace.
+
         Path: /workspaces/{workspace_id}/dbs
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
 
@@ -50,8 +57,16 @@ class Databases(Namespace):
     def getDatabaseMetadata(self, workspace_id: str, db_name: str) -> Response:
         """
         Retrieve metadata of the given database
+
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
@@ -66,8 +81,17 @@ class Databases(Namespace):
     ) -> Response:
         """
         Create Database with identifier name
+
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PUT
+        Response status codes:
+        - 201: Created
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 422: Example response
+        - 423: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
@@ -82,8 +106,16 @@ class Databases(Namespace):
     def deleteDatabase(self, workspace_id: str, db_name: str) -> Response:
         """
         Delete a database and all of its branches and tables permanently.
+
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: DELETE
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
@@ -98,8 +130,16 @@ class Databases(Namespace):
     ) -> Response:
         """
         Update the color of the selected database
+
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PATCH
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
@@ -114,8 +154,15 @@ class Databases(Namespace):
     def listRegions(self, workspace_id: str) -> Response:
         """
         List regions available to create a database on
+
         Path: /workspaces/{workspace_id}/regions
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
 

@@ -39,8 +39,16 @@ class Authentication(Namespace):
     ) -> Response:
         """
         Retrieve a list of existing user API keys
+
         Path: /user/keys
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
 
         :return Response
@@ -51,8 +59,16 @@ class Authentication(Namespace):
     def createUserAPIKey(self, key_name: str) -> Response:
         """
         Create and return new API key
+
         Path: /user/keys/{key_name}
         Method: POST
+        Response status codes:
+        - 201: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param key_name: str API Key name
 
@@ -64,8 +80,15 @@ class Authentication(Namespace):
     def deleteUserAPIKey(self, key_name: str) -> Response:
         """
         Delete an existing API key
+
         Path: /user/keys/{key_name}
         Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param key_name: str API Key name
 

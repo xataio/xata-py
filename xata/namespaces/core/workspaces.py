@@ -39,8 +39,16 @@ class Workspaces(Namespace):
     ) -> Response:
         """
         Retrieve the list of workspaces the user belongs to
+
         Path: /workspaces
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
 
         :return Response
@@ -51,8 +59,16 @@ class Workspaces(Namespace):
     def createWorkspace(self, payload: dict) -> Response:
         """
         Creates a new workspace with the user requesting it as its single owner.
+
         Path: /workspaces
         Method: POST
+        Response status codes:
+        - 201: Created
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param payload: dict content
 
@@ -65,8 +81,17 @@ class Workspaces(Namespace):
     def getWorkspace(self, workspace_id: str) -> Response:
         """
         Retrieve workspace info from a workspace ID
+
         Path: /workspaces/{workspace_id}
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
 
@@ -78,8 +103,17 @@ class Workspaces(Namespace):
     def updateWorkspace(self, workspace_id: str, payload: dict) -> Response:
         """
         Update workspace info
+
         Path: /workspaces/{workspace_id}
         Method: PUT
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
         :param payload: dict content
@@ -93,8 +127,16 @@ class Workspaces(Namespace):
     def deleteWorkspace(self, workspace_id: str) -> Response:
         """
         Delete the workspace with the provided ID
+
         Path: /workspaces/{workspace_id}
         Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
 
@@ -106,8 +148,17 @@ class Workspaces(Namespace):
     def getWorkspaceMembersList(self, workspace_id: str) -> Response:
         """
         Retrieve the list of members of the given workspace
+
         Path: /workspaces/{workspace_id}/members
         Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
         :param workspace_id: str Workspace ID
 
@@ -122,8 +173,16 @@ class Workspaces(Namespace):
         """
         Update a workspace member role.  Workspaces must always have at least one owner, so this
         operation will fail if trying to remove owner role from the last owner in the workspace.
+
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: PUT
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param user_id: str UserID
@@ -138,8 +197,16 @@ class Workspaces(Namespace):
     def removeWorkspaceMember(self, workspace_id: str, user_id: str) -> Response:
         """
         Remove the member from the workspace
+
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 403: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
         :param workspace_id: str Workspace ID
         :param user_id: str UserID
