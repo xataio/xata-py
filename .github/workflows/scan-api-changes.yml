@@ -1,0 +1,33 @@
+name: Scan OpenAI Specification for API changes
+
+on:
+  schedule:
+    - cron: "42 8 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repo main
+        uses: actions/checkout@v2
+      - name: setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python3 -m pip install -U poetry
+          poetry install
+      - name: Run codegen
+        run: make code-gen-full
+      - name: Create Pull Request on changes
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: update endpoints
+          title: Updated endpoints
+          body: Changes detected in the OpenAPI specification.
+          base: main
+          labels: automated-pr, Clouds & Regions
+          branch: cloud-update-advanced-params
+          delete-branch: true
