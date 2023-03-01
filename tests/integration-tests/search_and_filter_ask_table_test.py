@@ -70,11 +70,11 @@ class TestClass(object):
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
-        #assert r.status_code == 200
-        #assert "answer" in r.json()
-        #assert r.json()["answer"] == "No records found! I'm not able to help you sorry."
-        #assert "content-type" in r.headers
-        #assert r.headers["content-type"] == "application/json; charset=UTF-8"
+        # assert r.status_code == 200
+        # assert "answer" in r.json()
+        # assert r.json()["answer"] == "No records found! I'm not able to help you sorry."
+        # assert "content-type" in r.headers
+        # assert r.headers["content-type"] == "application/json; charset=UTF-8"
         assert True
 
     def test_ask_table_with_streaming_response_content_type(self):
@@ -88,8 +88,8 @@ class TestClass(object):
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
-        #assert r.status_code == 200
-        #assert "content-type" in r.headers
+        # assert r.status_code == 200
+        # assert "content-type" in r.headers
         assert True
         # assert r.headers["content-type"] == "text/event-stream; charset=UTF-8"
         # TODO
