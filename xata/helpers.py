@@ -19,8 +19,8 @@
 
 import logging
 import time
-from threading import Lock, Thread
 from datetime import datetime
+from threading import Lock, Thread
 
 from .client import XataClient
 
@@ -28,6 +28,7 @@ DEFAULT_THREAD_POOL_SIZE = 4
 DEFAULT_BATCH_SIZE = 25
 DEFAULT_FLUSH_INTERVAL = 5
 DEFAULT_PROCESSING_TIMEOUT = 0.025
+DEFAULT_THROW_EXCEPTION = False
 
 
 class BulkProcessor(object):
@@ -46,18 +47,19 @@ class BulkProcessor(object):
         batch_size: int = DEFAULT_BATCH_SIZE,
         flush_interval: int = DEFAULT_FLUSH_INTERVAL,
         processing_timeout: float = DEFAULT_PROCESSING_TIMEOUT,
+        throw_exception: bool = DEFAULT_THROW_EXCEPTION,
     ):
         """
         BulkProcessor: Abstraction for bulk ingestion of records.
 
-        :stability alpha
-
+        :stability beta
 
         :param client: XataClient
-        :param thread_pool_size: int
-        :param batch_size: int
-        :param flush_interval: int
-        :processing_timeout: float
+        :param thread_pool_size: int How many data queue workers should be deployed (default: 4)
+        :param batch_size: int How many records per table should be pushed as batch (default: 25)
+        :param flush_interval: int After how many seconds should the per table queue be flushed (default: 5 seconds)
+        :processing_timeout: float Cooldown period between batches (default: 0.025 seconds)
+        :throw_exception: bool Throw exception ingestion, could kill all workers (default: False)
         """
         if thread_pool_size < 1:
             raise Exception(
@@ -69,14 +71,24 @@ class BulkProcessor(object):
                 "processing timeout can not be negative, default: %f"
                 % DEFAULT_PROCESSING_TIMEOUT
             )
+        if flush_interval < 0:
+            raise Exception(
+                "flush interval can not be negative, default: %f"
+                % DEFAULT_FLUSH_INTERVAL
+            )
+        if batch_size < 1:
+            raise Exception(
+                "batch size can not be less than one, default: %d" % DEFAULT_BATCH_SIZE
+            )
 
         self.client = client
         self.processing_timeout = processing_timeout
         self.batch_size = batch_size
         self.flush_interval = flush_interval
-        self.stats = {"total": 0, "queue": 0, "errors": 0, "tables": {}}
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
         self.failed_batches_queue = []
+        self.throw_exception = throw_exception
+        self.stats = {"total": 0, "queue": 0, "failed_batches": 0, "tables": {}}
+        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
         self.thread_workers = []
         self.records = self.Records(self.batch_size, self.flush_interval, self.logger)
@@ -119,13 +131,12 @@ class BulkProcessor(object):
                             "timestamp": datetime.utcnow(),
                             "records": batch["records"],
                             "table": batch["table"],
-                            "response": r
+                            "response": r,
                         }
                     )
-                    self.stats["errors"] += 1
-
-                    # TODO add records to batch again or callback
-                    raise Exception(r.json())
+                    self.stats["failed_batches"] += 1
+                    if self.throw_exception:
+                        raise Exception(r.json())
 
                 self.logger.debug(
                     "thread #%d: pushed a batch of %d records to table %s"
