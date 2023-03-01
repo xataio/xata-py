@@ -160,11 +160,15 @@ class BulkProcessor(object):
     def flush_queue(self):
         """
         Flush all records from the queue.
-        TODO: this method does not work correctly yet. The queue is fully flushed
         """
         self.logger.debug("flushing queue with %d records .." % (self.records.size()))
         self.records.set_flush_interval(0)
         self.processing_timeout = 0
+
+        # If the queue is not empty wait for one flush interval.
+        # Purpose is a race condition with self.stats["queue"]
+        if self.records.size() > 0:
+            time.sleep(self.flush_interval)
 
         while self.stats["queue"] > 0:
             self.logger.debug("flushing queue with %d records." % self.stats["queue"])
