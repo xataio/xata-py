@@ -2,7 +2,7 @@ name: Scan OpenAI Specification for API changes
 
 on:
   schedule:
-    - cron: "0 6 * * 2"
+    - cron: "42 8 * * *"
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
           poetry install
       - name: Run codegen
         run: make code-gen-full
-      - name: Create Pull Request
+      - name: Create Pull Request on changes
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: update endpoints
