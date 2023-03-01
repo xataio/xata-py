@@ -20,6 +20,7 @@
 import logging
 import time
 from threading import Lock, Thread
+from datetime import datetime
 
 from .client import XataClient
 
@@ -73,8 +74,9 @@ class BulkProcessor(object):
         self.processing_timeout = processing_timeout
         self.batch_size = batch_size
         self.flush_interval = flush_interval
-        self.stats = {"total": 0, "queue": 0, "tables": {}}
+        self.stats = {"total": 0, "queue": 0, "errors": 0, "tables": {}}
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.failed_batches_queue = []
 
         self.thread_workers = []
         self.records = self.Records(self.batch_size, self.flush_interval, self.logger)
@@ -111,6 +113,17 @@ class BulkProcessor(object):
                         "thread #%d: unable to process batch for table '%s', with error: %d - %s"
                         % (id, batch["table"], r.status_code, r.json())
                     )
+                    # Add to failed queue
+                    self.failed_batches_queue.append(
+                        {
+                            "timestamp": datetime.utcnow(),
+                            "records": batch["records"],
+                            "table": batch["table"],
+                            "response": r
+                        }
+                    )
+                    self.stats["errors"] += 1
+
                     # TODO add records to batch again or callback
                     raise Exception(r.json())
 
@@ -143,11 +156,12 @@ class BulkProcessor(object):
         """
         self.records.put(table_name, records)
 
-    def dlq(self):
+    def get_failed_batches(self) -> list[dict]:
         """
-        TODO
+        Get the batched records that could not be processed with the error
+        :return list[dict]
         """
-        pass
+        return self.failed_batches_queue
 
     def get_stats(self):
         """
