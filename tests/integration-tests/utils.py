@@ -23,7 +23,7 @@ import time
 
 
 def get_db_name() -> str:
-    return f"sdk-py-e2e-test-{get_random_string(6)}"
+    return f"sdk-integration-test-py-{get_random_string(6)}"
 
 
 def wait_until_records_are_indexed(table: str):
