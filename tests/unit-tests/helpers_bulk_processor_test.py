@@ -25,7 +25,7 @@ from xata.client import XataClient
 from xata.helpers import BulkProcessor
 
 
-class TestBulkProcessor(unittest.TestCase):
+class TestHelpersBulkProcessor(unittest.TestCase):
     def test_bulk_processor_init(self):
         client = XataClient(api_key="api_key", workspace_id="ws_id")
 
@@ -43,7 +43,9 @@ class TestBulkProcessor(unittest.TestCase):
 
         with pytest.raises(Exception) as e:
             bp = BulkProcessor(client, processing_timeout=-1)
-        assert str(e.value) == "processing timeout can not be negative, default: 0.025000"
+        assert (
+            str(e.value) == "processing timeout can not be negative, default: 0.025000"
+        )
 
     def test_bulk_processor_stats(self):
         client = XataClient(api_key="api_key", workspace_id="ws_id")

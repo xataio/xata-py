@@ -24,7 +24,7 @@ import utils
 from xata.client import XataClient, __version__
 
 
-class TestXataClient(unittest.TestCase):
+class TestClientInternals(unittest.TestCase):
     def test_sdk_version(self):
         db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
         client = XataClient(db_url=db_url)

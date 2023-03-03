@@ -24,7 +24,7 @@ from faker import Faker
 from xata.client import XataClient
 
 
-class TestClass(object):
+class TestRecordsNamespace(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"

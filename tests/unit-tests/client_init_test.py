@@ -25,7 +25,7 @@ import pytest
 from xata.client import XataClient
 
 
-class TestXataClient(unittest.TestCase):
+class TestClientInit(unittest.TestCase):
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 

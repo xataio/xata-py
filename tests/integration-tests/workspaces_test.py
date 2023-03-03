@@ -23,7 +23,7 @@ import utils
 from xata.client import XataClient
 
 
-class TestClass(object):
+class TestWorkspacesNamespace(object):
 
     workspace_id = None
 
