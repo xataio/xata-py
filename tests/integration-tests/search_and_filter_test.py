@@ -23,7 +23,7 @@ from faker import Faker
 from xata.client import XataClient
 
 
-class TestClass(object):
+class TestSearchAndFilterNamespace(object):
     def setup_class(self):
         self.fake = Faker()
         self.db_name = utils.get_db_name()

@@ -23,7 +23,7 @@ import utils
 from xata.client import XataClient
 
 
-class TestClass(object):
+class TestBranchNamespace(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"

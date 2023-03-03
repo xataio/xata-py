@@ -22,7 +22,7 @@ import utils
 from xata.client import XataClient
 
 
-class TestClass(object):
+class TestSearchAndFilterAskTableEndpoint(object):
     """
     POST /db/{db_branch_name}/tables/{table_name}/ask
     """

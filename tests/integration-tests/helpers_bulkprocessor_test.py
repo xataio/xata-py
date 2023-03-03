@@ -27,7 +27,7 @@ from xata.client import XataClient
 from xata.helpers import BulkProcessor
 
 
-class TestClass(object):
+class TestHelpersBulkProcessor(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
