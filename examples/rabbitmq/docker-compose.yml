@@ -18,7 +18,7 @@ services:
 
   xata_examples_producer:
     restart: always
-    build: 
+    build:
       context: ./producer
       dockerfile: Dockerfile
     depends_on:
@@ -36,7 +36,7 @@ services:
 
   xata_examples_consumers:
     restart: always
-    build: 
+    build:
       context: ./consumer
       dockerfile: Dockerfile
     depends_on:

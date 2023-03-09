@@ -1,6 +1,6 @@
 # Reading and Storing Stock Prices from RabbitMQ
 
-what it does start a rabbitmq instance, producer for company names and symbols, e.g. 
+what it does start a rabbitmq instance, producer for company names and symbols, e.g.
 ```
 'id': symbol,
                 'name': name,
@@ -46,7 +46,7 @@ consumers read from queue and expect the format:
 
 set the environment variables in docker-compose.yml
 
-run the app `make run` 
+run the app `make run`
 
 ## Config
 
