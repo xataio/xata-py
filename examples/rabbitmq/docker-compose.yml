@@ -1,0 +1,65 @@
+version: "3.2"
+services:
+  xata_examples_rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/xata_examples_rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/xata_examples_rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - xata_examples_stock_prices
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 5s
+      timeout: 30s
+      retries: 4
+
+  xata_examples_producer:
+    restart: always
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    depends_on:
+      xata_examples_rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ~/.docker-conf/xata_examples_producer/:/usr/src/app
+    environment:
+      - RABBITMQ_HOST
+      - RABBITMQ_QUEUE
+      - N_COMPANIES
+      - N_TICK_INTERVAL
+    networks:
+      - xata_examples_stock_prices
+
+  xata_examples_consumers:
+    restart: always
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    depends_on:
+      xata_examples_rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ~/.docker-conf/xata_examples_consumers/:/usr/src/app
+    environment:
+      - XATA_API_KEY
+      - XATA_WORKSPACE_ID
+      - XATA_DB_NAME
+      - XATA_REGION
+      - RABBITMQ_HOST
+      - RABBITMQ_QUEUE
+      - XATA_BP_THREADS
+      - XATA_BP_FLUSH_INTERVAL
+      - XATA_BP_BATCH_SIZE
+    networks:
+      - xata_examples_stock_prices
+    deploy:
+      mode: replicated
+      replicas: 2
+
+networks:
+  xata_examples_stock_prices:
+    driver: bridge
