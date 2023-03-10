@@ -24,8 +24,4 @@ You're all set to run the example!
 
 ## Run the Example
 
-Open the Xata UI to see data trickle in.
-
-In a terminal window, enter: `make run` and the 
-
- 
+Open the Xata UI to see data trickle in. Next, open a terminal window and enter `make run` in this directory to let the example "run".
