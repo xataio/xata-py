@@ -26,6 +26,13 @@ from xata.client import XataClient, DEFAULT_REGION
 
 
 class TestClientInit(unittest.TestCase):
+
+    def setUp(self):
+        # remove all "XATA_*" env vars
+        for k in os.environ.keys():
+            if k[0:5] == "XATA_":
+                os.environ.pop(k)
+
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
@@ -71,7 +78,29 @@ class TestClientInit(unittest.TestCase):
         assert "dbName" in cfg
         assert "testopia-042" == cfg["dbName"]
 
-    def test_init_db_url_invalid_combinations(self):
+    def test_init_db_url_with_envar(self):
+        os.environ["XATA_DATABASE_URL"] = "https://test-12345.us-west-1.xata.sh/db/testopia-16:yay"
+        client = XataClient()
+        cfg = client.get_config()
+
+        assert "test-12345" == cfg["workspaceId"]
+        assert "us-west-1" == cfg["region"]
+        assert "testopia-16" == cfg["dbName"]
+        assert "yay" == cfg["branchName"]
+
+    def test_init_db_url_with_param_and_envvar(self):
+        # Parameter should take precendence over envvar
+        db_url = "https://param.p_region.xata.sh/db/params:first"
+        os.environ["XATA_DATABASE_URL"] = "https://envvar.ev_region.xata.sh/db/envars:last"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert "param" == cfg["workspaceId"]
+        assert "p_region" == cfg["region"]
+        assert "params" == cfg["dbName"]
+        assert "first" == cfg["branchName"]
+
+    def test_init_db_url_invalid_parameter_combinations(self):
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id")
 
@@ -80,6 +109,19 @@ class TestClientInit(unittest.TestCase):
 
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
+
+    def test_init_db_url_invalid_combinations_with_envvars(self):
+        with pytest.raises(Exception):
+            os.environ["XATA_DATABASE_URL"] = "https://ws-id.region.xata.sh/db/my-db"
+            XataClient(workspace_id="ws_id")
+
+        with pytest.raises(Exception):
+            os.environ["XATA_DATABASE_URL"] = "https://ws-id.region.xata.sh/db/my-db"
+            XataClient(db_name="db_name")
+
+        with pytest.raises(Exception):
+            os.environ["XATA_DATABASE_URL"] = "https://ws-id.region.xata.sh/db/my-db"
+            XataClient(workspace_id="ws_id", db_name="db_name")
 
     def test_init_region(self):
         client1 = XataClient(api_key="api_key", workspace_id="ws_id")
@@ -115,5 +157,3 @@ class TestClientInit(unittest.TestCase):
         assert env_region == client2.get_config()["region"]
         assert DEFAULT_REGION != client2.get_config()["region"]
         assert "lalilu-123456" == client2.get_config()["workspaceId"]
-
-

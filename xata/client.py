@@ -97,12 +97,16 @@ class XataClient:
         db_url: str = None,
         branch_name: str = DEFAULT_BRANCH_NAME,
     ):
-        """Constructor for the XataClient."""
-        if db_url is not None:
+        """
+        Constructor for the XataClient.
+        """
+        if db_url is not None or os.environ.get('XATA_DATABASE_URL', None) is not None:
             if workspace_id is not None or db_name is not None:
                 raise Exception(
                     "Cannot specify both db_url and workspace_id/region/db_name"
                 )
+            if db_url is None:
+                db_url = os.environ.get('XATA_DATABASE_URL')
             workspace_id, region, db_name, branch_name = self._parse_database_url(db_url)
 
         if api_key is None:

@@ -159,5 +159,3 @@ class TestClientInternals(unittest.TestCase):
         # Missing db name
         with pytest.raises(Exception):
             XataClient(db_url="https://ws-id.region.xata.sh/db/")
-
-
