@@ -106,7 +106,7 @@ class XataClient:
             workspace_id, region, db_name = self.parse_database_url(db_url)
 
         if api_key is None:
-            self.api_key, self.api_key_location = self.get_api_key()
+            self.api_key, self.api_key_location = self._get_api_key()
         else:
             self.api_key, self.api_key_location = api_key, "parameter"
         if workspace_id is None:
@@ -114,11 +114,13 @@ class XataClient:
                 self.workspace_id,
                 self.region,
                 self.workspace_id_location,
-            ) = self.get_workspace_id()
+            ) = self._get_workspace_id()
         else:
             self.workspace_id = workspace_id
             self.workspace_id_location = "parameter"
             self.region = region
+        
+        # TODO these two properties can be removed once self.request is removed
         self.base_url = f"https://{self.workspace_id}.{self.region}.{base_url_domain}"
         self.control_plane_url = (
             f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
@@ -180,7 +182,7 @@ class XataClient:
         del self.headers[name]
         return True
 
-    def get_api_key(self) -> tuple[str, ApiKeyLocation]:
+    def _get_api_key(self) -> tuple[str, ApiKeyLocation]:
         if os.environ.get("XATA_API_KEY") is not None:
             return os.environ.get("XATA_API_KEY"), "env"
 
@@ -197,7 +199,7 @@ class XataClient:
             f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
         )
 
-    def get_workspace_id(self) -> tuple[str, str, WorkspaceIdLocation]:
+    def _get_workspace_id(self) -> tuple[str, str, WorkspaceIdLocation]:
         if os.environ.get("XATA_WORKSPACE_ID") is not None:
             return (
                 os.environ.get("XATA_WORKSPACE_ID"),
@@ -250,6 +252,18 @@ class XataClient:
         if branch_name is None:
             branch_name = self.branch_name
         return f"{db_name}:{branch_name}"
+    
+    def set_db_and_branch_names(self, db_name: str = None, branch_name: str = None):
+        """
+        Set either or both the database - or the branch name
+
+        :param db_name: str
+        :param branch_name: str
+        """
+        if db_name is not None:
+            self.db_name = db_name
+        if branch_name is not None:
+            self.branch_name = branch_name
 
     def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
         headers = {
@@ -295,6 +309,12 @@ class XataClient:
         region = parts[1]
         return workspaceId, region, db
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details='No direct replacement. Method is obsolete',
+    )
     def request_body_from_params(
         self,
         columns: list[str] = None,
@@ -302,7 +322,9 @@ class XataClient:
         sort: dict = None,
         page: dict = None,
     ) -> dict:
-
+        """
+        DEPRECATED, this method will be removed with the 1.0.0 release
+        """
         body = {}
         if columns is not None:
             body["columns"] = columns
@@ -314,7 +336,16 @@ class XataClient:
             body["page"] = page
         return body
 
+    @deprecation.deprecated(
+        deprecated_in="0.7.0",
+        removed_in="1.0",
+        current_version=__version__,
+        details='No direct replacement. Method is obsolete',
+    )
     def db_and_branch_names_from_params(self, db_name, branch_name) -> tuple[str, str]:
+        """
+        DEPRECATED, this method will be removed with the 1.0.0 release
+        """
         db_name = db_name or self.db_name
         branch_name = branch_name or self.branch_name
         if db_name is None:
@@ -326,12 +357,6 @@ class XataClient:
                 "Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter."
             )
         return db_name, branch_name
-
-    def set_db_and_branch_names(self, db_name: str = None, branch_name: str = None):
-        if db_name is not None:
-            self.db_name = db_name
-        if branch_name is not None:
-            self.branch_name = branch_name
 
     @deprecation.deprecated(
         deprecated_in="0.7.0",

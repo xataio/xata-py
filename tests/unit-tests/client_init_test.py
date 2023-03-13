@@ -22,7 +22,7 @@ import unittest
 
 import pytest
 
-from xata.client import XataClient
+from xata.client import XataClient, DEFAULT_REGION
 
 
 class TestClientInit(unittest.TestCase):
@@ -80,3 +80,40 @@ class TestClientInit(unittest.TestCase):
 
         with pytest.raises(Exception):
             XataClient(db_url="db_url", workspace_id="ws_id", db_name="db_name")
+
+    def test_init_region(self):
+        client1 = XataClient(api_key="api_key", workspace_id="ws_id")
+        assert "region" in client1.get_config()
+        assert DEFAULT_REGION == client1.get_config()["region"]
+
+        region = "a-region-42"
+        assert DEFAULT_REGION != region
+        client2 = XataClient(api_key="api_key", workspace_id="ws_id", region=region)
+        assert "region" in client2.get_config()
+        assert region == client2.get_config()["region"]
+
+    def test_init_region_from_db_url(self):
+        db_url = "https://unit-tests-abc123.us-west-2.xata.sh/db/docs"
+        client = XataClient(api_key='xau_redacted', db_url=db_url)
+        assert "region" in client.get_config()
+        assert "us-west-2" == client.get_config()["region"]
+
+    def test_init_region_from_envvars(self):
+        env_region = "this-region-123"
+        assert DEFAULT_REGION != env_region
+        os.environ["XATA_REGION"] = env_region
+
+        client1 = XataClient(api_key="api_key", workspace_id="ws_id")
+        assert "region" in client1.get_config()
+        assert env_region != client1.get_config()["region"]
+        assert DEFAULT_REGION == client1.get_config()["region"]
+        # ^ if the workspace Id is passed via param, then the env var of
+        # region is ignore. it must passed via param as well. see client init
+
+        os.environ["XATA_WORKSPACE_ID"] = "lalilu-123456"
+        client2 = XataClient(api_key="api_key")
+        assert env_region == client2.get_config()["region"]
+        assert DEFAULT_REGION != client2.get_config()["region"]
+        assert "lalilu-123456" == client2.get_config()["workspaceId"]
+
+
