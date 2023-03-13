@@ -34,7 +34,6 @@ class TestRecordsNamespace(object):
 
         # create database
         r = self.client.databases().createDatabase(
-            self.client.get_config()["workspaceId"],
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -66,9 +65,7 @@ class TestRecordsNamespace(object):
         assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(
-            self.client.get_config()["workspaceId"], self.db_name
-        )
+        r = self.client.databases().deleteDatabase(self.db_name)
         assert r.status_code == 200
 
     @pytest.fixture

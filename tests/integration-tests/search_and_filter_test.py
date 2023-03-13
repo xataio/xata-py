@@ -33,7 +33,6 @@ class TestSearchAndFilterNamespace(object):
 
         # create database
         r = self.client.databases().createDatabase(
-            self.client.get_config()["workspaceId"],
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -84,9 +83,7 @@ class TestSearchAndFilterNamespace(object):
         utils.wait_until_records_are_indexed("Posts")
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(
-            self.client.get_config()["workspaceId"], self.db_name
-        )
+        r = self.client.databases().deleteDatabase(self.db_name)
         assert r.status_code == 200
 
     def test_query_table(self):

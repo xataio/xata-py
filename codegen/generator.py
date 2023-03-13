@@ -61,6 +61,10 @@ TYPE_REPLACEMENTS = {
 }
 RESERVED_WORDS = ["from"]
 REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
+REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
+REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [
+    ''
+]
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -177,6 +181,7 @@ def get_endpoint_params(
         "has_payload": False,
         "has_optional_params": 0,
         "smart_db_branch_name": False,
+        "smart_workspace_id": False,
         "response_codes": [],
         "response_content_types": [],
     }
@@ -211,6 +216,23 @@ def get_endpoint_params(
                     }
                 )
                 skel["smart_db_branch_name"] = True
+            elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM: 
+                #and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
+                logging.info(
+                    ">> adding smart value for %s"
+                    % "#/components/parameters/WorkspaceIdParam"
+                )
+                curatedParamList.append(
+                    {
+                        "name": "workspace_id",
+                        "in": "path",
+                        "schema": {"type": "string"},
+                        "type": "str",
+                        "description": "The workspace identifier. Default: workspace Id from the client.",
+                        "required": False,
+                    }
+                )
+                skel["smart_workspace_id"] = True
             else:
                 curatedParamList.append(r)
 
