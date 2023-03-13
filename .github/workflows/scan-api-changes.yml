@@ -19,6 +19,7 @@ jobs:
         run: |
           python3 -m pip install -U poetry
           poetry install
+          pip3 install Mako==1.2
       - name: Run codegen
         run: make code-gen-full
       - name: Create Pull Request on changes
