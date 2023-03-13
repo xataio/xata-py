@@ -97,13 +97,17 @@ class XataClient:
         db_url: str = None,
         branch_name: str = DEFAULT_BRANCH_NAME,
     ):
-        """Constructor for the XataClient."""
-        if db_url is not None:
+        """
+        Constructor for the XataClient.
+        """
+        if db_url is not None or os.environ.get('XATA_DATABASE_URL', None) is not None:
             if workspace_id is not None or db_name is not None:
                 raise Exception(
                     "Cannot specify both db_url and workspace_id/region/db_name"
                 )
-            workspace_id, region, db_name = self.parse_database_url(db_url)
+            if db_url is None:
+                db_url = os.environ.get('XATA_DATABASE_URL')
+            workspace_id, region, db_name, branch_name = self._parse_database_url(db_url)
 
         if api_key is None:
             self.api_key, self.api_key_location = self._get_api_key()
@@ -217,7 +221,7 @@ class XataClient:
 
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, region, _ = self.parse_database_url(
+            workspaceID, region, _, _ = self._parse_database_url(
                 self.config.get("databaseURL")
             )
             return workspaceID, region, "config"
@@ -229,7 +233,7 @@ class XataClient:
     def get_database_name_if_configured(self) -> str:
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            _, _, db_name = self.parse_database_url(self.config.get("databaseURL"))
+            _, _, db_name, _ = self._parse_database_url(self.config.get("databaseURL"))
             return db_name
         return None
 
@@ -300,14 +304,26 @@ class XataClient:
         self.configRead = True
         return True
 
-    def parse_database_url(self, databaseURL: str) -> tuple[str, str, str]:
-        (_, _, host, _, db) = databaseURL.split("/")
-        if host == "":
-            raise Exception("Invalid database URL")
-        parts = host.split(".")
-        workspaceId = parts[0]
-        region = parts[1]
-        return workspaceId, region, db
+    def _parse_database_url(self, databaseURL: str) -> tuple[str, str, str, str]:
+        """
+        Parse Database URL
+        Branch name is optional.
+        Format: https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}
+        """
+        (_, _, host, _, db_branch_name) = databaseURL.split("/")
+        if host == "" or db_branch_name == "":
+            raise Exception("Invalid database URL: '%s', format: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}' expected." % databaseURL)
+        # split host {workspace_id}.{region}
+        host_parts = host.split(".")
+        if len(host_parts) < 4:
+            raise Exception("Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}'" % databaseURL)
+        # split {db_name}:{branch_name}
+        db_branch_parts = db_branch_name.split(":")
+        if len(db_branch_parts) == 2 and db_branch_parts[1] != "":
+            # branch defined and not empty, return it!
+            return host_parts[0], host_parts[1], db_branch_parts[0], db_branch_parts[1]
+        # does not have a branch defined
+        return host_parts[0], host_parts[1], db_branch_parts[0], DEFAULT_BRANCH_NAME
 
     @deprecation.deprecated(
         deprecated_in="0.7.0",
