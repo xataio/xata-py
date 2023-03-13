@@ -18,10 +18,11 @@
 #
 
 import unittest
+import pytest
 
 import utils
 
-from xata.client import XataClient, __version__
+from xata.client import XataClient, __version__, DEFAULT_BRANCH_NAME
 
 
 class TestClientInternals(unittest.TestCase):
@@ -101,3 +102,62 @@ class TestClientInternals(unittest.TestCase):
         assert client.get_config()["branchName"] == "where-is-the-hulk"
 
         assert client.get_config()["apiKey"] == conf["apiKey"]
+
+    def test_parse_database_url_simple(self):
+        db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert "py-sdk-unit-test-12345" == cfg["workspaceId"]
+        assert "eu-west-1" == cfg["region"]
+        assert "testopia-042" == cfg["dbName"]
+        assert "main" == cfg["branchName"]
+
+        ws, r, db, bn = client._parse_database_url(db_url)
+        assert "py-sdk-unit-test-12345" == ws
+        assert "eu-west-1" == r
+        assert "testopia-042" == db
+        assert "main" == bn
+
+    def test_parse_database_url_with_branch_name(self):
+        db_url = "https://test-abc345.us-west-7.xata.sh/db/db-name:pr1234-unit-tests"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert "test-abc345" == cfg["workspaceId"]
+        assert "us-west-7" == cfg["region"]
+        assert "db-name" == cfg["dbName"]
+        assert "pr1234-unit-tests" == cfg["branchName"]
+
+        ws, r, db, bn = client._parse_database_url(db_url)
+        assert "test-abc345" == ws
+        assert "us-west-7" == r
+        assert "db-name" == db
+        assert "pr1234-unit-tests" == bn
+
+    def test_parse_database_url_with_empty_branch_name(self):
+        db_url = "https://ws-id.region.xata.sh/db/db-name:"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+        
+        assert DEFAULT_BRANCH_NAME == cfg["branchName"]
+        assert "db-name" == cfg["dbName"]
+
+    def test_parse_database_url_with_custom_base_url(self):
+        db_url = "https://test-abc345.us-west-7.xatabase-playground.co.at/db/db-name:pr1234-unit-tests"
+        client = XataClient(db_url=db_url)
+        cfg = client.get_config()
+
+        assert True
+        # TODO assert custom base url
+    
+    def test_parse_database_url_with_invalid_urls(self):
+        # Invalid workspace.region
+        with pytest.raises(Exception):
+            XataClient(db_url="https://invalid.xata.sh/db/db-name:pr1234-unit-tests")
+
+        # Missing db name
+        with pytest.raises(Exception):
+            XataClient(db_url="https://ws-id.region.xata.sh/db/")
+
+
