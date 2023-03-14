@@ -34,63 +34,67 @@ class Users(Namespace):
     base_url = "https://api.xata.io"
     scope = "core"
 
-    def getUser(self, ) -> Response:
-       """
-       Return details of the user making the request
+    def getUser(
+        self,
+    ) -> Response:
+        """
+        Return details of the user making the request
 
-       Path: /user
-       Method: GET
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: application/json
+        Path: /user
+        Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
 
-       :return Response
-       """
-       url_path = "/user"
-       return self.request("GET", url_path)
+        :return Response
+        """
+        url_path = "/user"
+        return self.request("GET", url_path)
 
     def updateUser(self, payload: dict) -> Response:
-       """
-       Update user info
+        """
+        Update user info
 
-       Path: /user
-       Method: PUT
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: application/json
+        Path: /user
+        Method: PUT
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
-       :param payload: dict content
+        :param payload: dict content
 
-       :return Response
-       """
-       url_path = "/user"
-       headers = {"content-type": "application/json"}
-       return self.request("PUT", url_path, headers, payload)
+        :return Response
+        """
+        url_path = "/user"
+        headers = {"content-type": "application/json"}
+        return self.request("PUT", url_path, headers, payload)
 
-    def deleteUser(self, ) -> Response:
-       """
-       Delete the user making the request
+    def deleteUser(
+        self,
+    ) -> Response:
+        """
+        Delete the user making the request
 
-       Path: /user
-       Method: DELETE
-       Response status codes:
-       - 204: No Content
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
+        Path: /user
+        Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
 
-       :return Response
-       """
-       url_path = "/user"
-       return self.request("DELETE", url_path)
+        :return Response
+        """
+        url_path = "/user"
+        return self.request("DELETE", url_path)

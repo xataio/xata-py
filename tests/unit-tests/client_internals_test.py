@@ -18,11 +18,11 @@
 #
 
 import unittest
-import pytest
 
+import pytest
 import utils
 
-from xata.client import XataClient, __version__, DEFAULT_BRANCH_NAME
+from xata.client import DEFAULT_BRANCH_NAME, XataClient, __version__
 
 
 class TestClientInternals(unittest.TestCase):
@@ -139,7 +139,7 @@ class TestClientInternals(unittest.TestCase):
         db_url = "https://ws-id.region.xata.sh/db/db-name:"
         client = XataClient(db_url=db_url)
         cfg = client.get_config()
-        
+
         assert DEFAULT_BRANCH_NAME == cfg["branchName"]
         assert "db-name" == cfg["dbName"]
 
@@ -150,7 +150,7 @@ class TestClientInternals(unittest.TestCase):
 
         assert True
         # TODO assert custom base url
-    
+
     def test_parse_database_url_with_invalid_urls(self):
         # Invalid workspace.region
         with pytest.raises(Exception):

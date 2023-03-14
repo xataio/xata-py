@@ -347,6 +347,7 @@ class Search_and_filter(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
+        - 429: Rate limit exceeded
         - 503: Unexpected Error
         - 5XX: Unexpected Error
         Responses:
@@ -440,7 +441,7 @@ class Search_and_filter(Namespace):
         branch_name: str = None,
     ) -> Response:
         """
-        This endpoint allows you to run aggragations (analytics) on the data from one table.
+        This endpoint allows you to run aggregations (analytics) on the data from one table.
         While the summary endpoint is served from a transactional store and the results are
         strongly  consistent, the aggregate endpoint is served from our columnar store and the
         results are  only eventually consistent.  On the other hand, the aggregate endpoint uses a

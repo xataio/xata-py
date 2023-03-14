@@ -34,63 +34,65 @@ class Authentication(Namespace):
     base_url = "https://api.xata.io"
     scope = "core"
 
-    def getUserAPIKeys(self, ) -> Response:
-       """
-       Retrieve a list of existing user API keys
+    def getUserAPIKeys(
+        self,
+    ) -> Response:
+        """
+        Retrieve a list of existing user API keys
 
-       Path: /user/keys
-       Method: GET
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: application/json
+        Path: /user/keys
+        Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
 
-       :return Response
-       """
-       url_path = "/user/keys"
-       return self.request("GET", url_path)
+        :return Response
+        """
+        url_path = "/user/keys"
+        return self.request("GET", url_path)
 
     def createUserAPIKey(self, key_name: str) -> Response:
-       """
-       Create and return new API key
+        """
+        Create and return new API key
 
-       Path: /user/keys/{key_name}
-       Method: POST
-       Response status codes:
-       - 201: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: application/json
+        Path: /user/keys/{key_name}
+        Method: POST
+        Response status codes:
+        - 201: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
 
-       :param key_name: str API Key name
+        :param key_name: str API Key name
 
-       :return Response
-       """
-       url_path = f"/user/keys/{key_name}"
-       return self.request("POST", url_path)
+        :return Response
+        """
+        url_path = f"/user/keys/{key_name}"
+        return self.request("POST", url_path)
 
     def deleteUserAPIKey(self, key_name: str) -> Response:
-       """
-       Delete an existing API key
+        """
+        Delete an existing API key
 
-       Path: /user/keys/{key_name}
-       Method: DELETE
-       Response status codes:
-       - 204: No Content
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
+        Path: /user/keys/{key_name}
+        Method: DELETE
+        Response status codes:
+        - 204: No Content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
-       :param key_name: str API Key name
+        :param key_name: str API Key name
 
-       :return Response
-       """
-       url_path = f"/user/keys/{key_name}"
-       return self.request("DELETE", url_path)
+        :return Response
+        """
+        url_path = f"/user/keys/{key_name}"
+        return self.request("DELETE", url_path)

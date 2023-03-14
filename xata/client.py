@@ -100,14 +100,16 @@ class XataClient:
         """
         Constructor for the XataClient.
         """
-        if db_url is not None or os.environ.get('XATA_DATABASE_URL', None) is not None:
+        if db_url is not None or os.environ.get("XATA_DATABASE_URL", None) is not None:
             if workspace_id is not None or db_name is not None:
                 raise Exception(
                     "Cannot specify both db_url and workspace_id/region/db_name"
                 )
             if db_url is None:
-                db_url = os.environ.get('XATA_DATABASE_URL')
-            workspace_id, region, db_name, branch_name = self._parse_database_url(db_url)
+                db_url = os.environ.get("XATA_DATABASE_URL")
+            workspace_id, region, db_name, branch_name = self._parse_database_url(
+                db_url
+            )
 
         if api_key is None:
             self.api_key, self.api_key_location = self._get_api_key()
@@ -123,7 +125,7 @@ class XataClient:
             self.workspace_id = workspace_id
             self.workspace_id_location = "parameter"
             self.region = region
-        
+
         # TODO these two properties can be removed once self.request is removed
         self.base_url = f"https://{self.workspace_id}.{self.region}.{base_url_domain}"
         self.control_plane_url = (
@@ -256,7 +258,7 @@ class XataClient:
         if branch_name is None:
             branch_name = self.branch_name
         return f"{db_name}:{branch_name}"
-    
+
     def set_db_and_branch_names(self, db_name: str = None, branch_name: str = None):
         """
         Set either or both the database - or the branch name
@@ -312,11 +314,17 @@ class XataClient:
         """
         (_, _, host, _, db_branch_name) = databaseURL.split("/")
         if host == "" or db_branch_name == "":
-            raise Exception("Invalid database URL: '%s', format: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}' expected." % databaseURL)
+            raise Exception(
+                "Invalid database URL: '%s', format: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}' expected."
+                % databaseURL
+            )
         # split host {workspace_id}.{region}
         host_parts = host.split(".")
         if len(host_parts) < 4:
-            raise Exception("Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}'" % databaseURL)
+            raise Exception(
+                "Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}'"
+                % databaseURL
+            )
         # split {db_name}:{branch_name}
         db_branch_parts = db_branch_name.split(":")
         if len(db_branch_parts) == 2 and db_branch_parts[1] != "":
@@ -329,7 +337,7 @@ class XataClient:
         deprecated_in="0.7.0",
         removed_in="1.0",
         current_version=__version__,
-        details='No direct replacement. Method is obsolete',
+        details="No direct replacement. Method is obsolete",
     )
     def request_body_from_params(
         self,
@@ -356,7 +364,7 @@ class XataClient:
         deprecated_in="0.7.0",
         removed_in="1.0",
         current_version=__version__,
-        details='No direct replacement. Method is obsolete',
+        details="No direct replacement. Method is obsolete",
     )
     def db_and_branch_names_from_params(self, db_name, branch_name) -> tuple[str, str]:
         """

@@ -1,6 +1,6 @@
 # Reading and Storing Stock Prices from RabbitMQ in Xata
 
-This example is intended to show you how to read events from a [RabbitMQ](https://rabbitmq.com) queue and store them in [Xata](https://xata.io). 
+This example is intended to show you how to read events from a [RabbitMQ](https://rabbitmq.com) queue and store them in [Xata](https://xata.io).
 We are generating fictive companies and simulate stock prices for each company, whom move up and down with each tick.
 
 A **producer** creates the companies and pushes every `env.N_TICK_INTERVAL` seconds stock price changes to a queue.

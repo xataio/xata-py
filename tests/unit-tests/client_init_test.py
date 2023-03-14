@@ -22,11 +22,10 @@ import unittest
 
 import pytest
 
-from xata.client import XataClient, DEFAULT_REGION
+from xata.client import DEFAULT_REGION, XataClient
 
 
 class TestClientInit(unittest.TestCase):
-
     def test_init_api_key_with_params(self):
         api_key = "param_ABCDEF123456789"
 
@@ -73,7 +72,9 @@ class TestClientInit(unittest.TestCase):
         assert "testopia-042" == cfg["dbName"]
 
     def test_init_db_url_with_envar(self):
-        os.environ["XATA_DATABASE_URL"] = "https://test-12345.us-west-1.xata.sh/db/testopia-16:yay"
+        os.environ[
+            "XATA_DATABASE_URL"
+        ] = "https://test-12345.us-west-1.xata.sh/db/testopia-16:yay"
         client = XataClient()
         cfg = client.get_config()
 
@@ -87,7 +88,9 @@ class TestClientInit(unittest.TestCase):
     def test_init_db_url_with_param_and_envvar(self):
         # Parameter should take precendence over envvar
         db_url = "https://param.p_region.xata.sh/db/params:first"
-        os.environ["XATA_DATABASE_URL"] = "https://envvar.ev_region.xata.sh/db/envars:last"
+        os.environ[
+            "XATA_DATABASE_URL"
+        ] = "https://envvar.ev_region.xata.sh/db/envars:last"
         client = XataClient(db_url=db_url)
         cfg = client.get_config()
 
@@ -133,7 +136,7 @@ class TestClientInit(unittest.TestCase):
 
     def test_init_region_from_db_url(self):
         db_url = "https://unit-tests-abc123.us-west-2.xata.sh/db/docs"
-        client = XataClient(api_key='xau_redacted', db_url=db_url)
+        client = XataClient(api_key="xau_redacted", db_url=db_url)
         assert "region" in client.get_config()
         assert "us-west-2" == client.get_config()["region"]
 

@@ -62,9 +62,7 @@ TYPE_REPLACEMENTS = {
 RESERVED_WORDS = ["from"]
 REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
-REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [
-    ''
-]
+REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -216,8 +214,8 @@ def get_endpoint_params(
                     }
                 )
                 skel["smart_db_branch_name"] = True
-            elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM: 
-                #and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
+            elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
+                # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
                 logging.info(
                     ">> adding smart value for %s"
                     % "#/components/parameters/WorkspaceIdParam"
