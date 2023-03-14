@@ -34,7 +34,7 @@ class Databases(Namespace):
     base_url = "https://api.xata.io"
     scope = "core"
 
-    def getDatabaseList(self, workspace_id: str) -> Response:
+    def getDatabaseList(self, workspace_id: str = None) -> Response:
         """
         List all databases available in your Workspace.
 
@@ -47,14 +47,16 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
 
-    def getDatabaseMetadata(self, workspace_id: str, db_name: str) -> Response:
+    def getDatabaseMetadata(self, db_name: str, workspace_id: str = None) -> Response:
         """
         Retrieve metadata of the given database
 
@@ -68,16 +70,18 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
     def createDatabase(
-        self, workspace_id: str, db_name: str, payload: dict
+        self, db_name: str, payload: dict, workspace_id: str = None
     ) -> Response:
         """
         Create Database with identifier name
@@ -93,17 +97,19 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteDatabase(self, workspace_id: str, db_name: str) -> Response:
+    def deleteDatabase(self, db_name: str, workspace_id: str = None) -> Response:
         """
         Delete a database and all of its branches and tables permanently.
 
@@ -117,16 +123,18 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
     def updateDatabaseMetadata(
-        self, workspace_id: str, db_name: str, payload: dict
+        self, db_name: str, payload: dict, workspace_id: str = None
     ) -> Response:
         """
         Update the color of the selected database
@@ -141,17 +149,19 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param db_name: str The Database Name
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def listRegions(self, workspace_id: str) -> Response:
+    def listRegions(self, workspace_id: str = None) -> Response:
         """
         List regions available to create a database on
 
@@ -164,9 +174,11 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/regions"
         return self.request("GET", url_path)

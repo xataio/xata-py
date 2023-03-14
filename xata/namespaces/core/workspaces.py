@@ -78,7 +78,7 @@ class Workspaces(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getWorkspace(self, workspace_id: str) -> Response:
+    def getWorkspace(self, workspace_id: str = None) -> Response:
         """
         Retrieve workspace info from a workspace ID
 
@@ -93,14 +93,16 @@ class Workspaces(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}"
         return self.request("GET", url_path)
 
-    def updateWorkspace(self, workspace_id: str, payload: dict) -> Response:
+    def updateWorkspace(self, payload: dict, workspace_id: str = None) -> Response:
         """
         Update workspace info
 
@@ -115,16 +117,18 @@ class Workspaces(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteWorkspace(self, workspace_id: str) -> Response:
+    def deleteWorkspace(self, workspace_id: str = None) -> Response:
         """
         Delete the workspace with the provided ID
 
@@ -138,14 +142,16 @@ class Workspaces(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}"
         return self.request("DELETE", url_path)
 
-    def getWorkspaceMembersList(self, workspace_id: str) -> Response:
+    def getWorkspaceMembersList(self, workspace_id: str = None) -> Response:
         """
         Retrieve the list of members of the given workspace
 
@@ -160,15 +166,17 @@ class Workspaces(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
 
     def updateWorkspaceMemberRole(
-        self, workspace_id: str, user_id: str, payload: dict
+        self, user_id: str, payload: dict, workspace_id: str = None
     ) -> Response:
         """
         Update a workspace member role.  Workspaces must always have at least one owner, so this
@@ -184,17 +192,19 @@ class Workspaces(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
         :param user_id: str UserID
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def removeWorkspaceMember(self, workspace_id: str, user_id: str) -> Response:
+    def removeWorkspaceMember(self, user_id: str, workspace_id: str = None) -> Response:
         """
         Remove the member from the workspace
 
@@ -208,10 +218,12 @@ class Workspaces(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
         :param user_id: str UserID
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         return self.request("DELETE", url_path)

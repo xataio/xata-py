@@ -29,6 +29,10 @@
        % if params['smart_db_branch_name'] :
        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
        % endif
+       % if params['smart_workspace_id'] :
+       if workspace_id is None:
+           workspace_id = self.client.get_config()["workspaceId"]
+       % endif
        % if params['has_path_params'] :
        url_path = f"${path}"
        % else :

@@ -34,7 +34,9 @@ class Invites(Namespace):
     base_url = "https://api.xata.io"
     scope = "core"
 
-    def inviteWorkspaceMember(self, workspace_id: str, payload: dict) -> Response:
+    def inviteWorkspaceMember(
+        self, payload: dict, workspace_id: str = None
+    ) -> Response:
         """
         Invite some user to join the workspace with the given role
 
@@ -50,17 +52,19 @@ class Invites(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/invites"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def cancelWorkspaceMemberInvite(
-        self, workspace_id: str, invite_id: str
+        self, invite_id: str, workspace_id: str = None
     ) -> Response:
         """
         This operation provides a way to cancel invites by deleting them.  Already accepted
@@ -76,16 +80,18 @@ class Invites(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         return self.request("DELETE", url_path)
 
     def updateWorkspaceMemberInvite(
-        self, workspace_id: str, invite_id: str, payload: dict
+        self, invite_id: str, payload: dict, workspace_id: str = None
     ) -> Response:
         """
         This operation provides a way to update an existing invite.  Updates are performed in-
@@ -104,18 +110,20 @@ class Invites(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
         :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
     def acceptWorkspaceMemberInvite(
-        self, workspace_id: str, invite_key: str
+        self, invite_key: str, workspace_id: str = None
     ) -> Response:
         """
         Accept the invitation to join a workspace.  If the operation succeeds the user will be a
@@ -131,16 +139,18 @@ class Invites(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
         :param invite_key: str Invite Key (secret) for the invited user
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/invites/{invite_key}/accept"
         return self.request("POST", url_path)
 
     def resendWorkspaceMemberInvite(
-        self, workspace_id: str, invite_id: str
+        self, invite_id: str, workspace_id: str = None
     ) -> Response:
         """
         This operation provides a way to resend an Invite notification.  Invite notifications can
@@ -156,10 +166,12 @@ class Invites(Namespace):
         - 404: Example response
         - 5XX: Unexpected Error
 
-        :param workspace_id: str Workspace ID
         :param invite_id: str Invite identifier
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
         :return Response
         """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}/resend"
         return self.request("POST", url_path)
