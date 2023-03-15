@@ -78,7 +78,10 @@ def fetch_openapi_specs(spec_url: str) -> dict:
 
 
 def generate_namespace(
-    namespace: dict, scope: str, spec_version: str, spec_base_url: str
+    namespace: dict,
+    scope: str, 
+    spec_version: str, 
+    spec_base_url: str
 ):
     """
     Generate the namespaced Class for the endpoints
@@ -117,10 +120,7 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
             fh = open(file_name, "a+")
             fh.write(out.decode("utf-8"))
             fh.close()
-            logging.info(
-                "> appended endpoint %s to %s"
-                % (endpoints[method]["operationId"], file_name)
-            )
+            logging.info("appended endpoint %s to %s" % (endpoints[method]["operationId"], file_name))
 
 
 def prune_empty_namespaces(spec: dict) -> list[str]:
@@ -139,7 +139,11 @@ def prune_empty_namespaces(spec: dict) -> list[str]:
 
 
 def generate_endpoint(
-    path: str, method: str, endpoint: dict, parameters: list, references: dict
+    path: str, 
+    method: str, 
+    endpoint: dict, 
+    parameters: list, 
+    references: dict
 ) -> str:
     """
     Generate a single endpoint
@@ -153,6 +157,7 @@ def generate_endpoint(
     if "description" in endpoint:
         desc = endpoint["description"].strip()
     else:
+        logging.info("missing description for %s.%s - using summary." % (path, endpoint['operationId']))
         desc = endpoint["summary"].strip()
 
     vars = {
@@ -188,9 +193,8 @@ def get_endpoint_params(
         curatedParamList = []
         for r in parameters:
             if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
-                logging.info(
-                    ">> adding smart value for %s"
-                    % "#/components/parameters/DBBranchNameParam"
+                logging.debug(
+                    "adding smart value for %s" % "#/components/parameters/DBBranchNameParam"
                 )
                 # push two new params to cover for string creation
                 curatedParamList.append(
@@ -216,9 +220,8 @@ def get_endpoint_params(
                 skel["smart_db_branch_name"] = True
             elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
                 # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
-                logging.info(
-                    ">> adding smart value for %s"
-                    % "#/components/parameters/WorkspaceIdParam"
+                logging.debug(
+                    "adding smart value for %s" % "#/components/parameters/WorkspaceIdParam"
                 )
                 curatedParamList.append(
                     {
