@@ -34,9 +34,7 @@ class Table(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def createTable(
-        self, table_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def createTable(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Creates a new table with the given name.  Returns 422 if a table with the same name
         already exists.
@@ -63,9 +61,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("PUT", url_path)
 
-    def deleteTable(
-        self, table_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def deleteTable(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Deletes the table with the given name.
 
@@ -123,9 +119,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def getTableSchema(
-        self, table_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getTableSchema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get table schema
 
@@ -182,9 +176,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getTableColumns(
-        self, table_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getTableColumns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Retrieves the list of table columns and their definition.  This endpoint returns the
         column list with object columns being reported with their full dot-separated path

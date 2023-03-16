@@ -24,9 +24,7 @@ from dotenv import load_dotenv
 
 from xata.client import XataClient
 
-logging.basicConfig(
-    format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO)
 load_dotenv()
 
 XATA_DATABASE_NAME = os.environ.get("XATA_DB_NAME")
@@ -35,9 +33,7 @@ assert XATA_DATABASE_NAME, "env.XATA_DB_NAME not set."
 xata = XataClient(db_name=XATA_DATABASE_NAME)
 
 logging.info("checking credentials ..")
-assert (
-    xata.users().getUser().status_code == 200
-), "Unable to connect to Xata. Please check credentials"
+assert xata.users().getUser().status_code == 200, "Unable to connect to Xata. Please check credentials"
 
 logging.info("creating database '%s' .." % XATA_DATABASE_NAME)
 r = xata.databases().createDatabase(

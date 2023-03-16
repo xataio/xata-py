@@ -43,9 +43,7 @@ class TestRecordsNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable(
-            "Posts", db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 201
 
         # create schema
@@ -84,9 +82,7 @@ class TestRecordsNamespace(object):
         """
         POST /db/{db_branch_name}/tables/{table_name}/data
         """
-        r = self.client.records().insertRecord(
-            "Posts", record, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().insertRecord("Posts", record, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 201
         assert "id" in r.json()
         assert "xata" in r.json()
@@ -149,9 +145,7 @@ class TestRecordsNamespace(object):
         """
         GET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().getRecord(
-            "Posts", self.record_id, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().getRecord("Posts", self.record_id, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
@@ -173,9 +167,7 @@ class TestRecordsNamespace(object):
         assert len(r.json().keys()) == 3
         assert r.json() != keep
 
-        r = self.client.records().getRecord(
-            "Posts", "#######", db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().getRecord("Posts", "#######", db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 404
 
         r = self.client.records().getRecord(
@@ -208,9 +200,7 @@ class TestRecordsNamespace(object):
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == proof.json()["xata"]["version"] + 1
 
-        r = self.client.records().getRecord(
-            "Posts", self.record_id, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().getRecord("Posts", self.record_id, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert r.json()["slug"] == record["slug"]
         assert r.json()["slug"] != proof.json()["slug"]
@@ -245,9 +235,7 @@ class TestRecordsNamespace(object):
         )
         assert r.status_code == 201
 
-        r = self.client.records().getRecord(
-            "Posts", rec_id, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().getRecord("Posts", rec_id, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         proof = r.json()
@@ -259,9 +247,7 @@ class TestRecordsNamespace(object):
         )
         assert r.status_code == 200
 
-        r = self.client.records().getRecord(
-            "Posts", rec_id, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.records().getRecord("Posts", rec_id, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         assert r.json() != proof

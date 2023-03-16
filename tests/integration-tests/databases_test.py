@@ -64,9 +64,7 @@ class TestDatabasesNamespace(object):
         assert r.json()["name"] == self.db_name
         assert r.json()["region"] == self.client.get_config()["region"]
 
-        r = self.client.databases().getDatabaseMetadata(
-            self.db_name, workspace_id="NonExistingWorkspaceId"
-        )
+        r = self.client.databases().getDatabaseMetadata(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert r.status_code == 401
 
         r = self.client.databases().getDatabaseMetadata("NonExistingDatabase")
@@ -89,9 +87,7 @@ class TestDatabasesNamespace(object):
 
         r = self.client.databases().updateDatabaseMetadata(self.db_name, {})
         assert r.status_code == 400
-        r = self.client.databases().updateDatabaseMetadata(
-            "NonExistingDatabase", metadata
-        )
+        r = self.client.databases().updateDatabaseMetadata("NonExistingDatabase", metadata)
         assert r.status_code == 400
 
         r = self.client.databases().updateDatabaseMetadata(
@@ -108,9 +104,7 @@ class TestDatabasesNamespace(object):
         r = self.client.databases().deleteDatabase("NonExistingDatabase")
         assert r.status_code == 404
 
-        r = self.client.databases().deleteDatabase(
-            self.db_name, workspace_id="NonExistingWorkspaceId"
-        )
+        r = self.client.databases().deleteDatabase(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert r.status_code == 401
 
     def test_get_available_regions(self):

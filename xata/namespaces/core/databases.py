@@ -80,9 +80,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def createDatabase(
-        self, db_name: str, payload: dict, workspace_id: str = None
-    ) -> Response:
+    def createDatabase(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Create Database with identifier name
 
@@ -133,9 +131,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
-    def updateDatabaseMetadata(
-        self, db_name: str, payload: dict, workspace_id: str = None
-    ) -> Response:
+    def updateDatabaseMetadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Update the color of the selected database
 

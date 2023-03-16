@@ -55,9 +55,7 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def getBranchDetails(
-        self, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getBranchDetails(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch schema and metadata
 
@@ -139,9 +137,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}"
         return self.request("DELETE", url_path)
 
-    def getBranchMetadata(
-        self, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getBranchMetadata(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get Branch Metadata
 
@@ -164,9 +160,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}/metadata"
         return self.request("GET", url_path)
 
-    def updateBranchMetadata(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def updateBranchMetadata(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update the branch metadata
 
@@ -293,9 +287,7 @@ class Branch(Namespace):
             url_path += "?gitBranch={gitBranch}"
         return self.request("DELETE", url_path)
 
-    def resolveBranch(
-        self, db_name: str, gitBranch: str = None, fallbackBranch: str = None
-    ) -> Response:
+    def resolveBranch(self, db_name: str, gitBranch: str = None, fallbackBranch: str = None) -> Response:
         """
         In order to resolve the database branch, the following algorithm is used: * if the
         `gitBranch` was provided and is found in the [git branches mapping](/api-

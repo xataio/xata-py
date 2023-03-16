@@ -34,9 +34,7 @@ class Migrations(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def getBranchMigrationHistory(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getBranchMigrationHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch migration history [deprecated]
 
@@ -61,9 +59,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("GET", url_path, headers, payload)
 
-    def getBranchMigrationPlan(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getBranchMigrationPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
 
@@ -87,9 +83,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def executeBranchMigrationPlan(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def executeBranchMigrationPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Apply a migration plan to the branch
 
@@ -113,9 +107,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getBranchSchemaHistory(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def getBranchSchemaHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Query schema history.
 
@@ -140,9 +132,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compareBranchWithUserSchema(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def compareBranchWithUserSchema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compare branch with user schema.
 
@@ -166,9 +156,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compareBranchSchemas(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def compareBranchSchemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compare branch schemas.
 
@@ -192,9 +180,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def updateBranchSchema(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def updateBranchSchema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update Branch schema
 
@@ -218,9 +204,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def previewBranchSchemaEdit(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def previewBranchSchemaEdit(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Preview branch schema edits.
 
@@ -245,9 +229,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def applyBranchSchemaEdit(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def applyBranchSchemaEdit(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Apply edit script.
 

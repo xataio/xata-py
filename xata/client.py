@@ -50,7 +50,7 @@ from .namespaces.workspace.table import Table
 __version__ = "0.7.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
-DEFAULT_BASE_URL_DOMAIN = "xata.sh"
+DEFAULT_DATA_PLANE_DOMAIN = "xata.sh"
 DEFAULT_CONTROL_PLANE_DOMAIN = "api.xata.io"
 DEFAULT_REGION = "us-east-1"
 DEFAULT_BRANCH_NAME = "main"
@@ -78,8 +78,8 @@ class XataClient:
     :param region: The region to use.
     :param db_name: The database name to use.
     :param branch_name: The branch name to use. Defaults to `main`
-    :param base_url_domain: The domain to use for the base URL. Defaults to xata.sh.
-    :param control_plane_domain: The domain to use for the control plane. Defaults to api.xata.io.
+    :param domain_core: The domain to use for "core", the control plane. Defaults to api.xata.io.
+    :param domain_workspace: The domain to use for "workspace", data plane. Defaults to xata.sh.
     """
 
     configRead: bool = False
@@ -89,55 +89,50 @@ class XataClient:
     def __init__(
         self,
         api_key: str = None,
-        base_url_domain: str = DEFAULT_BASE_URL_DOMAIN,
-        control_plane_domain: str = DEFAULT_CONTROL_PLANE_DOMAIN,
         region: str = DEFAULT_REGION,
         workspace_id: str = None,
         db_name: str = None,
         db_url: str = None,
         branch_name: str = DEFAULT_BRANCH_NAME,
+        domain_core: str = DEFAULT_CONTROL_PLANE_DOMAIN,
+        domain_workspace: str = DEFAULT_DATA_PLANE_DOMAIN,
     ):
         """
         Constructor for the XataClient.
         """
         if db_url is not None or os.environ.get("XATA_DATABASE_URL", None) is not None:
             if workspace_id is not None or db_name is not None:
-                raise Exception(
-                    "Cannot specify both db_url and workspace_id/region/db_name"
-                )
+                raise Exception("Cannot specify both db_url and workspace_id/region/db_name")
             if db_url is None:
                 db_url = os.environ.get("XATA_DATABASE_URL")
-            workspace_id, region, db_name, branch_name = self._parse_database_url(
-                db_url
-            )
+            workspace_id, region, db_name, branch_name, domain_workspace = self._parse_database_url(db_url)
 
         if api_key is None:
             self.api_key, self.api_key_location = self._get_api_key()
         else:
             self.api_key, self.api_key_location = api_key, "parameter"
+
         if workspace_id is None:
             (
                 self.workspace_id,
                 self.region,
-                self.workspace_id_location,
+                self.workspace_id_location,  # TODO not sure if we need the location at all
             ) = self._get_workspace_id()
         else:
             self.workspace_id = workspace_id
             self.workspace_id_location = "parameter"
             self.region = region
 
-        # TODO these two properties can be removed once self.request is removed
-        self.base_url = f"https://{self.workspace_id}.{self.region}.{base_url_domain}"
-        self.control_plane_url = (
-            f"https://{control_plane_domain}/workspaces/{self.workspace_id}/"
-        )
+        # TODO remove these assignment once client.request is removed from the codebase
+        self.base_url = f"https://{self.workspace_id}.{self.region}.{domain_workspace}"
+        self.control_plane_url = f"https://{domain_core}/workspaces/{self.workspace_id}/"
 
-        self.db_name = (
-            self.get_database_name_if_configured() if db_name is None else db_name
-        )
-        self.branch_name = (
-            self.get_branch_name_if_configured() if branch_name is None else branch_name
-        )
+        self.db_name = self.get_database_name_if_configured() if db_name is None else db_name
+        self.branch_name = self.get_branch_name_if_configured() if branch_name is None else branch_name
+
+        self.domain_core = domain_core
+        self.domain_workspace = domain_workspace
+
         self.headers = {
             "authorization": f"Bearer {self.api_key}",
             "user-agent": f"xataio/xata-py:{__version__}",
@@ -158,6 +153,8 @@ class XataClient:
             "dbName": self.db_name,
             "branchName": self.branch_name,
             "version": __version__,
+            "domain_core": self.domain_core,
+            "domain_workspace": self.domain_workspace,
         }
 
     def get_headers(self) -> dict:
@@ -223,9 +220,7 @@ class XataClient:
 
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, region, _, _ = self._parse_database_url(
-                self.config.get("databaseURL")
-            )
+            workspaceID, region, _, _ = self._parse_database_url(self.config.get("databaseURL"))
             return workspaceID, region, "config"
         raise Exception(
             f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
@@ -285,9 +280,7 @@ class XataClient:
             if resp.status_code in expect_codes:
                 return resp
             if resp.status_code == 401:
-                raise UnauthorizedException(
-                    f"Unauthorized: {resp.json()} API key location: {self.api_key_location}"
-                )
+                raise UnauthorizedException(f"Unauthorized: {resp.json()} API key location: {self.api_key_location}")
             elif resp.status_code == 429:
                 raise RateLimitException(f"Rate limited: {resp.json()}")
             elif resp.status_code >= 399 and resp.status_code < 500:
@@ -306,11 +299,12 @@ class XataClient:
         self.configRead = True
         return True
 
-    def _parse_database_url(self, databaseURL: str) -> tuple[str, str, str, str]:
+    def _parse_database_url(self, databaseURL: str) -> tuple[str, str, str, str, str]:
         """
         Parse Database URL
         Branch name is optional.
         Format: https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}
+        :return workspace_id, region, db_name, branch_name, domain
         """
         (_, _, host, _, db_branch_name) = databaseURL.split("/")
         if host == "" or db_branch_name == "":
@@ -325,13 +319,15 @@ class XataClient:
                 "Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}'"
                 % databaseURL
             )
+        # build domain name
+        domain = ".".join(host_parts[2:])
         # split {db_name}:{branch_name}
         db_branch_parts = db_branch_name.split(":")
         if len(db_branch_parts) == 2 and db_branch_parts[1] != "":
             # branch defined and not empty, return it!
-            return host_parts[0], host_parts[1], db_branch_parts[0], db_branch_parts[1]
+            return host_parts[0], host_parts[1], db_branch_parts[0], db_branch_parts[1], domain
         # does not have a branch defined
-        return host_parts[0], host_parts[1], db_branch_parts[0], DEFAULT_BRANCH_NAME
+        return host_parts[0], host_parts[1], db_branch_parts[0], DEFAULT_BRANCH_NAME, domain
 
     @deprecation.deprecated(
         deprecated_in="0.7.0",
@@ -373,9 +369,7 @@ class XataClient:
         db_name = db_name or self.db_name
         branch_name = branch_name or self.branch_name
         if db_name is None:
-            raise Exception(
-                "Database name is not configured. Please set it via `xata init` or pass it as a parameter."
-            )
+            raise Exception("Database name is not configured. Please set it via `xata init` or pass it as a parameter.")
         if branch_name is None:
             raise Exception(
                 "Branch name is not configured. Please set it in the `XATA_BRANCH` env var or pass it as a parameter."
@@ -413,13 +407,9 @@ class XataClient:
         :param page: A page expression to apply to the query.
         :return: A page of results.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.request(
-            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
-        )
+        result = self.request("POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body)
         return result.json()
 
     @deprecation.deprecated(
@@ -451,13 +441,9 @@ class XataClient:
         :return: A record as a dictionary.
         """
         page = {"size": 1}
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         body = self.request_body_from_params(columns, filter, sort, page)
-        result = self.request(
-            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body
-        )
+        result = self.request("POST", f"/db/{db_name}:{branch_name}/tables/{table}/query", json=body)
         data = result.json()
         if len(data.get("records", [])) == 0:
             return None
@@ -487,9 +473,7 @@ class XataClient:
                         from the client obejct is used.
         :return: A record as a dictionary or None if it doesn't exist.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         result = self.request(
             "GET",
             f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}",
@@ -527,9 +511,7 @@ class XataClient:
                         from the client obejct is used.
         :return: The ID of the created record.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         if id is not None:
             self.request(
                 "PUT",
@@ -539,9 +521,7 @@ class XataClient:
             )
             return id
 
-        result = self.request(
-            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record
-        )
+        result = self.request("POST", f"/db/{db_name}:{branch_name}/tables/{table}/data", json=record)
         return result.json()["id"]
 
     @deprecation.deprecated(
@@ -573,12 +553,8 @@ class XataClient:
                         from the client obejct is used.
         :return: The ID of the created or updated record.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
-        result = self.request(
-            "POST", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
+        result = self.request("POST", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record)
         return result.json()["id"]
 
     @deprecation.deprecated(
@@ -608,12 +584,8 @@ class XataClient:
                         from the client obejct is used.
         :return: The ID of the created or updated record.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
-        result = self.request(
-            "PUT", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
+        result = self.request("PUT", f"/db/{db_name}:{branch_name}/tables/{table}/data/{id}", json=record)
         return result.json()["id"]
 
     @deprecation.deprecated(
@@ -647,9 +619,7 @@ class XataClient:
                         from the client obejct is used.
         :return: The updated record.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         params = {"columns": "*"}
         if ifVersion is not None:
             params["ifVersion"] = str(ifVersion)
@@ -661,9 +631,7 @@ class XataClient:
             expect_codes=[422, 404],
         )
         if result.status_code == 404:
-            return (
-                None  # TODO: I would prefer to raise here, but there is a backend issue
-            )
+            return None  # TODO: I would prefer to raise here, but there is a backend issue
         if result.status_code == 422:
             return None
         return result.json()
@@ -674,9 +642,7 @@ class XataClient:
         current_version=__version__,
         details="client.records().deleteRecord(:table, :id)",
     )
-    def delete_record(
-        self, table: str, id: str, db_name: str = None, branch_name: str = None
-    ) -> Optional[dict]:
+    def delete_record(self, table: str, id: str, db_name: str = None, branch_name: str = None) -> Optional[dict]:
         """Deletes the record with the given ID. Returns the record as it was just before
         deletion. If no record with the given ID exists, raises RecordNotFoundException.
 
@@ -689,9 +655,7 @@ class XataClient:
                         from the client obejct is used.
         :return: The deleted record.
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         params = {"columns": "*"}
         result = self.request(
             "DELETE",
@@ -730,9 +694,7 @@ class XataClient:
 
         :return set of matching records
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         query_params["query"] = query.strip()
         result = self.request(
             "POST",
@@ -772,9 +734,7 @@ class XataClient:
 
         :return set of matching records
         """
-        db_name, branch_name = self.db_and_branch_names_from_params(
-            db_name, branch_name
-        )
+        db_name, branch_name = self.db_and_branch_names_from_params(db_name, branch_name)
         query_params["query"] = query.strip()
         result = self.request(
             "POST",

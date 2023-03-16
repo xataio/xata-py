@@ -30,9 +30,7 @@ from random import randrange
 import pika
 from faker import Faker
 
-logging.basicConfig(
-    format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO)
 
 N_COMPANIES = int(os.environ.get("N_COMPANIES", 25))
 N_TICK_INTERVAL = int(os.environ.get("N_TICK_INTERVAL", 15))
@@ -72,9 +70,7 @@ def main():
                 exchange="",
                 routing_key=RABBITMQ_QUEUE,
                 body=msg,
-                properties=pika.BasicProperties(
-                    delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-                ),
+                properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE),
             )
     # wait for consistency
     time.sleep(N_TICK_INTERVAL)
@@ -96,9 +92,7 @@ def main():
             exchange="",
             routing_key=RABBITMQ_QUEUE,
             body=msg,
-            properties=pika.BasicProperties(
-                delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-            ),
+            properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE),
         )
 
     # Move prices
@@ -106,9 +100,7 @@ def main():
         time.sleep(N_TICK_INTERVAL)
         logging.info("generating price movements.")
         for key in companies.keys():
-            c = (randrange(1, 111) / 100) * (
-                -1 if fake.boolean(chance_of_getting_true=25) else 1
-            )
+            c = (randrange(1, 111) / 100) * (-1 if fake.boolean(chance_of_getting_true=25) else 1)
             previous_price = float(prices[key]["price"])
             p = previous_price + ((previous_price / 100) * c)
             d = p - previous_price
@@ -125,9 +117,7 @@ def main():
                 exchange="",
                 routing_key=RABBITMQ_QUEUE,
                 body=msg,
-                properties=pika.BasicProperties(
-                    delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-                ),
+                properties=pika.BasicProperties(delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE),
             )
 
 

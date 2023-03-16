@@ -62,24 +62,13 @@ class BulkProcessor(object):
         :throw_exception: bool Throw exception ingestion, could kill all workers (default: False)
         """
         if thread_pool_size < 1:
-            raise Exception(
-                "thread pool size must be greater than 0, default: %d"
-                % DEFAULT_THREAD_POOL_SIZE
-            )
+            raise Exception("thread pool size must be greater than 0, default: %d" % DEFAULT_THREAD_POOL_SIZE)
         if processing_timeout < 0:
-            raise Exception(
-                "processing timeout can not be negative, default: %f"
-                % DEFAULT_PROCESSING_TIMEOUT
-            )
+            raise Exception("processing timeout can not be negative, default: %f" % DEFAULT_PROCESSING_TIMEOUT)
         if flush_interval < 0:
-            raise Exception(
-                "flush interval can not be negative, default: %f"
-                % DEFAULT_FLUSH_INTERVAL
-            )
+            raise Exception("flush interval can not be negative, default: %f" % DEFAULT_FLUSH_INTERVAL)
         if batch_size < 1:
-            raise Exception(
-                "batch size can not be less than one, default: %d" % DEFAULT_BATCH_SIZE
-            )
+            raise Exception("batch size can not be less than one, default: %d" % DEFAULT_BATCH_SIZE)
 
         self.client = client
         self.processing_timeout = processing_timeout
@@ -94,9 +83,7 @@ class BulkProcessor(object):
         self.records = self.Records(self.batch_size, self.flush_interval, self.logger)
 
         for i in range(thread_pool_size):
-            worker = Thread(
-                target=self.process, daemon=True, args=(i,), name="worker-%d" % i
-            )
+            worker = Thread(target=self.process, daemon=True, args=(i,), name="worker-%d" % i)
             worker.start()
             self.thread_workers.append(worker)
 
@@ -117,9 +104,7 @@ class BulkProcessor(object):
         while True:
             batch = self.records.next_batch()
             if "table" in batch and len(batch["records"]) > 0:
-                r = self.client.records().bulkInsertTableRecords(
-                    batch["table"], {"records": batch["records"]}
-                )
+                r = self.client.records().bulkInsertTableRecords(batch["table"], {"records": batch["records"]})
                 if r.status_code != 200:
                     self.logger.error(
                         "thread #%d: unable to process batch for table '%s', with error: %d - %s"
@@ -139,8 +124,7 @@ class BulkProcessor(object):
                         raise Exception(r.json())
 
                 self.logger.debug(
-                    "thread #%d: pushed a batch of %d records to table %s"
-                    % (id, len(batch["records"]), batch["table"])
+                    "thread #%d: pushed a batch of %d records to table %s" % (id, len(batch["records"]), batch["table"])
                 )
                 self.stats["total"] += len(batch["records"])
                 self.stats["queue"] = self.records.size()
@@ -268,10 +252,7 @@ class BulkProcessor(object):
                         )
                     )
                 # pop records ?
-                if (
-                    len(self.store[table_name]["records"]) >= self.batch_size
-                    or flush_needed
-                ):
+                if len(self.store[table_name]["records"]) >= self.batch_size or flush_needed:
                     self.store[table_name]["flushed"] = time.time()
                     rs = self.store[table_name]["records"][0 : self.batch_size]
                     del self.store[table_name]["records"][0 : self.batch_size]

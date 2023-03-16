@@ -34,9 +34,7 @@ class Records(Namespace):
     base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def branchTransaction(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def branchTransaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Execute a transaction on a branch
 

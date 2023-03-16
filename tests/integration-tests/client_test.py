@@ -62,10 +62,7 @@ def test_create_with_id(client: XataClient, demo_db: string):
             record={"title": "Hello new world"},
         )
     assert exc.value.status_code == 422
-    assert (
-        exc.value.message
-        == "record with ID [helloWorld] already exists in table [Posts]"
-    )
+    assert exc.value.message == "record with ID [helloWorld] already exists in table [Posts]"
 
     rec = client.get_first("Posts")
     assert rec["title"] == "Hello world"
