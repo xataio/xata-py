@@ -161,7 +161,7 @@ class TestClientInit(unittest.TestCase):
         db_url = "https://py-sdk-unit-test-12345.eu-west-1.my.super-custom.domain.sh.com/db/db-name"
         domain = "i-wont-be-used"
 
-        client = XataClient(db_url=db_url, domain_workspace=domain)
+        client = XataClient(api_key="my-key", db_url=db_url, domain_workspace=domain)
 
         assert "my.super-custom.domain.sh.com" == client.get_config()["domain_workspace"]
         assert domain != client.get_config()["domain_workspace"]

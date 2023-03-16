@@ -86,7 +86,6 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         else namespace["x-displayName"].strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
-        "spec_base_url": spec_base_url,
     }
     out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(**vars)
     file_name = "%s/%s.py" % (WS_DIR, namespace["name"].replace(" ", "_").lower())

@@ -19,14 +19,10 @@
 
 import unittest
 
-import pytest
-import utils
-
-from xata.client import XataClient, DEFAULT_REGION
+from xata.client import DEFAULT_REGION, XataClient
 
 
 class TestNamespaceInternals(unittest.TestCase):
-
     def test_get_scope(self):
         client = XataClient(db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042")
 

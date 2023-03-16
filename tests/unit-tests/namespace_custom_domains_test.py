@@ -19,17 +19,15 @@
 
 import unittest
 
-import pytest
-import utils
-
-from xata.client import DEFAULT_REGION, XataClient, __version__, DEFAULT_DATA_PLANE_DOMAIN, DEFAULT_CONTROL_PLANE_DOMAIN
+from xata.client import DEFAULT_REGION, XataClient
 
 
 class TestNamespaceCustomDomains(unittest.TestCase):
-
     def test_core_domain(self):
         domain = "api.hallo.hey"
-        client = XataClient(db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042", domain_core=domain)
+        client = XataClient(
+            db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042", domain_core=domain
+        )
         assert "https://" + domain == client.databases().get_base_url()
 
     def test_workspace_domain(self):
