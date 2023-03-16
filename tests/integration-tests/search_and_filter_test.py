@@ -42,9 +42,7 @@ class TestSearchAndFilterNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable(
-            "Posts", db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 201
 
         # create schema
@@ -129,9 +127,7 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.search_and_filter().searchBranch(
-            payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().searchBranch(payload, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1
@@ -168,9 +164,7 @@ class TestSearchAndFilterNamespace(object):
         assert "title" in r.json()["records"][0]
         assert r.json()["records"][0]["title"] == self.posts[0]["title"]
 
-        r = self.client.search_and_filter().searchTable(
-            "Posts", {}, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().searchTable("Posts", {}, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
 
         r = self.client.search_and_filter().searchTable(

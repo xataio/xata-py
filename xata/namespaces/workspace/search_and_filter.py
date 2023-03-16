@@ -230,9 +230,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def searchBranch(
-        self, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def searchBranch(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Run a free text search operation across the database branch.
 

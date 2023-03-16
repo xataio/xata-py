@@ -44,9 +44,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable(
-            "Posts", db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 201
 
     def teardown_class(self):

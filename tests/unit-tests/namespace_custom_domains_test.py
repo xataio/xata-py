@@ -17,23 +17,23 @@
 # under the License.
 #
 
-import random
+import unittest
 
-from xata import XataClient
-
-client = XataClient(db_url="https://xata-uq2d57.eu-west-1.xata.sh/db/nextjsconf22", branch_name="main")
+from xata.client import DEFAULT_REGION, XataClient
 
 
-more = True
-cursor = None
-emails = []
-while more:
-    resp = client.query("emails", page=dict(size=200, after=cursor))
-    more = resp["meta"]["page"].get("more", False)
-    cursor = resp["meta"]["page"]["cursor"]
-    emails.extend(rec["email"] for rec in resp["records"])
+class TestNamespaceCustomDomains(unittest.TestCase):
+    def test_core_domain(self):
+        domain = "api.hallo.hey"
+        client = XataClient(
+            db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042", domain_core=domain
+        )
+        assert "https://" + domain == client.databases().get_base_url()
 
-winners = random.sample(emails, 50)
+    def test_workspace_domain(self):
+        domain = "hello.is.it.me-you-are-looking.for"
+        ws_id = "testopia-042"
+        client = XataClient(workspace_id=ws_id, domain_workspace=domain)
 
-for winner in winners:
-    print(winner)
+        expected = "https://%s.%s.%s" % (ws_id, DEFAULT_REGION, domain)
+        assert expected == client.table().get_base_url()

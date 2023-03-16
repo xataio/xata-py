@@ -43,9 +43,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable(
-            "users", db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.table().createTable("users", db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 201
 
         # create schema

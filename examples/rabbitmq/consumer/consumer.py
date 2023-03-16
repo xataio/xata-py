@@ -27,9 +27,7 @@ import pika
 from xata.client import XataClient
 from xata.helpers import BulkProcessor
 
-logging.basicConfig(
-    format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s [%(process)d] %(levelname)s: %(message)s", level=logging.INFO)
 
 RABBITMQ_HOST = os.environ.get("RABBITMQ_HOST", "localhost")
 RABBITMQ_QUEUE = os.environ.get("RABBITMQ_QUEUE", "task_queue")
@@ -54,9 +52,7 @@ def callback(ch, method, props, body):
 
 if __name__ == "__main__":
     try:
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=RABBITMQ_HOST)
-        )
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST))
         channel = connection.channel()
         channel.queue_declare(queue=RABBITMQ_QUEUE, durable=True)
         channel.basic_qos(prefetch_count=1)

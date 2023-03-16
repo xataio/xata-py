@@ -80,9 +80,7 @@ def create_demo_db(client: XataClient, db_name: string):
 
 
 def delete_db(client, db_name):
-    return client.databases().deleteDatabase(
-        client.get_config()["workspaceId"], db_name
-    )
+    return client.databases().deleteDatabase(client.get_config()["workspaceId"], db_name)
 
 
 @pytest.fixture

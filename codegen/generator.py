@@ -36,9 +36,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
 args = parser.parse_args()
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
@@ -77,12 +75,7 @@ def fetch_openapi_specs(spec_url: str) -> dict:
     return r.json()
 
 
-def generate_namespace(
-    namespace: dict,
-    scope: str, 
-    spec_version: str, 
-    spec_base_url: str
-):
+def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base_url: str):
     """
     Generate the namespaced Class for the endpoints
     """
@@ -93,11 +86,8 @@ def generate_namespace(
         else namespace["x-displayName"].strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
-        "spec_base_url": spec_base_url,
     }
-    out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(
-        **vars
-    )
+    out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(**vars)
     file_name = "%s/%s.py" % (WS_DIR, namespace["name"].replace(" ", "_").lower())
     fh = open(file_name, "w+")
     fh.write(out.decode("utf-8"))
@@ -138,45 +128,31 @@ def prune_empty_namespaces(spec: dict) -> list[str]:
     return namespaces
 
 
-def generate_endpoint(
-    path: str, 
-    method: str, 
-    endpoint: dict, 
-    parameters: list, 
-    references: dict
-) -> str:
+def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, references: dict) -> str:
     """
     Generate a single endpoint
     """
     if "parameters" in endpoint:
-        endpointParams = get_endpoint_params(
-            path, endpoint, parameters + endpoint["parameters"], references
-        )
+        endpointParams = get_endpoint_params(path, endpoint, parameters + endpoint["parameters"], references)
     else:
         endpointParams = get_endpoint_params(path, endpoint, parameters, references)
     if "description" in endpoint:
         desc = endpoint["description"].strip()
     else:
-        logging.info("missing description for %s.%s - using summary." % (path, endpoint['operationId']))
+        logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
 
     vars = {
         "operation_id": endpoint["operationId"].strip(),
-        "description": textwrap.wrap(
-            desc, width=90, expand_tabs=True, fix_sentence_endings=True
-        ),
+        "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
         "path": path,
         "params": endpointParams,
     }
-    return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(
-        **vars
-    )
+    return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(**vars)
 
 
-def get_endpoint_params(
-    path: str, endpoint: dict, parameters: dict, references: dict
-) -> list:
+def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references: dict) -> list:
     skel = {
         "list": [],
         "has_path_params": 0,
@@ -193,9 +169,7 @@ def get_endpoint_params(
         curatedParamList = []
         for r in parameters:
             if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
-                logging.debug(
-                    "adding smart value for %s" % "#/components/parameters/DBBranchNameParam"
-                )
+                logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
                 # push two new params to cover for string creation
                 curatedParamList.append(
                     {
@@ -220,9 +194,7 @@ def get_endpoint_params(
                 skel["smart_db_branch_name"] = True
             elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
                 # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
-                logging.debug(
-                    "adding smart value for %s" % "#/components/parameters/WorkspaceIdParam"
-                )
+                logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
                 curatedParamList.append(
                     {
                         "name": "workspace_id",
@@ -292,13 +264,8 @@ def get_endpoint_params(
             desc = ""
             if "description" in endpoint["responses"][code]:
                 desc = endpoint["responses"][code]["description"].strip()
-            elif (
-                "$ref" in endpoint["responses"][code]
-                and endpoint["responses"][code]["$ref"] in references
-            ):
-                desc = references[endpoint["responses"][code]["$ref"]][
-                    "description"
-                ].strip()
+            elif "$ref" in endpoint["responses"][code] and endpoint["responses"][code]["$ref"] in references:
+                desc = references[endpoint["responses"][code]["$ref"]]["description"].strip()
             skel["response_codes"].append(
                 {
                     "code": code,
@@ -310,9 +277,7 @@ def get_endpoint_params(
                 int_code = int(code)
                 if int_code >= 200 and int_code <= 299:
                     for ct in endpoint["responses"][code]["content"]:
-                        skel["response_content_types"].append(
-                            {"content_type": ct, "code": code}
-                        )
+                        skel["response_content_types"].append({"content_type": ct, "code": code})
     # Multiple Response Content types require option for users
     if len(skel["response_content_types"]) > 1:
         skel["has_optional_params"] = True
@@ -338,9 +303,7 @@ def get_endpoint_params(
 
     # reorder for optional params to be last
     if skel["has_optional_params"]:
-        skel["list"] = [e for e in skel["list"] if e["required"]] + [
-            e for e in skel["list"] if not e["required"]
-        ]
+        skel["list"] = [e for e in skel["list"] if e["required"]] + [e for e in skel["list"] if not e["required"]]
     return skel
 
 
@@ -403,15 +366,11 @@ if __name__ == "__main__":
     with open(f"codegen/checksums/{scope}.txt", "r") as file:
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
-        logging.info(
-            "no specification changes detected, nothing new to generate. stopping here."
-        )
+        logging.info("no specification changes detected, nothing new to generate. stopping here.")
         exit(0)
 
     # filter out endpointless namespaces
-    logging.info(
-        "pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"])
-    )
+    logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
     namespaces = spec["tags"]
     namespaces = prune_empty_namespaces(spec)
 
@@ -431,9 +390,7 @@ if __name__ == "__main__":
     logging.info("generating %d paths .." % len(spec["paths"]))
     it = 1
     for path, endpoints in spec["paths"].items():
-        logging.info(
-            "[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"])
-        )
+        logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
         generate_endpoints(path, endpoints, references)
         it += 1
 

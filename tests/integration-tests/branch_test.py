@@ -97,9 +97,7 @@ class TestBranchNamespace(object):
                 "stage": "testing",
             },
         }
-        r = self.client.branch().createBranch(
-            payload, branch_name="new-super-duper-feature"
-        )
+        r = self.client.branch().createBranch(payload, branch_name="new-super-duper-feature")
         assert r.status_code == 201
         assert "databaseName" in r.json()
         assert "branchName" in r.json()
@@ -110,14 +108,10 @@ class TestBranchNamespace(object):
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().createBranch(
-            payload, branch_name="the-incredible-hulk", _from="avengers"
-        )
+        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
         assert r.status_code == 400
 
-        r = self.client.branch().createBranch(
-            payload, db_name="NOPE", branch_name=self.branch_name
-        )
+        r = self.client.branch().createBranch(payload, db_name="NOPE", branch_name=self.branch_name)
         assert r.status_code == 404
 
         r = self.client.branch().createBranch({})

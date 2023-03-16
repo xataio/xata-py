@@ -175,9 +175,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
 
-    def updateWorkspaceMemberRole(
-        self, user_id: str, payload: dict, workspace_id: str = None
-    ) -> Response:
+    def updateWorkspaceMemberRole(self, user_id: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Update a workspace member role.  Workspaces must always have at least one owner, so this
         operation will fail if trying to remove owner role from the last owner in the workspace.

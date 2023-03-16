@@ -72,9 +72,7 @@ class TestClientInit(unittest.TestCase):
         assert "testopia-042" == cfg["dbName"]
 
     def test_init_db_url_with_envar(self):
-        os.environ[
-            "XATA_DATABASE_URL"
-        ] = "https://test-12345.us-west-1.xata.sh/db/testopia-16:yay"
+        os.environ["XATA_DATABASE_URL"] = "https://test-12345.us-west-1.xata.sh/db/testopia-16:yay"
         client = XataClient()
         cfg = client.get_config()
 
@@ -88,9 +86,7 @@ class TestClientInit(unittest.TestCase):
     def test_init_db_url_with_param_and_envvar(self):
         # Parameter should take precendence over envvar
         db_url = "https://param.p_region.xata.sh/db/params:first"
-        os.environ[
-            "XATA_DATABASE_URL"
-        ] = "https://envvar.ev_region.xata.sh/db/envars:last"
+        os.environ["XATA_DATABASE_URL"] = "https://envvar.ev_region.xata.sh/db/envars:last"
         client = XataClient(db_url=db_url)
         cfg = client.get_config()
 
@@ -160,3 +156,12 @@ class TestClientInit(unittest.TestCase):
 
         os.environ.pop("XATA_REGION")
         os.environ.pop("XATA_WORKSPACE_ID")
+
+    def test_custom_workspace_precendence_order(self):
+        db_url = "https://py-sdk-unit-test-12345.eu-west-1.my.super-custom.domain.sh.com/db/db-name"
+        domain = "i-wont-be-used"
+
+        client = XataClient(api_key="my-key", db_url=db_url, domain_workspace=domain)
+
+        assert "my.super-custom.domain.sh.com" == client.get_config()["domain_workspace"]
+        assert domain != client.get_config()["domain_workspace"]

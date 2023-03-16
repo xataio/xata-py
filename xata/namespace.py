@@ -38,15 +38,12 @@ class Namespace:
 
     def get_base_url(self) -> str:
         if self.is_control_plane():
-            return self.base_url
+            return "https://" + self.client.get_config()["domain_core"]
         # Base URL must be build on the fly as the region & workspace Id can change
-        return self.base_url.replace(
-            "{workspaceId}", self.client.get_config()["workspaceId"]
-        ).replace("{regionId}", self.client.get_config()["region"])
+        cfg = self.client.get_config()
+        return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
-    def request(
-        self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None
-    ) -> Response:
+    def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None) -> Response:
         headers = {
             **headers,
             **self.client.get_headers(),
