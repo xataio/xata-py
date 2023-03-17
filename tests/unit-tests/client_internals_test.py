@@ -64,6 +64,14 @@ class TestClientInternals(unittest.TestCase):
         assert client.get_db_branch_name("foo") == f"foo:{branch_name}"
         assert client.get_db_branch_name("foo", "bar") == "foo:bar"
 
+    def test_get_db_branch_name_with_db_url(self):
+        db_url = "https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042:main"
+        client = XataClient(api_key="api_key", db_url=db_url)
+
+        assert "testopia-042" == client.get_config()["dbName"]
+        assert "main" == client.get_config()["branchName"]
+        assert "testopia-042:main" == client.get_db_branch_name()
+
     def test_get_config(self):
         api_key = "api_key-abc"
         ws_id = "ws-idddddd"
