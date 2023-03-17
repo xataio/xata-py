@@ -47,7 +47,7 @@ from .namespaces.workspace.table import Table
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_DATA_PLANE_DOMAIN = "xata.sh"
@@ -309,14 +309,14 @@ class XataClient:
         (_, _, host, _, db_branch_name) = databaseURL.split("/")
         if host == "" or db_branch_name == "":
             raise Exception(
-                "Invalid database URL: '%s', format: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}' expected."
+                "Invalid database URL: '%s', format: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}' expected."
                 % databaseURL
             )
         # split host {workspace_id}.{region}
         host_parts = host.split(".")
         if len(host_parts) < 4:
             raise Exception(
-                "Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}'"
+                "Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'"
                 % databaseURL
             )
         # build domain name

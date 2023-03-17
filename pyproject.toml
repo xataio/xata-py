@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xata"
-version = "0.7.0"
+version = "0.8.0"
 description = "Python client for Xata.io"
 authors = ["Xata <support@xata.io>"]
 license = "Apache-2.0"
