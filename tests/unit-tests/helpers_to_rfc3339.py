@@ -22,9 +22,9 @@ import unittest
 from pytz import timezone, utc
 from datetime import datetime
 
-from xata.utils import to_rfc339
+from xata.helpers import to_rfc339
 
-class TestUtils(unittest.TestCase):
+class TestHelpersToRfc3339(unittest.TestCase):
     def test_to_rfc3339(self):
         dt1 = datetime.strptime("2023-03-20 13:42:00", "%Y-%m-%d %H:%M:%S")
         assert to_rfc339(dt1) == "2023-03-20T13:42:00+00:00"
