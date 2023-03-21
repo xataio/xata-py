@@ -21,6 +21,7 @@ import logging
 import time
 from datetime import datetime
 from threading import Lock, Thread
+from datetime import datetime, timezone
 
 from .client import XataClient
 
@@ -273,3 +274,16 @@ class BulkProcessor(object):
             """
             with self.lock:
                 return sum([len(self.store[n]["records"]) for n in self.store.keys()])
+
+
+def to_rfc339(dt: datetime, tz = timezone.utc) -> str:
+    """
+    Format a datetime object to an RFC3339 compliant string
+    :link https://xata.io/docs/concepts/data-model#datetime
+    :link https://datatracker.ietf.org/doc/html/rfc3339
+
+    :param dt: datetime instance to convert
+    :param tz: timezone to convert in, default: UTC
+    :return str
+    """
+    return dt.replace(tzinfo=tz).isoformat()
