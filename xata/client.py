@@ -812,7 +812,6 @@ class XataClient:
     def branch(self) -> Branch:
         """
         Branch Namespace
-        scope: workspace
         :return Branch
         """
         if "branch" not in self.namespaces:
@@ -822,7 +821,6 @@ class XataClient:
     def migrations(self) -> Migrations:
         """
         Migrations Namespace
-        scope: workspace
         :return Migrations
         """
         if "migrations" not in self.namespaces:
@@ -832,7 +830,6 @@ class XataClient:
     def records(self) -> Records:
         """
         Records Namespace
-        scope: workspace
         :return Records
         """
         if "records" not in self.namespaces:
@@ -842,7 +839,15 @@ class XataClient:
     def search_and_filter(self) -> Search_and_filter:
         """
         Search_and_Filter Namespace
-        scope: workspace
+        :return Search_and_filter
+        """
+        if "search_and_filter" not in self.namespaces:
+            self.namespaces["search_and_filter"] = Search_and_filter(self)
+        return self.namespaces["search_and_filter"]
+    
+    def data(self) -> Search_and_filter:
+        """
+        Shorter alias for Search_and_Filter
         :return Search_and_filter
         """
         if "search_and_filter" not in self.namespaces:
@@ -852,7 +857,6 @@ class XataClient:
     def table(self) -> Table:
         """
         Table Namespace
-        scope: workspace
         :return Table
         """
         if "table" not in self.namespaces:
