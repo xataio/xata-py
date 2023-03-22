@@ -93,9 +93,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
             "sort": {"slug": "desc"},
             "page": {"size": 5},
         }
-        r = self.client.data().queryTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.data().queryTable("Posts", payload, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 5
@@ -125,9 +123,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.data().searchTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.data().searchTable("Posts", payload, db_name=self.db_name, branch_name=self.branch_name)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1

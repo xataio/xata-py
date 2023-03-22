@@ -31,7 +31,7 @@ class TestNamespace(object):
         users = XataClient().users()
         r1 = users.getUser()
         assert r1.status_code == 200
-        
+
         client = XataClient()
         r2 = client.users().getUser()
         assert r2.status_code == 200
@@ -50,5 +50,3 @@ class TestNamespace(object):
         assert databases.createDatabase(db_name, {"region": "eu-west-1"}).status_code == 201
         assert databases.getDatabaseMetadata(db_name).status_code == 200
         assert databases.deleteDatabase(db_name).status_code == 200
-
-
