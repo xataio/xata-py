@@ -769,9 +769,7 @@ class XataClient:
         scope: core
         :return Databases
         """
-        if "databases" not in self.namespaces:
-            self.namespaces["databases"] = Databases(self)
-        return self.namespaces["databases"]
+        return Databases(self)
 
     def invites(self) -> Invites:
         """
@@ -779,9 +777,7 @@ class XataClient:
         scope: core
         :return Invites
         """
-        if "invites" not in self.namespaces:
-            self.namespaces["invites"] = Invites(self)
-        return self.namespaces["invites"]
+        return Invites(self)
 
     def users(self) -> Users:
         """
@@ -789,9 +785,7 @@ class XataClient:
         scope: core
         :return Users
         """
-        if "users" not in self.namespaces:
-            self.namespaces["users"] = Users(self)
-        return self.namespaces["users"]
+        return Users(self)
 
     def workspaces(self) -> Workspaces:
         """
@@ -799,9 +793,7 @@ class XataClient:
         scope: core
         :return Workspaces
         """
-        if "workspaces" not in self.namespaces:
-            self.namespaces["workspaces"] = Workspaces(self)
-        return self.namespaces["workspaces"]
+        return Workspaces(self)
 
     # --------------------------------------------------- #
     #
@@ -814,51 +806,39 @@ class XataClient:
         Branch Namespace
         :return Branch
         """
-        if "branch" not in self.namespaces:
-            self.namespaces["branch"] = Branch(self)
-        return self.namespaces["branch"]
+        return Branch(self)
 
     def migrations(self) -> Migrations:
         """
         Migrations Namespace
         :return Migrations
         """
-        if "migrations" not in self.namespaces:
-            self.namespaces["migrations"] = Migrations(self)
-        return self.namespaces["migrations"]
+        return Migrations(self)
 
     def records(self) -> Records:
         """
         Records Namespace
         :return Records
         """
-        if "records" not in self.namespaces:
-            self.namespaces["records"] = Records(self)
-        return self.namespaces["records"]
+        return Records(self)
 
     def search_and_filter(self) -> Search_and_filter:
         """
         Search_and_Filter Namespace
         :return Search_and_filter
         """
-        if "search_and_filter" not in self.namespaces:
-            self.namespaces["search_and_filter"] = Search_and_filter(self)
-        return self.namespaces["search_and_filter"]
-    
+        return Search_and_filter(self)
+
     def data(self) -> Search_and_filter:
         """
         Shorter alias for Search_and_Filter
         :return Search_and_filter
         """
-        if "search_and_filter" not in self.namespaces:
-            self.namespaces["search_and_filter"] = Search_and_filter(self)
-        return self.namespaces["search_and_filter"]
+        return Search_and_filter(self)
 
     def table(self) -> Table:
         """
         Table Namespace
         :return Table
         """
-        if "table" not in self.namespaces:
-            self.namespaces["table"] = Table(self)
-        return self.namespaces["table"]
+        return Table(self)

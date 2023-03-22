@@ -18,11 +18,12 @@
 #
 
 import unittest
-
-from pytz import timezone, utc
 from datetime import datetime
 
+from pytz import timezone, utc
+
 from xata.helpers import to_rfc339
+
 
 class TestHelpersToRfc3339(unittest.TestCase):
     def test_to_rfc3339(self):
