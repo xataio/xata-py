@@ -43,7 +43,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("users", db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.table().createTable("users")
         assert r.status_code == 201
 
         # create schema
@@ -59,8 +59,6 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
                     },
                 ]
             },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
         )
         assert r.status_code == 200
 
@@ -71,12 +69,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             {"full_name": "r4", "full_name_vec": [1, 2, 3, 4]},
         ]
 
-        r = self.client.records().bulkInsertTableRecords(
-            "users",
-            {"records": self.users},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.records().bulkInsertTableRecords("users", {"records": self.users})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("users")
 
@@ -89,9 +82,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "column": "full_name_vec",
             "queryVector": [1, 2, 3, 4],
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         rec1 = r.json()["records"]
@@ -103,9 +94,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "column": "full_name_vec",
             "queryVector": [0.4, 0.3, 0.2, 0.1],
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         rec2 = r.json()["records"]
         assert len(rec2) == 4
@@ -119,9 +108,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [1, 2, 3, 4],
             "size": 2,
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 2
@@ -131,9 +118,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [1, 2, 3, 4],
             "size": 1000,
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 4
@@ -144,9 +129,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [1, 2, 3, 4],
             "similarityFunction": "l1",  # euclidian
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         res_order = [x["full_name"] for x in r.json()["records"]]
@@ -160,9 +143,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [1, 2, 3, 4],
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 2
@@ -176,9 +157,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "size": 1,
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 1
@@ -192,9 +171,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "size": 1,
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
-        r = self.client.search_and_filter().vectorSearchTable(
-            "users", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().vectorSearchTable("users", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 1

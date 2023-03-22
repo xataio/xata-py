@@ -42,7 +42,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.table().createTable("Posts")
         assert r.status_code == 201
 
         # create schema
@@ -56,8 +56,6 @@ class TestSearchAndFilterWithAliasNamespace(object):
                     {"name": "text", "type": "text"},
                 ]
             },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
         )
         assert r.status_code == 200
 
@@ -71,12 +69,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
             }
             for i in range(10)
         ]
-        r = self.client.records().bulkInsertTableRecords(
-            "Posts",
-            {"records": self.posts},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.records().bulkInsertTableRecords("Posts", {"records": self.posts})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
@@ -93,7 +86,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
             "sort": {"slug": "desc"},
             "page": {"size": 5},
         }
-        r = self.client.data().queryTable("Posts", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.data().queryTable("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 5
@@ -109,7 +102,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         POST /db/{db_branch_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.data().searchBranch(payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.data().searchBranch(payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1
@@ -123,7 +116,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.data().searchTable("Posts", payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.data().searchTable("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1

@@ -133,6 +133,7 @@ class XataClient:
         self.domain_core = domain_core
         self.domain_workspace = domain_workspace
 
+        # init default headers
         self.headers = {
             "authorization": f"Bearer {self.api_key}",
             "user-agent": f"xataio/xata-py:{__version__}",
@@ -140,6 +141,18 @@ class XataClient:
             "x-xata-session-id": str(uuid.uuid4()),
             "x-xata-agent": f"client=PY_SDK;version={__version__};",
         }
+
+        # init namespaces
+        self._authentication = Authentication(self)
+        self._branch = Branch(self)
+        self._search_and_filter = Search_and_filter(self)
+        self._databases = Databases(self)
+        self._invites = Invites(self)
+        self._migrations = Migrations(self)
+        self._records = Records(self)
+        self._table = Table(self)
+        self._users = Users(self)
+        self._workspaces = Workspaces(self)
 
     def get_config(self) -> dict:
         """
@@ -747,98 +760,79 @@ class XataClient:
             raise BadRequestException(result.status_code, result.json()["message"])
         return result.json()
 
-    # --------------------------------------------------- #
-    #
-    # Namespace: CORE
-    #
-    # --------------------------------------------------- #
-
     def authentication(self) -> Authentication:
         """
         Authentication Namespace
-        scope: core
         :return Authentication
         """
-        if "authentication" not in self.namespaces:
-            self.namespaces["authentication"] = Authentication(self)
-        return self.namespaces["authentication"]
+        return self._authentication
 
     def databases(self) -> Databases:
         """
         Databases Namespace
-        scope: core
         :return Databases
         """
-        return Databases(self)
+        return self._databases
 
     def invites(self) -> Invites:
         """
         Invites Namespace
-        scope: core
         :return Invites
         """
-        return Invites(self)
+        return self._invites
 
     def users(self) -> Users:
         """
         Users Namespace
-        scope: core
         :return Users
         """
-        return Users(self)
+        return self._users
 
     def workspaces(self) -> Workspaces:
         """
         Workspaces Namespace
-        scope: core
         :return Workspaces
         """
-        return Workspaces(self)
-
-    # --------------------------------------------------- #
-    #
-    # Namespace: WORKSPACE
-    #
-    # --------------------------------------------------- #
+        return self._workspaces
 
     def branch(self) -> Branch:
         """
         Branch Namespace
         :return Branch
         """
-        return Branch(self)
+        return self._branch
 
     def migrations(self) -> Migrations:
         """
         Migrations Namespace
         :return Migrations
         """
-        return Migrations(self)
+        return self._migrations
 
     def records(self) -> Records:
         """
         Records Namespace
         :return Records
         """
-        return Records(self)
+        return self._records
 
     def search_and_filter(self) -> Search_and_filter:
         """
         Search_and_Filter Namespace
         :return Search_and_filter
         """
-        return Search_and_filter(self)
+        return self._search_and_filter
 
     def data(self) -> Search_and_filter:
         """
         Shorter alias for Search_and_Filter
         :return Search_and_filter
         """
-        return Search_and_filter(self)
+        return self._search_and_filter
 
     def table(self) -> Table:
         """
         Table Namespace
         :return Table
         """
-        return Table(self)
+        return self._table
