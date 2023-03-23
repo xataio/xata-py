@@ -21,7 +21,6 @@
 # Databases
 # Workspace databases management.
 # Specification: core:v1.0
-# Base URL: https://api.xata.io
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Databases(Namespace):
 
-    base_url = "https://api.xata.io"
     scope = "core"
 
     def getDatabaseList(self, workspace_id: str = None) -> Response:

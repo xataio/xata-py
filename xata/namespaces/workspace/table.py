@@ -21,7 +21,6 @@
 # Table
 # Table management.
 # Specification: workspace:v1.0
-# Base URL: https://{workspaceId}.{regionId}.xata.sh
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Table(Namespace):
 
-    base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
     def createTable(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
@@ -85,13 +83,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("DELETE", url_path)
 
-    def updateTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def updateTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update table.  Currently there is only one update operation supported: renaming the table
         by providing a new name.  In the example below, we rename a table from “users” to
@@ -143,13 +135,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         return self.request("GET", url_path)
 
-    def setTableSchema(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def setTableSchema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update table schema
 
@@ -202,13 +188,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
 
-    def addTableColumn(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def addTableColumn(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
         definition.  In the column definition, the 'name' field should contain the full path
@@ -237,13 +217,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getColumn(
-        self,
-        table_name: str,
-        column_name: str,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def getColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get the definition of a single column.  To refer to sub-objects, the column name can
         contain dots.  For example `address.country`.
@@ -269,13 +243,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("GET", url_path)
 
-    def deleteColumn(
-        self,
-        table_name: str,
-        column_name: str,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def deleteColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
         For example `address.country`.
@@ -301,12 +269,7 @@ class Table(Namespace):
         return self.request("DELETE", url_path)
 
     def updateColumn(
-        self,
-        table_name: str,
-        column_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
+        self, table_name: str, column_name: str, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
         Update column with partial data.  Can be used for renaming the column by providing a new

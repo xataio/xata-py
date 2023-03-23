@@ -21,7 +21,6 @@
 # Records
 # Record access API.
 # Specification: workspace:v1.0
-# Base URL: https://{workspaceId}.{regionId}.xata.sh
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Records(Namespace):
 
-    base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
     def branchTransaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
@@ -60,12 +58,7 @@ class Records(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def insertRecord(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-        columns: list = None,
+        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
         Insert a new Record into the Table
@@ -95,12 +88,7 @@ class Records(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def getRecord(
-        self,
-        table_name: str,
-        record_id: str,
-        db_name: str = None,
-        branch_name: str = None,
-        columns: list = None,
+        self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
         Retrieve record by ID
@@ -227,12 +215,7 @@ class Records(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def deleteRecord(
-        self,
-        table_name: str,
-        record_id: str,
-        db_name: str = None,
-        branch_name: str = None,
-        columns: list = None,
+        self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
         Delete record from table
@@ -307,12 +290,7 @@ class Records(Namespace):
         return self.request("PATCH", url_path, headers, payload)
 
     def bulkInsertTableRecords(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-        columns: list = None,
+        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
         Bulk insert records

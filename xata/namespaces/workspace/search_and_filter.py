@@ -21,7 +21,6 @@
 # Search_and_filter
 # APIs for searching, querying, filtering, and aggregating records.
 # Specification: workspace:v1.0
-# Base URL: https://{workspaceId}.{regionId}.xata.sh
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,16 +30,9 @@ from xata.namespace import Namespace
 
 class Search_and_filter(Namespace):
 
-    base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
-    def queryTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def queryTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         The Query Table API can be used to retrieve all records in a table.  The API support
         filtering, sorting, selecting a subset of columns, and pagination.  The overall structure
@@ -159,7 +151,13 @@ class Search_and_filter(Namespace):
         } } ```  or descendently:  ```json POST /db/demo:main/tables/table/query {   "sort": {
         "index": "desc"   } } ```  Sorting by multiple fields:  ```json POST
         /db/demo:main/tables/table/query {   "sort": [     {       "index": "desc"     },     {
-        "createdAt": "desc"     }   ] } ```  ### Pagination  We offer cursor pagination and offset
+        "createdAt": "desc"     }   ] } ```  It is also possible to sort results randomly:
+        ```json POST /db/demo:main/tables/table/query {   "sort": {     "*": "random"   } } ```
+        Note that a random sort does not apply to a specific column, hence the special column name
+        `"*"`.  A random sort can be combined with an ascending or descending sort on a specific
+        column:  ```json POST /db/demo:main/tables/table/query {   "sort": [     {       "name":
+        "desc"     },     {       "*": "random"     }   ] } ```  This will sort on the `name`
+        column, breaking ties randomly.  ### Pagination  We offer cursor pagination and offset
         pagination.  For queries that are expected to return more than 1000 records, cursor
         pagination is needed in order to retrieve all of their results.  The offset pagination
         method is limited to 1000 records.  Example of size + offset pagination:  ```json POST
@@ -255,13 +253,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def searchTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def searchTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Run a free text search operation in a particular table.  The endpoint accepts a `query`
         parameter that is used for the free text search and a set of structured filters (via the
@@ -293,11 +285,7 @@ class Search_and_filter(Namespace):
         return self.request("POST", url_path, headers, payload)
 
     def vectorSearchTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
+        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
         This endpoint can be used to perform vector-based similarity searches in a table.  It can
@@ -368,13 +356,7 @@ class Search_and_filter(Namespace):
         }
         return self.request("POST", url_path, headers, payload)
 
-    def summarizeTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def summarizeTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint allows you to (optionally) define groups, and then to run calculations on
         the values in each group.  This is most helpful when  you'd like to understand the data
@@ -431,13 +413,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def aggregateTable(
-        self,
-        table_name: str,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-    ) -> Response:
+    def aggregateTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint allows you to run aggregations (analytics) on the data from one table.
         While the summary endpoint is served from a transactional store and the results are

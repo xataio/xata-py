@@ -21,7 +21,6 @@
 # Branch
 # Branch management.
 # Specification: workspace:v1.0
-# Base URL: https://{workspaceId}.{regionId}.xata.sh
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Branch(Namespace):
 
-    base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
     def getBranchList(self, db_name: str) -> Response:
@@ -78,13 +76,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}"
         return self.request("GET", url_path)
 
-    def createBranch(
-        self,
-        payload: dict,
-        db_name: str = None,
-        branch_name: str = None,
-        _from: str = None,
-    ) -> Response:
+    def createBranch(self, payload: dict, db_name: str = None, branch_name: str = None, _from: str = None) -> Response:
         """
         Create Database branch
 

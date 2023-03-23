@@ -21,7 +21,6 @@
 # Workspaces
 # Workspaces management
 # Specification: core:v1.0
-# Base URL: https://api.xata.io
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Workspaces(Namespace):
 
-    base_url = "https://api.xata.io"
     scope = "core"
 
     def getWorkspacesList(
