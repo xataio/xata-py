@@ -42,7 +42,7 @@ class TestSearchAndFilterNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.table().createTable("Posts")
         assert r.status_code == 201
 
         # create schema
@@ -56,8 +56,6 @@ class TestSearchAndFilterNamespace(object):
                     {"name": "text", "type": "text"},
                 ]
             },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
         )
         assert r.status_code == 200
 
@@ -71,12 +69,7 @@ class TestSearchAndFilterNamespace(object):
             }
             for i in range(10)
         ]
-        r = self.client.records().bulkInsertTableRecords(
-            "Posts",
-            {"records": self.posts},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.records().bulkInsertTableRecords("Posts", {"records": self.posts})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
@@ -93,9 +86,7 @@ class TestSearchAndFilterNamespace(object):
             "sort": {"slug": "desc"},
             "page": {"size": 5},
         }
-        r = self.client.search_and_filter().queryTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().queryTable("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 5
@@ -106,20 +97,10 @@ class TestSearchAndFilterNamespace(object):
         assert "slug" in r.json()["records"][0]
         assert "text" not in r.json()["records"][0]
 
-        r = self.client.search_and_filter().queryTable(
-            "NonExistingTable",
-            payload,
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().queryTable("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().queryTable(
-            "Posts",
-            {"columns": [""]},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().queryTable("Posts", {"columns": [""]})
         assert r.status_code == 400
 
     def test_search_branch(self):
@@ -127,7 +108,7 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.search_and_filter().searchBranch(payload, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().searchBranch(payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1
@@ -136,16 +117,10 @@ class TestSearchAndFilterNamespace(object):
         assert "title" in r.json()["records"][0]
         assert r.json()["records"][0]["title"] == self.posts[0]["title"]
 
-        r = self.client.search_and_filter().searchBranch(
-            {"tables": [""], "query": "woopsie!"},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().searchBranch({"tables": [""], "query": "woopsie!"})
         assert r.status_code == 400
 
-        r = self.client.search_and_filter().searchBranch(
-            {"invalid": "query"}, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().searchBranch({"invalid": "query"})
         assert r.status_code == 400
 
     def test_search_table(self):
@@ -153,9 +128,7 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.search_and_filter().searchTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().searchTable("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1
@@ -164,23 +137,13 @@ class TestSearchAndFilterNamespace(object):
         assert "title" in r.json()["records"][0]
         assert r.json()["records"][0]["title"] == self.posts[0]["title"]
 
-        r = self.client.search_and_filter().searchTable("Posts", {}, db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.search_and_filter().searchTable("Posts", {})
         assert r.status_code == 200
 
-        r = self.client.search_and_filter().searchTable(
-            "NonExistingTable",
-            payload,
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().searchTable("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().searchTable(
-            "Posts",
-            {"invalid": "query"},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().searchTable("Posts", {"invalid": "query"})
         assert r.status_code == 400
 
     def test_summarize_table(self):
@@ -188,19 +151,12 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/summarize
         """
         payload = {"columns": ["title", "slug"]}
-        r = self.client.search_and_filter().summarizeTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().summarizeTable("Posts", payload)
         assert r.status_code == 200
         assert "summaries" in r.json()
         assert len(r.json()["summaries"]) > 1
 
-        r = self.client.search_and_filter().summarizeTable(
-            "NonExistingTable",
-            payload,
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().summarizeTable("NonExistingTable", payload)
         assert r.status_code == 404
 
     def test_aggregate_table(self):
@@ -208,26 +164,14 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/aggregate
         """
         payload = {"aggs": {"titles": {"count": "*"}}}
-        r = self.client.search_and_filter().aggregateTable(
-            "Posts", payload, db_name=self.db_name, branch_name=self.branch_name
-        )
+        r = self.client.search_and_filter().aggregateTable("Posts", payload)
         assert r.status_code == 200
         assert "aggs" in r.json()
         assert "titles" in r.json()["aggs"]
         assert r.json()["aggs"]["titles"] == len(self.posts)
 
-        r = self.client.search_and_filter().aggregateTable(
-            "NonExistingTable",
-            payload,
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().aggregateTable("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().aggregateTable(
-            "Posts",
-            {"aggs": {"foo": "bar"}},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().aggregateTable("Posts", {"aggs": {"foo": "bar"}})
         assert r.status_code == 400

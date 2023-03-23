@@ -44,7 +44,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts", db_name=self.db_name, branch_name=self.branch_name)
+        r = self.client.table().createTable("Posts")
         assert r.status_code == 201
 
     def teardown_class(self):
@@ -59,12 +59,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         payload = {
             "question": "how much is the fish?",
         }
-        r = self.client.search_and_filter().askTable(
-            "Posts",
-            payload,
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().askTable("Posts", payload)
         # assert r.status_code == 200
         # assert "answer" in r.json()
         # assert r.json()["answer"] == "No records found! I'm not able to help you sorry."
@@ -76,13 +71,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         payload = {
             "question": "how much is the fish?",
         }
-        r = self.client.search_and_filter().askTable(
-            "Posts",
-            payload,
-            response_content_type="text/event-stream",
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
+        r = self.client.search_and_filter().askTable("Posts", payload, response_content_type="text/event-stream")
         # assert r.status_code == 200
         # assert "content-type" in r.headers
         assert True
