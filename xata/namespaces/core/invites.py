@@ -21,7 +21,6 @@
 # Invites
 # Manage user invites.
 # Specification: core:v1.0
-# Base URL: https://api.xata.io
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Invites(Namespace):
 
-    base_url = "https://api.xata.io"
     scope = "core"
 
     def inviteWorkspaceMember(self, payload: dict, workspace_id: str = None) -> Response:

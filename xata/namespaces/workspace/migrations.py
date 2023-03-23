@@ -21,7 +21,6 @@
 # Migrations
 # Branch schema migrations and history.
 # Specification: workspace:v1.0
-# Base URL: https://{workspaceId}.{regionId}.xata.sh
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Migrations(Namespace):
 
-    base_url = "https://{workspaceId}.{regionId}.xata.sh"
     scope = "workspace"
 
     def getBranchMigrationHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:

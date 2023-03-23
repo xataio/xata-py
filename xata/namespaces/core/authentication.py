@@ -21,7 +21,6 @@
 # Authentication
 # Authentication and API Key management.
 # Specification: core:v1.0
-# Base URL: https://api.xata.io
 # ------------------------------------------------------- #
 
 from requests import Response
@@ -31,7 +30,6 @@ from xata.namespace import Namespace
 
 class Authentication(Namespace):
 
-    base_url = "https://api.xata.io"
     scope = "core"
 
     def getUserAPIKeys(
