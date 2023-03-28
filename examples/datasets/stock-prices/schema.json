@@ -1,0 +1,69 @@
+{
+    "tables": [
+       {
+          "name": "companies",
+          "columns": [
+             {
+                "name": "id",
+                "type": "string"
+             },
+             {
+                "name": "name",
+                "type": "string"
+             },
+             {
+                "name": "address",
+                "type": "string"
+             },
+             {
+                "name": "catch_phrase",
+                "type": "string"
+             },
+             {
+                "name": "ceo",
+                "type": "string"
+             },
+             {
+                "name": "phone",
+                "type": "string"
+             },
+             {
+                "name": "email",
+                "type": "string"
+             },
+             {
+                "name": "exchange",
+                "type": "string"
+             }
+          ]
+       },
+       {
+          "name": "prices",
+          "columns": [
+             {
+                "name": "timestamp",
+                "type": "datetime"
+             },
+             {
+                "name": "symbol",
+                "type": "link",
+                "link": {
+                   "table": "companies"
+                }
+             },
+             {
+                "name": "price",
+                "type": "float"
+             },
+             {
+                "name": "delta",
+                "type": "float"
+             },
+             {
+                "name": "percentage",
+                "type": "float"
+             }
+          ]
+       }
+    ]
+ }
