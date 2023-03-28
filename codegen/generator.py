@@ -367,7 +367,9 @@ if __name__ == "__main__":
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
         logging.info("no specification changes detected, nothing new to generate. stopping here.")
-        exit(0)
+        action = input("> force generate (hit Enter) or stop (any key): ")
+        if action != "":
+            exit(0)
 
     # filter out endpointless namespaces
     logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
