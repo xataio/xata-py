@@ -79,11 +79,14 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
     """
     Generate the namespaced Class for the endpoints
     """
+    if "description" in namespace:
+        class_desc = namespace["description"]
+    else:
+        class_desc = namespace["x-displayName"]
+        logging.warn("missing description: %s.%s" % (scope, namespace["x-displayName"]))
     vars = {
         "class_name": namespace["x-displayName"].replace(" ", "_").lower().capitalize(),
-        "class_description": namespace["description"].strip()
-        if "description" in namespace
-        else namespace["x-displayName"].strip(),
+        "class_description": class_desc.strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
     }
