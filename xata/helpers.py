@@ -104,33 +104,34 @@ class BulkProcessor(object):
         while True:
             batch = self.records.next_batch()
             if "table" in batch and len(batch["records"]) > 0:
-                r = self.client.records().bulkInsertTableRecords(batch["table"], {"records": batch["records"]})
-                if r.status_code != 200:
-                    self.logger.error(
-                        "thread #%d: unable to process batch for table '%s', with error: %d - %s"
-                        % (id, batch["table"], r.status_code, r.json())
-                    )
-                    # Add to failed queue
-                    self.failed_batches_queue.append(
-                        {
-                            "timestamp": datetime.utcnow(),
-                            "records": batch["records"],
-                            "table": batch["table"],
-                            "response": r,
-                        }
-                    )
-                    self.stats["failed_batches"] += 1
-                    if self.throw_exception:
-                        raise Exception(r.json())
+                try:
+                    r = self.client.records().bulkInsertTableRecords(batch["table"], {"records": batch["records"]})
+                    if r.status_code != 200:
+                        self.logger.error(
+                            "thread #%d: unable to process batch for table '%s', with error: %d - %s"
+                            % (id, batch["table"], r.status_code, r.json())
+                        )
+                        # Add to failed queue
+                        self.failed_batches_queue.append(
+                            {
+                                "timestamp": datetime.utcnow(),
+                                "records": batch["records"],
+                                "table": batch["table"],
+                                "response": r,
+                            }
+                        )
+                        self.stats["failed_batches"] += 1
+                        if self.throw_exception:
+                            raise Exception(r.json())
 
-                self.logger.debug(
-                    "thread #%d: pushed a batch of %d records to table %s" % (id, len(batch["records"]), batch["table"])
-                )
-                self.stats["total"] += len(batch["records"])
-                self.stats["queue"] = self.records.size()
-                if batch["table"] not in self.stats["tables"]:
-                    self.stats["tables"][batch["table"]] = 0
-                self.stats["tables"][batch["table"]] += len(batch["records"])
+                    self.logger.debug("thread #%d: pushed a batch of %d records to table %s" % (id, len(batch["records"]), batch["table"]))
+                    self.stats["total"] += len(batch["records"])
+                    self.stats["queue"] = self.records.size()
+                    if batch["table"] not in self.stats["tables"]:
+                        self.stats["tables"][batch["table"]] = 0
+                    self.stats["tables"][batch["table"]] += len(batch["records"])
+                except Exception as exc:
+                    logging.error("thread #%d: %s" % (id, exc))
             time.sleep(self.processing_timeout)
 
     def put_record(self, table_name: str, record: dict):
