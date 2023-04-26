@@ -17,8 +17,9 @@
 # under the License.
 #
 
-import pytest
 import time
+
+import pytest
 from faker import Faker
 
 from xata.client import XataClient
@@ -29,6 +30,7 @@ class TestRecordsBranchTransactionsNamespace(object):
     POST /db/{db_branch_name}/transaction
     :link https://xata.io/docs/api-reference/db/db_branch_name/transaction#branch-transaction
     """
+
     def setup_class(self):
         self.client = XataClient(db_name="sandbox-py", branch_name="main")
         self.fake = Faker()
@@ -49,47 +51,51 @@ class TestRecordsBranchTransactionsNamespace(object):
     def teardown_class(self):
         payload = {"operations": []}
         for id in pytest.branch_transactions["record_ids"]:
-            payload['operations'].append({"delete": {"table": "Posts", "id": id}})
+            payload["operations"].append({"delete": {"table": "Posts", "id": id}})
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
 
     def test_insert_only(self, record: dict):
-        payload = {"operations": [
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-        ]}
+        payload = {
+            "operations": [
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
         assert "id" in r.json()["results"][0]
         assert "operation" in r.json()["results"][0]
         assert "rows" in r.json()["results"][0]
         assert "insert" == r.json()["results"][0]["operation"]
         assert 1 == r.json()["results"][0]["rows"]
 
-        pytest.branch_transactions["record_ids"] = [x['id'] for x in r.json()["results"]]
+        pytest.branch_transactions["record_ids"] = [x["id"] for x in r.json()["results"]]
 
     def test_get_only(self, record: dict):
-        payload = {"operations": [
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
-        ]}
+        payload = {
+            "operations": [
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
         assert "columns" in r.json()["results"][0]
         assert "id" in r.json()["results"][0]["columns"]
         assert "xata" in r.json()["results"][0]["columns"]
@@ -102,18 +108,38 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
     def test_get_with_columns(self, record: dict):
-        payload = {"operations": [
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0], "columns": ["id", "title", "labels"]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1], "columns": ["timestamp", "slug"]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2], "columns": ["content", "xata"]}},
-        ]}
+        payload = {
+            "operations": [
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][0],
+                        "columns": ["id", "title", "labels"],
+                    }
+                },
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][1],
+                        "columns": ["timestamp", "slug"],
+                    }
+                },
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][2],
+                        "columns": ["content", "xata"],
+                    }
+                },
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
         assert "columns" in r.json()["results"][0]
-    
+
         assert "id" in r.json()["results"][0]["columns"]
         assert "id" not in r.json()["results"][1]["columns"]
         assert "id" not in r.json()["results"][2]["columns"]
@@ -129,17 +155,19 @@ class TestRecordsBranchTransactionsNamespace(object):
         # FIXME ^
 
     def test_get_only_with_existing_and_nonexisting_records(self, record: dict):
-        payload = {"operations": [
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
-            {"get": {"table": "Posts", "id": "unknown-1"}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
-            {"get": {"table": "Posts", "id": "unknown-2"}},
-        ]}
+        payload = {
+            "operations": [
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
+                {"get": {"table": "Posts", "id": "unknown-1"}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+                {"get": {"table": "Posts", "id": "unknown-2"}},
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
 
         assert {} == r.json()["results"][1]["columns"]
         assert {} == r.json()["results"][3]["columns"]
@@ -150,16 +178,18 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
     def test_delete_only(self, record: dict):
-        payload = {"operations": [
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][9]}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][8]}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][7]}},
-        ]}
+        payload = {
+            "operations": [
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][9]}},
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][8]}},
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][7]}},
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
         assert "columns" not in r.json()["results"][0]
         assert "operation" in r.json()["results"][0]
         assert "rows" in r.json()["results"][0]
@@ -167,17 +197,25 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert 1 == r.json()["results"][0]["rows"]
 
     def test_delete_with_columns(self, record: dict):
-        payload = {"operations": [
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][6], "columns": ["title"]}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][5], "columns": ["slug", "xata"]}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][4]}},
-        ]}
+        payload = {
+            "operations": [
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][6], "columns": ["title"]}},
+                {
+                    "delete": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["record_ids"][5],
+                        "columns": ["slug", "xata"],
+                    }
+                },
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][4]}},
+            ]
+        }
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
-        
+        assert len(r.json()["results"]) == len(payload["operations"])
+
         assert "columns" in r.json()["results"][0]
         assert "title" in r.json()["results"][0]["columns"]
         assert "columns" in r.json()["results"][1]
@@ -186,24 +224,49 @@ class TestRecordsBranchTransactionsNamespace(object):
         # FIXME ^
 
     def test_mixed_operations(self, record: dict):
-        payload = {"operations": [
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0], "columns": ["id", "title", "labels"]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1], "columns": ["timestamp", "slug"]}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][3], "columns": ["title"]}},
-            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2], "columns": ["content", "xata"]}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][2], "columns": ["slug", "xata"]}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][1]}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][0]}},
-        ]}
-        
+        payload = {
+            "operations": [
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][0],
+                        "columns": ["id", "title", "labels"],
+                    }
+                },
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][1],
+                        "columns": ["timestamp", "slug"],
+                    }
+                },
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][3], "columns": ["title"]}},
+                {
+                    "get": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["hardcoded_ids"][2],
+                        "columns": ["content", "xata"],
+                    }
+                },
+                {
+                    "delete": {
+                        "table": "Posts",
+                        "id": pytest.branch_transactions["record_ids"][2],
+                        "columns": ["slug", "xata"],
+                    }
+                },
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][1]}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"insert": {"table": "Posts", "record": self._get_record()}},
+                {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][0]}},
+            ]
+        }
+
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
-        assert len(r.json()["results"]) == len(payload['operations'])
+        assert len(r.json()["results"]) == len(payload["operations"])
 
-        pytest.branch_transactions["record_ids"] = [x['id'] for x in r.json()["results"] if "insert" == x["operation"]]
-
+        pytest.branch_transactions["record_ids"] = [x["id"] for x in r.json()["results"] if "insert" == x["operation"]]
