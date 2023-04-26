@@ -52,7 +52,12 @@ class TestRecordsBranchTransactionsNamespace(object):
             {"insert": {"table": "Posts", "record": self._get_record()}},
             {"insert": {"table": "Posts", "record": self._get_record()}},
             {"insert": {"table": "Posts", "record": self._get_record()}},
-            {"insert": {"table": "Posts", "record": self._get_record()}}
+            {"insert": {"table": "Posts", "record": self._get_record()}},
+            {"insert": {"table": "Posts", "record": self._get_record()}},
+            {"insert": {"table": "Posts", "record": self._get_record()}},
+            {"insert": {"table": "Posts", "record": self._get_record()}},
+            {"insert": {"table": "Posts", "record": self._get_record()}},
+            {"insert": {"table": "Posts", "record": self._get_record()}},
         ]}
 
         r = self.client.records().branchTransaction(payload)
@@ -89,6 +94,32 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert pytest.branch_transactions["hardcoded_ids"][1] == r.json()["results"][1]["columns"]["id"]
         assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
+    def test_get_with_columns(self, record: dict):
+        payload = {"operations": [
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0], "columns": ["id", "title", "labels"]}},
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1], "columns": ["timestamp", "slug"]}},
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2], "columns": ["content", "xata"]}},
+        ]}
+
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+        assert "columns" in r.json()["results"][0]
+    
+        assert "id" in r.json()["results"][0]["columns"]
+        assert "id" not in r.json()["results"][1]["columns"]
+        assert "id" not in r.json()["results"][2]["columns"]
+
+        assert "title" in r.json()["results"][0]["columns"]
+        assert "labels" in r.json()["results"][0]["columns"]
+        assert "timestamp" in r.json()["results"][1]["columns"]
+        assert "slug" in r.json()["results"][1]["columns"]
+        assert "content" in r.json()["results"][2]["columns"]
+
+        assert "xata" not in r.json()["results"][0]["columns"]
+        assert "xata" in r.json()["results"][2]["columns"]
+
     def test_get_only_with_existing_and_nonexisting_records(self, record: dict):
         payload = {"operations": [
             {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
@@ -112,21 +143,37 @@ class TestRecordsBranchTransactionsNamespace(object):
 
     def test_delete_only(self, record: dict):
         payload = {"operations": [
-            {"insert": {"table": "Posts", "record": pytest.branch_transactions["record_ids"][4]}},
-            {"insert": {"table": "Posts", "record": pytest.branch_transactions["record_ids"][3]}},
+            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][9]}},
+            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][8]}},
         ]}
 
         r = self.client.records().branchTransaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload['operations'])
-        assert "id" in r.json()["results"][0]
+        assert "columns" not in r.json()["results"][0]
         assert "operation" in r.json()["results"][0]
         assert "rows" in r.json()["results"][0]
-        assert "insert" == r.json()["results"][0]["operation"]
+        assert "delete" == r.json()["results"][0]["operation"]
         assert 1 == r.json()["results"][0]["rows"]
 
-    def test_error_cases(self, record: dict):
-        #r = self.client.records().branchTransaction({})
-        #assert r.status_code == 404
+    def test_delete_with_columns(self, record: dict):
+        payload = {"operations": [
+            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][7], "columns": ["title"]}},
+            {"delete": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][6], "columns": ["slug", "xata"]}},
+        ]}
+
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+        
+        assert "columns" in r.json()["results"][0]
+        assert "title" in r.json()["results"][0]["columns"]
+        assert "columns" in r.json()["results"][1]
+        assert "slug" in r.json()["results"][1]["columns"]
+        assert "xata" in r.json()["results"][1]["columns"]
+
+    def test_mixed_operations(self, record: dict):
+        # TODO
         pass
