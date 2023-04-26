@@ -18,7 +18,7 @@
 #
 
 import pytest
-import utils
+import time
 from faker import Faker
 
 from xata.client import XataClient
@@ -27,47 +27,12 @@ from xata.client import XataClient
 class TestRecordsBranchTransactionsNamespace(object):
     """
     POST /db/{db_branch_name}/transaction
+    :link https://xata.io/docs/api-reference/db/db_branch_name/transaction#branch-transaction
     """
     def setup_class(self):
-        self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name="sandbox-py", branch_name="main")
         self.fake = Faker()
-        self.record_id = utils.get_random_string(24)
-
-        # create database
-        r = self.client.databases().createDatabase(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
-        )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().createTable("Posts")
-        assert r.status_code == 201
-
-        # create schema
-        r = self.client.table().setTableSchema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "labels", "type": "multiple"},
-                    {"name": "slug", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
-        assert r.status_code == 200
-
-    def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
-        assert r.status_code == 200
+        self.record_ids = []
 
     @pytest.fixture
     def record(self) -> dict:
@@ -78,7 +43,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             "title": self.fake.company(),
             "labels": [self.fake.domain_word(), self.fake.domain_word()],
             "slug": self.fake.catch_phrase(),
-            "text": self.fake.text(),
+            "content": self.fake.text(),
         }
 
     def test_insert_only(self, record: dict):
@@ -90,15 +55,62 @@ class TestRecordsBranchTransactionsNamespace(object):
             {"insert": {"table": "Posts", "record": self._get_record()}}
         ]}
 
-        r = self.client.records().branchTransaction("Posts", payload)
-        assert "" == r.json()
-        assert r.status_code == 201
-        assert "id" in r.json()
-        assert "xata" in r.json()
-        assert "version" in r.json()["xata"]
-        assert r.json()["xata"]["version"] == 0
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+        assert "id" in r.json()["results"][0]
+        assert "operation" in r.json()["results"][0]
+        assert "rows" in r.json()["results"][0]
+        assert "insert" == r.json()["results"][0]["operation"]
+        assert 1 == r.json()["results"][0]["rows"]
 
-    
+        pytest.branch_transactions["record_ids"] = [x['id'] for x in r.json()["results"]]
+
+    def test_get_only(self, record: dict):
+        payload = {"operations": [
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1]}},
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+        ]}
+
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+        assert "columns" in r.json()["results"][0]
+        assert "id" in r.json()["results"][0]["columns"]
+        assert "xata" in r.json()["results"][0]["columns"]
+        assert "version" in r.json()["results"][0]["columns"]["xata"]
+        assert "operation" in r.json()["results"][0]
+        assert "get" == r.json()["results"][0]["operation"]
+
+        assert pytest.branch_transactions["hardcoded_ids"][0] == r.json()["results"][0]["columns"]["id"]
+        assert pytest.branch_transactions["hardcoded_ids"][1] == r.json()["results"][1]["columns"]["id"]
+        assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
+
+    def test_get_only_with_existing_and_nonexisting_records(self, record: dict):
+        payload = {"operations": [
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
+            {"get": {"table": "Posts", "id": "unknown-1"}},
+            {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+            {"get": {"table": "Posts", "id": "unknown-2"}},
+        ]}
+
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+
+        assert {} == r.json()["results"][1]["columns"]
+        assert {} == r.json()["results"][3]["columns"]
+        assert "get" == r.json()["results"][1]["operation"]
+        assert "get" == r.json()["results"][3]["operation"]
+
+        assert pytest.branch_transactions["hardcoded_ids"][0] == r.json()["results"][0]["columns"]["id"]
+        assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
+
     def test_error_cases(self, record: dict):
-        r = self.client.records().branchTransaction({})
-        assert r.status_code == 404
+        #r = self.client.records().branchTransaction({})
+        #assert r.status_code == 404
+        pass

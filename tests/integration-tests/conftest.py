@@ -37,6 +37,10 @@ def pytest_configure():
         "client": None,
         "db_name": None,
     }
+    pytest.branch_transactions = {
+        "record_ids": [],
+        "hardcoded_ids": ["1", "2", "42"],
+    }
 
 
 def create_demo_db(client: XataClient, db_name: string):
