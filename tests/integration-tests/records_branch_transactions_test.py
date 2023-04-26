@@ -110,6 +110,22 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert pytest.branch_transactions["hardcoded_ids"][0] == r.json()["results"][0]["columns"]["id"]
         assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
+    def test_delete_only(self, record: dict):
+        payload = {"operations": [
+            {"insert": {"table": "Posts", "record": pytest.branch_transactions["record_ids"][4]}},
+            {"insert": {"table": "Posts", "record": pytest.branch_transactions["record_ids"][3]}},
+        ]}
+
+        r = self.client.records().branchTransaction(payload)
+        assert r.status_code == 200
+        assert "results" in r.json()
+        assert len(r.json()["results"]) == len(payload['operations'])
+        assert "id" in r.json()["results"][0]
+        assert "operation" in r.json()["results"][0]
+        assert "rows" in r.json()["results"][0]
+        assert "insert" == r.json()["results"][0]["operation"]
+        assert 1 == r.json()["results"][0]["rows"]
+
     def test_error_cases(self, record: dict):
         #r = self.client.records().branchTransaction({})
         #assert r.status_code == 404
