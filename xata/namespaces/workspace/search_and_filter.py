@@ -158,14 +158,9 @@ class Search_and_filter(Namespace):
         column:  ```json POST /db/demo:main/tables/table/query {   "sort": [     {       "name":
         "desc"     },     {       "*": "random"     }   ] } ```  This will sort on the `name`
         column, breaking ties randomly.  ### Pagination  We offer cursor pagination and offset
-        pagination.  For queries that are expected to return more than 1000 records, cursor
-        pagination is needed in order to retrieve all of their results.  The offset pagination
-        method is limited to 1000 records.  Example of size + offset pagination:  ```json POST
-        /db/demo:main/tables/table/query {   "page": {     "size": 100,     "offset": 200   } }
-        ```  The `page.size` parameter represents the maximum number of records returned by this
-        query.  It has a default value of 20 and a maximum value of 200. The `page.offset`
-        parameter represents the number of matching records to skip.  It has a default value of 0
-        and a maximum value of 800.  Example of cursor pagination:  ```json POST
+        pagination.  The cursor pagination method can be used for sequential scrolling with
+        unrestricted depth.  The offset pagination can be used to skip pages and is limited to
+        1000 records.  Example of cursor pagination:  ```json POST
         /db/demo:main/tables/table/query {   "page": {
         "after":"fMoxCsIwFIDh3WP8c4amDai5hO5SJCRNfaVSeC9b6d1FD"   } } ```  In the above example,
         the value of the `page.after` parameter is the cursor returned by the previous query.  A
@@ -190,22 +185,33 @@ class Search_and_filter(Namespace):
         `columns`, `sort` , and `page.size` configuration will be encoded with the cursor.  The
         pagination request will be invalid if `filter` or `sort` is set.  The columns returned and
         page size can be changed anytime by passing the `columns` or `page.size` settings to the
-        next query.  **Special cursors:**  - `page.after=end`: Result points past the last entry.
-        The list of records   returned is empty, but `page.meta.cursor` will include a cursor that
-        can be   used to "tail" the table from the end waiting for new data to be inserted.  -
-        `page.before=end`: This cursor returns the last page.  - `page.start=<cursor>`: Start at
-        the beginning of the result set of the <cursor> query.  This is equivalent to querying the
-        first page without a cursor but applying `filter` and `sort` . Yet the `page.start`
-        cursor can be convenient at times as user code does not need to remember the   filter,
-        sort, columns or page size configuration.  All these information are   read from the
-        cursor.  - `page.end=<cursor>`: Move to the end of the result set of the <cursor> query.
-        This is equivalent to querying the   last page with `page.before=end`, `filter`, and
-        `sort` . Yet the   `page.end` cursor can be more convenient at times as user code does not
-        need to remember the filter, sort, columns or page size configuration.  All   these
-        information are read from the cursor.  When using special cursors like `page.after="end"`
-        or `page.before="end"`, we still allow `filter` and `sort` to be set.  Example of getting
-        the last page:  ```json POST /db/demo:main/tables/table/query {   "page": {     "size":
-        10,     "before": "end"   } } ```
+        next query.  In the following example of size + offset pagination we retrieve the third
+        page of up to 100 results:  ```json POST /db/demo:main/tables/table/query {   "page": {
+        "size": 100,     "offset": 200   } } ```  The `page.size` parameter represents the maximum
+        number of records returned by this query.  It has a default value of 20 and a maximum
+        value of 200. The `page.offset` parameter represents the number of matching records to
+        skip.  It has a default value of 0 and a maximum value of 800.  Cursor pagination also
+        works in combination with offset pagination.  For example, starting from a specific cursor
+        position, using a page size of 200 and an offset of 800, you can skip up to 5 pages of 200
+        records forwards or backwards from the cursor's position:  ```json POST
+        /db/demo:main/tables/table/query {   "page": {     "size": 200,     "offset": 800,
+        "after": "fMoxCsIwFIDh3WP8c4amDai5hO5SJCRNfaVSeC9b6d1FD"   } } ```  **Special cursors:**
+        - `page.after=end`: Result points past the last entry.  The list of records   returned is
+        empty, but `page.meta.cursor` will include a cursor that can be   used to "tail" the table
+        from the end waiting for new data to be inserted.  - `page.before=end`: This cursor
+        returns the last page.  - `page.start=<cursor>`: Start at the beginning of the result set
+        of the <cursor> query.  This is equivalent to querying the   first page without a cursor
+        but applying `filter` and `sort` . Yet the `page.start`   cursor can be convenient at
+        times as user code does not need to remember the   filter, sort, columns or page size
+        configuration.  All these information are   read from the cursor.  - `page.end=<cursor>`:
+        Move to the end of the result set of the <cursor> query.  This is equivalent to querying
+        the   last page with `page.before=end`, `filter`, and `sort` . Yet the   `page.end` cursor
+        can be more convenient at times as user code does not   need to remember the filter, sort,
+        columns or page size configuration.  All   these information are read from the cursor.
+        When using special cursors like `page.after="end"` or `page.before="end"`, we still allow
+        `filter` and `sort` to be set.  Example of getting the last page:  ```json POST
+        /db/demo:main/tables/table/query {   "page": {     "size": 10,     "before": "end"   } }
+        ```
 
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST

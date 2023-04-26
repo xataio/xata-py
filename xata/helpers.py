@@ -124,7 +124,10 @@ class BulkProcessor(object):
                         if self.throw_exception:
                             raise Exception(r.json())
 
-                    self.logger.debug("thread #%d: pushed a batch of %d records to table %s" % (id, len(batch["records"]), batch["table"]))
+                    self.logger.debug(
+                        "thread #%d: pushed a batch of %d records to table %s"
+                        % (id, len(batch["records"]), batch["table"])
+                    )
                     self.stats["total"] += len(batch["records"])
                     self.stats["queue"] = self.records.size()
                     if batch["table"] not in self.stats["tables"]:

@@ -211,5 +211,3 @@ class TestRecordsNamespace(object):
 
         r = self.client.records().bulkInsertTableRecords("Posts", {"records": posts})
         assert r.status_code == 200
-
-    # TODO: /db/{db_branch_name}/transaction
