@@ -47,7 +47,7 @@ from .namespaces.workspace.table import Table
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "0.9.2"
+__version__ = "0.9.3"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_DATA_PLANE_DOMAIN = "xata.sh"
@@ -233,7 +233,7 @@ class XataClient:
 
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, region, _, _ = self._parse_database_url(self.config.get("databaseURL"))
+            workspaceID, region, _, _, _ = self._parse_database_url(self.config.get("databaseURL"))
             return workspaceID, region, "config"
         raise Exception(
             f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
