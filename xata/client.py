@@ -243,7 +243,7 @@ class XataClient:
     def get_database_name_if_configured(self) -> str:
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            _, _, db_name, _ = self._parse_database_url(self.config.get("databaseURL"))
+            _, _, db_name, _, _ = self._parse_database_url(self.config.get("databaseURL"))
             return db_name
         return None
 
