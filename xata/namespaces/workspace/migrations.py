@@ -250,3 +250,33 @@ class Migrations(Namespace):
         url_path = f"/db/{db_branch_name}/schema/apply"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
+
+    def pushBranchMigrations(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+        """
+        The `schema/push` API accepts a list of migrations to be applied to the current branch.  A
+        list of applicable migrations can be fetched using the `schema/history` API from another
+        branch or database.  The most recent migration must be part of the list or referenced (via
+        `parentID`) by the first migration in the list of migrations to be pushed.  Each migration
+        in the list has an `id`, `parentID`, and `checksum`. The checksum for migrations are
+        generated and verified by xata.  The operation fails if any migration in the list has an
+        invalid checksum.
+
+        Path: /db/{db_branch_name}/schema/push
+        Method: POST
+        Response status codes:
+        - 200: Schema migration response with ID and migration status.
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/schema/push"
+        headers = {"content-type": "application/json"}
+        return self.request("POST", url_path, headers, payload)
