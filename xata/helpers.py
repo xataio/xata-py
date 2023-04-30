@@ -33,11 +33,9 @@ DEFAULT_THROW_EXCEPTION = False
 
 class BulkProcessor(object):
     """
-    !!! This helper is still work in progress !!!
-
     Additional abstraction for bulk requests that process'
     requests in parallel
-    :stability alpha
+    :stability beta
     """
 
     def __init__(
