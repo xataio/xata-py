@@ -22,6 +22,8 @@ import time
 from datetime import datetime, timezone
 from threading import Lock, Thread
 
+from requests import Response
+
 from .client import XataClient
 
 BP_DEFAULT_THREAD_POOL_SIZE = 4
@@ -29,6 +31,7 @@ BP_DEFAULT_BATCH_SIZE = 25
 BP_DEFAULT_FLUSH_INTERVAL = 5
 BP_DEFAULT_PROCESSING_TIMEOUT = 0.025
 BP_DEFAULT_THROW_EXCEPTION = False
+TRX_MAX_OPERATIONS = 1000
 
 
 class BulkProcessor(object):
@@ -288,3 +291,94 @@ def to_rfc339(dt: datetime, tz=timezone.utc) -> str:
     :return str
     """
     return dt.replace(tzinfo=tz).isoformat()
+
+
+class Transaction(object):
+    """
+    Additional abstraction for bulk requests that process'
+    requests in parallel
+    :stability beta
+    """
+
+    def __init__(
+        self,
+        client: XataClient,
+    ):
+        """
+        Transaction Helper
+        Wrapper to simplify running transactions
+
+        :stability beta
+
+        :param client: XataClient
+        """
+        self.client = client
+
+        self.has_run = False
+        self.operations = {"operations": []}
+    
+    def _add_operation(self, operation: dict):
+        if len(self.operations["operations"]) >= TRX_MAX_OPERATIONS:
+            pass
+            # TODO throw exception
+        self.operations["operations"].append(operation)
+
+    def insert(self, table: str, record: dict, createOnly: bool = False):
+        """
+        Insert new record
+        :param table: str
+        :param record: dict
+        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Defaul: False
+        """
+        self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
+
+    def delete(self, table: str, recordId: str, columns: list[str] = []):
+        """
+        Delete a record
+        :param table: str
+        :param recordId: str
+        :param columns: list of columns to retrieve
+        """
+        self._add_operation({"delete": {"table": table, "id": recordId, "columns": columns}})
+
+    def get(self, table: str, recordId: str, columns: list[str] = []):
+        """
+        Get a record
+        :param table: str
+        :param recordId: str
+        :param columns: list of columns to retrieve
+        """
+        self._add_operation({"get": {"table": table, "id": recordId, "columns": columns}})
+
+    def run(self) -> dict:
+        """
+        Commit the transactions
+
+        :return dict
+        """
+        r = self.client.records().branchTransaction(self.operations)
+        self.operations = {} # free memory
+        result = {
+            "status_code": r.status_code,
+            "success": r.status_code == 200,
+            "has_errors": False,
+            "error_indexes": [],
+            "stats": {
+                "insert": 0,
+                "get": 0,
+                "delete": 0,
+                "update": 0,
+            },
+            "results": r.json()["results"] if "results" in r.json() else [],
+        }
+        for op in result["results"]:
+            if op["operation"] == "insert":
+                result["stats"]["insert"] += 1
+            if op["operation"] == "delete":
+                result["stats"]["delete"] += 1
+            if op["operation"] == "update":
+                result["stats"]["update"] += 1
+            if op["operation"] == "get":
+                result["stats"]["get"] += 1
+
+        return result
