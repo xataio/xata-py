@@ -96,7 +96,7 @@ class TestHelpersTransaction(object):
         r = self.client.data().queryTable("Posts", {})
         assert len(r.json()["records"]) == 5
 
-    def test_insert_records_with_create_only_option(self):
+    def test_insert_records_with_create_only_option_existing_record(self):
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record())
         trx.insert("Posts", self._get_record())
@@ -106,16 +106,28 @@ class TestHelpersTransaction(object):
         assert len(overwrite_me) > 0
 
         trx = Transaction(self.client)
-        trx.insert("Posts", {"id": overwrite_me[0], "title": "a new title #1"}, True)
-        trx.insert("Posts", {"id": overwrite_me[1], "title": "a new title #2"}, False)
+        trx.insert("Posts", {"id": overwrite_me[0], "title": "a new title #1", "content": "yes!"}, True)
+        trx.insert("Posts", {"id": overwrite_me[1], "title": "a new title #2", "content": "yeah!"}, False)
         response = trx.run()
 
-        assert response["status_code"] == 200
-        assert not response["has_errors"]
-        assert len(response["results"]) == 2
+        assert response["has_errors"]
+        assert response["status_code"] == 400
+        assert len(response["errors"]) == 1
 
-        r = self.client.data().queryTable("Posts", {})
-        assert len(r.json()["records"]) == 5
+    def test_insert_records_with_create_only_option_new_record_id(self):
+        before_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+
+        trx = Transaction(self.client)
+        trx.insert("Posts", {"id": "record-123", "title": "a new title #1", "content": "yes!"}, True)
+        trx.insert("Posts", {"id": "record-042", "title": "a new title #2", "content": "yeah!"}, False)
+        response = trx.run()
+
+        assert not response["has_errors"]
+        assert response["status_code"] == 200
+        assert len(response["errors"]) == 0
+
+        after_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+        assert before_insert == (after_insert - 2)
 
     def test_delete_records(self):
         setup = Transaction(self.client)
@@ -245,6 +257,8 @@ class TestHelpersTransaction(object):
         #assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
 
     def test_has_errors_insert(self):
+        before_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record()) # good
         trx.insert("PostsThatDoNotExist", self._get_record()) # bad
@@ -258,3 +272,6 @@ class TestHelpersTransaction(object):
         assert response["errors"][0]['index'] == 1
         assert response["errors"][1]['index'] == 3
         assert len(response["results"]) == 0
+
+        after_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+        assert before_insert == after_insert
