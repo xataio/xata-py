@@ -239,6 +239,22 @@ class TestHelpersTransaction(object):
         assert response["errors"] == []
         assert len(response["results"]) == len(update_me)
 
+    def test_update_records_via_upsert(self):
+        before_upsert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+
+        trx = Transaction(self.client)
+        for rid in range(0, 5):
+            trx.update("Posts", str(rid), {"title": f"title: {rid}!", "content": "upserted"}, True)
+        response = trx.run()
+
+        assert response["status_code"] == 200
+        assert not response["has_errors"]
+        assert response["errors"] == []
+        assert len(response["results"]) == 5
+
+        after_upsert = len(self.client.data().queryTable("Posts", {}).json()["records"])
+        assert before_upsert == after_upsert
+
     def test_mixed_operations(self):
         setup = Transaction(self.client)
         for it in range(0, 6):

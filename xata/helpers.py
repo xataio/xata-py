@@ -341,7 +341,7 @@ class Transaction(object):
         :param fields: dict
         :param upsert: bool Defaul: False
         """
-        self._add_operation({"insert": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
+        self._add_operation({"update": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
 
     def delete(self, table: str, recordId: str, columns: list[str] = []):
         """
