@@ -356,28 +356,11 @@ class Transaction(object):
         :return dict
         """
         r = self.client.records().branchTransaction(self.operations)
-        self.operations = {} # free memory
         result = {
             "status_code": r.status_code,
-            "success": r.status_code == 200,
-            "has_errors": False,
-            "error_indexes": [],
-            "stats": {
-                "insert": 0,
-                "get": 0,
-                "delete": 0,
-                "update": 0,
-            },
             "results": r.json()["results"] if "results" in r.json() else [],
+            "has_errors": True if "errors" in r.json() else False,
+            "errors": r.json()["errors"] if "errors" in r.json() else [],
         }
-        for op in result["results"]:
-            if op["operation"] == "insert":
-                result["stats"]["insert"] += 1
-            if op["operation"] == "delete":
-                result["stats"]["delete"] += 1
-            if op["operation"] == "update":
-                result["stats"]["update"] += 1
-            if op["operation"] == "get":
-                result["stats"]["get"] += 1
-
+        self.operations = {} # free memory
         return result

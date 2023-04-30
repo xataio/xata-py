@@ -84,24 +84,13 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert "status_code" in response
-        assert "success" in response
         assert "has_errors" in response
-        assert "error_indexes" in response
         assert "results" in response
-        assert "stats" in response
-        assert "insert" in response["stats"]
-        assert "update" in response["stats"]
-        assert "delete" in response["stats"]
-        assert "get" in response["stats"]
+        assert "errors" in response
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["error_indexes"] == []
-        assert response["stats"]["insert"] == 5
-        assert response["stats"]["update"] == 0
-        assert response["stats"]["delete"] == 0
-        assert response["stats"]["get"] == 0
+        assert response["errors"] == []
         assert len(response["results"]) == 5
 
         r = self.client.data().queryTable("Posts", {})
@@ -122,12 +111,7 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["stats"]["insert"] == 2
-        assert response["stats"]["update"] == 0
-        assert response["stats"]["delete"] == 0
-        assert response["stats"]["get"] == 0
         assert len(response["results"]) == 2
 
         r = self.client.data().queryTable("Posts", {})
@@ -148,13 +132,8 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["error_indexes"] == []
-        assert response["stats"]["insert"] == 0
-        assert response["stats"]["update"] == 0
-        assert response["stats"]["delete"] == len(delete_me)
-        assert response["stats"]["get"] == 0
+        assert response["errors"] == []
         assert len(response["results"]) == len(delete_me)
 
         r = self.client.data().queryTable("Posts", {})
@@ -178,9 +157,7 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["stats"]["delete"] == 5
 
         assert "columns" not in response["results"][0]
         assert list(response["results"][1]["columns"].keys()) == ["title"]
@@ -205,13 +182,8 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["error_indexes"] == []
-        assert response["stats"]["insert"] == 0
-        assert response["stats"]["update"] == 0
-        assert response["stats"]["delete"] == 0
-        assert response["stats"]["get"] == len(get_me)
+        assert response["errors"] == []
         assert len(response["results"]) == len(get_me)
 
     def test_get_records_with_columns(self):
@@ -229,9 +201,7 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["stats"]["get"] == 5
 
         assert list(response["results"][0]["columns"].keys()) == ["id", "xata"]
         assert list(response["results"][1]["columns"].keys()) == ["title"]
@@ -261,13 +231,8 @@ class TestHelpersTransaction(object):
         response = trx.run()
 
         assert response["status_code"] == 200
-        assert response["success"]
         assert not response["has_errors"]
-        assert response["error_indexes"] == []
-        assert response["stats"]["insert"] == 4
-        assert response["stats"]["update"] == 0
-        assert response["stats"]["delete"] == 3
-        assert response["stats"]["get"] == 2
+        assert response["errors"] == []
         assert len(response["results"]) == 9
 
     def test_max_operations_exceeded(self):
@@ -279,16 +244,17 @@ class TestHelpersTransaction(object):
         assert exc is not None
         #assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
 
-    def test_has_errors(self):
+    def test_has_errors_insert(self):
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record()) # good
-        #trx.insert("PostsThatDoNotExist", self._get_record()) # bad
+        trx.insert("PostsThatDoNotExist", self._get_record()) # bad
         trx.insert("Posts", self._get_record()) # good
-        #trx.insert("Posts", {"foo": "bar"}) # bad
+        trx.insert("Posts", {"foo": "bar"}) # bad
         response = trx.run()
 
-        assert response["status_code"] == 200
-        assert "" == response
-        assert not response["success"]
-        assert not response["has_errors"]
-        assert response["error_indexes"] == []
+        assert response["status_code"] == 400
+        assert response["has_errors"]
+        assert len(response["errors"]) == 2
+        assert response["errors"][0]['index'] == 1
+        assert response["errors"][1]['index'] == 3
+        assert len(response["results"]) == 0
