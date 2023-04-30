@@ -221,6 +221,24 @@ class TestHelpersTransaction(object):
         assert list(response["results"][3]["columns"].keys()) == ["content", "title"]
         assert list(response["results"][4]["columns"].keys()) == ["content", "id", "title"]
 
+    def test_update_records(self):
+        setup = Transaction(self.client)
+        for it in range(0, 5):
+            setup.insert("Posts", self._get_record())
+        response = setup.run()
+        update_me = [x["id"] for x in response["results"]]
+        assert len(update_me) > 0
+
+        trx = Transaction(self.client)
+        for rid in update_me:
+            trx.update("Posts", rid, {"title": rid})
+        response = trx.run()
+
+        assert response["status_code"] == 200
+        assert not response["has_errors"]
+        assert response["errors"] == []
+        assert len(response["results"]) == len(update_me)
+
     def test_mixed_operations(self):
         setup = Transaction(self.client)
         for it in range(0, 6):
