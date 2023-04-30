@@ -24,7 +24,7 @@ import utils
 from faker import Faker
 
 from xata.client import XataClient
-from xata.helpers import Transaction
+from xata.helpers import Transaction, TRX_MAX_OPERATIONS
 
 
 class TestHelpersTransaction(object):
@@ -74,7 +74,7 @@ class TestHelpersTransaction(object):
             "content": self.fake.text(),
         }
 
-    def test_insert_records_and_response_shape(self, record: dict):
+    def test_insert_records_and_response_shape(self):
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record())
         trx.insert("Posts", self._get_record())
@@ -107,7 +107,7 @@ class TestHelpersTransaction(object):
         r = self.client.data().queryTable("Posts", {})
         assert len(r.json()["records"]) == 5
 
-    def test_insert_records_with_create_only_option(self, record: dict):
+    def test_insert_records_with_create_only_option(self):
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record())
         trx.insert("Posts", self._get_record())
@@ -133,13 +133,14 @@ class TestHelpersTransaction(object):
         r = self.client.data().queryTable("Posts", {})
         assert len(r.json()["records"]) == 5
 
-    def test_delete_records(self, record: dict):
+    def test_delete_records(self):
         setup = Transaction(self.client)
         for it in range(1, 10):
             setup.insert("Posts", self._get_record())
         response = setup.run()
         delete_me = [x["id"] for x in response["results"]]
         assert len(delete_me) > 0
+        before_delete = len(self.client.data().queryTable("Posts", {}).json()["records"])
 
         trx = Transaction(self.client)
         for rid in delete_me:
@@ -157,15 +158,16 @@ class TestHelpersTransaction(object):
         assert len(response["results"]) == len(delete_me)
 
         r = self.client.data().queryTable("Posts", {})
-        assert len(r.json()["records"]) == 5
+        assert len(r.json()["records"]) == (before_delete - len(delete_me))
 
-    def test_delete_records_with_columns(self, record: dict):
+    def test_delete_records_with_columns(self):
         setup = Transaction(self.client)
         for it in range(0, 5):
             setup.insert("Posts", self._get_record())
         response = setup.run()
         delete_me = [x["id"] for x in response["results"]]
         assert len(delete_me) > 0
+        before_delete = len(self.client.data().queryTable("Posts", {}).json()["records"])
 
         trx = Transaction(self.client)
         trx.delete("Posts", delete_me[0])
@@ -187,9 +189,9 @@ class TestHelpersTransaction(object):
         assert list(response["results"][4]["columns"].keys()) == ["content", "id", "title"]
 
         r = self.client.data().queryTable("Posts", {})
-        assert len(r.json()["records"]) == 5
+        assert len(r.json()["records"]) == (before_delete - len(delete_me))
 
-    def test_get_records(self, record: dict):
+    def test_get_records(self):
         setup = Transaction(self.client)
         for it in range(0, 10):
             setup.insert("Posts", self._get_record())
@@ -212,7 +214,7 @@ class TestHelpersTransaction(object):
         assert response["stats"]["get"] == len(get_me)
         assert len(response["results"]) == len(get_me)
 
-    def test_get_records_with_columns(self, record: dict):
+    def test_get_records_with_columns(self):
         setup = Transaction(self.client)
         setup.insert("Posts", self._get_record())
         response = setup.run()
@@ -236,3 +238,57 @@ class TestHelpersTransaction(object):
         assert list(response["results"][2]["columns"].keys()) == ["content"]
         assert list(response["results"][3]["columns"].keys()) == ["content", "title"]
         assert list(response["results"][4]["columns"].keys()) == ["content", "id", "title"]
+
+    def test_mixed_operations(self):
+        setup = Transaction(self.client)
+        for it in range(0, 6):
+            setup.insert("Posts", self._get_record())
+        response = setup.run()
+        ids = [x["id"] for x in response["results"]]
+        assert len(ids) > 0
+
+        trx = Transaction(self.client)
+        trx.get("Posts", ids[0])
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        trx.delete("Posts", ids[1], ["content"])
+        #trx.update("Posts", ids[2])
+        trx.get("Posts", ids[3])
+        trx.insert("Posts", self._get_record())
+        trx.delete("Posts", ids[4], ["content"])
+        trx.delete("Posts", ids[5], ["content"])
+        trx.insert("Posts", self._get_record())
+        response = trx.run()
+
+        assert response["status_code"] == 200
+        assert response["success"]
+        assert not response["has_errors"]
+        assert response["error_indexes"] == []
+        assert response["stats"]["insert"] == 4
+        assert response["stats"]["update"] == 0
+        assert response["stats"]["delete"] == 3
+        assert response["stats"]["get"] == 2
+        assert len(response["results"]) == 9
+
+    def test_max_operations_exceeded(self):
+        trx = Transaction(self.client)
+        for it in range(0, 1000):
+            trx.get("Posts", it)
+        with pytest.raises(Exception) as exc:
+            trx.get("Posts", 1001)
+        assert exc is not None
+        #assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
+
+    def test_has_errors(self):
+        trx = Transaction(self.client)
+        trx.insert("Posts", self._get_record()) # good
+        #trx.insert("PostsThatDoNotExist", self._get_record()) # bad
+        trx.insert("Posts", self._get_record()) # good
+        #trx.insert("Posts", {"foo": "bar"}) # bad
+        response = trx.run()
+
+        assert response["status_code"] == 200
+        assert "" == response
+        assert not response["success"]
+        assert not response["has_errors"]
+        assert response["error_indexes"] == []

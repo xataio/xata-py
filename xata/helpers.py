@@ -319,8 +319,7 @@ class Transaction(object):
     
     def _add_operation(self, operation: dict):
         if len(self.operations["operations"]) >= TRX_MAX_OPERATIONS:
-            pass
-            # TODO throw exception
+            raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
         self.operations["operations"].append(operation)
 
     def insert(self, table: str, record: dict, createOnly: bool = False):
