@@ -24,11 +24,11 @@ from threading import Lock, Thread
 
 from .client import XataClient
 
-DEFAULT_THREAD_POOL_SIZE = 4
-DEFAULT_BATCH_SIZE = 25
-DEFAULT_FLUSH_INTERVAL = 5
-DEFAULT_PROCESSING_TIMEOUT = 0.025
-DEFAULT_THROW_EXCEPTION = False
+BP_DEFAULT_THREAD_POOL_SIZE = 4
+BP_DEFAULT_BATCH_SIZE = 25
+BP_DEFAULT_FLUSH_INTERVAL = 5
+BP_DEFAULT_PROCESSING_TIMEOUT = 0.025
+BP_DEFAULT_THROW_EXCEPTION = False
 
 
 class BulkProcessor(object):
@@ -41,11 +41,11 @@ class BulkProcessor(object):
     def __init__(
         self,
         client: XataClient,
-        thread_pool_size: int = DEFAULT_THREAD_POOL_SIZE,
-        batch_size: int = DEFAULT_BATCH_SIZE,
-        flush_interval: int = DEFAULT_FLUSH_INTERVAL,
-        processing_timeout: float = DEFAULT_PROCESSING_TIMEOUT,
-        throw_exception: bool = DEFAULT_THROW_EXCEPTION,
+        thread_pool_size: int = BP_DEFAULT_THREAD_POOL_SIZE,
+        batch_size: int = BP_DEFAULT_BATCH_SIZE,
+        flush_interval: int = BP_DEFAULT_FLUSH_INTERVAL,
+        processing_timeout: float = BP_DEFAULT_PROCESSING_TIMEOUT,
+        throw_exception: bool = BP_DEFAULT_THROW_EXCEPTION,
     ):
         """
         BulkProcessor: Abstraction for bulk ingestion of records.
@@ -60,13 +60,13 @@ class BulkProcessor(object):
         :throw_exception: bool Throw exception ingestion, could kill all workers (default: False)
         """
         if thread_pool_size < 1:
-            raise Exception("thread pool size must be greater than 0, default: %d" % DEFAULT_THREAD_POOL_SIZE)
+            raise Exception("thread pool size must be greater than 0, default: %d" % BP_DEFAULT_THREAD_POOL_SIZE)
         if processing_timeout < 0:
-            raise Exception("processing timeout can not be negative, default: %f" % DEFAULT_PROCESSING_TIMEOUT)
+            raise Exception("processing timeout can not be negative, default: %f" % BP_DEFAULT_PROCESSING_TIMEOUT)
         if flush_interval < 0:
-            raise Exception("flush interval can not be negative, default: %f" % DEFAULT_FLUSH_INTERVAL)
+            raise Exception("flush interval can not be negative, default: %f" % BP_DEFAULT_FLUSH_INTERVAL)
         if batch_size < 1:
-            raise Exception("batch size can not be less than one, default: %d" % DEFAULT_BATCH_SIZE)
+            raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
         self.processing_timeout = processing_timeout
