@@ -22,8 +22,6 @@ import time
 from datetime import datetime, timezone
 from threading import Lock, Thread
 
-from requests import Response
-
 from .client import XataClient
 
 BP_DEFAULT_THREAD_POOL_SIZE = 4
@@ -93,7 +91,7 @@ class BulkProcessor(object):
         Process the records
         """
         self.logger.debug(
-            "thread #%d: starting bulk processor [thread_pool_size=%d, batch_size=%d, flush_interval=%d, processing_timeout=%s"
+            "thread #%d: starting bulk processor [thread_pool=%d, batch=%d, flush=%d, processing_timeout=%s"
             % (
                 id,
                 len(self.thread_workers),
@@ -316,7 +314,7 @@ class Transaction(object):
 
         self.has_run = False
         self.operations = {"operations": []}
-    
+
     def _add_operation(self, operation: dict):
         if len(self.operations["operations"]) >= TRX_MAX_OPERATIONS:
             raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
@@ -324,18 +322,24 @@ class Transaction(object):
 
     def insert(self, table: str, record: dict, createOnly: bool = False):
         """
-        Inserts can be used to insert records across any number of tables in your database. As with the insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you. Either way, on a successful transaction, Xata will return the ID to you.
+        Inserts can be used to insert records across any number of tables in your database. As with the
+        insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you.
+        Either way, on a successful transaction, Xata will return the ID to you.
 
         :param table: str
         :param record: dict
-        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Defaul: False
+        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite
+            the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Default: False
         """
         self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
 
     def update(self, table: str, recordId: str, fields: dict, upsert: bool = False):
         """
-        Updates can be used to update records in any number of tables in your database. The update operation requires an ID parameter explicitly defined. The operation will only replace the fields explicitly specified in your operation. The update operation also supports the upsert flag. Off by default, but if set to true, the update operation will insert the record if no record is found with the provided ID.
-        
+        Updates can be used to update records in any number of tables in your database. The update operation
+        requires an ID parameter explicitly defined. The operation will only replace the fields explicitly
+        specified in your operation. The update operation also supports the upsert flag. Off by default, but
+        if set to `true`, the update operation will insert the record if no record is found with the provided ID.
+
         :param table: str
         :param recordId: str
         :param fields: dict
@@ -345,7 +349,8 @@ class Transaction(object):
 
     def delete(self, table: str, recordId: str, columns: list[str] = []):
         """
-        A delete is used to remove records. Delete can operate on records from the same transaction, and will not cancel a transaction if no record is found.
+        A delete is used to remove records. Delete can operate on records from the same transaction, and will
+        not cancel a transaction if no record is found.
 
         :param table: str
         :param recordId: str
@@ -355,7 +360,8 @@ class Transaction(object):
 
     def get(self, table: str, recordId: str, columns: list[str] = []):
         """
-        A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction but will not cancel a transaction if no record is found.
+        A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction
+        but will not cancel a transaction if no record is found.
 
         :param table: str
         :param recordId: str
@@ -376,5 +382,5 @@ class Transaction(object):
             "has_errors": True if "errors" in r.json() else False,
             "errors": r.json()["errors"] if "errors" in r.json() else [],
         }
-        self.operations = {} # free memory
+        self.operations = {}  # free memory
         return result
