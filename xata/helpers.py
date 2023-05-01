@@ -303,7 +303,7 @@ class Transaction(object):
     def __init__(
         self,
         client: XataClient,
-    ):
+    ) -> None:
         """
         Transaction Helper
         Wrapper to simplify running transactions
@@ -317,49 +317,57 @@ class Transaction(object):
         self.has_run = False
         self.operations = {"operations": []}
     
-    def _add_operation(self, operation: dict):
+    def _add_operation(self, operation: dict) -> None:
         if len(self.operations["operations"]) >= TRX_MAX_OPERATIONS:
             raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
         self.operations["operations"].append(operation)
 
-    def insert(self, table: str, record: dict, createOnly: bool = False):
+    def insert(self, table: str, record: dict, createOnly: bool = False) -> None:
         """
         Inserts can be used to insert records across any number of tables in your database. As with the insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you. Either way, on a successful transaction, Xata will return the ID to you.
 
         :param table: str
         :param record: dict
         :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Defaul: False
+
+        :raises Exception if limit of 1000 operations is exceeded
         """
         self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
 
-    def update(self, table: str, recordId: str, fields: dict, upsert: bool = False):
+    def update(self, table: str, recordId: str, fields: dict, upsert: bool = False) -> None:
         """
         Updates can be used to update records in any number of tables in your database. The update operation requires an ID parameter explicitly defined. The operation will only replace the fields explicitly specified in your operation. The update operation also supports the upsert flag. Off by default, but if set to true, the update operation will insert the record if no record is found with the provided ID.
         
         :param table: str
         :param recordId: str
         :param fields: dict
-        :param upsert: bool Defaul: False
+        :param upsert: bool Default: False
+
+        :raises Exception if limit of 1000 operations is exceeded
         """
         self._add_operation({"update": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
 
-    def delete(self, table: str, recordId: str, columns: list[str] = []):
+    def delete(self, table: str, recordId: str, columns: list[str] = []) -> None:
         """
         A delete is used to remove records. Delete can operate on records from the same transaction, and will not cancel a transaction if no record is found.
 
         :param table: str
         :param recordId: str
         :param columns: list of columns to retrieve
+
+        :raises Exception if limit of 1000 operations is exceeded
         """
         self._add_operation({"delete": {"table": table, "id": recordId, "columns": columns}})
 
-    def get(self, table: str, recordId: str, columns: list[str] = []):
+    def get(self, table: str, recordId: str, columns: list[str] = []) -> None:
         """
         A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction but will not cancel a transaction if no record is found.
 
         :param table: str
         :param recordId: str
         :param columns: list of columns to retrieve
+
+        :raises Exception if limit of 1000 operations is exceeded
         """
         self._add_operation({"get": {"table": table, "id": recordId, "columns": columns}})
 
@@ -378,3 +386,9 @@ class Transaction(object):
         }
         self.operations = {} # free memory
         return result
+
+class Paginate(object):
+
+    def __init__(self) -> None:
+
+        pass
