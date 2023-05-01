@@ -22,32 +22,33 @@ import time
 from datetime import datetime, timezone
 from threading import Lock, Thread
 
+from requests import Response
+
 from .client import XataClient
 
-DEFAULT_THREAD_POOL_SIZE = 4
-DEFAULT_BATCH_SIZE = 25
-DEFAULT_FLUSH_INTERVAL = 5
-DEFAULT_PROCESSING_TIMEOUT = 0.025
-DEFAULT_THROW_EXCEPTION = False
+BP_DEFAULT_THREAD_POOL_SIZE = 4
+BP_DEFAULT_BATCH_SIZE = 25
+BP_DEFAULT_FLUSH_INTERVAL = 5
+BP_DEFAULT_PROCESSING_TIMEOUT = 0.025
+BP_DEFAULT_THROW_EXCEPTION = False
+TRX_MAX_OPERATIONS = 1000
 
 
 class BulkProcessor(object):
     """
-    !!! This helper is still work in progress !!!
-
     Additional abstraction for bulk requests that process'
     requests in parallel
-    :stability alpha
+    :stability beta
     """
 
     def __init__(
         self,
         client: XataClient,
-        thread_pool_size: int = DEFAULT_THREAD_POOL_SIZE,
-        batch_size: int = DEFAULT_BATCH_SIZE,
-        flush_interval: int = DEFAULT_FLUSH_INTERVAL,
-        processing_timeout: float = DEFAULT_PROCESSING_TIMEOUT,
-        throw_exception: bool = DEFAULT_THROW_EXCEPTION,
+        thread_pool_size: int = BP_DEFAULT_THREAD_POOL_SIZE,
+        batch_size: int = BP_DEFAULT_BATCH_SIZE,
+        flush_interval: int = BP_DEFAULT_FLUSH_INTERVAL,
+        processing_timeout: float = BP_DEFAULT_PROCESSING_TIMEOUT,
+        throw_exception: bool = BP_DEFAULT_THROW_EXCEPTION,
     ):
         """
         BulkProcessor: Abstraction for bulk ingestion of records.
@@ -62,13 +63,13 @@ class BulkProcessor(object):
         :throw_exception: bool Throw exception ingestion, could kill all workers (default: False)
         """
         if thread_pool_size < 1:
-            raise Exception("thread pool size must be greater than 0, default: %d" % DEFAULT_THREAD_POOL_SIZE)
+            raise Exception("thread pool size must be greater than 0, default: %d" % BP_DEFAULT_THREAD_POOL_SIZE)
         if processing_timeout < 0:
-            raise Exception("processing timeout can not be negative, default: %f" % DEFAULT_PROCESSING_TIMEOUT)
+            raise Exception("processing timeout can not be negative, default: %f" % BP_DEFAULT_PROCESSING_TIMEOUT)
         if flush_interval < 0:
-            raise Exception("flush interval can not be negative, default: %f" % DEFAULT_FLUSH_INTERVAL)
+            raise Exception("flush interval can not be negative, default: %f" % BP_DEFAULT_FLUSH_INTERVAL)
         if batch_size < 1:
-            raise Exception("batch size can not be less than one, default: %d" % DEFAULT_BATCH_SIZE)
+            raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
         self.processing_timeout = processing_timeout
@@ -290,3 +291,90 @@ def to_rfc339(dt: datetime, tz=timezone.utc) -> str:
     :return str
     """
     return dt.replace(tzinfo=tz).isoformat()
+
+
+class Transaction(object):
+    """
+    Additional abstraction for bulk requests that process'
+    requests in parallel
+    :stability beta
+    """
+
+    def __init__(
+        self,
+        client: XataClient,
+    ):
+        """
+        Transaction Helper
+        Wrapper to simplify running transactions
+
+        :stability beta
+
+        :param client: XataClient
+        """
+        self.client = client
+
+        self.has_run = False
+        self.operations = {"operations": []}
+    
+    def _add_operation(self, operation: dict):
+        if len(self.operations["operations"]) >= TRX_MAX_OPERATIONS:
+            raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
+        self.operations["operations"].append(operation)
+
+    def insert(self, table: str, record: dict, createOnly: bool = False):
+        """
+        Inserts can be used to insert records across any number of tables in your database. As with the insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you. Either way, on a successful transaction, Xata will return the ID to you.
+
+        :param table: str
+        :param record: dict
+        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Defaul: False
+        """
+        self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
+
+    def update(self, table: str, recordId: str, fields: dict, upsert: bool = False):
+        """
+        Updates can be used to update records in any number of tables in your database. The update operation requires an ID parameter explicitly defined. The operation will only replace the fields explicitly specified in your operation. The update operation also supports the upsert flag. Off by default, but if set to true, the update operation will insert the record if no record is found with the provided ID.
+        
+        :param table: str
+        :param recordId: str
+        :param fields: dict
+        :param upsert: bool Defaul: False
+        """
+        self._add_operation({"update": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
+
+    def delete(self, table: str, recordId: str, columns: list[str] = []):
+        """
+        A delete is used to remove records. Delete can operate on records from the same transaction, and will not cancel a transaction if no record is found.
+
+        :param table: str
+        :param recordId: str
+        :param columns: list of columns to retrieve
+        """
+        self._add_operation({"delete": {"table": table, "id": recordId, "columns": columns}})
+
+    def get(self, table: str, recordId: str, columns: list[str] = []):
+        """
+        A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction but will not cancel a transaction if no record is found.
+
+        :param table: str
+        :param recordId: str
+        :param columns: list of columns to retrieve
+        """
+        self._add_operation({"get": {"table": table, "id": recordId, "columns": columns}})
+
+    def run(self) -> dict:
+        """
+        Commit the transactions
+
+        :return dict
+        """
+        r = self.client.records().branchTransaction(self.operations)
+        result = {
+            "status_code": r.status_code,
+            "results": r.json()["results"] if "results" in r.json() else [],
+            "has_errors": True if "errors" in r.json() else False,
+            "errors": r.json()["errors"] if "errors" in r.json() else [],
+        }
+        self.operations = {} # free memory
+        return result
