@@ -59,6 +59,8 @@ class BulkProcessor(object):
         :param flush_interval: int After how many seconds should the per table queue be flushed (default: 5 seconds)
         :processing_timeout: float Cooldown period between batches (default: 0.025 seconds)
         :throw_exception: bool Throw exception ingestion, could kill all workers (default: False)
+
+        :raises Exception if throw exception is enabled
         """
         if thread_pool_size < 1:
             raise Exception("thread pool size must be greater than 0, default: %d" % BP_DEFAULT_THREAD_POOL_SIZE)
