@@ -386,9 +386,3 @@ class Transaction(object):
         }
         self.operations = {} # free memory
         return result
-
-class Paginate(object):
-
-    def __init__(self) -> None:
-
-        pass
