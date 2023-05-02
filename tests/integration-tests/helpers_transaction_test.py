@@ -288,6 +288,19 @@ class TestHelpersTransaction(object):
         assert exc is not None
         # assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
 
+    def test_run_trx_next_batch_of_operations(self):
+        trx = Transaction(self.client)
+        for it in range(0, 3):
+            trx.insert("Posts", self._get_record())
+        r = trx.run()
+        assert not r["has_errors"]
+
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        r = trx.run()
+        assert not r["has_errors"]
+
     def test_has_errors_insert(self):
         before_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
 

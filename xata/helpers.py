@@ -381,7 +381,7 @@ class Transaction(object):
 
     def run(self) -> dict:
         """
-        Commit the transactions
+        Commit the transactions. Flushes the operations queue
 
         :return dict
         """
@@ -392,5 +392,12 @@ class Transaction(object):
             "has_errors": True if "errors" in r.json() else False,
             "errors": r.json()["errors"] if "errors" in r.json() else [],
         }
-        self.operations = {}  # free memory
+        self.operations["operations"] = [] # free memory
         return result
+
+    def size(self) -> int:
+        """
+        Get amount of operations in queue
+        :return int
+        """
+        return len(self.operations["operations"])
