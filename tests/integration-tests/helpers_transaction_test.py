@@ -17,14 +17,12 @@
 # under the License.
 #
 
-import time
-
 import pytest
 import utils
 from faker import Faker
 
 from xata.client import XataClient
-from xata.helpers import Transaction, TRX_MAX_OPERATIONS
+from xata.helpers import Transaction
 
 
 class TestHelpersTransaction(object):
@@ -268,7 +266,7 @@ class TestHelpersTransaction(object):
         trx.insert("Posts", self._get_record())
         trx.insert("Posts", self._get_record())
         trx.delete("Posts", ids[1], ["content"])
-        #trx.update("Posts", ids[2])
+        # trx.update("Posts", ids[2])
         trx.get("Posts", ids[3])
         trx.insert("Posts", self._get_record())
         trx.delete("Posts", ids[4], ["content"])
@@ -288,23 +286,23 @@ class TestHelpersTransaction(object):
         with pytest.raises(Exception) as exc:
             trx.get("Posts", 1001)
         assert exc is not None
-        #assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
+        # assert str(exc) == f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded."
 
     def test_has_errors_insert(self):
         before_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
 
         trx = Transaction(self.client)
-        trx.insert("Posts", self._get_record()) # good
-        trx.insert("PostsThatDoNotExist", self._get_record()) # bad
-        trx.insert("Posts", self._get_record()) # good
-        trx.insert("Posts", {"foo": "bar"}) # bad
+        trx.insert("Posts", self._get_record())  # good
+        trx.insert("PostsThatDoNotExist", self._get_record())  # bad
+        trx.insert("Posts", self._get_record())  # good
+        trx.insert("Posts", {"foo": "bar"})  # bad
         response = trx.run()
 
         assert response["status_code"] == 400
         assert response["has_errors"]
         assert len(response["errors"]) == 2
-        assert response["errors"][0]['index'] == 1
-        assert response["errors"][1]['index'] == 3
+        assert response["errors"][0]["index"] == 1
+        assert response["errors"][1]["index"] == 3
         assert len(response["results"]) == 0
 
         after_insert = len(self.client.data().queryTable("Posts", {}).json()["records"])
