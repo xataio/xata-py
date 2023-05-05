@@ -392,7 +392,7 @@ class Transaction(object):
             "has_errors": True if "errors" in r.json() else False,
             "errors": r.json()["errors"] if "errors" in r.json() else [],
         }
-        self.operations["operations"] = [] # free memory
+        self.operations["operations"] = []  # free memory
         return result
 
     def size(self) -> int:
