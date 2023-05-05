@@ -20,17 +20,15 @@
 import json
 import os
 import uuid
-from typing import Literal, Optional
+from typing import Literal
 from urllib.parse import urljoin
 
-import deprecation
 import requests
 from dotenv import dotenv_values
 
 from .errors import (
     BadRequestException,
     RateLimitException,
-    RecordNotFoundException,
     ServerErrorException,
     UnauthorizedException,
 )
