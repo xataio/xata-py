@@ -17,12 +17,7 @@
 # under the License.
 #
 
-import string
-
 import pytest
-import utils
-
-from xata.client import XataClient
 
 
 def pytest_configure():
@@ -41,61 +36,3 @@ def pytest_configure():
         "record_ids": [],
         "hardcoded_ids": ["1", "2", "42"],
     }
-
-
-def create_demo_db(client: XataClient, db_name: string):
-    client.request("PUT", f"/dbs/{db_name}", cp=True, json={"region": "us-east-1"})
-
-    client.request("PUT", f"/db/{db_name}:main/tables/Posts")
-    client.request("PUT", f"/db/{db_name}:main/tables/Users")
-    client.request(
-        "PUT",
-        f"/db/{db_name}:main/tables/Posts/schema",
-        json={
-            "columns": [
-                {"name": "title", "type": "string"},
-                {"name": "labels", "type": "multiple"},
-                {"name": "slug", "type": "string"},
-                {"name": "text", "type": "text"},
-                {
-                    "name": "author",
-                    "type": "link",
-                    "link": {
-                        "table": "Users",
-                    },
-                },
-                {"name": "createdAt", "type": "datetime"},
-                {"name": "views", "type": "int"},
-            ]
-        },
-    )
-
-    client.request(
-        "PUT",
-        f"/db/{db_name}:main/tables/Users/schema",
-        json={
-            "columns": [
-                {"name": "name", "type": "string"},
-                {"name": "email", "type": "email"},
-                {"name": "bio", "type": "text"},
-            ]
-        },
-    )
-
-
-def delete_db(client, db_name):
-    return client.databases().deleteDatabase(client.get_config()["workspaceId"], db_name)
-
-
-@pytest.fixture
-def client() -> XataClient:
-    return XataClient()
-
-
-@pytest.fixture
-def demo_db(client: XataClient) -> string:
-    db_name = f"sdk-py-e2e-test-{utils.get_random_string(6)}"
-    create_demo_db(client, db_name)
-    client.set_db_and_branch_names(db_name, "main")
-    yield db_name
-    delete_db(client, db_name)
