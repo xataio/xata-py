@@ -320,16 +320,15 @@ class XataClient:
         (_, _, host, _, db_branch_name) = databaseURL.split("/")
         if host == "" or db_branch_name == "":
             raise Exception(
-                "Invalid database URL: '%s', expected the format: " +
-                    "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'"
-                % databaseURL
+                "Invalid database URL: '%s', expected the format: "
+                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % databaseURL
             )
         # split host {workspace_id}.{region}
         host_parts = host.split(".")
         if len(host_parts) < 4:
             raise Exception(
-                "Invalid format for workspaceId and region in the URL: '%s', expected: 'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'"
-                % databaseURL
+                "Invalid format for workspaceId and region in the URL: '%s', expected the format: "
+                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % databaseURL
             )
         # build domain name
         domain = ".".join(host_parts[2:])
