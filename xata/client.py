@@ -114,8 +114,8 @@ class XataClient:
             self.region = region
 
         # TODO remove these assignment once client.request is removed from the codebase
-        self.base_url = f"https://{self.workspace_id}.{self.region}.{domain_workspace}"
-        self.control_plane_url = f"https://{domain_core}/workspaces/{self.workspace_id}/"
+        #        self.base_url = f"https://{self.workspace_id}.{self.region}.{domain_workspace}"
+        #        self.control_plane_url = f"https://{domain_core}/workspaces/{self.workspace_id}/"
 
         self.db_name = self.get_database_name_if_configured() if db_name is None else db_name
         self.branch_name = self.get_branch_name_if_configured() if branch_name is None else branch_name
