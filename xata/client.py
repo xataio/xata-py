@@ -21,17 +21,9 @@ import json
 import os
 import uuid
 from typing import Literal
-from urllib.parse import urljoin
 
-import requests
 from dotenv import dotenv_values
 
-from .errors import (
-    BadRequestException,
-    RateLimitException,
-    ServerErrorException,
-    UnauthorizedException,
-)
 from .namespaces.core.authentication import Authentication
 from .namespaces.core.databases import Databases
 from .namespaces.core.invites import Invites
@@ -276,30 +268,6 @@ class XataClient:
             self.db_name = db_name
         if branch_name is not None:
             self.branch_name = branch_name
-
-    def request(self, method, urlPath, cp=False, headers={}, expect_codes=[], **kwargs):
-        headers = {
-            **headers,
-            **self.headers,
-        }  # TODO use "|" when client py min version >= 3.9
-
-        base_url = self.base_url if not cp else self.control_plane_url
-        url = urljoin(base_url, urlPath.lstrip("/"))
-
-        resp = requests.request(method, url, headers=headers, **kwargs)
-        if resp.status_code > 299:
-            if resp.status_code in expect_codes:
-                return resp
-            if resp.status_code == 401:
-                raise UnauthorizedException(f"Unauthorized: {resp.json()} API key location: {self.api_key_location}")
-            elif resp.status_code == 429:
-                raise RateLimitException(f"Rate limited: {resp.json()}")
-            elif resp.status_code >= 399 and resp.status_code < 500:
-                raise BadRequestException(resp.status_code, resp.json().get("message"))
-            elif resp.status_code >= 500:
-                raise ServerErrorException(f"Server error: {resp.text}")
-            raise Exception(f"{resp.status_code} {resp.text}")
-        return resp
 
     def ensure_config_read(self) -> bool:
         if self.configRead:

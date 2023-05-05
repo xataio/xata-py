@@ -19,7 +19,7 @@
 
 from requests import Response, request
 
-from .errors import RateLimitException
+from .errors import RateLimitException, ServerErrorException, UnauthorizedException
 
 
 class Namespace:
@@ -44,17 +44,36 @@ class Namespace:
         return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
     def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None) -> Response:
+        """
+        :param http_method: str
+        :param url_path: str
+        :headers: dict = {}
+        :param payload: dict = None
+
+        :return requests.Response
+
+        :raises RateLimitException
+        :raises UnauthorizedException
+        :raises ServerErrorException
+        """
         headers = {
             **headers,
             **self.client.get_headers(),
         }  # TODO use "|" when client py min version >= 3.9
+
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
         if payload is None:
             resp = request(http_method, url, headers=headers)
         else:
             resp = request(http_method, url, headers=headers, json=payload)
 
+        # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
-            raise RateLimitException(f"Rate limited: {resp.json()}")
+            raise RateLimitException(f"code: {resp.status_code}, rate limited: {resp.json()}")
+        if resp.status_code == 401:
+            raise UnauthorizedException(f"code: {resp.status_code}, unauthorized: {resp.json()}")
+        elif resp.status_code >= 500:
+            raise ServerErrorException(f"code: {resp.status_code}, server error: {resp.text}")
 
+        # All clear!
         return resp
