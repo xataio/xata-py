@@ -36,24 +36,17 @@ cursor = None
 while more:
     # Build query statement
     query = {
-        "columns": ["*"],     # Return all columns
-        "page": {
-            "size" : 5,       # Page size
-            "after": cursor   # Cursor for next page
-        },
-        "filter": {
-            "conference": {   # Filter for conference = west
-                "$is": "west" 
-            }
-        },
+        "columns": ["*"],  # Return all columns
+        "page": {"size": 5, "after": cursor},  # Page size  # Cursor for next page
+        "filter": {"conference": {"$is": "west"}},  # Filter for conference = west
         "sort": [
-            {"state": "asc"}, # sort by state asc
-            {"city" : "asc"}, # sort by city asc
-            {"name" : "desc"} # sort by name desc
-        ]
+            {"state": "asc"},  # sort by state asc
+            {"city": "asc"},  # sort by city asc
+            {"name": "desc"},  # sort by name desc
+        ],
     }
 
-    # Only the first request can have sorting defined. Every following 
+    # Only the first request can have sorting defined. Every following
     # cursor request will have the sort implied by the first request
     if cursor:
         del query["sort"]
@@ -67,8 +60,8 @@ while more:
         print("[%s] %s: %s, %s" % (team["conference"], team["state"], team["name"], team["city"]))
 
     # Update controls
-    more = resp.json()["meta"]["page"].get("more", False) # has another page with results
-    cursor = resp.json()["meta"]["page"]["cursor"]        # save next cursor for results
+    more = resp.json()["meta"]["page"].get("more", False)  # has another page with results
+    cursor = resp.json()["meta"]["page"]["cursor"]  # save next cursor for results
 
 # Output:
 # [west] California: LA Lakers, Los Angeles
