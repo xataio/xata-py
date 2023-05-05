@@ -35,16 +35,14 @@ xata = XataClient(db_name=XATA_DATABASE_NAME)
 logging.info("checking credentials ..")
 assert xata.users().getUser().status_code == 200, "Unable to connect to Xata. Please check credentials"
 
-logging.info("creating database '%s' .." % XATA_DATABASE_NAME)
-r = xata.databases().createDatabase(
-    xata.get_config()["workspaceId"],
-    XATA_DATABASE_NAME,
-    {"region": xata.get_config()["region"]},
-)
-assert r.status_code == 201, "Unable to create database '%s': %s" % (
-    XATA_DATABASE_NAME,
-    r.json(),
-)
+logging.info("checking if database exists ..")
+r = xata.databases().getDatabaseMetadata(XATA_DATABASE_NAME)
+if r.status_code == 404:
+    logging.info("creating database '%s' .." % XATA_DATABASE_NAME)
+    r = xata.databases().createDatabase(XATA_DATABASE_NAME, {"region": xata.get_config()["region"]})
+    assert r.status_code == 201, "Unable to create database '%s': %s" % (XATA_DATABASE_NAME, r.json())
+else:
+    logging.info("database '%s' found, skipping creation step." % XATA_DATABASE_NAME)
 
 logging.info("creating table 'companies' ..")
 r = xata.table().createTable("companies")
@@ -98,4 +96,8 @@ r = xata.table().setTableSchema(
 )
 assert r.status_code == 200, "Unable to set table schema: %s" % r.json()
 
-logging.info("done.")
+logging.info("setup done.")
+cfg = xata.get_config()
+url = "https://app.xata.io/workspaces/%s/dbs/%s:%s" % (cfg["workspaceId"], cfg["dbName"], cfg["region"])
+logging.info(f"UI: {url}")
+logging.info("`make run` to start generating events")
