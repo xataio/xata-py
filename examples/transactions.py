@@ -25,7 +25,7 @@ from xata.helpers import Transaction
 # an exception is thrown.
 # Please ensure the SDK version is > 0.10.0
 
-xata = XataClient(db_name="playground")
+xata = XataClient()
 trx = Transaction(xata)
 
 # We want to get records by their id from the table "Avengers"
