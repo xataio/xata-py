@@ -62,6 +62,73 @@ REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 
+API_RENAMING = {
+    "databases": {
+        "getDatabaseMetadata": "getMetadata",
+        "createDatabase": "create",
+        "deleteDatabase": "delete",
+        "updateDatabaseMetadata": "updateMetadata",
+        "listRegions": "getRegions",
+    },
+    "users": {"getUser": "get", "updateUser": "update", "deleteUser": "delete"},
+    "workspaces": {
+        "getWorkspacesList": "getWorkspaces",
+        "createWorkspace": "create",
+        "getWorkspace": "get",
+        "updateWorkspace": "update",
+        "deleteWorkspace": "delete",
+        "getWorkspaceMembersList": "getMembers",
+        "updateWorkspaceMemberRole": "updateMember",
+        "removeWorkspaceMember": "removeMember",
+    },
+    "branch": {
+        "getBranchList": "getBranches",
+        "getBranchDetails": "getDetails",
+        "createBranch": "create",
+        "deleteBranch": "delete",
+        "getBranchMetadata": "getMetadata",
+        "updateBranchMetadata": "updateMetadata",
+        "getBranchStats": "getStats",
+        "resolveBranch": "resolve",
+    },
+    "migrations": {
+        "getBranchMigrationHistory": "getHistory",
+        "getBranchMigrationPlan": "getPlan",
+        "executeBranchMigrationPlan": "executePlan",
+        "getBranchSchemaHistory": "getHistory",
+        "compareBranchSchemas": "compare",
+        "updateBranchSchemas": "update",
+        "previewBranchSchemaEdit": "preview",
+        "applyBranchSchemaEdit": "apply",
+        "pushBranchMigrations": "push",
+    },
+    "records": {
+        "insertRecord": "insert",
+        "getRecord": "get",
+        "insertRecordWithID": "insertWithId",
+        "upsertRecordWithID": "upsertWithId",
+        "deleteRecord": "delete",
+        "updateRecordWithID": "updateWithId",
+        "bulkInsertTableRecords": "bulkInsert",
+    },
+    "search_and_filter": {
+        "queryTable": "query",
+        "vectorSearchTable": "vectorSearch",
+        "askTable": "ask",
+        "summarizeTable": "summarize",
+        "aggregateTable": "aggregate",
+    },
+    "table": {
+        "createTable": "create",
+        "deleteTable": "delete",
+        "updateTable": "update",
+        "getTableSchema": "getSchema",
+        "setTableSchema": "setSchema",
+        "getTableColumns": "getColumns",
+        "addTableColumn": "addColumn",
+    },
+}
+
 
 def fetch_openapi_specs(spec_url: str) -> dict:
     """
@@ -214,11 +281,11 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
 
         for r in curatedParamList:
             p = None
-            # if not in ref -> endpoint specific params
+            # if not in ref: endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
                 p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
-            # else if name not in r -> method specific params
+            # else if name not in r: method specific params
             elif "name" in r:
                 p = r
                 p["type"] = type_replacement(r["schema"]["type"])
@@ -370,7 +437,7 @@ if __name__ == "__main__":
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
         logging.info("no specification changes detected, nothing new to generate. stopping here.")
-        action = input("> force generate (hit Enter) or stop (any key): ")
+        action = input("> force generate (hit Enter) or stop (any key) -> ")
         if action != "":
             exit(0)
 
