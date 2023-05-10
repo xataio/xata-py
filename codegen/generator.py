@@ -71,6 +71,7 @@ API_RENAMING = {
         "deleteDatabase": "delete",
         "updateDatabaseMetadata": "updateMetadata",
         "listRegions": "getRegions",
+        "getDatabaseList": "getDatabases",
     },
     "users": {"getUser": "get", "updateUser": "update", "deleteUser": "delete"},
     "workspaces": {
@@ -212,11 +213,13 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         desc = endpoint["summary"].strip()
 
     # repacements
-    namespace = endpoint["tags"][0]
+    namespace = endpoint["tags"][0].lower()
     operation_id = endpoint["operationId"].strip()
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
         operation_id = API_RENAMING[namespace][operation_id]
-        logging.debug("replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id))
+        logging.debug(
+            "replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id)
+        )
 
     vars = {
         "operation_id": operation_id,
