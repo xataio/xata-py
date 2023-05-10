@@ -25,10 +25,11 @@
 import argparse
 import hashlib
 import json
-import coloredlogs, logging
+import logging
 import textwrap
 from typing import Any, Dict
 
+import coloredlogs
 import requests
 from mako.template import Template
 
@@ -36,18 +37,18 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
 args = parser.parse_args()
 
-coloredlogs.install(level='DEBUG')
+coloredlogs.install(level="DEBUG")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
-        "spec_url": "https://xata.io/api/openapi?scope=core",
+        "spec_url": "https://xata.io/docs/api/openapi?scope=core",
         "base_url": "https://api.xata.io",
     },
     "workspace": {
-        "spec_url": "https://xata.io/api/openapi?scope=workspace",
+        "spec_url": "https://xata.io/docs/api/openapi?scope=workspace",
         "base_url": "https://{workspaceId}.{regionId}.xata.sh",
     },
 }
@@ -159,7 +160,7 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         "spec_version": spec_version,
     }
     out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(**vars)
-    file_name = "%s/%s.py" % (WS_DIR, namespace["name"].replace(" ", "_").lower())
+    file_name = "%s/%s.py" % (WS_DIR, _sanitize_filename(namespace["name"]))
     fh = open(file_name, "w+")
     fh.write(out.decode("utf-8"))
     fh.close()
@@ -174,10 +175,7 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
     for method in HTTP_METHODS:
         if method in endpoints:
             out = generate_endpoint(path, method, endpoints[method], params, references)
-            file_name = "%s/%s.py" % (
-                WS_DIR,
-                endpoints[method]["tags"][0].replace(" ", "_").lower(),
-            )
+            file_name = "%s/%s.py" % (WS_DIR, _sanitize_filename(endpoints[method]["tags"][0]))
             fh = open(file_name, "a+")
             fh.write(out.decode("utf-8"))
             fh.close()
@@ -213,8 +211,15 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
 
+    # repacements
+    namespace = endpoint["tags"][0]
+    operation_id = endpoint["operationId"].strip()
+    if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
+        operation_id = API_RENAMING[namespace][operation_id]
+        logging.debug("replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id))
+
     vars = {
-        "operation_id": endpoint["operationId"].strip(),
+        "operation_id": operation_id,
         "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
         "path": path,
@@ -416,6 +421,10 @@ def checksum(dictionary: Dict[str, Any]) -> str:
     encoded = json.dumps(dictionary, sort_keys=True).encode()
     dhash.update(encoded)
     return dhash.hexdigest()
+
+
+def _sanitize_filename(n: str) -> str:
+    return n.replace(" ", "_").lower()
 
 
 # ------------------------------------------------------- #
