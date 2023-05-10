@@ -32,7 +32,7 @@ class Users(Namespace):
 
     scope = "core"
 
-    def getUser(
+    def get(
         self,
     ) -> Response:
         """
@@ -54,7 +54,7 @@ class Users(Namespace):
         url_path = "/user"
         return self.request("GET", url_path)
 
-    def updateUser(self, payload: dict) -> Response:
+    def update(self, payload: dict) -> Response:
         """
         Update user info
 
@@ -76,7 +76,7 @@ class Users(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteUser(
+    def delete(
         self,
     ) -> Response:
         """

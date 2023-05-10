@@ -30,7 +30,7 @@ class TestUsersNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
     def test_get_user_api_keys(self):
-        r = self.client.users().getUser()
+        r = self.client.users().get()
         assert r.status_code == 200
         assert "id" in r.json()
         assert "email" in r.json()
@@ -38,7 +38,7 @@ class TestUsersNamespace(object):
         assert "image" in r.json()
 
     def test_create_user_api_keys(self):
-        prev = self.client.users().getUser()
+        prev = self.client.users().get()
         assert prev.status_code == 200
 
         user = prev.json()
@@ -46,7 +46,7 @@ class TestUsersNamespace(object):
         user["fullname"] = "test-suite-%s" % utils.get_random_string(4)
         assert user["fullname"] != prev.json()["fullname"]
 
-        now = self.client.users().updateUser(user)
+        now = self.client.users().update(user)
         assert now.status_code == 200
         assert "id" in now.json()
         assert "email" in now.json()
@@ -55,9 +55,9 @@ class TestUsersNamespace(object):
         assert now.json()["fullname"] == user["fullname"]
 
         user["fullname"] = prev.json()["fullname"]
-        r = self.client.users().updateUser(user)
+        r = self.client.users().update(user)
         assert r.status_code == 200
         assert r.json()["fullname"] == prev.json()["fullname"]
 
-        r = self.client.users().updateUser({})
+        r = self.client.users().update({})
         assert r.status_code == 400

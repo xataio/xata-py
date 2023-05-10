@@ -34,7 +34,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         self.client.set_header("X-Xata-Ask-Enabled", "true")
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -44,11 +44,11 @@ class TestSearchAndFilterAskTableEndpoint(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     def test_ask_table_for_response_shape_and_empty_response(self):

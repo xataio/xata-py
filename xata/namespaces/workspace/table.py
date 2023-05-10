@@ -32,7 +32,7 @@ class Table(Namespace):
 
     scope = "workspace"
 
-    def createTable(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def create(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Creates a new table with the given name.  Returns 422 if a table with the same name
         already exists.
@@ -59,7 +59,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("PUT", url_path)
 
-    def deleteTable(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def delete(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Deletes the table with the given name.
 
@@ -83,7 +83,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("DELETE", url_path)
 
-    def updateTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def update(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update table.  Currently there is only one update operation supported: renaming the table
         by providing a new name.  In the example below, we rename a table from “users” to
@@ -111,7 +111,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def getTableSchema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def getSchema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get table schema
 
@@ -135,7 +135,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         return self.request("GET", url_path)
 
-    def setTableSchema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def setSchema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update table schema
 
@@ -162,7 +162,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getTableColumns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def getColumns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Retrieves the list of table columns and their definition.  This endpoint returns the
         column list with object columns being reported with their full dot-separated path
@@ -188,7 +188,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
 
-    def addTableColumn(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def addColumn(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
         definition.  In the column definition, the 'name' field should contain the full path

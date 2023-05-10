@@ -33,7 +33,7 @@ class TestRecordsNamespace(object):
         self.record_id = utils.get_random_string(24)
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -43,11 +43,11 @@ class TestRecordsNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(
+        r = self.client.table().setSchema(
             "Posts",
             {
                 "columns": [
@@ -63,7 +63,7 @@ class TestRecordsNamespace(object):
         assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     @pytest.fixture
@@ -82,21 +82,21 @@ class TestRecordsNamespace(object):
         """
         POST /db/{db_branch_name}/tables/{table_name}/data
         """
-        r = self.client.records().insertRecord("Posts", record)
+        r = self.client.records().insert("Posts", record)
         assert r.status_code == 201
         assert "id" in r.json()
         assert "xata" in r.json()
         assert "version" in r.json()["xata"]
         assert r.json()["xata"]["version"] == 0
 
-        r = self.client.records().insertRecord("NonExistingTable", record)
+        r = self.client.records().insert("NonExistingTable", record)
         assert r.status_code == 404
 
     def test_insert_record_with_id(self, record: dict):
         """
         PUT /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().insertRecordWithID("Posts", self.record_id, record)
+        r = self.client.records().insertWithId("Posts", self.record_id, record)
         assert r.status_code == 201
         assert "id" in r.json()
         assert "xata" in r.json()
@@ -104,21 +104,21 @@ class TestRecordsNamespace(object):
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == 0
 
-        r = self.client.records().insertRecordWithID("Posts", self.record_id, record, createOnly=False)
+        r = self.client.records().insertWithId("Posts", self.record_id, record, createOnly=False)
         assert r.status_code == 200
         assert r.json()["xata"]["version"] == 1
 
-        r = self.client.records().insertRecordWithID("Posts", self.record_id, record, createOnly=True)
+        r = self.client.records().insertWithId("Posts", self.record_id, record, createOnly=True)
         assert r.status_code == 422
 
-        r = self.client.records().insertRecordWithID("Posts", "", record)
+        r = self.client.records().insertWithId("Posts", "", record)
         assert r.status_code == 404
 
     def test_get_record(self, record: dict):
         """
         GET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().getRecord("Posts", self.record_id)
+        r = self.client.records().get("Posts", self.record_id)
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
@@ -127,47 +127,44 @@ class TestRecordsNamespace(object):
         assert len(r.json().keys()) == len(record.keys()) + 2
         keep = r.json()
 
-        r = self.client.records().getRecord("Posts", self.record_id, columns=["id", "slug"])
+        r = self.client.records().get("Posts", self.record_id, columns=["id", "slug"])
         assert r.status_code == 200
         assert r.json()["id"] == self.record_id
         assert r.json()["slug"] == keep["slug"]
         assert len(r.json().keys()) == 3
         assert r.json() != keep
 
-        r = self.client.records().getRecord("Posts", "#######")
+        r = self.client.records().get("Posts", "#######")
         assert r.status_code == 404
 
-        r = self.client.records().getRecord(
-            "NonExistingTable",
-            self.record_id,
-        )
+        r = self.client.records().get("NonExistingTable", self.record_id)
         assert r.status_code == 404
 
     def test_update_record(self, record: dict):
         """
         PATCH /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        proof = self.client.records().getRecord("Posts", self.record_id)
+        proof = self.client.records().get("Posts", self.record_id)
         assert proof.status_code == 200
 
-        r = self.client.records().updateRecordWithID("Posts", self.record_id, record)
+        r = self.client.records().updateWithId("Posts", self.record_id, record)
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == proof.json()["xata"]["version"] + 1
 
-        r = self.client.records().getRecord("Posts", self.record_id)
+        r = self.client.records().get("Posts", self.record_id)
         assert r.status_code == 200
         assert r.json()["slug"] == record["slug"]
         assert r.json()["slug"] != proof.json()["slug"]
         assert r.json()["title"] == record["title"]
         assert r.json()["title"] != proof.json()["title"]
 
-        r = self.client.records().updateRecordWithID("NonExistingTable", self.record_id, record)
+        r = self.client.records().updateWithId("NonExistingTable", self.record_id, record)
         assert r.status_code == 404
 
-        r = self.client.records().updateRecordWithID("Posts", "NonExistingRecordId", record)
+        r = self.client.records().updateWithId("Posts", "NonExistingRecordId", record)
         assert r.status_code == 404
 
     def test_upsert_record(self, record: dict):
@@ -175,20 +172,20 @@ class TestRecordsNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         rec_id = utils.get_random_string(24)
-        r = self.client.records().upsertRecordWithID("Posts", rec_id, record)
+        r = self.client.records().upsertWithId("Posts", rec_id, record)
         assert r.status_code == 201
 
-        r = self.client.records().getRecord("Posts", rec_id)
+        r = self.client.records().get("Posts", rec_id)
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         proof = r.json()
 
         update = self._get_record()
         assert record != update
-        r = self.client.records().upsertRecordWithID("Posts", rec_id, update)
+        r = self.client.records().upsertWithId("Posts", rec_id, update)
         assert r.status_code == 200
 
-        r = self.client.records().getRecord("Posts", rec_id)
+        r = self.client.records().get("Posts", rec_id)
         assert r.status_code == 200
         assert r.json()["id"] == rec_id
         assert r.json() != proof
@@ -197,10 +194,10 @@ class TestRecordsNamespace(object):
         """
         DELETE /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
-        r = self.client.records().deleteRecord("Posts", self.record_id)
+        r = self.client.records().delete("Posts", self.record_id)
         assert r.status_code == 204
 
-        r = self.client.records().deleteRecord("Posts", self.record_id)
+        r = self.client.records().delete("Posts", self.record_id)
         assert r.status_code == 204
 
     def test_bulk_insert_table_records(self):
@@ -209,5 +206,5 @@ class TestRecordsNamespace(object):
         """
         posts = [self._get_record() for i in range(10)]
 
-        r = self.client.records().bulkInsertTableRecords("Posts", {"records": posts})
+        r = self.client.records().bulkInsert("Posts", {"records": posts})
         assert r.status_code == 200

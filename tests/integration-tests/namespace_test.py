@@ -29,11 +29,11 @@ class TestNamespace(object):
         :link https://github.com/xataio/xata-py/issues/57
         """
         users = XataClient().users()
-        r1 = users.getUser()
+        r1 = users.get()
         assert r1.status_code == 200
 
         client = XataClient()
-        r2 = client.users().getUser()
+        r2 = client.users().get()
         assert r2.status_code == 200
 
         assert r1.json() == r2.json()
@@ -47,6 +47,6 @@ class TestNamespace(object):
         databases = XataClient().databases()
 
         # workspace_id should be provided by the the client implicitly
-        assert databases.createDatabase(db_name, {"region": "eu-west-1"}).status_code == 201
-        assert databases.getDatabaseMetadata(db_name).status_code == 200
-        assert databases.deleteDatabase(db_name).status_code == 200
+        assert databases.create(db_name, {"region": "eu-west-1"}).status_code == 201
+        assert databases.getMetadata(db_name).status_code == 200
+        assert databases.delete(db_name).status_code == 200

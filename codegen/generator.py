@@ -29,6 +29,7 @@ import logging
 import textwrap
 from typing import Any, Dict
 
+import coloredlogs
 import requests
 from mako.template import Template
 
@@ -36,17 +37,18 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
 args = parser.parse_args()
 
+coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
-        "spec_url": "https://xata.io/api/openapi?scope=core",
+        "spec_url": "https://xata.io/docs/api/openapi?scope=core",
         "base_url": "https://api.xata.io",
     },
     "workspace": {
-        "spec_url": "https://xata.io/api/openapi?scope=workspace",
+        "spec_url": "https://xata.io/docs/api/openapi?scope=workspace",
         "base_url": "https://{workspaceId}.{regionId}.xata.sh",
     },
 }
@@ -61,6 +63,74 @@ RESERVED_WORDS = ["from"]
 REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
+
+API_RENAMING = {
+    "databases": {
+        "getDatabaseMetadata": "getMetadata",
+        "createDatabase": "create",
+        "deleteDatabase": "delete",
+        "updateDatabaseMetadata": "updateMetadata",
+        "listRegions": "getRegions",
+        "getDatabaseList": "getDatabases",
+    },
+    "users": {"getUser": "get", "updateUser": "update", "deleteUser": "delete"},
+    "workspaces": {
+        "getWorkspacesList": "getWorkspaces",
+        "createWorkspace": "create",
+        "getWorkspace": "get",
+        "updateWorkspace": "update",
+        "deleteWorkspace": "delete",
+        "getWorkspaceMembersList": "getMembers",
+        "updateWorkspaceMemberRole": "updateMember",
+        "removeWorkspaceMember": "removeMember",
+    },
+    "branch": {
+        "getBranchList": "getBranches",
+        "getBranchDetails": "getDetails",
+        "createBranch": "create",
+        "deleteBranch": "delete",
+        "getBranchMetadata": "getMetadata",
+        "updateBranchMetadata": "updateMetadata",
+        "getBranchStats": "getStats",
+        "resolveBranch": "resolve",
+    },
+    "migrations": {
+        "getBranchMigrationHistory": "getHistory",
+        "getBranchMigrationPlan": "getPlan",
+        "executeBranchMigrationPlan": "executePlan",
+        "getBranchSchemaHistory": "getSchemaHistory",
+        "compareBranchSchemas": "compareSchemas",
+        "updateBranchSchemas": "update",
+        "previewBranchSchemaEdit": "preview",
+        "applyBranchSchemaEdit": "apply",
+        "pushBranchMigrations": "push",
+    },
+    "records": {
+        "insertRecord": "insert",
+        "getRecord": "get",
+        "insertRecordWithID": "insertWithId",
+        "upsertRecordWithID": "upsertWithId",
+        "deleteRecord": "delete",
+        "updateRecordWithID": "updateWithId",
+        "bulkInsertTableRecords": "bulkInsert",
+    },
+    "search_and_filter": {
+        "queryTable": "query",
+        "vectorSearchTable": "vectorSearch",
+        "askTable": "ask",
+        "summarizeTable": "summarize",
+        "aggregateTable": "aggregate",
+    },
+    "table": {
+        "createTable": "create",
+        "deleteTable": "delete",
+        "updateTable": "update",
+        "getTableSchema": "getSchema",
+        "setTableSchema": "setSchema",
+        "getTableColumns": "getColumns",
+        "addTableColumn": "addColumn",
+    },
+}
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -91,7 +161,7 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         "spec_version": spec_version,
     }
     out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(**vars)
-    file_name = "%s/%s.py" % (WS_DIR, namespace["name"].replace(" ", "_").lower())
+    file_name = "%s/%s.py" % (WS_DIR, _sanitize_filename(namespace["name"]))
     fh = open(file_name, "w+")
     fh.write(out.decode("utf-8"))
     fh.close()
@@ -106,10 +176,7 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
     for method in HTTP_METHODS:
         if method in endpoints:
             out = generate_endpoint(path, method, endpoints[method], params, references)
-            file_name = "%s/%s.py" % (
-                WS_DIR,
-                endpoints[method]["tags"][0].replace(" ", "_").lower(),
-            )
+            file_name = "%s/%s.py" % (WS_DIR, _sanitize_filename(endpoints[method]["tags"][0]))
             fh = open(file_name, "a+")
             fh.write(out.decode("utf-8"))
             fh.close()
@@ -145,8 +212,17 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
 
+    # repacements
+    namespace = _sanitize_filename(endpoint["tags"][0])
+    operation_id = endpoint["operationId"].strip()
+    if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
+        operation_id = API_RENAMING[namespace][operation_id]
+        logging.debug(
+            "replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id)
+        )
+
     vars = {
-        "operation_id": endpoint["operationId"].strip(),
+        "operation_id": operation_id,
         "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
         "path": path,
@@ -214,11 +290,11 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
 
         for r in curatedParamList:
             p = None
-            # if not in ref -> endpoint specific params
+            # if not in ref: endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
                 p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
-            # else if name not in r -> method specific params
+            # else if name not in r: method specific params
             elif "name" in r:
                 p = r
                 p["type"] = type_replacement(r["schema"]["type"])
@@ -350,6 +426,10 @@ def checksum(dictionary: Dict[str, Any]) -> str:
     return dhash.hexdigest()
 
 
+def _sanitize_filename(n: str) -> str:
+    return n.replace(" ", "_").lower()
+
+
 # ------------------------------------------------------- #
 #                         MAIN                            #
 # ------------------------------------------------------- #
@@ -370,7 +450,7 @@ if __name__ == "__main__":
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
         logging.info("no specification changes detected, nothing new to generate. stopping here.")
-        action = input("> force generate (hit Enter) or stop (any key): ")
+        action = input("> force generate (hit Enter) or stop (any key) -> ")
         if action != "":
             exit(0)
 

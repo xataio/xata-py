@@ -32,7 +32,7 @@ class Databases(Namespace):
 
     scope = "core"
 
-    def getDatabaseList(self, workspace_id: str = None) -> Response:
+    def getDatabases(self, workspace_id: str = None) -> Response:
         """
         List all databases available in your Workspace.
 
@@ -54,7 +54,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
 
-    def getDatabaseMetadata(self, db_name: str, workspace_id: str = None) -> Response:
+    def getMetadata(self, db_name: str, workspace_id: str = None) -> Response:
         """
         Retrieve metadata of the given database
 
@@ -78,7 +78,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def createDatabase(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def create(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Create Database with identifier name
 
@@ -105,7 +105,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteDatabase(self, db_name: str, workspace_id: str = None) -> Response:
+    def delete(self, db_name: str, workspace_id: str = None) -> Response:
         """
         Delete a database and all of its branches and tables permanently.
 
@@ -129,7 +129,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
-    def updateDatabaseMetadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def updateMetadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Update the color of the selected database
 
@@ -155,7 +155,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def listRegions(self, workspace_id: str = None) -> Response:
+    def getRegions(self, workspace_id: str = None) -> Response:
         """
         List regions available to create a database on
 

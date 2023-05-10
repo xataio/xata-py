@@ -32,7 +32,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -42,11 +42,11 @@ class TestSearchAndFilterWithAliasNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(
+        r = self.client.table().setSchema(
             "Posts",
             {
                 "columns": [
@@ -69,12 +69,12 @@ class TestSearchAndFilterWithAliasNamespace(object):
             }
             for i in range(10)
         ]
-        r = self.client.records().bulkInsertTableRecords("Posts", {"records": self.posts})
+        r = self.client.records().bulkInsert("Posts", {"records": self.posts})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     def test_query_table(self):
@@ -86,7 +86,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
             "sort": {"slug": "desc"},
             "page": {"size": 5},
         }
-        r = self.client.data().queryTable("Posts", payload)
+        r = self.client.data().query("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 5

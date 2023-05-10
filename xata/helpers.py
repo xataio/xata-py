@@ -109,7 +109,7 @@ class BulkProcessor(object):
             batch = self.records.next_batch()
             if "table" in batch and len(batch["records"]) > 0:
                 try:
-                    r = self.client.records().bulkInsertTableRecords(batch["table"], {"records": batch["records"]})
+                    r = self.client.records().bulkInsert(batch["table"], {"records": batch["records"]})
                     if r.status_code != 200:
                         self.logger.error(
                             "thread #%d: unable to process batch for table '%s', with error: %d - %s"

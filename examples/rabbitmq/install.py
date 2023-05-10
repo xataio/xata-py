@@ -39,21 +39,21 @@ logging.info("checking if database exists ..")
 r = xata.databases().getDatabaseMetadata(XATA_DATABASE_NAME)
 if r.status_code == 404:
     logging.info("creating database '%s' .." % XATA_DATABASE_NAME)
-    r = xata.databases().createDatabase(XATA_DATABASE_NAME, {"region": xata.get_config()["region"]})
+    r = xata.databases().create(XATA_DATABASE_NAME, {"region": xata.get_config()["region"]})
     assert r.status_code == 201, "Unable to create database '%s': %s" % (XATA_DATABASE_NAME, r.json())
 else:
     logging.info("database '%s' found, skipping creation step." % XATA_DATABASE_NAME)
 
 logging.info("creating table 'companies' ..")
-r = xata.table().createTable("companies")
+r = xata.table().create("companies")
 assert r.status_code == 201, "Unable to create table 'companies'"
 
 logging.info("creating table 'prices' ..")
-r = xata.table().createTable("prices")
+r = xata.table().create("prices")
 assert r.status_code == 201, "Unable to create table 'prices'"
 
 logging.info("setting table schema of table 'companies' ..")
-r = xata.table().setTableSchema(
+r = xata.table().setSchema(
     "companies",
     {
         "columns": [
@@ -76,7 +76,7 @@ r = xata.table().setTableSchema(
 assert r.status_code == 200, "Unable to set table schema: %s" % r.json()
 
 logging.info("setting table schema of table 'prices' ..")
-r = xata.table().setTableSchema(
+r = xata.table().setSchema(
     "prices",
     {
         "columns": [

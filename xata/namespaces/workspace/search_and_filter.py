@@ -32,7 +32,7 @@ class Search_and_filter(Namespace):
 
     scope = "workspace"
 
-    def queryTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         The Query Table API can be used to retrieve all records in a table.  The API support
         filtering, sorting, selecting a subset of columns, and pagination.  The overall structure
@@ -290,9 +290,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def vectorSearchTable(
-        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    def vectorSearch(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint can be used to perform vector-based similarity searches in a table.  It can
         be used for implementing semantic search and product recommendation.  To use this
@@ -320,7 +318,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def askTable(
+    def ask(
         self,
         table_name: str,
         payload: dict,
@@ -362,7 +360,7 @@ class Search_and_filter(Namespace):
         }
         return self.request("POST", url_path, headers, payload)
 
-    def summarizeTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint allows you to (optionally) define groups, and then to run calculations on
         the values in each group.  This is most helpful when  you'd like to understand the data
@@ -419,7 +417,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def aggregateTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def aggregate(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint allows you to run aggregations (analytics) on the data from one table.
         While the summary endpoint is served from a transactional store and the results are
