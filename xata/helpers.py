@@ -29,7 +29,9 @@ BP_DEFAULT_BATCH_SIZE = 25
 BP_DEFAULT_FLUSH_INTERVAL = 5
 BP_DEFAULT_PROCESSING_TIMEOUT = 0.025
 BP_DEFAULT_THROW_EXCEPTION = False
+BP_VERSION = "0.2.1"
 TRX_MAX_OPERATIONS = 1000
+TRX_VERSION = "0.0.1"
 
 
 class BulkProcessor(object):
@@ -72,6 +74,7 @@ class BulkProcessor(object):
             raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
+        self.client.set_header("x-xata-helper", f"bulkprocessor/{BP_VERSION}")
         self.processing_timeout = processing_timeout
         self.batch_size = batch_size
         self.flush_interval = flush_interval
@@ -313,6 +316,7 @@ class Transaction(object):
         :param client: XataClient
         """
         self.client = client
+        self.client.set_header("x-xata-helper", f"transaction/{TRX_VERSION}")
 
         self.has_run = False
         self.operations = {"operations": []}
