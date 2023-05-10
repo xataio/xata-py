@@ -32,7 +32,7 @@ class Migrations(Namespace):
 
     scope = "workspace"
 
-    def getBranchMigrationHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def getHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch migration history [deprecated]
 
@@ -57,7 +57,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("GET", url_path, headers, payload)
 
-    def getBranchMigrationPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def getPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
 
@@ -81,7 +81,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def executeBranchMigrationPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def executePlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Apply a migration plan to the branch
 
@@ -105,7 +105,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getBranchSchemaHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def getSchemaHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Query schema history.
 
@@ -154,7 +154,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compareBranchSchemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def compareSchemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compare branch schemas.
 
@@ -202,7 +202,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def previewBranchSchemaEdit(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def preview(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Preview branch schema edits.
 
@@ -227,7 +227,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def applyBranchSchemaEdit(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def apply(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Apply edit script.
 
@@ -251,7 +251,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def pushBranchMigrations(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def push(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         The `schema/push` API accepts a list of migrations to be applied to the current branch.  A
         list of applicable migrations can be fetched using the `schema/history` API from another

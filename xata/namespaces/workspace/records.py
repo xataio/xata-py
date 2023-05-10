@@ -57,7 +57,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def insertRecord(
+    def insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
@@ -87,7 +87,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getRecord(
+    def get(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
@@ -116,7 +116,7 @@ class Records(Namespace):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("GET", url_path)
 
-    def insertRecordWithID(
+    def insertWithId(
         self,
         table_name: str,
         record_id: str,
@@ -168,7 +168,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def upsertRecordWithID(
+    def upsertWithId(
         self,
         table_name: str,
         record_id: str,
@@ -214,7 +214,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def deleteRecord(
+    def delete(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
@@ -244,7 +244,7 @@ class Records(Namespace):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("DELETE", url_path)
 
-    def updateRecordWithID(
+    def updateWithId(
         self,
         table_name: str,
         record_id: str,
@@ -289,7 +289,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def bulkInsertTableRecords(
+    def bulkInsert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """
