@@ -25,7 +25,7 @@
 import argparse
 import hashlib
 import json
-import logging
+import coloredlogs, logging
 import textwrap
 from typing import Any, Dict
 
@@ -36,6 +36,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
 args = parser.parse_args()
 
+coloredlogs.install(level='DEBUG')
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
