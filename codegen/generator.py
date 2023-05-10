@@ -213,7 +213,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         desc = endpoint["summary"].strip()
 
     # repacements
-    namespace = endpoint["tags"][0].lower()
+    namespace = _sanitize_filename(endpoint["tags"][0])
     operation_id = endpoint["operationId"].strip()
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
         operation_id = API_RENAMING[namespace][operation_id]
