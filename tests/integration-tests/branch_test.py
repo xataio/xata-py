@@ -30,7 +30,7 @@ class TestBranchNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -40,11 +40,11 @@ class TestBranchNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(
+        r = self.client.table().setSchema(
             "Posts",
             {
                 "columns": [
@@ -58,11 +58,11 @@ class TestBranchNamespace(object):
         assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     def test_get_branch_list(self):
-        r = self.client.branch().getBranchList(self.db_name)
+        r = self.client.branch().getBranches(self.db_name)
         assert r.status_code == 200
         assert "databaseName" in r.json()
         assert "branches" in r.json()
@@ -72,11 +72,11 @@ class TestBranchNamespace(object):
         assert "createdAt" in r.json()["branches"][0]
         assert r.json()["branches"][0]["name"] == "main"
 
-        r = self.client.branch().getBranchList("NonExistingDatabase")
+        r = self.client.branch().getBranches("NonExistingDatabase")
         assert r.status_code == 404
 
     def test_get_branch_details(self):
-        r = self.client.branch().getBranchDetails()
+        r = self.client.branch().getDetails()
         assert r.status_code == 200
         assert "databaseName" in r.json()
         assert "branchName" in r.json()
@@ -85,7 +85,7 @@ class TestBranchNamespace(object):
         assert r.json()["databaseName"] == self.client.get_config()["dbName"]
         # TODO be exhastive testing the ^ dict keys
 
-        r = self.client.branch().getBranchDetails("NonExistingDatabase")
+        r = self.client.branch().getDetails("NonExistingDatabase")
         assert r.status_code == 404
 
     def test_create_database_branch(self):
@@ -97,7 +97,7 @@ class TestBranchNamespace(object):
                 "stage": "testing",
             },
         }
-        r = self.client.branch().createBranch(payload, branch_name="new-super-duper-feature")
+        r = self.client.branch().create(payload, branch_name="new-super-duper-feature")
         assert r.status_code == 201
         assert "databaseName" in r.json()
         assert "branchName" in r.json()
@@ -108,17 +108,17 @@ class TestBranchNamespace(object):
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
+        r = self.client.branch().create(payload, branch_name="the-incredible-hulk", _from="avengers")
         assert r.status_code == 400
 
-        r = self.client.branch().createBranch(payload, db_name="NOPE", branch_name=self.branch_name)
+        r = self.client.branch().create(payload, db_name="NOPE", branch_name=self.branch_name)
         assert r.status_code == 404
 
-        r = self.client.branch().createBranch({})
+        r = self.client.branch().create({})
         assert r.status_code == 422
 
     def test_get_branch_metadata(self):
-        r = self.client.branch().getBranchMetadata()
+        r = self.client.branch().getMetadata()
         assert r.status_code == 200
 
         # TODO test from a previously created branch
@@ -126,18 +126,18 @@ class TestBranchNamespace(object):
         # assert "branch" in r.json()
         # assert "stage" in r.json()
 
-        r = self.client.branch().getBranchMetadata(branch_name=self.branch_name)
+        r = self.client.branch().getMetadata(branch_name=self.branch_name)
         assert r.status_code == 200
-        r = self.client.branch().getBranchMetadata(db_name=self.db_name)
+        r = self.client.branch().getMetadata(db_name=self.db_name)
         assert r.status_code == 200
 
-        r = self.client.branch().getBranchMetadata(db_name="NOPE")
+        r = self.client.branch().getMetadata(db_name="NOPE")
         assert r.status_code == 404
-        r = self.client.branch().getBranchMetadata(branch_name="shrug")
+        r = self.client.branch().getMetadata(branch_name="shrug")
         assert r.status_code == 404
 
     def test_get_branch_stats(self):
-        r = self.client.branch().getBranchStats()
+        r = self.client.branch().getStats()
         assert r.status_code == 200
         assert "timestamp" in r.json()
         assert "interval" in r.json()

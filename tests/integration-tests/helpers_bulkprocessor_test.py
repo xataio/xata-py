@@ -35,7 +35,7 @@ class TestHelpersBulkProcessor(object):
         self.fake = Faker()
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -45,11 +45,11 @@ class TestHelpersBulkProcessor(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(
+        r = self.client.table().setSchema(
             "Posts",
             {
                 "columns": [
@@ -61,7 +61,7 @@ class TestHelpersBulkProcessor(object):
         assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     @pytest.fixture

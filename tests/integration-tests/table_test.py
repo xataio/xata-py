@@ -31,7 +31,7 @@ class TestTableNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -42,7 +42,7 @@ class TestTableNamespace(object):
 
     @classmethod
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     @pytest.fixture
@@ -64,17 +64,17 @@ class TestTableNamespace(object):
     # Table Ops
     #
     def test_create_table(self):
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
         assert r.json()["status"] == "completed"
         assert r.json()["tableName"] == "Posts"
         assert r.json()["branchName"] == self.client.get_db_branch_name()
 
     def test_update_table(self):
-        r = self.client.table().createTable("RenameMe")
+        r = self.client.table().create("RenameMe")
         assert r.status_code == 201
 
-        r = self.client.table().updateTable(
+        r = self.client.table().update(
             "RenameMe",
             {"name": "NewName"},
             db_name=self.db_name,
@@ -86,63 +86,63 @@ class TestTableNamespace(object):
         assert "parentMigrationID" in r.json()
 
     def test_delete_table(self):
-        r = self.client.table().createTable("DeleteMe")
+        r = self.client.table().create("DeleteMe")
         assert r.status_code == 201
 
-        r = self.client.table().deleteTable("DeleteMe")
+        r = self.client.table().delete("DeleteMe")
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
 
-        r = self.client.table().deleteTable("NonExistingTable")
+        r = self.client.table().delete("NonExistingTable")
         assert r.status_code == 404
 
     #
     # Schema Ops
     #
     def test_set_table_schema(self, columns: dict):
-        r = self.client.table().setTableSchema("Posts", columns)
+        r = self.client.table().setSchema("Posts", columns)
         assert r.status_code == 200
 
-        r = self.client.table().setTableSchema("NonExistingTable", columns)
+        r = self.client.table().setSchema("NonExistingTable", columns)
         assert r.status_code == 404
 
     def test_get_table_schema(self, columns):
-        r = self.client.table().getTableSchema("Posts")
+        r = self.client.table().getSchema("Posts")
         assert r.status_code == 200
         assert columns == r.json()
 
-        r = self.client.table().getTableSchema("NonExistingTable")
+        r = self.client.table().getSchema("NonExistingTable")
         assert r.status_code == 404
 
     #
     # Column Ops
     #
     def test_get_table_columns(self, columns: dict):
-        r = self.client.table().getTableColumns("Posts")
+        r = self.client.table().getColumns("Posts")
         assert r.status_code == 200
         assert r.json() == columns
 
-        r = self.client.table().getTableColumns("NonExistingTable")
+        r = self.client.table().getColumns("NonExistingTable")
         assert r.status_code == 404
 
     def test_add_column(self, columns: dict, new_column: dict):
-        r = self.client.table().addTableColumn("Posts", new_column)
+        r = self.client.table().addColumn("Posts", new_column)
         assert r.status_code == 200
         assert r.json()["status"] == "completed"
         assert "migrationID" in r.json()
         assert "parentMigrationID" in r.json()
 
-        r = self.client.table().getTableColumns("Posts")
+        r = self.client.table().getColumns("Posts")
         assert r.status_code == 200
         columns["columns"].append(new_column)
         assert r.json() == columns
 
-        r = self.client.table().addTableColumn("NonExistingTable", {"name": "foo"})
+        r = self.client.table().addColumn("NonExistingTable", {"name": "foo"})
         assert r.status_code == 404
 
-        r = self.client.table().addTableColumn("Posts", {"name": "foo"})
+        r = self.client.table().addColumn("Posts", {"name": "foo"})
         assert r.status_code == 400
-        r = self.client.table().addTableColumn("Posts", {"type": "bar"})
+        r = self.client.table().addColumn("Posts", {"type": "bar"})
         assert r.status_code == 400
 
     def test_get_column(self, new_column: dict):
@@ -164,40 +164,23 @@ class TestTableNamespace(object):
         assert "migrationID" in r.json()
         assert "parentMigrationID" in r.json()
 
-        r = self.client.table().getColumn(
-            "Posts",
-            newer_column["name"],
-        )
+        r = self.client.table().getColumn("Posts", newer_column["name"])
         assert r.status_code == 200
 
-        r = self.client.table().updateColumn(
-            "Posts",
-            newer_column["name"],
-            {},
-        )
+        r = self.client.table().updateColumn("Posts", newer_column["name"], {})
         assert r.status_code == 400
 
-        r = self.client.table().updateColumn(
-            "Posts",
-            new_column["name"],
-            newer_column,
-        )
+        r = self.client.table().updateColumn("Posts", new_column["name"], newer_column)
         assert r.status_code == 404
-        r = self.client.table().updateColumn(
-            "NonExistingTable",
-            new_column["name"],
-            newer_column,
-        )
+
+        r = self.client.table().updateColumn("NonExistingTable", new_column["name"], newer_column)
         assert r.status_code == 404
-        r = self.client.table().updateColumn(
-            "Posts",
-            "NonExistingColumn",
-            newer_column,
-        )
+
+        r = self.client.table().updateColumn("Posts", "NonExistingColumn", newer_column)
         assert r.status_code == 404
 
     def test_delete_column(self, columns: dict):
-        r = self.client.table().getTableColumns("Posts")
+        r = self.client.table().getColumns("Posts")
         assert r.status_code == 200
         assert (len(r.json()["columns"]) - 1) == len(columns["columns"])
 
@@ -210,6 +193,6 @@ class TestTableNamespace(object):
         r = self.client.table().deleteColumn("Posts", "a-newer-column")
         assert r.status_code == 404
 
-        r = self.client.table().getTableColumns("Posts")
+        r = self.client.table().getColumns("Posts")
         assert r.status_code == 200
         assert r.json() == columns

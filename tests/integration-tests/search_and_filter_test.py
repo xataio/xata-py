@@ -32,7 +32,7 @@ class TestSearchAndFilterNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().createDatabase(
+        r = self.client.databases().create(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -42,11 +42,11 @@ class TestSearchAndFilterNamespace(object):
         assert r.status_code == 201
 
         # create table posts
-        r = self.client.table().createTable("Posts")
+        r = self.client.table().create("Posts")
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setTableSchema(
+        r = self.client.table().setSchema(
             "Posts",
             {
                 "columns": [
@@ -69,12 +69,12 @@ class TestSearchAndFilterNamespace(object):
             }
             for i in range(10)
         ]
-        r = self.client.records().bulkInsertTableRecords("Posts", {"records": self.posts})
+        r = self.client.records().bulkInsert("Posts", {"records": self.posts})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
     def teardown_class(self):
-        r = self.client.databases().deleteDatabase(self.db_name)
+        r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
     def test_query_table(self):
@@ -86,7 +86,7 @@ class TestSearchAndFilterNamespace(object):
             "sort": {"slug": "desc"},
             "page": {"size": 5},
         }
-        r = self.client.search_and_filter().queryTable("Posts", payload)
+        r = self.client.search_and_filter().query("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) == 5
@@ -97,10 +97,10 @@ class TestSearchAndFilterNamespace(object):
         assert "slug" in r.json()["records"][0]
         assert "text" not in r.json()["records"][0]
 
-        r = self.client.search_and_filter().queryTable("NonExistingTable", payload)
+        r = self.client.search_and_filter().query("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().queryTable("Posts", {"columns": [""]})
+        r = self.client.search_and_filter().query("Posts", {"columns": [""]})
         assert r.status_code == 400
 
     def test_search_branch(self):
@@ -151,12 +151,12 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/summarize
         """
         payload = {"columns": ["title", "slug"]}
-        r = self.client.search_and_filter().summarizeTable("Posts", payload)
+        r = self.client.search_and_filter().summarize("Posts", payload)
         assert r.status_code == 200
         assert "summaries" in r.json()
         assert len(r.json()["summaries"]) > 1
 
-        r = self.client.search_and_filter().summarizeTable("NonExistingTable", payload)
+        r = self.client.search_and_filter().summarize("NonExistingTable", payload)
         assert r.status_code == 404
 
     def test_aggregate_table(self):
@@ -164,14 +164,14 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/aggregate
         """
         payload = {"aggs": {"titles": {"count": "*"}}}
-        r = self.client.search_and_filter().aggregateTable("Posts", payload)
+        r = self.client.search_and_filter().aggregate("Posts", payload)
         assert r.status_code == 200
         assert "aggs" in r.json()
         assert "titles" in r.json()["aggs"]
         assert r.json()["aggs"]["titles"] == len(self.posts)
 
-        r = self.client.search_and_filter().aggregateTable("NonExistingTable", payload)
+        r = self.client.search_and_filter().aggregate("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().aggregateTable("Posts", {"aggs": {"foo": "bar"}})
+        r = self.client.search_and_filter().aggregate("Posts", {"aggs": {"foo": "bar"}})
         assert r.status_code == 400
