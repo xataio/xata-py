@@ -1,0 +1,1074 @@
+{
+  "scope": "core",
+  "checksum": "4374f7d4ee126a5131c5e3ce4820048a",
+  "version": "1.0",
+  "base_url": "https://api.xata.io",
+  "endpoints": [
+    {
+      "namespace": "Users",
+      "name": "getUser",
+      "name_python": "get",
+      "description": "Return details of the user making the request",
+      "method": "GET",
+      "url_path": "/user",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": []
+    },
+    {
+      "namespace": "Users",
+      "name": "updateUser",
+      "name_python": "update",
+      "description": "Update user info",
+      "method": "PUT",
+      "url_path": "/user",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Users",
+      "name": "deleteUser",
+      "name_python": "delete",
+      "description": "Delete the user making the request",
+      "method": "DELETE",
+      "url_path": "/user",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": []
+    },
+    {
+      "namespace": "Authentication",
+      "name": "getUserAPIKeys",
+      "name_python": "getUserAPIKeys",
+      "description": "Retrieve a list of existing user API keys",
+      "method": "GET",
+      "url_path": "/user/keys",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": []
+    },
+    {
+      "namespace": "Authentication",
+      "name": "createUserAPIKey",
+      "name_python": "createUserAPIKey",
+      "description": "Create and return new API key",
+      "method": "POST",
+      "url_path": "/user/keys/{key_name}",
+      "responses": [
+        {
+          "code": "201",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "key_name",
+          "description": "API Key name",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Authentication",
+      "name": "deleteUserAPIKey",
+      "name_python": "deleteUserAPIKey",
+      "description": "Delete an existing API key",
+      "method": "DELETE",
+      "url_path": "/user/keys/{key_name}",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "key_name",
+          "description": "API Key name",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "getWorkspacesList",
+      "name_python": "getWorkspaces",
+      "description": "Retrieve the list of workspaces the user belongs to",
+      "method": "GET",
+      "url_path": "/workspaces",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": []
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "createWorkspace",
+      "name_python": "create",
+      "description": "Creates a new workspace with the user requesting it as its single owner.",
+      "method": "POST",
+      "url_path": "/workspaces",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Created"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "getWorkspace",
+      "name_python": "get",
+      "description": "Retrieve workspace info from a workspace ID",
+      "method": "GET",
+      "url_path": "/workspaces/{workspace_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "updateWorkspace",
+      "name_python": "update",
+      "description": "Update workspace info",
+      "method": "PUT",
+      "url_path": "/workspaces/{workspace_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "deleteWorkspace",
+      "name_python": "delete",
+      "description": "Delete the workspace with the provided ID",
+      "method": "DELETE",
+      "url_path": "/workspaces/{workspace_id}",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "getWorkspaceMembersList",
+      "name_python": "getMembers",
+      "description": "Retrieve the list of members of the given workspace",
+      "method": "GET",
+      "url_path": "/workspaces/{workspace_id}/members",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "updateWorkspaceMemberRole",
+      "name_python": "updateMember",
+      "description": "Update a workspace member role. Workspaces must always have at least one owner, so this operation will fail if trying to remove owner role from the last owner in the workspace.",
+      "method": "PUT",
+      "url_path": "/workspaces/{workspace_id}/members/{user_id}",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "user_id",
+          "description": "UserID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Workspaces",
+      "name": "removeWorkspaceMember",
+      "name_python": "removeMember",
+      "description": "Remove the member from the workspace",
+      "method": "DELETE",
+      "url_path": "/workspaces/{workspace_id}/members/{user_id}",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "user_id",
+          "description": "UserID",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Invites",
+      "name": "inviteWorkspaceMember",
+      "name_python": "inviteWorkspaceMember",
+      "description": "Invite some user to join the workspace with the given role",
+      "method": "POST",
+      "url_path": "/workspaces/{workspace_id}/invites",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Created"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "409",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Invites",
+      "name": "cancelWorkspaceMemberInvite",
+      "name_python": "cancelWorkspaceMemberInvite",
+      "description": "This operation provides a way to cancel invites by deleting them. Already accepted invites cannot be deleted.",
+      "method": "DELETE",
+      "url_path": "/workspaces/{workspace_id}/invites/{invite_id}",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "invite_id",
+          "description": "Invite identifier",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Invites",
+      "name": "updateWorkspaceMemberInvite",
+      "name_python": "updateWorkspaceMemberInvite",
+      "description": "This operation provides a way to update an existing invite. Updates are performed in-place; they do not change the invite link, the expiry time, nor do they re-notify the recipient of the invite.",
+      "method": "PATCH",
+      "url_path": "/workspaces/{workspace_id}/invites/{invite_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Updated successfully."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "invite_id",
+          "description": "Invite identifier",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Invites",
+      "name": "acceptWorkspaceMemberInvite",
+      "name_python": "acceptWorkspaceMemberInvite",
+      "description": "Accept the invitation to join a workspace. If the operation succeeds the user will be a member of the workspace",
+      "method": "POST",
+      "url_path": "/workspaces/{workspace_id}/invites/{invite_key}/accept",
+      "responses": [
+        {
+          "code": "204",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "invite_key",
+          "description": "Invite Key (secret) for the invited user",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Invites",
+      "name": "resendWorkspaceMemberInvite",
+      "name_python": "resendWorkspaceMemberInvite",
+      "description": "This operation provides a way to resend an Invite notification. Invite notifications can only be sent for Invites not yet accepted.",
+      "method": "POST",
+      "url_path": "/workspaces/{workspace_id}/invites/{invite_id}/resend",
+      "responses": [
+        {
+          "code": "204",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "403",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "invite_id",
+          "description": "Invite identifier",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "getDatabaseList",
+      "name_python": "getDatabases",
+      "description": "List all databases available in your Workspace.",
+      "method": "GET",
+      "url_path": "/workspaces/{workspace_id}/dbs",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "getDatabaseMetadata",
+      "name_python": "getMetadata",
+      "description": "Retrieve metadata of the given database",
+      "method": "GET",
+      "url_path": "/workspaces/{workspace_id}/dbs/{db_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "createDatabase",
+      "name_python": "create",
+      "description": "Create Database with identifier name",
+      "method": "PUT",
+      "url_path": "/workspaces/{workspace_id}/dbs/{db_name}",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Created"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "423",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "deleteDatabase",
+      "name_python": "delete",
+      "description": "Delete a database and all of its branches and tables permanently.",
+      "method": "DELETE",
+      "url_path": "/workspaces/{workspace_id}/dbs/{db_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "updateDatabaseMetadata",
+      "name_python": "updateMetadata",
+      "description": "Update the color of the selected database",
+      "method": "PATCH",
+      "url_path": "/workspaces/{workspace_id}/dbs/{db_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Databases",
+      "name": "listRegions",
+      "name_python": "getRegions",
+      "description": "List regions available to create a database on",
+      "method": "GET",
+      "url_path": "/workspaces/{workspace_id}/regions",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "workspace_id",
+          "description": "The workspace identifier. Default: workspace Id from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

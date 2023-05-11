@@ -1,0 +1,2524 @@
+{
+  "scope": "workspace",
+  "checksum": "58517542d908b2425c4fd8b361976821",
+  "version": "1.0",
+  "base_url": "https://{workspaceId}.{regionId}.xata.sh",
+  "endpoints": [
+    {
+      "namespace": "Branch",
+      "name": "getBranchList",
+      "name_python": "getBranches",
+      "description": "List all available Branches",
+      "method": "GET",
+      "url_path": "/dbs/{db_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "getBranchDetails",
+      "name_python": "getDetails",
+      "description": "Get branch schema and metadata",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "createBranch",
+      "name_python": "create",
+      "description": "Create Database branch",
+      "method": "PUT",
+      "url_path": "/db/{db_branch_name}",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Created"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "423",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "from",
+          "description": "Name of source branch to branch the new schema from",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "deleteBranch",
+      "name_python": "delete",
+      "description": "Delete the branch in the database and all its resources",
+      "method": "DELETE",
+      "url_path": "/db/{db_branch_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "409",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "getBranchMetadata",
+      "name_python": "getMetadata",
+      "description": "Get Branch Metadata",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/metadata",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "updateBranchMetadata",
+      "name_python": "updateMetadata",
+      "description": "Update the branch metadata",
+      "method": "PUT",
+      "url_path": "/db/{db_branch_name}/metadata",
+      "responses": [
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "getBranchStats",
+      "name_python": "getStats",
+      "description": "Get branch usage metrics.",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/stats",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Example response"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "getGitBranchesMapping",
+      "name_python": "getGitBranchesMapping",
+      "description": "Lists all the git branches in the mapping, and their associated Xata branches.\n\nExample response:\n\n```json\n{\n  \"mappings\": [\n      {\n        \"gitBranch\": \"main\",\n        \"xataBranch\": \"main\"\n      },\n      {\n        \"gitBranch\": \"gitBranch1\",\n        \"xataBranch\": \"xataBranch1\"\n      }\n      {\n        \"gitBranch\": \"xataBranch2\",\n        \"xataBranch\": \"xataBranch2\"\n      }\n  ]\n}\n```",
+      "method": "GET",
+      "url_path": "/dbs/{db_name}/gitBranches",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "addGitBranchesEntry",
+      "name_python": "addGitBranchesEntry",
+      "description": "Adds an entry to the mapping of git branches to Xata branches. The git branch and the Xata branch must be present in the body of the request. If the Xata branch doesn't exist, a 400 error is returned.\n\nIf the git branch is already present in the mapping, the old entry is overwritten, and a warning message is included in the response. If the git branch is added and didn't exist before, the response code is 204. If the git branch existed and it was overwritten, the response code is 201.\n\nExample request:\n\n```json\n// POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches\n{\n  \"gitBranch\": \"fix/bug123\",\n  \"xataBranch\": \"fix_bug\"\n}\n```",
+      "method": "POST",
+      "url_path": "/dbs/{db_name}/gitBranches",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Operation was successful with warnings"
+        },
+        {
+          "code": "204",
+          "description": "Operation was successful without warnings"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "removeGitBranchesEntry",
+      "name_python": "removeGitBranchesEntry",
+      "description": "Removes an entry from the mapping of git branches to Xata branches. The name of the git branch must be passed as a query parameter. If the git branch is not found, the endpoint returns a 404 status code.\n\nExample request:\n\n```json\n// DELETE https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123\n```",
+      "method": "DELETE",
+      "url_path": "/dbs/{db_name}/gitBranches",
+      "responses": [
+        {
+          "code": "204",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "The git branch was not found in the mapping"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "gitBranch",
+          "description": "The Git Branch to remove from the mapping",
+          "in": "query",
+          "required": true
+        }
+      ]
+    },
+    {
+      "namespace": "Branch",
+      "name": "resolveBranch",
+      "name_python": "resolve",
+      "description": "In order to resolve the database branch, the following algorithm is used:\n* if the `gitBranch` was provided and is found in the [git branches mapping](/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned\n* else, if a Xata branch with the exact same name as `gitBranch` exists, return it\n* else, if `fallbackBranch` is provided and a branch with that name exists, return it\n* else, return the default branch of the DB (`main` or the first branch)\n\nExample call:\n\n```json\n// GET https://tutorial-ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg\n```\n\nExample response:\n\n```json\n{\n  \"branch\": \"main\",\n  \"reason\": {\n    \"code\": \"DEFAULT_BRANCH\",\n    \"message\": \"Default branch for this database (main)\"\n  }\n}\n```",
+      "method": "GET",
+      "url_path": "/dbs/{db_name}/resolveBranch",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "db_name",
+          "description": "The Database Name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "gitBranch",
+          "description": "The Git Branch",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "fallbackBranch",
+          "description": "Default branch to fallback to",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "getBranchMigrationHistory",
+      "name_python": "getHistory",
+      "description": "Get branch migration history [deprecated]",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/migrations",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "getBranchMigrationPlan",
+      "name_python": "getPlan",
+      "description": "Compute a migration plan from a target schema the branch should be migrated too.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/migrations/plan",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Example response"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "executeBranchMigrationPlan",
+      "name_python": "executePlan",
+      "description": "Apply a migration plan to the branch",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/migrations/execute",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "getBranchSchemaHistory",
+      "name_python": "getSchemaHistory",
+      "description": "Query schema history.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/history",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "compareBranchWithUserSchema",
+      "name_python": "compareBranchWithUserSchema",
+      "description": "Compare branch with user schema.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/compare",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema comparison response."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "compareBranchSchemas",
+      "name_python": "compareSchemas",
+      "description": "Compare branch schemas.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/compare/{branch_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema comparison response."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "updateBranchSchema",
+      "name_python": "updateBranchSchema",
+      "description": "Update Branch schema",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/update",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "previewBranchSchemaEdit",
+      "name_python": "preview",
+      "description": "Preview branch schema edits.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/preview",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "applyBranchSchemaEdit",
+      "name_python": "apply",
+      "description": "Apply edit script.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/apply",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Migrations",
+      "name": "pushBranchMigrations",
+      "name_python": "push",
+      "description": "The `schema/push` API accepts a list of migrations to be applied to the\ncurrent branch. A list of applicable migrations can be fetched using\nthe `schema/history` API from another branch or database.\n\nThe most recent migration must be part of the list or referenced (via\n`parentID`) by the first migration in the list of migrations to be pushed.\n\nEach migration in the list has an `id`, `parentID`, and `checksum`. The\nchecksum for migrations are generated and verified by xata. The\noperation fails if any migration in the list has an invalid checksum.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/schema/push",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "createTable",
+      "name_python": "create",
+      "description": "Creates a new table with the given name. Returns 422 if a table with the same name already exists.",
+      "method": "PUT",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Created"
+        },
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "deleteTable",
+      "name_python": "delete",
+      "description": "Deletes the table with the given name.",
+      "method": "DELETE",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Not Found"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "updateTable",
+      "name_python": "update",
+      "description": "Update table. Currently there is only one update operation supported: renaming the table by providing a new name.\n\nIn the example below, we rename a table from \u201cusers\u201d to \u201cpeople\u201d:\n\n```json\n// PATCH /db/test:main/tables/users\n\n{\n  \"name\": \"people\"\n}\n```",
+      "method": "PATCH",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "getTableSchema",
+      "name_python": "getSchema",
+      "description": "Get table schema",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/schema",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "setTableSchema",
+      "name_python": "setSchema",
+      "description": "Update table schema",
+      "method": "PUT",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/schema",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "409",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "getTableColumns",
+      "name_python": "getColumns",
+      "description": "Retrieves the list of table columns and their definition. This endpoint returns the column list with object columns being reported with their\nfull dot-separated path (flattened).",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/columns",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "addTableColumn",
+      "name_python": "addColumn",
+      "description": "Adds a new column to the table. The body of the request should contain the column definition. In the column definition, the 'name' field should\ncontain the full path separated by dots. If the parent objects do not exists, they will be automatically created. For example,\npassing `\"name\": \"address.city\"` will auto-create the `address` object if it doesn't exist.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/columns",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "getColumn",
+      "name_python": "getColumn",
+      "description": "Get the definition of a single column. To refer to sub-objects, the column name can contain dots. For example `address.country`.",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/columns/{column_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "column_name",
+          "description": "The Column name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "deleteColumn",
+      "name_python": "deleteColumn",
+      "description": "Deletes the specified column. To refer to sub-objects, the column name can contain dots. For example `address.country`.",
+      "method": "DELETE",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/columns/{column_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "column_name",
+          "description": "The Column name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Table",
+      "name": "updateColumn",
+      "name_python": "updateColumn",
+      "description": "Update column with partial data. Can be used for renaming the column by providing a new \"name\" field. To refer to sub-objects, the column name can contain dots. For example `address.country`.",
+      "method": "PATCH",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/columns/{column_name}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Schema migration response with ID and migration status."
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "column_name",
+          "description": "The Column name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "branchTransaction",
+      "name_python": "branchTransaction",
+      "description": "Execute a transaction on a branch",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/transaction",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Returns the results of a successful transaction."
+        },
+        {
+          "code": "400",
+          "description": "Returns errors from a failed transaction."
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "insertRecord",
+      "name_python": "insert",
+      "description": "Insert a new Record into the Table",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data",
+      "responses": [
+        {
+          "code": "201",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "getRecord",
+      "name_python": "get",
+      "description": "Retrieve record by ID",
+      "method": "GET",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data/{record_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Table Record Reponse"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "record_id",
+          "description": "The Record name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "insertRecordWithID",
+      "name_python": "insertWithId",
+      "description": "By default, IDs are auto-generated when data is insterted into Xata. Sending a request to this endpoint allows us to insert a record with a pre-existing ID, bypassing the default automatic ID generation.",
+      "method": "PUT",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data/{record_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "201",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "record_id",
+          "description": "The Record name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "createOnly",
+          "description": "",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "ifVersion",
+          "description": "",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "upsertRecordWithID",
+      "name_python": "upsertWithId",
+      "description": "Upsert record with ID",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data/{record_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "201",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "record_id",
+          "description": "The Record name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "ifVersion",
+          "description": "",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "deleteRecord",
+      "name_python": "delete",
+      "description": "Delete record from table",
+      "method": "DELETE",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data/{record_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Table Record Reponse"
+        },
+        {
+          "code": "204",
+          "description": "No Content"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "record_id",
+          "description": "The Record name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "updateRecordWithID",
+      "name_python": "updateWithId",
+      "description": "Update record with ID",
+      "method": "PATCH",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/data/{record_id}",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Record ID and version"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "record_id",
+          "description": "The Record name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        },
+        {
+          "name": "ifVersion",
+          "description": "",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Records",
+      "name": "bulkInsertTableRecords",
+      "name_python": "bulkInsert",
+      "description": "Bulk insert records",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/bulk",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Response with multiple errors of the bulk execution"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "422",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "columns",
+          "description": "Column filters",
+          "in": "query",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "queryTable",
+      "name_python": "query",
+      "description": "The Query Table API can be used to retrieve all records in a table.\nThe API support filtering, sorting, selecting a subset of columns, and pagination.\n\nThe overall structure of the request looks like this:\n\n```json\n// POST /db/<dbname>:<branch>/tables/<table>/query\n{\n  \"columns\": [...],\n  \"filter\": {\n    \"$all\": [...],\n    \"$any\": [...]\n    ...\n  },\n  \"sort\": {\n    \"multiple\": [...]\n    ...\n  },\n  \"page\": {\n    ...\n  }\n}\n```\n\nFor usage, see also the [API Guide](https://xata.io/docs/api-guide/get).\n\n### Column selection\n\nIf the `columns` array is not specified, all columns are included. For link\nfields, only the ID column of the linked records is included in the response.\n\nIf the `columns` array is specified, only the selected and internal\ncolumns `id` and `xata` are included. The `*` wildcard can be used to\nselect all columns.\n\nFor objects and link fields, if the column name of the object is specified, we\ninclude all of its sub-keys. If only some sub-keys are specified (via dotted\nnotation, e.g. `\"settings.plan\"` ), then only those sub-keys from the object\nare included.\n\nBy the way of example, assuming two tables like this:\n\n```json {\"truncate\": true}\n{\n  \"tables\": [\n    {\n      \"name\": \"teams\",\n      \"columns\": [\n        {\n          \"name\": \"name\",\n          \"type\": \"string\"\n        },\n        {\n          \"name\": \"owner\",\n          \"type\": \"link\",\n          \"link\": {\n            \"table\": \"users\"\n          }\n        },\n        {\n          \"name\": \"foundedDate\",\n          \"type\": \"datetime\"\n        },\n      ]\n    },\n    {\n      \"name\": \"users\",\n      \"columns\": [\n        {\n          \"name\": \"email\",\n          \"type\": \"email\"\n        },\n        {\n          \"name\": \"full_name\",\n          \"type\": \"string\"\n        },\n        {\n          \"name\": \"address\",\n          \"type\": \"object\",\n          \"columns\": [\n            {\n              \"name\": \"street\",\n              \"type\": \"string\"\n            },\n            {\n              \"name\": \"number\",\n              \"type\": \"int\"\n            },\n            {\n              \"name\": \"zipcode\",\n              \"type\": \"int\"\n            }\n          ]\n        },\n        {\n          \"name\": \"team\",\n          \"type\": \"link\",\n          \"link\": {\n            \"table\": \"teams\"\n          }\n        }\n      ]\n    }\n  ]\n}\n```\n\nA query like this:\n\n```json\nPOST /db/<dbname>:<branch>/tables/<table>/query\n{\n  \"columns\": [\n    \"name\",\n    \"address.*\"\n  ]\n}\n```\n\nreturns objects like:\n\n```json\n{\n  \"name\": \"Kilian\",\n  \"address\": {\n    \"street\": \"New street\",\n    \"number\": 41,\n    \"zipcode\": 10407\n  }\n}\n```\n\nwhile a query like this:\n\n```json\nPOST /db/<dbname>:<branch>/tables/<table>/query\n{\n  \"columns\": [\n    \"name\",\n    \"address.street\"\n  ]\n}\n```\n\nreturns objects like:\n\n```json\n{\n  \"id\": \"id1\"\n  \"xata\": {\n    \"version\": 0\n  }\n  \"name\": \"Kilian\",\n  \"address\": {\n    \"street\": \"New street\"\n  }\n}\n```\n\nIf you want to return all columns from the main table and selected columns from the linked table, you can do it like this:\n\n```json\n{\n  \"columns\": [\"*\", \"team.name\"]\n}\n```\n\nThe `\"*\"` in the above means all columns, including columns of objects. This returns data like:\n\n```json\n{\n  \"id\": \"id1\"\n  \"xata\": {\n    \"version\": 0\n  }\n  \"name\": \"Kilian\",\n  \"email\": \"kilian@gmail.com\",\n  \"address\": {\n    \"street\": \"New street\",\n    \"number\": 41,\n    \"zipcode\": 10407\n  },\n  \"team\": {\n    \"id\": \"XX\",\n    \"xata\": {\n      \"version\": 0\n    },\n    \"name\": \"first team\"\n  }\n}\n```\n\nIf you want all columns of the linked table, you can do:\n\n```json\n{\n  \"columns\": [\"*\", \"team.*\"]\n}\n```\n\nThis returns, for example:\n\n```json\n{\n  \"id\": \"id1\"\n  \"xata\": {\n    \"version\": 0\n  }\n  \"name\": \"Kilian\",\n  \"email\": \"kilian@gmail.com\",\n  \"address\": {\n    \"street\": \"New street\",\n    \"number\": 41,\n    \"zipcode\": 10407\n  },\n  \"team\": {\n    \"id\": \"XX\",\n    \"xata\": {\n      \"version\": 0\n    },\n    \"name\": \"first team\",\n    \"code\": \"A1\",\n    \"foundedDate\": \"2020-03-04T10:43:54.32Z\"\n  }\n}\n```\n\n### Filtering\n\nThere are two types of operators:\n\n- Operators that work on a single column: `$is`, `$contains`, `$pattern`,\n  `$includes`, `$gt`, etc.\n- Control operators that combine multiple conditions: `$any`, `$all`, `$not` ,\n  `$none`, etc.\n\nAll operators start with an `$` to differentiate them from column names\n(which are not allowed to start with a dollar sign).\n\n#### Exact matching and control operators\n\nFilter by one column:\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": \"value\"\n  }\n}\n```\n\nThis is equivalent to using the `$is` operator:\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$is\": \"value\"\n    }\n  }\n}\n```\n\nFor example:\n\n```json\n{\n  \"filter\": {\n    \"name\": \"r2\"\n  }\n}\n```\n\nOr:\n\n```json\n{\n  \"filter\": {\n    \"name\": {\n      \"$is\": \"r2\"\n    }\n  }\n}\n```\n\nFor objects, both dots and nested versions work:\n\n```json\n{\n  \"filter\": {\n    \"settings.plan\": \"free\"\n  }\n}\n```\n\n```json\n{\n  \"filter\": {\n    \"settings\": {\n      \"plan\": \"free\"\n    }\n  }\n}\n```\n\nIf you want to OR together multiple values, you can use the `$any` operator with an array of values:\n\n```json\n{\n  \"filter\": {\n    \"settings.plan\": { \"$any\": [\"free\", \"paid\"] }\n  }\n}\n```\n\nIf you specify multiple columns in the same filter, they are logically AND'ed together:\n\n```json\n{\n  \"filter\": {\n    \"settings.dark\": true,\n    \"settings.plan\": \"free\"\n  }\n}\n```\n\nThe above matches if both conditions are met.\n\nTo be more explicit about it, you can use `$all` or `$any`:\n\n```json\n{\n  \"filter\": {\n    \"$any\": {\n      \"settings.dark\": true,\n      \"settings.plan\": \"free\"\n    }\n  }\n}\n```\n\nThe `$all` and `$any` operators can also receive an array of objects, which allows for repeating column names:\n\n```json\n{\n  \"filter\": {\n    \"$any\": [\n      {\n        \"name\": \"r1\"\n      },\n      {\n        \"name\": \"r2\"\n      }\n    ]\n  }\n}\n```\n\nYou can check for a value being not-null with `$exists`:\n\n```json\n{\n  \"filter\": {\n    \"$exists\": \"settings\"\n  }\n}\n```\n\nThis can be combined with `$all` or `$any` :\n\n```json\n{\n  \"filter\": {\n    \"$all\": [\n      {\n        \"$exists\": \"settings\"\n      },\n      {\n        \"$exists\": \"name\"\n      }\n    ]\n  }\n}\n```\n\nOr you can use the inverse operator `$notExists`:\n\n```json\n{\n  \"filter\": {\n    \"$notExists\": \"settings\"\n  }\n}\n```\n\n#### Partial match\n\n`$contains` is the simplest operator for partial matching. Note that `$contains` operator can\ncause performance issues at scale, because indices cannot be used.\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$contains\": \"value\"\n    }\n  }\n}\n```\n\nWildcards are supported via the `$pattern` operator:\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$pattern\": \"v*alu?\"\n    }\n  }\n}\n```\n\nThe `$pattern` operator accepts two wildcard characters:\n* `*` matches zero or more characters\n* `?` matches exactly one character\n\nIf you want to match a string that contains a wildcard character, you can escape them using a backslash (`\\`). You can escape a backslash by usign another backslash.\n\nYou can also use the `$endsWith` and `$startsWith` operators:\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$endsWith\": \".gz\"\n    },\n    \"<column_name>\": {\n      \"$startsWith\": \"tmp-\"\n    }\n  }\n}\n```\n\n#### Numeric or datetime ranges\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$ge\": 0,\n      \"$lt\": 100\n    }\n  }\n}\n```\nDate ranges support the same operators, with the date using the format defined in\n[RFC 3339](https://www.rfc-editor.org/rfc/rfc3339):\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$gt\": \"2019-10-12T07:20:50.52Z\",\n      \"$lt\": \"2021-10-12T07:20:50.52Z\"\n    }\n  }\n}\n```\nThe supported operators are `$gt`, `$lt`, `$ge`, `$le`.\n\n#### Negations\n\nA general `$not` operator can inverse any operation.\n\n```json\n{\n  \"filter\": {\n    \"$not\": {\n      \"<column_name1>\": \"value1\",\n      \"<column_name2>\": \"value1\"\n    }\n  }\n}\n```\n\nNote: in the above the two condition are AND together, so this does (NOT ( ...\nAND ...))\n\nOr more complex:\n\n```json\n{\n  \"filter\": {\n    \"$not\": {\n      \"$any\": [\n        {\n          \"<column_name1>\": \"value1\"\n        },\n        {\n          \"$all\": [\n            {\n              \"<column_name2>\": \"value2\"\n            },\n            {\n              \"<column_name3>\": \"value3\"\n            }\n          ]\n        }\n      ]\n    }\n  }\n}\n```\n\nThe `$not: { $any: {}}` can be shorted using the `$none` operator:\n\n```json\n{\n  \"filter\": {\n    \"$none\": {\n      \"<column_name1>\": \"value1\",\n      \"<column_name2>\": \"value1\"\n    }\n  }\n}\n```\n\nIn addition, you can use operators like `$isNot` or `$notExists` to simplify expressions:\n\n```json\n{\n  \"filter\": {\n    \"<column_name>\": {\n      \"$isNot\": \"2019-10-12T07:20:50.52Z\"\n    }\n  }\n}\n```\n\n#### Working with arrays\n\nTo test that an array contains a value, use `$includesAny`.\n\n```json\n{\n  \"filter\": {\n    \"<array_name>\": {\n      \"$includesAny\": \"value\"\n    }\n  }\n}\n```\n\n##### `includesAny`\n\nThe `$includesAny` operator accepts a custom predicate that will check if\nany value in the array column matches the predicate. The `$includes` operator is a\nsynonym for the `$includesAny` operator.\n\nFor example a complex predicate can include\nthe `$all` , `$contains` and `$endsWith` operators:\n\n```json\n{\n  \"filter\": {\n    \"<array name>\": {\n      \"$includes\": {\n        \"$all\": [\n          { \"$contains\": \"label\" },\n          { \"$not\": { \"$endsWith\": \"-debug\" } }\n        ]\n      }\n    }\n  }\n}\n```\n\n##### `includesNone`\n\nThe `$includesNone` operator succeeds if no array item matches the\npredicate.\n\n```json\n{\n  \"filter\": {\n    \"settings.labels\": {\n      \"$includesNone\": [{ \"$contains\": \"label\" }]\n    }\n  }\n}\n```\nThe above matches if none of the array values contain the string \"label\".\n\n##### `includesAll`\n\nThe `$includesAll` operator succeeds if all array items match the\npredicate.\n\nHere is an example of using the `$includesAll` operator:\n\n```json\n{\n  \"filter\": {\n    \"settings.labels\": {\n      \"$includesAll\": [{ \"$contains\": \"label\" }]\n    }\n  }\n}\n```\n\nThe above matches if all array values contain the string \"label\".\n\n### Sorting\n\nSorting by one element:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"sort\": {\n    \"index\": \"asc\"\n  }\n}\n```\n\nor descendently:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"sort\": {\n    \"index\": \"desc\"\n  }\n}\n```\n\nSorting by multiple fields:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"sort\": [\n    {\n      \"index\": \"desc\"\n    },\n    {\n      \"createdAt\": \"desc\"\n    }\n  ]\n}\n```\n\nIt is also possible to sort results randomly:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"sort\": {\n    \"*\": \"random\"\n  }\n}\n```\n\nNote that a random sort does not apply to a specific column, hence the special column name `\"*\"`.\n\nA random sort can be combined with an ascending or descending sort on a specific column:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"sort\": [\n    {\n      \"name\": \"desc\"\n    },\n    {\n      \"*\": \"random\"\n    }\n  ]\n}\n```\n\nThis will sort on the `name` column, breaking ties randomly.\n\n### Pagination\n\nWe offer cursor pagination and offset pagination. The cursor pagination method can be used for sequential scrolling with unrestricted depth. The offset pagination can be used to skip pages and is limited to 1000 records.\n\nExample of cursor pagination:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"page\": {\n    \"after\":\"fMoxCsIwFIDh3WP8c4amDai5hO5SJCRNfaVSeC9b6d1FD\"\n  }\n}\n```\n\nIn the above example, the value of the `page.after` parameter is the cursor returned by the previous query. A sample response is shown below:\n\n```json\n{\n  \"meta\": {\n    \"page\": {\n      \"cursor\": \"fMoxCsIwFIDh3WP8c4amDai5hO5SJCRNfaVSeC9b6d1FD\",\n      \"more\": true\n    }\n  },\n  \"records\": [...]\n}\n```\n\nThe `page` object might contain the follow keys, in addition to `size` and `offset` that were introduced before:\n\n- `after`: Return the next page 'after' the current cursor\n- `before`: Return the previous page 'before' the current cursor.\n- `start`: Resets the given cursor position to the beginning of the query result set. \nWill return the first N records from the query result, where N is the `page.size` parameter. \n- `end`: Resets the give cursor position to the end for the query result set. \nReturns the last N records from the query result, where N is the `page.size` parameter.\n\nThe request will fail if an invalid cursor value is given to `page.before`,\n`page.after`, `page.start` , or `page.end`. No other cursor setting can be\nused if `page.start` or `page.end` is set in a query.\n\nIf both `page.before` and `page.after` parameters are present we treat the\nrequest as a range query. The range query will return all entries after\n`page.after`, but before `page.before`, up to `page.size` or the maximum\npage size. This query requires both cursors to use the same filters and sort\nsettings, plus we require `page.after < page.before`. The range query returns\na new cursor. If the range encompass multiple pages the next page in the range\ncan be queried by update `page.after` to the returned cursor while keeping the\n`page.before` cursor from the first range query.\n\nThe `filter` , `columns`, `sort` , and `page.size` configuration will be\nencoded with the cursor. The pagination request will be invalid if\n`filter` or `sort` is set. The columns returned and page size can be changed\nanytime by passing the `columns` or `page.size` settings to the next query.\n\nIn the following example of size + offset pagination we retrieve the third page of up to 100 results:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"page\": {\n    \"size\": 100,\n    \"offset\": 200\n  }\n}\n```\n\nThe `page.size` parameter represents the maximum number of records returned by this query. It has a default value of 20 and a maximum value of 200.\nThe `page.offset` parameter represents the number of matching records to skip. It has a default value of 0 and a maximum value of 800.\n\nCursor pagination also works in combination with offset pagination. For example, starting from a specific cursor position, using a page size of 200 and an offset of 800, you can skip up to 5 pages of 200 records forwards or backwards from the cursor's position:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"page\": {\n    \"size\": 200,\n    \"offset\": 800,\n    \"after\": \"fMoxCsIwFIDh3WP8c4amDai5hO5SJCRNfaVSeC9b6d1FD\"\n  }\n}\n```\n\n**Special cursors:**\n\n- `page.after=end`: Result points past the last entry. The list of records\n  returned is empty, but `page.meta.cursor` will include a cursor that can be\n  used to \"tail\" the table from the end waiting for new data to be inserted.\n- `page.before=end`: This cursor returns the last page.\n- `page.start=<cursor>`: Start at the beginning of the result set of the <cursor> query. This is equivalent to querying the\n  first page without a cursor but applying `filter` and `sort` . Yet the `page.start`\n  cursor can be convenient at times as user code does not need to remember the\n  filter, sort, columns or page size configuration. All these information are\n  read from the cursor.\n- `page.end=<cursor>`: Move to the end of the result set of the <cursor> query. This is equivalent to querying the\n  last page with `page.before=end`, `filter`, and `sort` . Yet the\n  `page.end` cursor can be more convenient at times as user code does not\n  need to remember the filter, sort, columns or page size configuration. All\n  these information are read from the cursor.\n\nWhen using special cursors like `page.after=\"end\"` or `page.before=\"end\"`, we\nstill allow `filter` and `sort` to be set.\n\nExample of getting the last page:\n\n```json\nPOST /db/demo:main/tables/table/query\n{\n  \"page\": {\n    \"size\": 10,\n    \"before\": \"end\"\n  }\n}\n```",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/query",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "searchBranch",
+      "name_python": "searchBranch",
+      "description": "Run a free text search operation across the database branch.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/search",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "503",
+          "description": "Unexpected Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "searchTable",
+      "name_python": "searchTable",
+      "description": "Run a free text search operation in a particular table.\n\nThe endpoint accepts a `query` parameter that is used for the free text search and a set of structured filters (via the `filter` parameter) that are applied before the search. The `filter` parameter uses the same syntax as the [query endpoint](/api-reference/db/db_branch_name/tables/table_name/) with the following exceptions:\n* filters `$contains`, `$startsWith`, `$endsWith` don't work on columns of type `text`\n* filtering on columns of type `multiple` is currently unsupported",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/search",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "vectorSearchTable",
+      "name_python": "vectorSearch",
+      "description": "This endpoint can be used to perform vector-based similarity searches in a table. \nIt can be used for implementing semantic search and product recommendation. To use this\nendpoint, you need a column of type vector. The input vector must have the same\ndimension as the vector column.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/vectorSearch",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "askTable",
+      "name_python": "ask",
+      "description": "Ask your table a question. If the `Accept` header is set to `text/event-stream`, Xata will stream the results back as SSE's.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/ask",
+      "responses": [
+        {
+          "code": "200",
+          "description": "Response to the question"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "429",
+          "description": "Rate limit exceeded"
+        },
+        {
+          "code": "503",
+          "description": "Unexpected Error"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "response_content_type",
+          "description": "Content type of the response. Default: application/json",
+          "in": "responseBody",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "summarizeTable",
+      "name_python": "summarize",
+      "description": "This endpoint allows you to (optionally) define groups, and then to run\ncalculations on the values in each group. This is most helpful when \nyou'd like to understand the data you have in your database.\n\nA group is a combination of unique values. If you create a group for \n`sold_by`, `product_name`, we will return one row for every combination \nof `sold_by` and `product_name` you have in your database. When you \nwant to calculate statistics, you define these groups and ask Xata to \ncalculate data on each group.\n\n**Some questions you can ask of your data:**\n\nHow many records do I have in this table?\n- Set `columns: []` as we we want data from the entire table, so we ask\nfor no groups.\n- Set `summaries: {\"total\": {\"count\": \"*\"}}` in order to see the count \nof all records. We use `count: *` here we'd like to know the total \namount of rows; ignoring whether they are `null` or not.\n\nWhat are the top total sales for each product in July 2022 and sold \nmore than 10 units?\n- Set `filter: {soldAt: {\n  \"$ge\": \"2022-07-01T00:00:00.000Z\", \n  \"$lt\": \"2022-08-01T00:00:00.000Z\"}\n}` \nin order to limit the result set to sales recorded in July 2022.\n- Set `columns: [product_name]` as we'd like to run calculations on \neach unique product name in our table. Setting `columns` like this will \nproduce one row per unique product name.\n- Set `summaries: {\"total_sales\": {\"count\": \"product_name\"}}` as we'd \nlike to create a field called \"total_sales\" for each group. This field \nwill count all rows in each group with non-null product names.\n- Set `sort: [{\"total_sales\": \"desc\"}]` in order to bring the rows with \nthe highest total_sales field to the top.\n- Set `summariesFilter: {\"total_sales\": {\"$ge\": 10}}` to only send back data \nwith greater than or equal to 10 units.\n\n`columns`: tells Xata how to create each group. If you add `product_id` \nwe will create a new group for every unique `product_id`.\n\n`summaries`: tells Xata which calculations to run on each group. Xata\ncurrently supports count, min, max, sum, average.\n\n`sort`: tells Xata in which order you'd like to see results. You may \nsort by fields specified in `columns` as well as the summary names \ndefined in `summaries`.\n\nnote: Sorting on summarized values can be slower on very large tables; \nthis will impact your rate limit significantly more than other queries. \nTry use `filter` to reduce the amount of data being processed in order \nto reduce impact on your limits.\n\n`summariesFilter`: tells Xata how to filter the results of a summary. \nIt has the same syntax as `filter`, however, by using `summariesFilter`\nyou may also filter on the results of a query.\n\nnote: This is a much slower to use than `filter`. We recommend using \n`filter` wherever possible and `summariesFilter` when it's not \npossible to use `filter`.\n\n`page.size`: tells Xata how many records to return. If unspecified, Xata\nwill return the default size.",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/summarize",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    },
+    {
+      "namespace": "Search and Filter",
+      "name": "aggregateTable",
+      "name_python": "aggregate",
+      "description": "This endpoint allows you to run aggregations (analytics) on the data from one table.\nWhile the summary endpoint is served from a transactional store and the results are strongly \nconsistent, the aggregate endpoint is served from our columnar store and the results are \nonly eventually consistent. On the other hand, the aggregate endpoint uses a \nstore that is more appropiate for analytics, makes use of approximative algorithms \n(e.g for cardinality), and is generally faster and can do more complex aggregations.\n\nFor usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).",
+      "method": "POST",
+      "url_path": "/db/{db_branch_name}/tables/{table_name}/aggregate",
+      "responses": [
+        {
+          "code": "200",
+          "description": "OK"
+        },
+        {
+          "code": "400",
+          "description": "Bad Request"
+        },
+        {
+          "code": "401",
+          "description": "Authentication Error"
+        },
+        {
+          "code": "404",
+          "description": "Example response"
+        },
+        {
+          "code": "5XX",
+          "description": "Unexpected Error"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "table_name",
+          "description": "The Table name",
+          "in": "path",
+          "required": true
+        },
+        {
+          "name": "payload",
+          "description": "content",
+          "in": "requestBody",
+          "required": true
+        },
+        {
+          "name": "db_name",
+          "description": "The name of the database to query. Default: database name from the client.",
+          "in": "path",
+          "required": false
+        },
+        {
+          "name": "branch_name",
+          "description": "The name of the branch to query. Default: branch name from the client.",
+          "in": "path",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

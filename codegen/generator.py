@@ -41,6 +41,7 @@ coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
+SCHEMA_OUT = {}
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
@@ -212,7 +213,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
 
-    # repacements
+    # replacements
     namespace = _sanitize_filename(endpoint["tags"][0])
     operation_id = endpoint["operationId"].strip()
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
@@ -228,6 +229,16 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "path": path,
         "params": endpointParams,
     }
+    SCHEMA_OUT["endpoints"].append({
+        "namespace": endpoint["tags"][0],
+        "name": endpoint["operationId"],
+        "name_python": operation_id,
+        "description": desc,
+        "method": vars["http_method"],
+        "url_path": path,
+        "responses": endpointParams["response_codes"],
+        "parameters": [{"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]} for p in list(endpointParams["list"])],
+    })
     return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(**vars)
 
 
@@ -454,9 +465,18 @@ if __name__ == "__main__":
         if action != "":
             exit(0)
 
+    # Init schema out
+    SCHEMA_OUT = {
+        "scope": scope,
+        "checksum": this_csum,
+        "version": spec["info"]["version"], 
+        "base_url": SPECS[scope]["base_url"],
+        "endpoints": []
+    }
+
     # filter out endpointless namespaces
     logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
-    namespaces = spec["tags"]
+    #namespaces = spec["tags"]
     namespaces = prune_empty_namespaces(spec)
 
     # resolve references
@@ -478,6 +498,12 @@ if __name__ == "__main__":
         logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
         generate_endpoints(path, endpoints, references)
         it += 1
+
+    # fan out schema to docs
+    schema_dump = open(f"codegen/docs/{scope}.json", "w")
+    json.dump(SCHEMA_OUT, schema_dump, indent=2)
+    schema_dump.close()
+    logging.info("persisted new schema docs.")
 
     # Store new checksum
     logging.info("persisting spec checksum '%s'" % this_csum)
