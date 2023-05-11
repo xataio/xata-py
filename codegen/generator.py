@@ -19,7 +19,7 @@
 
 #
 # Spec docs: https://xata.io/docs/rest-api/openapi
-# version: 1.0.0
+# version: 1.1.0
 #
 
 import argparse
