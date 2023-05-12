@@ -22,12 +22,16 @@
 # version: 1.1.0
 #
 
+VERSION = "1.1.0"
+
 import argparse
 import hashlib
 import json
 import logging
+import datetime
 import textwrap
 from typing import Any, Dict
+from xata.helpers import to_rfc339
 
 import coloredlogs
 import requests
@@ -472,8 +476,10 @@ if __name__ == "__main__":
     # Init schema out
     SCHEMA_OUT = {
         "scope": scope,
+        "version_spec": spec["info"]["version"], 
+        "version_codegen": VERSION,
         "checksum": this_csum,
-        "version": spec["info"]["version"], 
+        "generated_on": to_rfc339(datetime.datetime.now(datetime.timezone.utc)),
         "base_url": SPECS[scope]["base_url"],
         "endpoints": []
     }
