@@ -510,7 +510,7 @@ if __name__ == "__main__":
         it += 1
 
     # fan out schema to docs
-    schema_dump = open(f"codegen/docs/{scope}.json", "w")
+    schema_dump = open(f"codegen/ws/{scope}.json", "w")
     json.dump(SCHEMA_OUT, schema_dump, indent=2)
     schema_dump.close()
     logging.info("persisted new schema docs.")
