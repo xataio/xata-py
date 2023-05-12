@@ -19,15 +19,19 @@
 
 #
 # Spec docs: https://xata.io/docs/rest-api/openapi
-# version: 1.0.0
+# version: 1.1.0
 #
+
+VERSION = "1.1.0"
 
 import argparse
 import hashlib
 import json
 import logging
+import datetime
 import textwrap
 from typing import Any, Dict
+from xata.helpers import to_rfc339
 
 import coloredlogs
 import requests
@@ -35,12 +39,14 @@ from mako.template import Template
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
+parser.add_argument("--force-generate", action='store_true', help='Always generate the endpoints even if there is no spec update.')
 args = parser.parse_args()
 
 coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 WS_DIR = "codegen/ws"  # TODO use path from py
+SCHEMA_OUT = {}
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
@@ -212,7 +218,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
 
-    # repacements
+    # replacements
     namespace = _sanitize_filename(endpoint["tags"][0])
     operation_id = endpoint["operationId"].strip()
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
@@ -228,6 +234,16 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "path": path,
         "params": endpointParams,
     }
+    SCHEMA_OUT["endpoints"].append({
+        "namespace": endpoint["tags"][0],
+        "name": endpoint["operationId"],
+        "name_python": operation_id,
+        "description": desc,
+        "method": vars["http_method"],
+        "url_path": path,
+        "responses": endpointParams["response_codes"],
+        "parameters": [{"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]} for p in list(endpointParams["list"])],
+    })
     return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(**vars)
 
 
@@ -449,14 +465,28 @@ if __name__ == "__main__":
     with open(f"codegen/checksums/{scope}.txt", "r") as file:
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
-        logging.info("no specification changes detected, nothing new to generate. stopping here.")
-        action = input("> force generate (hit Enter) or stop (any key) -> ")
-        if action != "":
-            exit(0)
+        if not args.force_generate:
+            logging.info("no specification changes detected, nothing new to generate. stopping here.")
+            action = input("> force generate (hit Enter) or stop (any key) -> ")
+            if action != "":
+                exit(0)
+        else:
+            logging.info("no spec update available, but force generate flag active.")
+
+    # Init schema out
+    SCHEMA_OUT = {
+        "scope": scope,
+        "version_spec": spec["info"]["version"], 
+        "version_codegen": VERSION,
+        "checksum": this_csum,
+        "generated_on": to_rfc339(datetime.datetime.now(datetime.timezone.utc)),
+        "base_url": SPECS[scope]["base_url"],
+        "endpoints": []
+    }
 
     # filter out endpointless namespaces
     logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
-    namespaces = spec["tags"]
+    #namespaces = spec["tags"]
     namespaces = prune_empty_namespaces(spec)
 
     # resolve references
@@ -478,6 +508,12 @@ if __name__ == "__main__":
         logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
         generate_endpoints(path, endpoints, references)
         it += 1
+
+    # fan out schema to docs
+    schema_dump = open(f"codegen/ws/{scope}.json", "w")
+    json.dump(SCHEMA_OUT, schema_dump, indent=2)
+    schema_dump.close()
+    logging.info("persisted new schema docs.")
 
     # Store new checksum
     logging.info("persisting spec checksum '%s'" % this_csum)
