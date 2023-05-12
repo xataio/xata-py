@@ -35,6 +35,7 @@ from mako.template import Template
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
+parser.add_argument("--force-generate", action='store_true', help='Always generate the endpoints even if there is no spec update.')
 args = parser.parse_args()
 
 coloredlogs.install(level="INFO")
@@ -460,10 +461,13 @@ if __name__ == "__main__":
     with open(f"codegen/checksums/{scope}.txt", "r") as file:
         last_csum = file.read().rstrip()
     if this_csum == last_csum:
-        logging.info("no specification changes detected, nothing new to generate. stopping here.")
-        action = input("> force generate (hit Enter) or stop (any key) -> ")
-        if action != "":
-            exit(0)
+        if not args.force_generate:
+            logging.info("no specification changes detected, nothing new to generate. stopping here.")
+            action = input("> force generate (hit Enter) or stop (any key) -> ")
+            if action != "":
+                exit(0)
+        else:
+            logging.info("no spec update available, but force generate flag active.")
 
     # Init schema out
     SCHEMA_OUT = {
