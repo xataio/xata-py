@@ -74,7 +74,6 @@ class XataClient:
 
     configRead: bool = False
     config = None
-    namespaces = {}  # lazy loading container for the namespaces
 
     def __init__(
         self,
