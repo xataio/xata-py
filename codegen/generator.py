@@ -139,6 +139,14 @@ API_RENAMING = {
         "getTableColumns": "getColumns",
         "addTableColumn": "addColumn",
     },
+    "files": {
+        "getFileItem": "getItem",
+        "putFileItem": "putItem",
+        "deleteFileItem": "deleteItem",
+        "getFile": "get",
+        "putFile": "put",
+        "deleteFile": "delete",
+    },
 }
 
 
