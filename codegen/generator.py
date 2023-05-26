@@ -236,10 +236,11 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     }
     SCHEMA_OUT["endpoints"].append({
         "namespace": endpoint["tags"][0],
-        "name": endpoint["operationId"],
+        "name": endpoint["summary"].strip(),
+        "operation_id": endpoint["operationId"],
         "name_python": operation_id,
         "description": desc,
-        "method": vars["http_method"],
+        "method": vars["http_method"].upper(),
         "url_path": path,
         "responses": endpointParams["response_codes"],
         "parameters": [{"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]} for p in list(endpointParams["list"])],
