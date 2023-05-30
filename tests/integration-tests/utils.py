@@ -20,7 +20,15 @@
 import random
 import string
 import time
+import base64
 
+from faker import Faker
+
+faker = Faker()
+Faker.seed(42)
+
+def get_faker() -> Faker:
+    return faker
 
 def get_db_name() -> str:
     return f"sdk-integration-test-py-{get_random_string(6)}"
@@ -64,3 +72,24 @@ def get_posts() -> list[str]:
             "text": "I like to eat apples and bananas",
         },
     ]
+
+def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
+    if not cat:
+        cat = random.choice(["image", "audio", "video", "text"])
+    file_name = faker.file_path(depth=random.randint(0, 7), category=cat)
+    # different file types
+    if cat == "image":
+        file_content = faker.image(size=(random.randint(10, 512), random.randint(10, 512)))
+    else:
+        file_content = faker.binary(random.randint(256, 1024))
+    encoded_string = base64.b64encode(file_content).decode("ascii")
+    return {
+        "name": file_name.replace("/", "_"),
+        "mediaType": faker.mime_type(category=cat),
+        "base64Content": encoded_string,
+        "enablePublicUrl": publicUrl,
+        "signedUrlTimeout": signedUrlTimeout,
+    }, file_content
+
+def get_image(publicUrl: bool = True, signedUrlTimeout: int = 120):
+    return get_file(publicUrl, signedUrlTimeout, "image")

@@ -30,168 +30,207 @@ from xata.namespace import Namespace
 
 class Files(Namespace):
 
-    scope = "core"
+    scope = "workspace"
 
-    def getItem(self, table_name: str, record_id: str, column_name: str, file_id: str, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Retrieves file content from an array by file ID
+    def getItem(
+        self,
+        table_name: str,
+        record_id: str,
+        column_name: str,
+        file_id: str,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        Retrieves file content from an array by file ID
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
-       Method: GET
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: */*
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
+        Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: */*
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param file_id: str The File Identifier
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param file_id: str The File Identifier
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
-       return self.request("GET", url_path)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
+        return self.request("GET", url_path)
 
-    def putItem(self, table_name: str, record_id: str, column_name: str, file_id: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Uploads the file content to an array given the file ID
+    def putItem(
+        self,
+        table_name: str,
+        record_id: str,
+        column_name: str,
+        file_id: str,
+        payload: dict,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        Uploads the file content to an array given the file ID
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
-       Method: PUT
-       Response status codes:
-       - 200: OK
-       - 201: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 422: Example response
-       - 5XX: Unexpected Error
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
+        Method: PUT
+        Response status codes:
+        - 200: OK
+        - 201: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 422: Example response
+        - 5XX: Unexpected Error
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param file_id: str The File Identifier
-       :param payload: dict content
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param file_id: str The File Identifier
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
-       headers = {"content-type": "application/json"}
-       return self.request("PUT", url_path, headers, payload)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
+        headers = {"content-type": "application/json"}
+        return self.request("PUT", url_path, headers, payload)
 
-    def deleteItem(self, table_name: str, record_id: str, column_name: str, file_id: str, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Deletes an item from an file array column given the file ID
+    def deleteItem(
+        self,
+        table_name: str,
+        record_id: str,
+        column_name: str,
+        file_id: str,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        Deletes an item from an file array column given the file ID
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
-       Method: DELETE
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
+        Method: DELETE
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param file_id: str The File Identifier
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param file_id: str The File Identifier
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
-       return self.request("DELETE", url_path)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
+        return self.request("DELETE", url_path)
 
-    def get(self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Retrieves the file content from a file column
+    def get(
+        self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
+        """
+        Retrieves the file content from a file column
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
-       Method: GET
-       Response status codes:
-       - 200: OK
-       - 204: no content
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
-       Response: */*
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
+        Method: GET
+        Response status codes:
+        - 200: OK
+        - 204: no content
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: */*
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-       return self.request("GET", url_path)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
+        return self.request("GET", url_path)
 
-    def put(self, table_name: str, record_id: str, column_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Uploads the file content to the given file column
+    def put(
+        self,
+        table_name: str,
+        record_id: str,
+        column_name: str,
+        payload: dict,
+        mediaType: str,
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> Response:
+        """
+        Uploads the file content to the given file column
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
-       Method: PUT
-       Response status codes:
-       - 200: OK
-       - 201: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 422: Example response
-       - 5XX: Unexpected Error
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
+        Method: PUT
+        Response status codes:
+        - 200: OK
+        - 201: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 422: Example response
+        - 5XX: Unexpected Error
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param payload: dict content
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-       headers = {"content-type": "application/json"}
-       return self.request("PUT", url_path, headers, payload)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
+        #headers = {"content-type": "application/json"}
+        headers = {"content-type": mediaType}
+        return self.request("PUT", url_path, headers, payload)
 
-    def delete(self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
-       """
-       Deletes a file referred in a file column
+    def delete(
+        self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
+        """
+        Deletes a file referred in a file column
 
-       Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
-       Method: DELETE
-       Response status codes:
-       - 200: OK
-       - 400: Bad Request
-       - 401: Authentication Error
-       - 404: Example response
-       - 5XX: Unexpected Error
+        Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
+        Method: DELETE
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
 
-       :param table_name: str The Table name
-       :param record_id: str The Record name
-       :param column_name: str The Column name
-       :param db_name: str = None The name of the database to query. Default: database name from the client.
-       :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+        :param table_name: str The Table name
+        :param record_id: str The Record name
+        :param column_name: str The Column name
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-       :return Response
-       """
-       db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-       url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-       return self.request("DELETE", url_path)
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
+        return self.request("DELETE", url_path)

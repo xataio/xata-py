@@ -17,9 +17,8 @@
 # under the License.
 #
 
-import pytest
-import random
 import base64
+import pytest
 import utils
 from faker import Faker
 
@@ -31,9 +30,13 @@ class TestFilesSingleFile(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         # TODO remove staging
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name, domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev")
+        self.client = XataClient(
+            db_name=self.db_name,
+            branch_name=self.branch_name,
+            domain_core="api.staging-xata.dev",
+            domain_workspace="staging-xata.dev",
+        )
         self.fake = Faker()
-        self.record_id = utils.get_random_string(24)
 
         # create database
         r = self.client.databases().create(
@@ -45,17 +48,15 @@ class TestFilesSingleFile(object):
         )
         assert r.status_code == 201
 
-        # create table posts
         r = self.client.table().create("Attachments")
         assert r.status_code == 201
-
-        # create schema
         r = self.client.table().setSchema(
             "Attachments",
             {
                 "columns": [
                     {"name": "title", "type": "string"},
                     {"name": "one_file", "type": "file"},
+                    {"name": "many_files", "type": "file[]"},
                 ]
             },
             db_name=self.db_name,
@@ -66,45 +67,136 @@ class TestFilesSingleFile(object):
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
-        #pass
 
-    def _get_file(self, publicUrl: bool = True) -> dict:
-        cat = 'image'
-        file_name = self.fake.file_path(depth=random.randint(0, 7), category=cat)
-        file_content = self.fake.image(size=(random.randint(10, 512), random.randint(10, 512)))
-        encoded_string = base64.b64encode(file_content).decode('ascii')
-        return {
-            "name": file_name.replace("/", "_"),
-            "mediaType": self.fake.mime_type(category=cat),
-            "base64Content": encoded_string,
-            "enablePublicUrl": publicUrl,
-        }
+    def test_put_file(self):
+        payload = {"title": self.fake.catch_phrase()}
+        r = self.client.records().insert("Attachments", payload)
+        assert r.status_code == 201, r.json()
 
-    def test_insert_record_with_files_and_read_id(self):
+        rid = r.json()["id"]
+        obj, raw = utils.get_file()
+        file = self.client.files().put("Attachments", rid, "one_file", obj["base64Content"], obj["mediaType"])
+        assert file.status_code == 201, file.json()
+        assert "attributes" in file.json()
+        assert "mediaType" in file.json()
+        assert "name" in file.json()
+        assert "size" in file.json()
+
+        assert not file.json()["attributes"]
+        assert obj["mediaType"] == file.json()["mediaType"]
+        assert file.json()["name"] == ""
+        assert file.json()["size"] > 0 # TODO test against actual values
+
+        file = self.client.files().get("Attachments", rid, "one_file")
+        assert file.status_code == 200, file.json()
+        # assert raw == file.raw
+        # TODO ^
+
+        proof = self.client.records().get("Attachments", rid)
+        assert proof.status_code == 200, proof.json()
+        assert proof.json()["one_file"]["mediaType"] == obj["mediaType"]
+        assert proof.json()["one_file"]["name"] == ""
+        assert len(list(proof.json()["one_file"].keys())) == 2
+
+    def test_put_image(self):
+        payload = {"title": self.fake.catch_phrase()}
+        r = self.client.records().insert("Attachments", payload)
+        assert r.status_code == 201, r.json()
+
+        rid = r.json()["id"]
+        obj, raw = utils.get_image()
+        file = self.client.files().put("Attachments", rid, "one_file", obj["base64Content"], obj["mediaType"])
+        assert file.status_code == 201, file.json()
+        assert "attributes" in file.json()
+        #assert "width" in file.json()["attributes"]
+        #assert "height" in file.json()["attributes"]
+
+        file = self.client.files().get("Attachments", rid, "one_file")
+        assert file.status_code == 200, file.json()
+        # assert raw == file.raw
+        # TODO ^
+
+        proof = self.client.records().get("Attachments", rid)
+        assert proof.status_code == 200, proof.json()
+        assert proof.json()["one_file"]["mediaType"] == obj["mediaType"]
+        assert proof.json()["one_file"]["name"] == ""
+        #assert proof.json()["one_file"]["attributes"]["height"] == file.json()["attributes"]["height"]
+        #assert proof.json()["one_file"]["attributes"]["width"] == file.json()["attributes"]["width"]
+        #assert len(list(proof.json()["one_file"].keys())) == 3
+        # TODO ^
+
+    def test_put_file_to_overwrite(self):
+        obj_1, _ = utils.get_file()
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": "", #self._get_file(),
+            "one_file": obj_1,
         }
-
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201
-        assert "id" in r.json()
-        """
-        r = self.client.records().get("Attachments", r.json()["id"])
-        assert r.status_code == 200
-        record = r.json()
-        assert "id" not in record["one_file"]
-        assert len(record["many_files"]) == len(payload["many_files"])
-        assert "id" in record["many_files"][0]
-        assert "id" in record["many_files"][1]
-        assert "id" in record["many_files"][2]
+        assert r.status_code == 201, r.json()
+        rid = r.json()["id"]
 
-        assert "name" in record["one_file"]
-        assert "mediaType" in record["one_file"]
-        assert "name" in record["many_files"][0]
-        assert "mediaType" in record["many_files"][0]
+        first = self.client.files().get("Attachments", rid, "one_file")
+        assert first.status_code == 200, first.json()
 
-        assert record["title"] == payload["title"]
-        assert len(list(record["one_file"].keys())) == 2
-        assert len(list(record["many_files"][0].keys())) == 3
-        """
+        obj_2, _ = utils.get_file()
+        file = self.client.files().put("Attachments", rid, "one_file", obj_1["base64Content"], obj_2["mediaType"])
+        assert file.status_code == 200, file.json()
+        
+        second = self.client.files().get("Attachments", rid, "one_file")
+        assert second.status_code == 200, second.json()
+        assert second.raw != first.raw
+
+    def test_get_file(self):
+        obj, raw = utils.get_file()
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": obj,
+            "many_files": [],
+        }
+        r = self.client.records().insert("Attachments", payload)
+        assert r.status_code == 201, r.json()
+
+        rid = r.json()["id"]
+        file = self.client.files().get("Attachments", rid, "one_file")
+        assert file.status_code == 200, file.json()
+        #assert raw == file.raw
+        # TODO ^
+
+    def test_delete_file(self):
+        obj, _ = utils.get_file()
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": obj,
+        }
+        r = self.client.records().insert("Attachments", payload)
+        assert r.status_code == 201, r.json()
+
+        rid = r.json()["id"]
+        file = self.client.files().delete("Attachments", rid, "one_file")
+        assert file.status_code == 200, file.json()
+        assert "attributes" in file.json()
+        assert "mediaType" in file.json()
+        assert "name" in file.json()
+        assert payload["one_file"]["mediaType"] == file.json()["mediaType"]
+        assert payload["one_file"]["name"] == file.json()["name"]
+
+        proof = self.client.records().get("Attachments", rid)
+        assert proof.status_code == 200
+        assert "one_file" not in proof.json() 
+        # null columns are not part of the response set
+
+    def test_delete_image_response_with_attributes(self):
+        obj, _ = utils.get_image()
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": obj,
+        }
+        r = self.client.records().insert("Attachments", payload)
+        assert r.status_code == 201, r.json()
+
+        rid = r.json()["id"]
+        file = self.client.files().delete("Attachments", rid, "one_file")
+        assert file.status_code == 200, file.json()
+        assert "attributes" in file.json()
+        assert "height" in file.json()["attributes"]
+        assert "width" in file.json()["attributes"]

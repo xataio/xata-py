@@ -17,11 +17,11 @@
 # under the License.
 #
 
-import pytest
-import random
 import base64
+import random
+
+import pytest
 import utils
-from faker import Faker
 
 from xata.client import XataClient
 
@@ -31,9 +31,13 @@ class TestRecordsFileOperations(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         # TODO remove staging
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name, domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev")
-        self.fake = Faker()
-        self.record_id = utils.get_random_string(24)
+        self.client = XataClient(
+            db_name=self.db_name,
+            branch_name=self.branch_name,
+            domain_core="api.staging-xata.dev",
+            domain_workspace="staging-xata.dev",
+        )
+        self.fake = utils.get_faker()
 
         # create database
         r = self.client.databases().create(
@@ -67,37 +71,18 @@ class TestRecordsFileOperations(object):
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
-        #pass
-
-    def _get_file(self, publicUrl: bool = True) -> dict:
-        cat = 'image'
-        file_name = self.fake.file_path(depth=random.randint(0, 7), category=cat)
-        file_content = self.fake.image(size=(random.randint(10, 512), random.randint(10, 512)))
-        encoded_string = base64.b64encode(file_content).decode('ascii')
-        return {
-            "name": file_name.replace("/", "_"),
-            "mediaType": self.fake.mime_type(category=cat),
-            "base64Content": encoded_string,
-            "enablePublicUrl": publicUrl,
-            #"signedURLTimeout": 120, # 2 min
-        }
 
     def test_insert_record_with_files_and_read_it(self):
-        """
-        POST /db/{db_branch_name}/tables/{table_name}/data
-        """
+        obj, raw = utils.get_file()
+        many_files = [utils.get_file() for it in range(3)]
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": self._get_file(),
-            "many_files": [
-                self._get_file(),
-                self._get_file(),
-                self._get_file(),
-            ],
+            "one_file": obj,
+            "many_files": [x[0] for x in many_files],
         }
 
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201
+        assert r.status_code == 201, r.json()
         assert "id" in r.json()
 
         r = self.client.records().get("Attachments", r.json()["id"])
@@ -105,16 +90,17 @@ class TestRecordsFileOperations(object):
         record = r.json()
         assert "id" not in record["one_file"]
         assert len(record["many_files"]) == len(payload["many_files"])
+        # the id is used to address the file within the map
         assert "id" in record["many_files"][0]
         assert "id" in record["many_files"][1]
         assert "id" in record["many_files"][2]
 
         assert "name" in record["one_file"]
         assert "mediaType" in record["one_file"]
+        #assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
 
         assert record["title"] == payload["title"]
         assert len(list(record["one_file"].keys())) == 2
         assert len(list(record["many_files"][0].keys())) == 3
-
