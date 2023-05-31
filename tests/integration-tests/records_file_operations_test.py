@@ -17,10 +17,6 @@
 # under the License.
 #
 
-import base64
-import random
-
-import pytest
 import utils
 
 from xata.client import XataClient
@@ -97,7 +93,7 @@ class TestRecordsFileOperations(object):
 
         assert "name" in record["one_file"]
         assert "mediaType" in record["one_file"]
-        #assert "size" in record["one_file"] # TODO should be here
+        # assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
 

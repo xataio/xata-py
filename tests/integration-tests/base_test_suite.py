@@ -17,8 +17,9 @@
 # under the License.
 #
 
-import random
 import base64
+import random
+
 import utils
 from faker import Faker
 
@@ -26,14 +27,18 @@ from xata.client import XataClient
 
 
 class BaseTestSuite(object):
-
     def setup_class(self, is_staging: bool = False):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         self.fake = Faker()
 
         if is_staging:
-            self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name, domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev")
+            self.client = XataClient(
+                db_name=self.db_name,
+                branch_name=self.branch_name,
+                domain_core="api.staging-xata.dev",
+                domain_workspace="staging-xata.dev",
+            )
         else:
             self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
@@ -57,10 +62,10 @@ class BaseTestSuite(object):
         return utils.get_random_string(24)
 
     def get_file_record(self, publicUrl: bool = True) -> dict:
-        cat = 'image'
+        cat = "image"
         file_name = self.fake.file_path(depth=random.randint(0, 7), category=cat)
         file_content = self.fake.image(size=(random.randint(10, 512), random.randint(10, 512)))
-        encoded_string = base64.b64encode(file_content).decode('ascii')
+        encoded_string = base64.b64encode(file_content).decode("ascii")
         return {
             "name": file_name.replace("/", "_"),
             "mediaType": self.fake.mime_type(category=cat),

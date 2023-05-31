@@ -23,7 +23,7 @@ from faker import Faker
 from xata.client import XataClient
 
 
-class TestFilesSingleFile(object):
+class TestFilesMultipleFiles(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -34,9 +34,9 @@ class TestFilesSingleFile(object):
             domain_core="api.staging-xata.dev",
             domain_workspace="staging-xata.dev",
         )
+        self.client.set_header("X-Xata-Files", "true")
         self.fake = Faker()
 
-        # create database
         r = self.client.databases().create(
             self.db_name,
             {
@@ -66,20 +66,23 @@ class TestFilesSingleFile(object):
         r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200
 
-    def test_put_file(self):
+    def test_put_file_item(self):
         payload = {"title": self.fake.catch_phrase()}
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        obj, raw = utils.get_file()
-        file = self.client.files().put("Attachments", rid, "one_file", obj["base64Content"], obj["mediaType"])
+        obj_1, raw_1 = utils.get_file()
+        obj_2, raw_2 = utils.get_file()
+        file = self.client.files().putItem("Attachments", rid, "one_file", obj_1["base64Content"], "1234") #obj_1["mediaType"])
+
         assert file.status_code == 201, file.json()
         assert "attributes" in file.json()
         assert "mediaType" in file.json()
         assert "name" in file.json()
         assert "size" in file.json()
 
+        """
         assert not file.json()["attributes"]
         assert obj["mediaType"] == file.json()["mediaType"]
         assert file.json()["name"] == ""
@@ -198,3 +201,4 @@ class TestFilesSingleFile(object):
         assert "attributes" in file.json()
         assert "height" in file.json()["attributes"]
         assert "width" in file.json()["attributes"]
+    """

@@ -17,18 +17,20 @@
 # under the License.
 #
 
+import base64
 import random
 import string
 import time
-import base64
 
 from faker import Faker
 
 faker = Faker()
 Faker.seed(42)
 
+
 def get_faker() -> Faker:
     return faker
+
 
 def get_db_name() -> str:
     return f"sdk-integration-test-py-{get_random_string(6)}"
@@ -73,6 +75,7 @@ def get_posts() -> list[str]:
         },
     ]
 
+
 def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
     if not cat:
         cat = random.choice(["image", "audio", "video", "text"])
@@ -90,6 +93,7 @@ def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = Non
         "enablePublicUrl": publicUrl,
         "signedUrlTimeout": signedUrlTimeout,
     }, file_content
+
 
 def get_image(publicUrl: bool = True, signedUrlTimeout: int = 120):
     return get_file(publicUrl, signedUrlTimeout, "image")

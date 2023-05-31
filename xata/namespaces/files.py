@@ -204,7 +204,7 @@ class Files(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-        #headers = {"content-type": "application/json"}
+        # headers = {"content-type": "application/json"}
         headers = {"content-type": mediaType}
         return self.request("PUT", url_path, headers, payload)
 
