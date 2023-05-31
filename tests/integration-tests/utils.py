@@ -17,10 +17,12 @@
 # under the License.
 #
 
+import os
 import base64
 import random
 import string
 import time
+import magic 
 
 from faker import Faker
 
@@ -81,10 +83,7 @@ def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = Non
         cat = random.choice(["image", "audio", "video", "text"])
     file_name = faker.file_path(depth=random.randint(0, 7), category=cat)
     # different file types
-    if cat == "image":
-        file_content = faker.image(size=(random.randint(10, 512), random.randint(10, 512)))
-    else:
-        file_content = faker.binary(random.randint(256, 1024))
+    file_content = faker.binary(random.randint(256, 1024))
     encoded_string = base64.b64encode(file_content).decode("ascii")
     return {
         "name": file_name.replace("/", "_"),
@@ -94,6 +93,24 @@ def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = Non
         "signedUrlTimeout": signedUrlTimeout,
     }, file_content
 
+def get_file_name(file_name: str) -> str:
+    return "%s/tests/data/attachments/%s" % (os.getcwd(), file_name)
 
-def get_image(publicUrl: bool = True, signedUrlTimeout: int = 120):
-    return get_file(publicUrl, signedUrlTimeout, "image")
+def get_file_content(file_name: str):
+    with open(file_name, "r") as f:
+        return f.read().encode()
+
+def get_image(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120):
+    file_name = get_file_name(file_name)
+    file_content = get_file_content(file_name)
+
+    encoded_string = base64.b64encode(file_content).decode('ascii')
+    media_type = magic.from_file(file_name, mime=True)
+
+    return {
+        "name": file_name.replace("/", "_"),
+        "mediaType": media_type,
+        "base64Content": encoded_string,
+        "enablePublicUrl": publicUrl,
+        "signedUrlTimeout": signedUrlTimeout,
+    }

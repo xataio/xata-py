@@ -102,21 +102,25 @@ class TestFilesSingleFile(object):
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        obj, raw = utils.get_image()
-        file = self.client.files().put("Attachments", rid, "one_file", obj["base64Content"], obj["mediaType"])
+        img = utils.get_image("images/01.gif")
+        file = self.client.files().put("Attachments", rid, "one_file", img["base64Content"], img["mediaType"])
         assert file.status_code == 201, file.json()
         assert "attributes" in file.json()
-        # assert "width" in file.json()["attributes"]
-        # assert "height" in file.json()["attributes"]
+        #assert "width" in file.json()["attributes"], img["mediaType"]
+        #assert "height" in file.json()["attributes"], img["mediaType"]
 
         file = self.client.files().get("Attachments", rid, "one_file")
         assert file.status_code == 200, file.json()
-        # assert raw == file.raw
+        assert file.headers.get('content-type') == "image/gif"
+        """
+        raw = utils.get_file_content(utils.get_file_name("images/01.gif"))
+        assert raw == file.content
         # TODO ^
-
+        """
+        
         proof = self.client.records().get("Attachments", rid)
         assert proof.status_code == 200, proof.json()
-        assert proof.json()["one_file"]["mediaType"] == obj["mediaType"]
+        assert proof.json()["one_file"]["mediaType"] == img["mediaType"]
         assert proof.json()["one_file"]["name"] == ""
         # assert proof.json()["one_file"]["attributes"]["height"] == file.json()["attributes"]["height"]
         # assert proof.json()["one_file"]["attributes"]["width"] == file.json()["attributes"]["width"]
@@ -184,10 +188,10 @@ class TestFilesSingleFile(object):
         # null columns are not part of the response set
 
     def test_delete_image_response_with_attributes(self):
-        obj, _ = utils.get_image()
+        img = utils.get_image("images/02.gif")
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": obj,
+            "one_file": img,
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
