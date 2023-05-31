@@ -77,7 +77,7 @@ def get_posts() -> list[str]:
 
 
 def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
-    if not cat:
+    if cat is None:
         cat = random.choice(["image", "audio", "video", "text"])
     file_name = faker.file_path(depth=random.randint(0, 7), category=cat)
     # different file types

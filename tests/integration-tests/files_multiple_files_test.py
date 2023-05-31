@@ -74,7 +74,9 @@ class TestFilesMultipleFiles(object):
         rid = r.json()["id"]
         obj_1, raw_1 = utils.get_file()
         obj_2, raw_2 = utils.get_file()
-        file = self.client.files().putItem("Attachments", rid, "one_file", obj_1["base64Content"], "1234") #obj_1["mediaType"])
+        file = self.client.files().putItem(
+            "Attachments", rid, "one_file", obj_1["base64Content"], "1234"
+        )  # obj_1["mediaType"])
 
         assert file.status_code == 201, file.json()
         assert "attributes" in file.json()
