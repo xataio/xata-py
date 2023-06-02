@@ -22,24 +22,27 @@
 # version: 1.1.0
 #
 
-VERSION = "1.1.0"
-
 import argparse
+import datetime
 import hashlib
 import json
 import logging
-import datetime
 import textwrap
 from typing import Any, Dict
-from xata.helpers import to_rfc339
 
 import coloredlogs
 import requests
 from mako.template import Template
 
+from xata.helpers import to_rfc339
+
+VERSION = "1.1.0"
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
-parser.add_argument("--force-generate", action='store_true', help='Always generate the endpoints even if there is no spec update.')
+parser.add_argument(
+    "--force-generate", action="store_true", help="Always generate the endpoints even if there is no spec update."
+)
 args = parser.parse_args()
 
 coloredlogs.install(level="INFO")
@@ -135,6 +138,14 @@ API_RENAMING = {
         "setTableSchema": "setSchema",
         "getTableColumns": "getColumns",
         "addTableColumn": "addColumn",
+    },
+    "files": {
+        "getFileItem": "getItem",
+        "putFileItem": "putItem",
+        "deleteFileItem": "deleteItem",
+        "getFile": "get",
+        "putFile": "put",
+        "deleteFile": "delete",
     },
 }
 
@@ -234,17 +245,23 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "path": path,
         "params": endpointParams,
     }
-    SCHEMA_OUT["endpoints"].append({
-        "namespace": endpoint["tags"][0],
-        "name": endpoint["summary"].strip(),
-        "operation_id": endpoint["operationId"],
-        "name_python": operation_id,
-        "description": desc,
-        "method": vars["http_method"].upper(),
-        "url_path": path,
-        "responses": endpointParams["response_codes"],
-        "parameters": [{"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]} for p in list(endpointParams["list"])],
-    })
+
+    SCHEMA_OUT["endpoints"].append(
+        {
+            "namespace": endpoint["tags"][0],
+            "name": endpoint["summary"].strip(),
+            "operation_id": endpoint["operationId"],
+            "name_python": operation_id,
+            "description": desc,
+            "method": vars["http_method"],
+            "url_path": path,
+            "responses": endpointParams["response_codes"],
+            "parameters": [
+                {"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]}
+                for p in list(endpointParams["list"])
+            ],
+        }
+    )
     return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(**vars)
 
 
@@ -477,17 +494,17 @@ if __name__ == "__main__":
     # Init schema out
     SCHEMA_OUT = {
         "scope": scope,
-        "version_spec": spec["info"]["version"], 
+        "version_spec": spec["info"]["version"],
         "version_codegen": VERSION,
         "checksum": this_csum,
         "generated_on": to_rfc339(datetime.datetime.now(datetime.timezone.utc)),
         "base_url": SPECS[scope]["base_url"],
-        "endpoints": []
+        "endpoints": [],
     }
 
     # filter out endpointless namespaces
     logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
-    #namespaces = spec["tags"]
+    # namespaces = spec["tags"]
     namespaces = prune_empty_namespaces(spec)
 
     # resolve references

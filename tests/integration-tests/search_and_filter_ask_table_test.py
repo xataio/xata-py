@@ -31,7 +31,6 @@ class TestSearchAndFilterAskTableEndpoint(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.client.set_header("X-Xata-Ask-Enabled", "true")
 
         # create database
         r = self.client.databases().create(

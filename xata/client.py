@@ -29,6 +29,7 @@ from .namespaces.core.databases import Databases
 from .namespaces.core.invites import Invites
 from .namespaces.core.users import Users
 from .namespaces.core.workspaces import Workspaces
+from .namespaces.files import Files
 from .namespaces.workspace.branch import Branch
 from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
@@ -74,7 +75,6 @@ class XataClient:
 
     configRead: bool = False
     config = None
-    namespaces = {}  # lazy loading container for the namespaces
 
     def __init__(
         self,
@@ -113,10 +113,6 @@ class XataClient:
             self.workspace_id_location = "parameter"
             self.region = region
 
-        # TODO remove these assignment once client.request is removed from the codebase
-        #        self.base_url = f"https://{self.workspace_id}.{self.region}.{domain_workspace}"
-        #        self.control_plane_url = f"https://{domain_core}/workspaces/{self.workspace_id}/"
-
         self.db_name = self.get_database_name_if_configured() if db_name is None else db_name
         self.branch_name = self.get_branch_name_if_configured() if branch_name is None else branch_name
 
@@ -137,6 +133,7 @@ class XataClient:
         self._branch = Branch(self)
         self._search_and_filter = Search_and_filter(self)
         self._databases = Databases(self)
+        self._files = Files(self)
         self._invites = Invites(self)
         self._migrations = Migrations(self)
         self._records = Records(self)
@@ -384,3 +381,10 @@ class XataClient:
         :return Table
         """
         return self._table
+
+    def files(self) -> Files:
+        """
+        Files Namespace
+        :return Files
+        """
+        return self._files
