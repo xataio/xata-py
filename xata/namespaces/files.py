@@ -174,8 +174,7 @@ class Files(Namespace):
         table_name: str,
         record_id: str,
         column_name: str,
-        payload: dict,
-        mediaType: str,
+        data: bytes,
         db_name: str = None,
         branch_name: str = None,
     ) -> Response:
@@ -205,8 +204,8 @@ class Files(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         # headers = {"content-type": "application/json"}
-        headers = {"content-type": mediaType}
-        return self.request("PUT", url_path, headers, payload)
+        headers = {"content-type": "application/binary"}
+        return self.request("PUT", url_path, headers, data=data)
 
     def delete(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None

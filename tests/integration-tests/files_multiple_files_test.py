@@ -27,13 +27,7 @@ class TestFilesMultipleFiles(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
-        # TODO remove staging
-        self.client = XataClient(
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-            domain_core="api.staging-xata.dev",
-            domain_workspace="staging-xata.dev",
-        )
+        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
         self.client.set_header("X-Xata-Files", "true")
         self.fake = Faker()
 

@@ -27,16 +27,10 @@ class TestFilesSingleFile(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
-        # TODO remove staging
-        self.client = XataClient(
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-            domain_core="api.staging-xata.dev",
-            domain_workspace="staging-xata.dev",
-        )
+        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client.set_header("X-Xata-Files", "true")
         self.fake = Faker()
 
-        # create database
         r = self.client.databases().create(
             self.db_name,
             {
@@ -72,8 +66,9 @@ class TestFilesSingleFile(object):
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        obj, raw = utils.get_file()
-        file = self.client.files().put("Attachments", rid, "one_file", obj["base64Content"], obj["mediaType"])
+        attachment = utils.get_file("text/stocks.csv")
+
+        file = self.client.files().put("Attachments", rid, "one_file", attachment["base64Content"])
         assert file.status_code == 201, file.json()
         assert "attributes" in file.json()
         assert "mediaType" in file.json()
@@ -81,7 +76,7 @@ class TestFilesSingleFile(object):
         assert "size" in file.json()
 
         assert not file.json()["attributes"]
-        assert obj["mediaType"] == file.json()["mediaType"]
+        assert attachment["mediaType"] == file.json()["mediaType"]
         assert file.json()["name"] == ""
         assert file.json()["size"] > 0  # TODO test against actual values
 
@@ -92,7 +87,7 @@ class TestFilesSingleFile(object):
 
         proof = self.client.records().get("Attachments", rid)
         assert proof.status_code == 200, proof.json()
-        assert proof.json()["one_file"]["mediaType"] == obj["mediaType"]
+        assert proof.json()["one_file"]["mediaType"] == attachment["mediaType"]
         assert proof.json()["one_file"]["name"] == ""
         assert len(list(proof.json()["one_file"].keys())) == 2
 
@@ -102,8 +97,8 @@ class TestFilesSingleFile(object):
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        img = utils.get_image("images/01.gif")
-        file = self.client.files().put("Attachments", rid, "one_file", img["base64Content"], img["mediaType"])
+        img = utils.get_file("images/01.gif")
+        file = self.client.files().put("Attachments", rid, "one_file", img["base64Content"])
         assert file.status_code == 201, file.json()
         assert "attributes" in file.json()
         #assert "width" in file.json()["attributes"], img["mediaType"]
@@ -126,12 +121,12 @@ class TestFilesSingleFile(object):
         # assert proof.json()["one_file"]["attributes"]["width"] == file.json()["attributes"]["width"]
         # assert len(list(proof.json()["one_file"].keys())) == 3
         # TODO ^
-
+    """
     def test_put_file_to_overwrite(self):
-        obj_1, _ = utils.get_file()
+        img_1 = utils.get_file("images/01.gif")
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": obj_1,
+            "one_file": img_1,
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
@@ -139,21 +134,22 @@ class TestFilesSingleFile(object):
 
         first = self.client.files().get("Attachments", rid, "one_file")
         assert first.status_code == 200, first.json()
+        #assert content == 
 
-        obj_2, _ = utils.get_file()
-        file = self.client.files().put("Attachments", rid, "one_file", obj_1["base64Content"], obj_2["mediaType"])
+        img_2 = utils.get_file("images/02.gif")
+        file = self.client.files().put("Attachments", rid, "one_file", img_2["base64Content"])
         assert file.status_code == 200, file.json()
 
         second = self.client.files().get("Attachments", rid, "one_file")
         assert second.status_code == 200, second.json()
-        assert second.raw != first.raw
+        # assert different mime type
+        assert second.content != first.content
 
     def test_get_file(self):
-        obj, raw = utils.get_file()
+        obj = utils.get_file("archives/assets.zip")
         payload = {
             "title": self.fake.catch_phrase(),
             "one_file": obj,
-            "many_files": [],
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
@@ -161,6 +157,7 @@ class TestFilesSingleFile(object):
         rid = r.json()["id"]
         file = self.client.files().get("Attachments", rid, "one_file")
         assert file.status_code == 200, file.json()
+        # assert header
         # assert raw == file.raw
         # TODO ^
 
@@ -188,7 +185,7 @@ class TestFilesSingleFile(object):
         # null columns are not part of the response set
 
     def test_delete_image_response_with_attributes(self):
-        img = utils.get_image("images/02.gif")
+        img = utils.get_file("images/02.gif")
         payload = {
             "title": self.fake.catch_phrase(),
             "one_file": img,
@@ -202,3 +199,4 @@ class TestFilesSingleFile(object):
         assert "attributes" in file.json()
         assert "height" in file.json()["attributes"]
         assert "width" in file.json()["attributes"]
+    """

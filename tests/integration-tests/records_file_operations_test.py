@@ -26,16 +26,10 @@ class TestRecordsFileOperations(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
-        # TODO remove staging
-        self.client = XataClient(
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-            domain_core="api.staging-xata.dev",
-            domain_workspace="staging-xata.dev",
-        )
+        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        # create database
         r = self.client.databases().create(
             self.db_name,
             {
@@ -44,8 +38,6 @@ class TestRecordsFileOperations(object):
             },
         )
         assert r.status_code == 201
-
-        # create table posts
         r = self.client.table().create("Attachments")
         assert r.status_code == 201
 
@@ -69,12 +61,10 @@ class TestRecordsFileOperations(object):
         assert r.status_code == 200
 
     def test_insert_record_with_files_and_read_it(self):
-        obj, raw = utils.get_file()
-        many_files = [utils.get_file() for it in range(3)]
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": obj,
-            "many_files": [x[0] for x in many_files],
+            "one_file": utils.get_file("images/01.gif"),
+            "many_files": [utils.get_file("images/02.gif") for it in range(3)],
         }
 
         r = self.client.records().insert("Attachments", payload)
@@ -83,6 +73,7 @@ class TestRecordsFileOperations(object):
 
         r = self.client.records().get("Attachments", r.json()["id"])
         assert r.status_code == 200
+
         record = r.json()
         assert "id" not in record["one_file"]
         assert len(record["many_files"]) == len(payload["many_files"])

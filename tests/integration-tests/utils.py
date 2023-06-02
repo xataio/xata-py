@@ -18,11 +18,11 @@
 #
 
 import os
-import base64
 import random
 import string
 import time
 import magic 
+import base64
 
 from faker import Faker
 
@@ -77,7 +77,7 @@ def get_posts() -> list[str]:
         },
     ]
 
-
+"""
 def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
     if cat is None:
         cat = random.choice(["image", "audio", "video", "text"])
@@ -92,25 +92,23 @@ def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = Non
         "enablePublicUrl": publicUrl,
         "signedUrlTimeout": signedUrlTimeout,
     }, file_content
+"""
 
 def get_file_name(file_name: str) -> str:
     return "%s/tests/data/attachments/%s" % (os.getcwd(), file_name)
 
-def get_file_content(file_name: str):
-    with open(file_name, "r") as f:
+def get_file_content(file_name: str) -> bytes:
+    with open(file_name, "r", encoding="utf-8") as f:
         return f.read().encode()
 
-def get_image(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120):
+def get_file(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120):
     file_name = get_file_name(file_name)
     file_content = get_file_content(file_name)
 
-    encoded_string = base64.b64encode(file_content).decode('ascii')
-    media_type = magic.from_file(file_name, mime=True)
-
     return {
         "name": file_name.replace("/", "_"),
-        "mediaType": media_type,
-        "base64Content": encoded_string,
+        "mediaType": magic.from_file(file_name, mime=True),
+        "base64Content": file_content.decode("utf-8"),
         "enablePublicUrl": publicUrl,
         "signedUrlTimeout": signedUrlTimeout,
     }
