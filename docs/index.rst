@@ -68,4 +68,4 @@ Indices and tables
 * :ref:`search`
 
 .. _Xata: https://xata.io
-.. _Xata_CLI: https://xata.io/docs/cli/getting-started
+.. _Xata_CLI: https://xata.io/docs/getting-started/cli
