@@ -100,8 +100,14 @@ class TestSearchAndFilterNamespace(object):
         r = self.client.search_and_filter().query("NonExistingTable", payload)
         assert r.status_code == 404
 
+    def test_query_unknown_columns(self):
+        r = self.client.search_and_filter().query("Posts", {"columns": ["does", "not", "exist"]})
+        assert r.status_code == 404
+    
+    def test_query_empty_columns(self):
         r = self.client.search_and_filter().query("Posts", {"columns": [""]})
-        assert r.status_code == 400
+        assert r.status_code == 200
+        assert len(r.json()["records"]) > 0
 
     def test_search_branch(self):
         """
