@@ -87,6 +87,8 @@ class TestRecordsNamespace(object):
         assert "id" in r.json()
         assert "xata" in r.json()
         assert "version" in r.json()["xata"]
+        assert "createdAt" in r.json()["xata"]
+        assert "updatedAt" in r.json()["xata"]
         assert r.json()["xata"]["version"] == 0
 
         r = self.client.records().insert("NonExistingTable", record)
@@ -101,6 +103,8 @@ class TestRecordsNamespace(object):
         assert "id" in r.json()
         assert "xata" in r.json()
         assert "version" in r.json()["xata"]
+        assert "createdAt" in r.json()["xata"]
+        assert "updatedAt" in r.json()["xata"]
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == 0
 
@@ -122,6 +126,8 @@ class TestRecordsNamespace(object):
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
+        assert "createdAt" in r.json()["xata"]
+        assert "updatedAt" in r.json()["xata"]
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == 1
         assert len(r.json().keys()) == len(record.keys()) + 2
@@ -151,6 +157,8 @@ class TestRecordsNamespace(object):
         assert r.status_code == 200
         assert "id" in r.json()
         assert "version" in r.json()["xata"]
+        assert "createdAt" in r.json()["xata"]
+        assert "updatedAt" in r.json()["xata"]
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == proof.json()["xata"]["version"] + 1
 

@@ -17,13 +17,13 @@
 # under the License.
 #
 
+import base64
 import os
 import random
 import string
 import time
-import magic 
-import base64
 
+import magic
 from faker import Faker
 
 faker = Faker()
@@ -77,6 +77,7 @@ def get_posts() -> list[str]:
         },
     ]
 
+
 """
 def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
     if cat is None:
@@ -94,12 +95,15 @@ def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = Non
     }, file_content
 """
 
+
 def get_file_name(file_name: str) -> str:
     return "%s/tests/data/attachments/%s" % (os.getcwd(), file_name)
+
 
 def get_file_content(file_name: str) -> bytes:
     with open(file_name, "r", encoding="utf-8") as f:
         return f.read().encode()
+
 
 def get_file(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120):
     file_name = get_file_name(file_name)

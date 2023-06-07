@@ -382,9 +382,7 @@ class XataClient:
         """
         return self._table
 
+    """
     def files(self) -> Files:
-        """
-        Files Namespace
-        :return Files
-        """
         return self._files
+    """
