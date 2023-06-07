@@ -112,7 +112,7 @@ class TestFilesSingleFile(object):
         assert raw == file.content
         # TODO ^
         """
-        
+
         proof = self.client.records().get("Attachments", rid)
         assert proof.status_code == 200, proof.json()
         assert proof.json()["one_file"]["mediaType"] == img["mediaType"]
@@ -134,7 +134,7 @@ class TestFilesSingleFile(object):
 
         first = self.client.files().get("Attachments", rid, "one_file")
         assert first.status_code == 200, first.json()
-        #assert content == 
+        #assert content ==
 
         img_2 = utils.get_file("images/02.gif")
         file = self.client.files().put("Attachments", rid, "one_file", img_2["base64Content"])

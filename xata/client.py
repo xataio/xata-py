@@ -381,6 +381,7 @@ class XataClient:
         :return Table
         """
         return self._table
+
     """
     def files(self) -> Files:
         return self._files

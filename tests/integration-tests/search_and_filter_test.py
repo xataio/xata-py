@@ -103,7 +103,7 @@ class TestSearchAndFilterNamespace(object):
     def test_query_unknown_columns(self):
         r = self.client.search_and_filter().query("Posts", {"columns": ["does", "not", "exist"]})
         assert r.status_code == 404
-    
+
     def test_query_empty_columns(self):
         r = self.client.search_and_filter().query("Posts", {"columns": [""]})
         assert r.status_code == 200
