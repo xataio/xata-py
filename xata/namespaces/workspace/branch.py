@@ -32,7 +32,7 @@ class Branch(Namespace):
 
     scope = "workspace"
 
-    def getBranches(self, db_name: str) -> Response:
+    def get_branches(self, db_name: str) -> Response:
         """
         List all available Branches
 
@@ -53,7 +53,7 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def getDetails(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_details(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch schema and metadata
 
@@ -129,7 +129,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}"
         return self.request("DELETE", url_path)
 
-    def getMetadata(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_metadata(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get Branch Metadata
 
@@ -152,7 +152,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}/metadata"
         return self.request("GET", url_path)
 
-    def updateMetadata(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def update_metadata(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update the branch metadata
 
@@ -176,7 +176,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getStats(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_stats(self, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch usage metrics.
 

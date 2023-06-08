@@ -46,7 +46,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Posts",
             {
                 "columns": [
@@ -69,7 +69,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
             }
             for i in range(10)
         ]
-        r = self.client.records().bulkInsert("Posts", {"records": self.posts})
+        r = self.client.records().bulk_insert("Posts", {"records": self.posts})
         assert r.status_code == 200
         utils.wait_until_records_are_indexed("Posts")
 
@@ -102,7 +102,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         POST /db/{db_branch_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.data().searchBranch(payload)
+        r = self.client.data().search_branch(payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1
@@ -116,7 +116,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.data().searchTable("Posts", payload)
+        r = self.client.data().search_table("Posts", payload)
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) >= 1

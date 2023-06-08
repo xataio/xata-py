@@ -17,7 +17,6 @@
 # under the License.
 #
 
-import base64
 import os
 import random
 import string

@@ -32,7 +32,7 @@ class Migrations(Namespace):
 
     scope = "workspace"
 
-    def getHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get branch migration history [deprecated]
 
@@ -57,7 +57,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("GET", url_path, headers, payload)
 
-    def getPlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
 
@@ -81,7 +81,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def executePlan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def execute_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Apply a migration plan to the branch
 
@@ -105,7 +105,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getSchemaHistory(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_schema_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Query schema history.
 
@@ -154,7 +154,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compareSchemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def compare_schemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compare branch schemas.
 

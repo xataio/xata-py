@@ -32,7 +32,7 @@ class Databases(Namespace):
 
     scope = "core"
 
-    def getDatabases(self, workspace_id: str = None) -> Response:
+    def get_databases(self, workspace_id: str = None) -> Response:
         """
         List all databases available in your Workspace.
 
@@ -54,7 +54,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
 
-    def getMetadata(self, db_name: str, workspace_id: str = None) -> Response:
+    def get_metadata(self, db_name: str, workspace_id: str = None) -> Response:
         """
         Retrieve metadata of the given database
 
@@ -129,7 +129,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
-    def updateMetadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def update_metadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Update the color of the selected database
 
@@ -182,7 +182,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getRegions(self, workspace_id: str = None) -> Response:
+    def get_regions(self, workspace_id: str = None) -> Response:
         """
         List regions available to create a database on
 

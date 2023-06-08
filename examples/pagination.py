@@ -53,7 +53,7 @@ while more:
         del query["filter"]
 
     # Query the data
-    resp = xata.data().queryTable("nba_teams", query)
+    resp = xata.data().query("nba_teams", query)
 
     # Print teams
     for team in resp.json()["records"]:

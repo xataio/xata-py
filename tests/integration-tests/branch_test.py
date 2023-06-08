@@ -44,7 +44,7 @@ class TestBranchNamespace(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Posts",
             {
                 "columns": [
@@ -62,7 +62,7 @@ class TestBranchNamespace(object):
         assert r.status_code == 200
 
     def test_get_branch_list(self):
-        r = self.client.branch().getBranches(self.db_name)
+        r = self.client.branch().get_branches(self.db_name)
         assert r.status_code == 200
         assert "databaseName" in r.json()
         assert "branches" in r.json()
@@ -72,11 +72,11 @@ class TestBranchNamespace(object):
         assert "createdAt" in r.json()["branches"][0]
         assert r.json()["branches"][0]["name"] == "main"
 
-        r = self.client.branch().getBranches("NonExistingDatabase")
+        r = self.client.branch().get_branches("NonExistingDatabase")
         assert r.status_code == 404
 
     def test_get_branch_details(self):
-        r = self.client.branch().getDetails()
+        r = self.client.branch().get_details()
         assert r.status_code == 200
         assert "databaseName" in r.json()
         assert "branchName" in r.json()
@@ -85,7 +85,7 @@ class TestBranchNamespace(object):
         assert r.json()["databaseName"] == self.client.get_config()["dbName"]
         # TODO be exhastive testing the ^ dict keys
 
-        r = self.client.branch().getDetails("NonExistingDatabase")
+        r = self.client.branch().get_details("NonExistingDatabase")
         assert r.status_code == 404
 
     def test_create_database_branch(self):
@@ -118,7 +118,7 @@ class TestBranchNamespace(object):
         assert r.status_code == 422
 
     def test_get_branch_metadata(self):
-        r = self.client.branch().getMetadata()
+        r = self.client.branch().get_metadata()
         assert r.status_code == 200
 
         # TODO test from a previously created branch
@@ -126,18 +126,18 @@ class TestBranchNamespace(object):
         # assert "branch" in r.json()
         # assert "stage" in r.json()
 
-        r = self.client.branch().getMetadata(branch_name=self.branch_name)
+        r = self.client.branch().get_metadata(branch_name=self.branch_name)
         assert r.status_code == 200
-        r = self.client.branch().getMetadata(db_name=self.db_name)
+        r = self.client.branch().get_metadata(db_name=self.db_name)
         assert r.status_code == 200
 
-        r = self.client.branch().getMetadata(db_name="NOPE")
+        r = self.client.branch().get_metadata(db_name="NOPE")
         assert r.status_code == 404
-        r = self.client.branch().getMetadata(branch_name="shrug")
+        r = self.client.branch().get_metadata(branch_name="shrug")
         assert r.status_code == 404
 
     def test_get_branch_stats(self):
-        r = self.client.branch().getStats()
+        r = self.client.branch().get_stats()
         assert r.status_code == 200
         assert "timestamp" in r.json()
         assert "interval" in r.json()

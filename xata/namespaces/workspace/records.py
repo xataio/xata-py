@@ -32,7 +32,7 @@ class Records(Namespace):
 
     scope = "workspace"
 
-    def branchTransaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def transaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Execute a transaction on a branch
 
@@ -66,7 +66,7 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
         Response status codes:
-        - 201: Record ID and version
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -116,7 +116,7 @@ class Records(Namespace):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("GET", url_path)
 
-    def insertWithId(
+    def insert_with_id(
         self,
         table_name: str,
         record_id: str,
@@ -135,8 +135,8 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
         Response status codes:
-        - 200: Record ID and version
-        - 201: Record ID and version
+        - 200: Record ID and metadata
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -168,7 +168,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def upsertWithId(
+    def upsert_with_id(
         self,
         table_name: str,
         record_id: str,
@@ -184,8 +184,8 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
         Response status codes:
-        - 200: Record ID and version
-        - 201: Record ID and version
+        - 200: Record ID and metadata
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -244,7 +244,7 @@ class Records(Namespace):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("DELETE", url_path)
 
-    def updateWithId(
+    def update_with_id(
         self,
         table_name: str,
         record_id: str,
@@ -260,7 +260,7 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
         Response status codes:
-        - 200: Record ID and version
+        - 200: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -289,7 +289,7 @@ class Records(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def bulkInsert(
+    def bulk_insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
     ) -> Response:
         """

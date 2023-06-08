@@ -220,6 +220,7 @@ class Search_and_filter(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
 
         :param table_name: str The Table name
@@ -234,7 +235,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def searchBranch(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Run a free text search operation across the database branch.
 
@@ -245,7 +246,7 @@ class Search_and_filter(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
-        - 503: Unexpected Error
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
 
         :param payload: dict content
@@ -259,7 +260,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def searchTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_table(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Run a free text search operation in a particular table.  The endpoint accepts a `query`
         parameter that is used for the free text search and a set of structured filters (via the
@@ -290,7 +291,7 @@ class Search_and_filter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def vectorSearch(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def vector_search(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         This endpoint can be used to perform vector-based similarity searches in a table.  It can
         be used for implementing semantic search and product recommendation.  To use this
@@ -338,7 +339,7 @@ class Search_and_filter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 429: Rate limit exceeded
-        - 503: Unexpected Error
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
         Responses:
         - application/json

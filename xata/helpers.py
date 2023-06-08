@@ -109,7 +109,7 @@ class BulkProcessor(object):
             batch = self.records.next_batch()
             if "table" in batch and len(batch["records"]) > 0:
                 try:
-                    r = self.client.records().bulkInsert(batch["table"], {"records": batch["records"]})
+                    r = self.client.records().bulk_insert(batch["table"], {"records": batch["records"]})
                     if r.status_code != 200:
                         self.logger.error(
                             "thread #%d: unable to process batch for table '%s', with error: %d - %s"
@@ -326,7 +326,7 @@ class Transaction(object):
             raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
         self.operations["operations"].append(operation)
 
-    def insert(self, table: str, record: dict, createOnly: bool = False) -> None:
+    def insert(self, table: str, record: dict, create_only: bool = False) -> None:
         """
         Inserts can be used to insert records across any number of tables in your database. As with the
         insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you.
@@ -334,14 +334,14 @@ class Transaction(object):
 
         :param table: str
         :param record: dict
-        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite
-            the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Default: False
+        :param create_only: bool By default, if a record exists with the same explicit ID, Xata will overwrite
+            the record. You can adjust this behavior by setting `create_only` to `true` for the operation. Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
+        self._add_operation({"insert": {"table": table, "record": record, "createOnly": create_only}})
 
-    def update(self, table: str, recordId: str, fields: dict, upsert: bool = False) -> None:
+    def update(self, table: str, record_id: str, fields: dict, upsert: bool = False) -> None:
         """
         Updates can be used to update records in any number of tables in your database. The update operation
         requires an ID parameter explicitly defined. The operation will only replace the fields explicitly
@@ -349,39 +349,39 @@ class Transaction(object):
         if set to `true`, the update operation will insert the record if no record is found with the provided ID.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param fields: dict
         :param upsert: bool Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"update": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
+        self._add_operation({"update": {"table": table, "id": record_id, "fields": fields, "upsert": upsert}})
 
-    def delete(self, table: str, recordId: str, columns: list[str] = []) -> None:
+    def delete(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
         A delete is used to remove records. Delete can operate on records from the same transaction, and will
         not cancel a transaction if no record is found.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param columns: list of columns to retrieve
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"delete": {"table": table, "id": recordId, "columns": columns}})
+        self._add_operation({"delete": {"table": table, "id": record_id, "columns": columns}})
 
-    def get(self, table: str, recordId: str, columns: list[str] = []) -> None:
+    def get(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
         A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction
         but will not cancel a transaction if no record is found.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param columns: list of columns to retrieve
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"get": {"table": table, "id": recordId, "columns": columns}})
+        self._add_operation({"get": {"table": table, "id": record_id, "columns": columns}})
 
     def run(self) -> dict:
         """
@@ -389,7 +389,7 @@ class Transaction(object):
 
         :return dict
         """
-        r = self.client.records().branchTransaction(self.operations)
+        r = self.client.records().transaction(self.operations)
         result = {
             "status_code": r.status_code,
             "results": r.json()["results"] if "results" in r.json() else [],
