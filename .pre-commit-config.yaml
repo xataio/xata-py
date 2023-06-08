@@ -20,6 +20,7 @@ repos:
     hooks:
       - id: flake8
         args:
+          #- "--version"
           - "--max-line-length=120"
           - "--max-complexity=18"
           # https://flake8.pycqa.org/en/latest/user/error-codes.html
