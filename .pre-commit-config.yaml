@@ -20,11 +20,9 @@ repos:
     hooks:
       - id: flake8
         args:
-          #- "--version"
           - "--max-line-length=120"
           - "--max-complexity=18"
-          # https://flake8.pycqa.org/en/latest/user/error-codes.html
-          #- "--ignore=E203,E266,E501,W503,F403,F401,E402"
+        additional_dependencies: [pep8-naming]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
