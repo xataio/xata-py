@@ -326,7 +326,7 @@ class Transaction(object):
             raise Exception(f"Maximum amount of {TRX_MAX_OPERATIONS} transaction operations exceeded.")
         self.operations["operations"].append(operation)
 
-    def insert(self, table: str, record: dict, createOnly: bool = False) -> None:
+    def insert(self, table: str, record: dict, create_only: bool = False) -> None:
         """
         Inserts can be used to insert records across any number of tables in your database. As with the
         insert endpoints, you can explicitly set an ID, or omit it and have Xata auto-generate one for you.
@@ -334,12 +334,12 @@ class Transaction(object):
 
         :param table: str
         :param record: dict
-        :param createOnly: bool By default, if a record exists with the same explicit ID, Xata will overwrite
-            the record. You can adjust this behavior by setting `createOnly` to `true` for the operation. Default: False
+        :param create_only: bool By default, if a record exists with the same explicit ID, Xata will overwrite
+            the record. You can adjust this behavior by setting `create_only` to `true` for the operation. Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
+        self._add_operation({"insert": {"table": table, "record": record, "create_only": create_only}})
 
     def update(self, table: str, record_id: str, fields: dict, upsert: bool = False) -> None:
         """
