@@ -109,7 +109,7 @@ class BulkProcessor(object):
             batch = self.records.next_batch()
             if "table" in batch and len(batch["records"]) > 0:
                 try:
-                    r = self.client.records().bulkInsert(batch["table"], {"records": batch["records"]})
+                    r = self.client.records().bulk_insert(batch["table"], {"records": batch["records"]})
                     if r.status_code != 200:
                         self.logger.error(
                             "thread #%d: unable to process batch for table '%s', with error: %d - %s"
@@ -389,7 +389,7 @@ class Transaction(object):
 
         :return dict
         """
-        r = self.client.records().branchTransaction(self.operations)
+        r = self.client.records().transaction(self.operations)
         result = {
             "status_code": r.status_code,
             "results": r.json()["results"] if "results" in r.json() else [],

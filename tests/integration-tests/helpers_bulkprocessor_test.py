@@ -49,7 +49,7 @@ class TestHelpersBulkProcessor(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Posts",
             {
                 "columns": [
@@ -89,7 +89,7 @@ class TestHelpersBulkProcessor(object):
         time.sleep(pt)
         utils.wait_until_records_are_indexed("Posts")
 
-        r = self.client.search_and_filter().searchTable("Posts", {})
+        r = self.client.search_and_filter().search_table("Posts", {})
         assert r.status_code == 200
         assert "records" in r.json()
         assert len(r.json()["records"]) > 0

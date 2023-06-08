@@ -47,7 +47,7 @@ class TestHelpersTransaction(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Posts",
             {
                 "columns": [

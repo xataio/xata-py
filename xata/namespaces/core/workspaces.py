@@ -32,7 +32,7 @@ class Workspaces(Namespace):
 
     scope = "core"
 
-    def getWorkspaces(
+    def get_workspaces(
         self,
     ) -> Response:
         """
@@ -149,7 +149,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}"
         return self.request("DELETE", url_path)
 
-    def getMembers(self, workspace_id: str = None) -> Response:
+    def get_members(self, workspace_id: str = None) -> Response:
         """
         Retrieve the list of members of the given workspace
 
@@ -173,7 +173,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
 
-    def updateMember(self, user_id: str, payload: dict, workspace_id: str = None) -> Response:
+    def update_member(self, user_id: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Update a workspace member role.  Workspaces must always have at least one owner, so this
         operation will fail if trying to remove owner role from the last owner in the workspace.
@@ -200,7 +200,7 @@ class Workspaces(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def removeMember(self, user_id: str, workspace_id: str = None) -> Response:
+    def remove_member(self, user_id: str, workspace_id: str = None) -> Response:
         """
         Remove the member from the workspace
 

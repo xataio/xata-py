@@ -25,7 +25,7 @@ from xata.client import XataClient
 
 class TestWorkspacesNamespace(object):
 
-    workspace_id = None
+    #    workspace_id = None
 
     @classmethod
     def setup_class(self):
@@ -34,11 +34,8 @@ class TestWorkspacesNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
         self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
 
-    #
-    # Workspace Ops
-    #
     def test_list_workspaces(self):
-        r = self.client.workspaces().getWorkspaces()
+        r = self.client.workspaces().get_workspaces()
         assert r.status_code == 200
         assert "workspaces" in r.json()
         assert len(r.json()["workspaces"]) > 0
@@ -124,7 +121,7 @@ class TestWorkspacesNamespace(object):
     # Workspace Member Ops
     #
     def test_get_workspace_members(self):
-        r = self.client.workspaces().getMembers()
+        r = self.client.workspaces().get_members()
         assert r.status_code == 200
         assert "members" in r.json()
         assert "invites" in r.json()
@@ -136,23 +133,23 @@ class TestWorkspacesNamespace(object):
 
         pytest.workspaces["member"] = r.json()["members"][0]
 
-        r = self.client.workspaces().getMembers(workspace_id="NonExistingWorkspaceId")
+        r = self.client.workspaces().get_members(workspace_id="NonExistingWorkspaceId")
         assert r.status_code == 403
 
     def test_update_workspace_member(self):
         payload = {"role": "owner" if pytest.workspaces["member"]["role"] == "maintainer" else "owner"}
 
-        r = self.client.workspaces().updateMember(pytest.workspaces["member"]["userId"], {"role": "spiderman"})
+        r = self.client.workspaces().update_member(pytest.workspaces["member"]["userId"], {"role": "spiderman"})
         assert r.status_code == 400
-        r = self.client.workspaces().updateMember(
+        r = self.client.workspaces().update_member(
             pytest.workspaces["member"]["userId"],
             payload,
             workspace_id="NonExistingWorkspaceId",
         )
         assert r.status_code == 403
-        r = self.client.workspaces().updateMember("NonExistingUserId", payload)
+        r = self.client.workspaces().update_member("NonExistingUserId", payload)
         assert r.status_code == 403
-        r = self.client.workspaces().updateMember(pytest.workspaces["member"]["userId"], {})
+        r = self.client.workspaces().update_member(pytest.workspaces["member"]["userId"], {})
         assert r.status_code == 400
 
         pytest.workspaces["member"] = None

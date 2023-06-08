@@ -48,5 +48,5 @@ class TestNamespace(object):
 
         # workspace_id should be provided by the the client implicitly
         assert databases.create(db_name, {"region": "eu-west-1"}).status_code == 201
-        assert databases.getMetadata(db_name).status_code == 200
+        assert databases.get_metadata(db_name).status_code == 200
         assert databases.delete(db_name).status_code == 200

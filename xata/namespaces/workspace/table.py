@@ -111,7 +111,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def getSchema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_schema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get table schema
 
@@ -135,7 +135,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         return self.request("GET", url_path)
 
-    def setSchema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def set_schema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update table schema
 
@@ -162,7 +162,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def getColumns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_columns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Retrieves the list of table columns and their definition.  This endpoint returns the
         column list with object columns being reported with their full dot-separated path
@@ -188,7 +188,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
 
-    def addColumn(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def add_column(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
         definition.  In the column definition, the 'name' field should contain the full path
@@ -217,7 +217,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def getColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_column(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
         Get the definition of a single column.  To refer to sub-objects, the column name can
         contain dots.  For example `address.country`.
@@ -243,7 +243,9 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("GET", url_path)
 
-    def deleteColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def delete_column(
+        self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None
+    ) -> Response:
         """
         Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
         For example `address.country`.
@@ -268,7 +270,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns/{column_name}"
         return self.request("DELETE", url_path)
 
-    def updateColumn(
+    def update_column(
         self, table_name: str, column_name: str, payload: dict, db_name: str = None, branch_name: str = None
     ) -> Response:
         """

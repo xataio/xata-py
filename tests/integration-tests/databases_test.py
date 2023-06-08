@@ -42,7 +42,7 @@ class TestDatabasesNamespace(object):
         assert r.status_code == 201
 
     def test_list_databases(self):
-        r = self.client.databases().getDatabases()
+        r = self.client.databases().get_databases()
         assert r.status_code == 200
         assert "databases" in r.json()
         assert len(r.json()["databases"]) > 0
@@ -55,11 +55,11 @@ class TestDatabasesNamespace(object):
         # assert r.json()["databases"][0]["region"] == self.get_config()["region"]
 
         with pytest.raises(UnauthorizedException) as e:
-            self.client.databases().getDatabases("NonExistingWorkspaceId")
+            self.client.databases().get_databases("NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
     def test_get_database_metadata(self):
-        r = self.client.databases().getMetadata(self.db_name)
+        r = self.client.databases().get_metadata(self.db_name)
         assert r.status_code == 200
         assert "name" in r.json()
         assert "region" in r.json()
@@ -68,17 +68,17 @@ class TestDatabasesNamespace(object):
         assert r.json()["region"] == self.client.get_config()["region"]
 
         with pytest.raises(UnauthorizedException) as e:
-            self.client.databases().getMetadata(self.db_name, workspace_id="NonExistingWorkspaceId")
+            self.client.databases().get_metadata(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
-        r = self.client.databases().getMetadata("NonExistingDatabase")
+        r = self.client.databases().get_metadata("NonExistingDatabase")
         assert r.status_code == 404
 
     def test_update_database_metadata(self):
         metadata = {"ui": {"color": "green"}}
-        r_old = self.client.databases().getMetadata(self.db_name)
+        r_old = self.client.databases().get_metadata(self.db_name)
         assert r_old.status_code == 200
-        r_new = self.client.databases().updateMetadata(self.db_name, metadata)
+        r_new = self.client.databases().update_metadata(self.db_name, metadata)
         assert r_new.status_code == 200
         assert "name" in r_new.json()
         assert "region" in r_new.json()
@@ -89,13 +89,13 @@ class TestDatabasesNamespace(object):
         assert r_old.json() != r_new.json()
         assert r_new.json()["ui"] == metadata["ui"]
 
-        r = self.client.databases().updateMetadata(self.db_name, {})
+        r = self.client.databases().update_metadata(self.db_name, {})
         assert r.status_code == 400
-        r = self.client.databases().updateMetadata("NonExistingDatabase", metadata)
+        r = self.client.databases().update_metadata("NonExistingDatabase", metadata)
         assert r.status_code == 400
 
         with pytest.raises(UnauthorizedException) as e:
-            self.client.databases().updateMetadata(self.db_name, metadata, workspace_id="NonExistingWorkspaceId")
+            self.client.databases().update_metadata(self.db_name, metadata, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
     # run last for cleanup
@@ -112,11 +112,11 @@ class TestDatabasesNamespace(object):
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
     def test_get_available_regions(self):
-        r = self.client.databases().getRegions()
+        r = self.client.databases().get_regions()
         assert r.status_code == 200
         assert "regions" in r.json()
         assert len(r.json()["regions"]) == 3
 
         with pytest.raises(UnauthorizedException) as e:
-            self.client.databases().getRegions(workspace_id="NonExistingWorkspaceId")
+            self.client.databases().get_regions(workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"

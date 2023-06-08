@@ -50,7 +50,7 @@ class TestRecordsBranchTransactionsNamespace(object):
         payload = {"operations": []}
         for id in pytest.branch_transactions["record_ids"]:
             payload["operations"].append({"delete": {"table": "Posts", "id": id}})
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
 
     def test_insert_only(self, record: dict):
@@ -69,7 +69,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -90,7 +90,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -132,7 +132,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -162,7 +162,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -184,7 +184,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -209,7 +209,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
@@ -262,7 +262,7 @@ class TestRecordsBranchTransactionsNamespace(object):
             ]
         }
 
-        r = self.client.records().branchTransaction(payload)
+        r = self.client.records().transaction(payload)
         assert r.status_code == 200
         assert "results" in r.json()
         assert len(r.json()["results"]) == len(payload["operations"])
