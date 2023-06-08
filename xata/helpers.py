@@ -341,7 +341,7 @@ class Transaction(object):
         """
         self._add_operation({"insert": {"table": table, "record": record, "createOnly": createOnly}})
 
-    def update(self, table: str, recordId: str, fields: dict, upsert: bool = False) -> None:
+    def update(self, table: str, record_id: str, fields: dict, upsert: bool = False) -> None:
         """
         Updates can be used to update records in any number of tables in your database. The update operation
         requires an ID parameter explicitly defined. The operation will only replace the fields explicitly
@@ -349,39 +349,39 @@ class Transaction(object):
         if set to `true`, the update operation will insert the record if no record is found with the provided ID.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param fields: dict
         :param upsert: bool Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"update": {"table": table, "id": recordId, "fields": fields, "upsert": upsert}})
+        self._add_operation({"update": {"table": table, "id": record_id, "fields": fields, "upsert": upsert}})
 
-    def delete(self, table: str, recordId: str, columns: list[str] = []) -> None:
+    def delete(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
         A delete is used to remove records. Delete can operate on records from the same transaction, and will
         not cancel a transaction if no record is found.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param columns: list of columns to retrieve
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"delete": {"table": table, "id": recordId, "columns": columns}})
+        self._add_operation({"delete": {"table": table, "id": record_id, "columns": columns}})
 
-    def get(self, table: str, recordId: str, columns: list[str] = []) -> None:
+    def get(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
         A get is used to retrieve a record by id. A get operation can retrieve records created in the same transaction
         but will not cancel a transaction if no record is found.
 
         :param table: str
-        :param recordId: str
+        :param record_id: str
         :param columns: list of columns to retrieve
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"get": {"table": table, "id": recordId, "columns": columns}})
+        self._add_operation({"get": {"table": table, "id": record_id, "columns": columns}})
 
     def run(self) -> dict:
         """

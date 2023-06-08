@@ -200,14 +200,14 @@ class TestHelpersTransaction(object):
         setup = Transaction(self.client)
         setup.insert("Posts", self._get_record())
         response = setup.run()
-        recordId = response["results"][0]["id"]
+        record_id = response["results"][0]["id"]
 
         trx = Transaction(self.client)
-        trx.get("Posts", recordId)
-        trx.get("Posts", recordId, ["title"])
-        trx.get("Posts", recordId, ["content"])
-        trx.get("Posts", recordId, ["title", "content"])
-        trx.get("Posts", recordId, ["id", "title", "content"])
+        trx.get("Posts", record_id)
+        trx.get("Posts", record_id, ["title"])
+        trx.get("Posts", record_id, ["content"])
+        trx.get("Posts", record_id, ["title", "content"])
+        trx.get("Posts", record_id, ["id", "title", "content"])
         response = trx.run()
 
         assert response["status_code"] == 200
