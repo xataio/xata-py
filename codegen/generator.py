@@ -74,6 +74,11 @@ REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 
 API_RENAMING = {
+    "authentication": {
+        "getUserAPIKeys": "get_user_api_keys",
+        "createUserAPIKey": "create_user_api_keys",
+        "deleteUserAPIKey": "delete_user_api_keys",
+    },
     "databases": {
         "getDatabaseMetadata": "get_metadata",
         "createDatabase": "create",

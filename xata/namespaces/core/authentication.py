@@ -32,7 +32,7 @@ class Authentication(Namespace):
 
     scope = "core"
 
-    def getUserAPIKeys(
+    def get_user_api_keys(
         self,
     ) -> Response:
         """
@@ -54,7 +54,7 @@ class Authentication(Namespace):
         url_path = "/user/keys"
         return self.request("GET", url_path)
 
-    def createUserAPIKey(self, key_name: str) -> Response:
+    def create_user_api_keys(self, key_name: str) -> Response:
         """
         Create and return new API key
 
@@ -75,7 +75,7 @@ class Authentication(Namespace):
         url_path = f"/user/keys/{key_name}"
         return self.request("POST", url_path)
 
-    def deleteUserAPIKey(self, key_name: str) -> Response:
+    def delete_user_api_keys(self, key_name: str) -> Response:
         """
         Delete an existing API key
 

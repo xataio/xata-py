@@ -339,7 +339,7 @@ class Transaction(object):
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"insert": {"table": table, "record": record, "create_only": create_only}})
+        self._add_operation({"insert": {"table": table, "record": record, "createOnly": create_only}})
 
     def update(self, table: str, record_id: str, fields: dict, upsert: bool = False) -> None:
         """

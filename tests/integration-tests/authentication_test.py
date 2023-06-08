@@ -31,7 +31,7 @@ class TestAuthenticateNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
     def test_get_user_api_keys(self):
-        r = self.client.authentication().getUserAPIKeys()
+        r = self.client.authentication().get_user_api_keys()
         assert r.status_code == 200
         assert "keys" in r.json()
         assert len(r.json()["keys"]) > 0
@@ -39,29 +39,29 @@ class TestAuthenticateNamespace(object):
         assert "createdAt" in r.json()["keys"][0]
 
     def test_create_user_api_keys(self):
-        r = self.client.authentication().getUserAPIKeys()
+        r = self.client.authentication().get_user_api_keys()
         assert r.status_code == 200
         count = len(r.json()["keys"])
 
-        r = self.client.authentication().createUserAPIKey(self.new_api_key)
+        r = self.client.authentication().create_user_api_keys(self.new_api_key)
         assert r.status_code == 201
         assert "name" in r.json()
         assert "key" in r.json()
         assert "createdAt" in r.json()
         assert self.new_api_key == r.json()["name"]
 
-        r = self.client.authentication().getUserAPIKeys()
+        r = self.client.authentication().get_user_api_keys()
         assert len(r.json()["keys"]) == (count + 1)
 
-        r = self.client.authentication().createUserAPIKey(self.new_api_key)
+        r = self.client.authentication().create_user_api_keys(self.new_api_key)
         assert r.status_code == 409
 
-        r = self.client.authentication().createUserAPIKey("")
+        r = self.client.authentication().create_user_api_keys("")
         assert r.status_code == 404
 
     def test_delete_user_api_key(self):
-        r = self.client.authentication().deleteUserAPIKey(self.new_api_key)
+        r = self.client.authentication().delete_user_api_keys(self.new_api_key)
         assert r.status_code == 204
 
-        r = self.client.authentication().deleteUserAPIKey("NonExistingApiKey")
+        r = self.client.authentication().delete_user_api_keys("NonExistingApiKey")
         assert r.status_code == 404
