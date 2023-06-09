@@ -18,7 +18,7 @@ code-gen: ## Generate endpoints from OpenAPI specs
 	mkdir -vp codegen/ws/
 	rm -Rfv codegen/ws/*
 	python codegen/generator.py
-	cp -fv codegen/ws/*.py xata/namespaces/.
+	cp -fv codegen/ws/*.py xata/api/.
 	rm -Rfv codegen/ws/*.py
 
 test: | unit-tests integration-tests ## Run unit & integration tests
