@@ -15,18 +15,11 @@ check-license-header: ## Check if all *.py files have a license header
 	./bin/license-header-checker -a .github/license-header.txt . py
 
 code-gen: ## Generate endpoints from OpenAPI specs
-	mkdir -vp codegen/ws/$(scope)
-	## rm -Rfv codegen/ws/$(scope)/*
-	python codegen/generator.py --scope=$(scope)
-
-code-gen-copy: ## Copy generated endpoints to target dir
-	cp -fv codegen/ws/$(scope)/*.py xata/namespaces/$(scope)/.
-
-code-gen-full: ## Generate and copy all APIs
-	make code-gen code-gen-copy scope="core"
-	make code-gen code-gen-copy scope="workspace"
-	make lint > /dev/null 2>&1
-	make lint > /dev/null 2>&1
+	mkdir -vp codegen/ws/
+	rm -Rfv codegen/ws/*
+	python codegen/generator.py
+	cp -fv codegen/ws/*.py xata/api/.
+	rm -Rfv codegen/ws/*.py
 
 test: | unit-tests integration-tests ## Run unit & integration tests
 
