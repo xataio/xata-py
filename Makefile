@@ -18,17 +18,8 @@ code-gen: ## Generate endpoints from OpenAPI specs
 	mkdir -vp codegen/ws/
 	rm -Rfv codegen/ws/*
 	python codegen/generator.py
-	make lint > /dev/null 2>&1
-	make lint > /dev/null 2>&1
-
-code-gen-copy: ## Copy generated endpoints to target dir
-	cp -fv codegen/ws/$(scope)/*.py xata/namespaces/$(scope)/.
-
-code-gen-full: ## Generate and copy all APIs
-	make code-gen code-gen-copy scope="core"
-	make code-gen code-gen-copy scope="workspace"
-	make lint > /dev/null 2>&1
-	make lint > /dev/null 2>&1
+	cp -fv codegen/ws/*.py xata/namespaces/.
+	rm -Rfv codegen/ws/*.py
 
 test: | unit-tests integration-tests ## Run unit & integration tests
 

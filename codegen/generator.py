@@ -474,7 +474,7 @@ if __name__ == "__main__":
     for scope in SPECS.keys():
         # fetch spec
         spec = fetch_openapi_specs(SPECS[scope]["spec_url"])
-        
+
         # Init schema out
         SCHEMA_OUT = {
             "scope": scope,
