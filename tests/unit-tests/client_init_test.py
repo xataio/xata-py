@@ -122,19 +122,19 @@ class TestClientInit(unittest.TestCase):
     def test_init_region(self):
         client1 = XataClient(api_key="api_key", workspace_id="ws_id")
         assert "region" in client1.get_config()
-        assert DEFAULT_REGION == client1.get_config()["region"]
+        assert DEFAULT_REGION == client1.get_region()
 
         region = "a-region-42"
         assert DEFAULT_REGION != region
         client2 = XataClient(api_key="api_key", workspace_id="ws_id", region=region)
         assert "region" in client2.get_config()
-        assert region == client2.get_config()["region"]
+        assert region == client2.get_region()
 
     def test_init_region_from_db_url(self):
         db_url = "https://unit-tests-abc123.us-west-2.xata.sh/db/docs"
         client = XataClient(api_key="xau_redacted", db_url=db_url)
         assert "region" in client.get_config()
-        assert "us-west-2" == client.get_config()["region"]
+        assert "us-west-2" == client.get_region()
 
     def test_init_region_from_envvars(self):
         env_region = "this-region-123"
@@ -143,16 +143,16 @@ class TestClientInit(unittest.TestCase):
 
         client1 = XataClient(api_key="api_key", workspace_id="ws_id")
         assert "region" in client1.get_config()
-        assert env_region != client1.get_config()["region"]
-        assert DEFAULT_REGION == client1.get_config()["region"]
+        assert env_region != client1.get_region()
+        assert DEFAULT_REGION == client1.get_region()
         # ^ if the workspace Id is passed via param, then the env var of
         # region is ignore. it must passed via param as well. see client init
 
         os.environ["XATA_WORKSPACE_ID"] = "lalilu-123456"
         client2 = XataClient(api_key="api_key")
-        assert env_region == client2.get_config()["region"]
-        assert DEFAULT_REGION != client2.get_config()["region"]
-        assert "lalilu-123456" == client2.get_config()["workspaceId"]
+        assert env_region == client2.get_region()
+        assert DEFAULT_REGION != client2.get_region()
+        assert "lalilu-123456" == client2.get_workspace_id()
 
         os.environ.pop("XATA_REGION")
         os.environ.pop("XATA_WORKSPACE_ID")

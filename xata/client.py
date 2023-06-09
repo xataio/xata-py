@@ -157,6 +157,18 @@ class XataClient:
             "domain_workspace": self.domain_workspace,
         }
 
+    def get_database_name(self) -> str:
+        return self.get_config()["dbName"]
+    
+    def get_branch_name(self) -> str:
+        return self.get_config()["branchName"]
+    
+    def get_region(self) -> str:
+        return self.get_config()["region"]
+    
+    def get_workspace_id(self) -> str:
+        return self.get_config()["workspaceId"]
+
     def get_headers(self) -> dict:
         """
         Get the static headers that are iniatilized on client init.
