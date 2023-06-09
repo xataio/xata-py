@@ -24,17 +24,17 @@ from typing import Literal
 
 from dotenv import dotenv_values
 
-from .namespaces.authentication import Authentication
-from .namespaces.branch import Branch
-from .namespaces.databases import Databases
-from .namespaces.files import Files
-from .namespaces.invites import Invites
-from .namespaces.migrations import Migrations
-from .namespaces.records import Records
-from .namespaces.search_and_filter import Search_and_filter
-from .namespaces.table import Table
-from .namespaces.users import Users
-from .namespaces.workspaces import Workspaces
+from .api.authentication import Authentication
+from .api.branch import Branch
+from .api.databases import Databases
+from .api.files import Files
+from .api.invites import Invites
+from .api.migrations import Migrations
+from .api.records import Records
+from .api.search_and_filter import Search_and_filter
+from .api.table import Table
+from .api.users import Users
+from .api.workspaces import Workspaces
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
