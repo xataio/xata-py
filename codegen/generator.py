@@ -19,10 +19,8 @@
 
 #
 # Spec docs: https://xata.io/docs/rest-api/openapi
-# version: 1.1.0
 #
 
-import argparse
 import datetime
 import hashlib
 import json
@@ -37,12 +35,6 @@ from mako.template import Template
 from xata.helpers import to_rfc339
 
 VERSION = "2.0.0"
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--force-generate", action="store_true", help="Always generate the endpoints even if there is no spec update."
-)
-args = parser.parse_args()
 
 coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
