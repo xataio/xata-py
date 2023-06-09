@@ -36,10 +36,9 @@ from mako.template import Template
 
 from xata.helpers import to_rfc339
 
-VERSION = "1.1.0"
+VERSION = "2.0.0"
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--scope", help="OpenAPI spec scope", type=str)
 parser.add_argument(
     "--force-generate", action="store_true", help="Always generate the endpoints even if there is no spec update."
 )
@@ -480,74 +479,50 @@ def _sanitize_filename(n: str) -> str:
 #                         MAIN                            #
 # ------------------------------------------------------- #
 if __name__ == "__main__":
-    scope = args.scope.lower().strip()
-    logging.info("starting codegen for scope: %s .." % scope)
-    if scope not in SPECS:
-        logging.error("unknow scope: %s" % scope)
-        exit(3)
-    WS_DIR += f"/{scope}"
+    for scope in SPECS.keys():
+        # fetch spec
+        spec = fetch_openapi_specs(SPECS[scope]["spec_url"])
+        
+        # Init schema out
+        SCHEMA_OUT = {
+            "scope": scope,
+            "version_spec": spec["info"]["version"],
+            "version_codegen": VERSION,
+            "checksum": checksum(spec),
+            "generated_on": to_rfc339(datetime.datetime.now(datetime.timezone.utc)),
+            "base_url": SPECS[scope]["base_url"],
+            "endpoints": [],
+        }
 
-    # fetch spec
-    spec = fetch_openapi_specs(SPECS[scope]["spec_url"])
+        # filter out endpointless namespaces
+        logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
+        # namespaces = spec["tags"]
+        namespaces = prune_empty_namespaces(spec)
 
-    # check for changes
-    this_csum = checksum(spec)
-    with open(f"codegen/checksums/{scope}.txt", "r") as file:
-        last_csum = file.read().rstrip()
-    if this_csum == last_csum:
-        if not args.force_generate:
-            logging.info("no specification changes detected, nothing new to generate. stopping here.")
-            action = input("> force generate (hit Enter) or stop (any key) -> ")
-            if action != "":
-                exit(0)
-        else:
-            logging.info("no spec update available, but force generate flag active.")
+        # resolve references
+        logging.info("resolving references ..")
+        references = resolve_references(spec)
 
-    # Init schema out
-    SCHEMA_OUT = {
-        "scope": scope,
-        "version_spec": spec["info"]["version"],
-        "version_codegen": VERSION,
-        "checksum": this_csum,
-        "generated_on": to_rfc339(datetime.datetime.now(datetime.timezone.utc)),
-        "base_url": SPECS[scope]["base_url"],
-        "endpoints": [],
-    }
+        # generate namespaces
+        logging.info("generating %d namespaces .." % len(namespaces))
+        it = 1
+        for n in namespaces:
+            logging.info("[%2d/%2d] creating %s" % (it, len(namespaces), n["name"]))
+            generate_namespace(n, scope, spec["info"]["version"], SPECS[scope]["base_url"])
+            it += 1
 
-    # filter out endpointless namespaces
-    logging.info("pruning %d namespaces to ensure endpoints exist .." % len(spec["tags"]))
-    # namespaces = spec["tags"]
-    namespaces = prune_empty_namespaces(spec)
+        # generate paths
+        logging.info("generating %d paths .." % len(spec["paths"]))
+        it = 1
+        for path, endpoints in spec["paths"].items():
+            logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
+            generate_endpoints(path, endpoints, references)
+            it += 1
 
-    # resolve references
-    logging.info("resolving references ..")
-    references = resolve_references(spec)
-
-    # generate namespaces
-    logging.info("generating %d namespaces .." % len(namespaces))
-    it = 1
-    for n in namespaces:
-        logging.info("[%2d/%2d] creating %s" % (it, len(namespaces), n["name"]))
-        generate_namespace(n, scope, spec["info"]["version"], SPECS[scope]["base_url"])
-        it += 1
-
-    # generate paths
-    logging.info("generating %d paths .." % len(spec["paths"]))
-    it = 1
-    for path, endpoints in spec["paths"].items():
-        logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
-        generate_endpoints(path, endpoints, references)
-        it += 1
-
-    # fan out schema to docs
-    schema_dump = open(f"codegen/ws/{scope}.json", "w")
-    json.dump(SCHEMA_OUT, schema_dump, indent=2)
-    schema_dump.close()
-    logging.info("persisted new schema docs.")
-
-    # Store new checksum
-    logging.info("persisting spec checksum '%s'" % this_csum)
-    with open(f"codegen/checksums/{scope}.txt", "w") as file:
-        file.write(this_csum)
+        # fan out schema to docs
+        schema_dump = open(f"codegen/ws/{scope}.json", "w")
+        json.dump(SCHEMA_OUT, schema_dump, indent=2)
+        schema_dump.close()
+        logging.info("persisted new schema docs.")
 
     logging.info("done.")
