@@ -156,6 +156,13 @@ API_RENAMING = {
         "putFile": "put",
         "deleteFile": "delete",
     },
+    "invites": {
+        "inviteWorkspaceMember": "new",
+        "cancelWorkspaceMemberInvite": "cancel",
+        "updateWorkspaceMemberInvite": "update",
+        "acceptWorkspaceMemberInvite": "accept",
+        "resendWorkspaceMemberInvite": "resend",
+    },
 }
 
 

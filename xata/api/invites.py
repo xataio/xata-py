@@ -32,7 +32,7 @@ class Invites(Namespace):
 
     scope = "core"
 
-    def inviteWorkspaceMember(self, payload: dict, workspace_id: str = None) -> Response:
+    def new(self, payload: dict, workspace_id: str = None) -> Response:
         """
         Invite some user to join the workspace with the given role
 
@@ -59,7 +59,7 @@ class Invites(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def cancelWorkspaceMemberInvite(self, invite_id: str, workspace_id: str = None) -> Response:
+    def cancel(self, invite_id: str, workspace_id: str = None) -> Response:
         """
         This operation provides a way to cancel invites by deleting them.  Already accepted
         invites cannot be deleted.
@@ -84,7 +84,7 @@ class Invites(Namespace):
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         return self.request("DELETE", url_path)
 
-    def updateWorkspaceMemberInvite(self, invite_id: str, payload: dict, workspace_id: str = None) -> Response:
+    def update(self, invite_id: str, payload: dict, workspace_id: str = None) -> Response:
         """
         This operation provides a way to update an existing invite.  Updates are performed in-
         place; they do not change the invite link, the expiry time, nor do they re-notify the
@@ -114,7 +114,7 @@ class Invites(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def acceptWorkspaceMemberInvite(self, invite_key: str, workspace_id: str = None) -> Response:
+    def accept(self, invite_key: str, workspace_id: str = None) -> Response:
         """
         Accept the invitation to join a workspace.  If the operation succeeds the user will be a
         member of the workspace
@@ -139,7 +139,7 @@ class Invites(Namespace):
         url_path = f"/workspaces/{workspace_id}/invites/{invite_key}/accept"
         return self.request("POST", url_path)
 
-    def resendWorkspaceMemberInvite(self, invite_id: str, workspace_id: str = None) -> Response:
+    def resend(self, invite_id: str, workspace_id: str = None) -> Response:
         """
         This operation provides a way to resend an Invite notification.  Invite notifications can
         only be sent for Invites not yet accepted.
