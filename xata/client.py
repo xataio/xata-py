@@ -131,7 +131,7 @@ class XataClient:
         # init namespaces
         self._authentication = Authentication(self)
         self._branch = Branch(self)
-        self._search_and_filter = Search_and_filter(self)
+        self._search_and_filter = SearchAndFilter(self)
         self._databases = Databases(self)
         self._files = Files(self)
         self._invites = Invites(self)

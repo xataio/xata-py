@@ -124,8 +124,8 @@ class Records(Namespace):
         db_name: str = None,
         branch_name: str = None,
         columns: list = None,
-        createOnly: bool = None,
-        ifVersion: int = None,
+        create_only: bool = None,
+        if_version: int = None,
     ) -> Response:
         """
         By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
@@ -149,8 +149,8 @@ class Records(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
-        :param createOnly: bool = None
-        :param ifVersion: int = None
+        :param create_only: bool = None
+        :param if_version: int = None
 
         :return Response
         """
@@ -159,10 +159,10 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
-        if createOnly is not None:
-            query_params.append(f"createOnly={createOnly}")
-        if ifVersion is not None:
-            query_params.append(f"ifVersion={ifVersion}")
+        if create_only is not None:
+            query_params.append(f"createOnly={create_only}")
+        if if_version is not None:
+            query_params.append(f"ifVersion={if_version}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
@@ -176,7 +176,7 @@ class Records(Namespace):
         db_name: str = None,
         branch_name: str = None,
         columns: list = None,
-        ifVersion: int = None,
+        if_version: int = None,
     ) -> Response:
         """
         Upsert record with ID
@@ -198,7 +198,7 @@ class Records(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
-        :param ifVersion: int = None
+        :param if_version: int = None
 
         :return Response
         """
@@ -207,8 +207,8 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
-        if ifVersion is not None:
-            query_params.append(f"ifVersion={ifVersion}")
+        if if_version is not None:
+            query_params.append(f"ifVersion={if_version}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}
@@ -252,7 +252,7 @@ class Records(Namespace):
         db_name: str = None,
         branch_name: str = None,
         columns: list = None,
-        ifVersion: int = None,
+        if_version: int = None,
     ) -> Response:
         """
         Update record with ID
@@ -273,7 +273,7 @@ class Records(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
-        :param ifVersion: int = None
+        :param if_version: int = None
 
         :return Response
         """
@@ -282,8 +282,8 @@ class Records(Namespace):
         query_params = []
         if columns is not None:
             query_params.append("columns=%s" % ",".join(columns))
-        if ifVersion is not None:
-            query_params.append(f"ifVersion={ifVersion}")
+        if if_version is not None:
+            query_params.append(f"ifVersion={if_version}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         headers = {"content-type": "application/json"}

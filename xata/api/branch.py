@@ -253,7 +253,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def remove_git_branches_entry(self, db_name: str, gitBranch: str) -> Response:
+    def remove_git_branches_entry(self, db_name: str, git_branch: str) -> Response:
         """
         Removes an entry from the mapping of git branches to Xata branches.  The name of the git
         branch must be passed as a query parameter.  If the git branch is not found, the endpoint
@@ -270,16 +270,16 @@ class Branch(Namespace):
         - 5XX: Unexpected Error
 
         :param db_name: str The Database Name
-        :param gitBranch: str The Git Branch to remove from the mapping
+        :param git_branch: str The Git Branch to remove from the mapping
 
         :return Response
         """
         url_path = f"/dbs/{db_name}/gitBranches"
-        if gitBranch is not None:
-            url_path += "?gitBranch={gitBranch}"
+        if git_branch is not None:
+            url_path += "?gitBranch={git_branch}"
         return self.request("DELETE", url_path)
 
-    def resolve(self, db_name: str, gitBranch: str = None, fallbackBranch: str = None) -> Response:
+    def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> Response:
         """
         In order to resolve the database branch, the following algorithm is used: * if the
         `gitBranch` was provided and is found in the [git branches mapping](/api-
@@ -302,17 +302,17 @@ class Branch(Namespace):
         Response: application/json
 
         :param db_name: str The Database Name
-        :param gitBranch: str = None The Git Branch
-        :param fallbackBranch: str = None Default branch to fallback to
+        :param git_branch: str = None The Git Branch
+        :param fallback_branch: str = None Default branch to fallback to
 
         :return Response
         """
         url_path = f"/dbs/{db_name}/resolveBranch"
         query_params = []
-        if gitBranch is not None:
-            query_params.append(f"gitBranch={gitBranch}")
-        if fallbackBranch is not None:
-            query_params.append(f"fallbackBranch={fallbackBranch}")
+        if git_branch is not None:
+            query_params.append(f"gitBranch={git_branch}")
+        if fallback_branch is not None:
+            query_params.append(f"fallbackBranch={fallback_branch}")
         if query_params:
             url_path += "?" + "&".join(query_params)
         return self.request("GET", url_path)

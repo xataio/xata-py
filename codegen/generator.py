@@ -25,6 +25,7 @@ import datetime
 import hashlib
 import json
 import logging
+import re
 import textwrap
 from typing import Any, Dict
 
@@ -80,6 +81,13 @@ def fetch_openapi_specs(spec_url: str) -> dict:
 
 def get_class_name(name: str) -> str:
     return "".join([n.capitalize() for n in name.lower().split(" ")])
+
+
+def get_param_name(name: str) -> str:
+    name = "_".join([n.lower() for n in re.findall("[a-zA-Z][^A-Z]*", name)])
+    if name in RESERVED_WORDS:
+        name = f"_{name}"
+    return name
 
 
 def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base_url: str):
@@ -263,7 +271,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                 p["description"] = ""
 
             p["name"] = p["name"].strip()
-            p["nameParam"] = replace_reserved_words(p["name"])
+            p["nameParam"] = get_param_name(p["name"])
             p["description"] = p["description"].strip()
             p["trueType"] = p["type"]
             if not p["required"]:
@@ -359,12 +367,6 @@ def type_replacement(t: str) -> str:
         if origType == isType:
             return replacement
     return origType
-
-
-def replace_reserved_words(n: str) -> str:
-    if n.lower() in RESERVED_WORDS:
-        return f"_{n}"
-    return n
 
 
 def checksum(dictionary: Dict[str, Any]) -> str:
