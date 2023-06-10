@@ -98,6 +98,9 @@ API_RENAMING = {
         "updateBranchMetadata": "update_metadata",
         "getBranchStats": "get_stats",
         "resolveBranch": "resolve",
+        "getGitBranchesMapping": "get_git_branches_mapping",
+        "addGitBranchesEntry": "add_git_branches_entry",
+        "removeGitBranchesEntry": "remove_git_branches_entry",
     },
     "migrations": {
         "getBranchMigrationHistory": "get_history",

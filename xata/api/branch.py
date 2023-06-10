@@ -199,7 +199,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}/stats"
         return self.request("GET", url_path)
 
-    def getGitBranchesMapping(self, db_name: str) -> Response:
+    def get_git_branches_mapping(self, db_name: str) -> Response:
         """
         Lists all the git branches in the mapping, and their associated Xata branches.  Example
         response:  ```json {   "mappings": [       {         "gitBranch": "main",
@@ -223,7 +223,7 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}/gitBranches"
         return self.request("GET", url_path)
 
-    def addGitBranchesEntry(self, db_name: str, payload: dict) -> Response:
+    def add_git_branches_entry(self, db_name: str, payload: dict) -> Response:
         """
         Adds an entry to the mapping of git branches to Xata branches.  The git branch and the
         Xata branch must be present in the body of the request.  If the Xata branch doesn't exist,
@@ -253,7 +253,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def removeGitBranchesEntry(self, db_name: str, gitBranch: str) -> Response:
+    def remove_git_branches_entry(self, db_name: str, gitBranch: str) -> Response:
         """
         Removes an entry from the mapping of git branches to Xata branches.  The name of the git
         branch must be passed as a query parameter.  If the git branch is not found, the endpoint
