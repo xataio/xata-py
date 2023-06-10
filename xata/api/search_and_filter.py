@@ -18,7 +18,7 @@
 #
 
 # ------------------------------------------------------- #
-# Search_and_filter
+# SearchAndFilter
 # APIs for searching, querying, filtering, and aggregating records.
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
@@ -28,7 +28,7 @@ from requests import Response
 from xata.namespace import Namespace
 
 
-class Search_and_filter(Namespace):
+class SearchAndFilter(Namespace):
 
     scope = "workspace"
 

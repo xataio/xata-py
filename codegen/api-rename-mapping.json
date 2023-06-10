@@ -14,8 +14,8 @@
         "renameDatabase": "rename"
     },
     "users": {
-        "getUser": "get", 
-        "updateUser": "update", 
+        "getUser": "get",
+        "updateUser": "update",
         "deleteUser": "delete"
     },
     "workspaces": {

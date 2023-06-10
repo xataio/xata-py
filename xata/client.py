@@ -31,7 +31,7 @@ from .api.files import Files
 from .api.invites import Invites
 from .api.migrations import Migrations
 from .api.records import Records
-from .api.search_and_filter import Search_and_filter
+from .api.search_and_filter import SearchAndFilter
 from .api.table import Table
 from .api.users import Users
 from .api.workspaces import Workspaces
@@ -373,14 +373,14 @@ class XataClient:
         """
         return self._records
 
-    def search_and_filter(self) -> Search_and_filter:
+    def search_and_filter(self) -> SearchAndFilter:
         """
         Search_and_Filter Namespace
         :return Search_and_filter
         """
         return self._search_and_filter
 
-    def data(self) -> Search_and_filter:
+    def data(self) -> SearchAndFilter:
         """
         Shorter alias for Search_and_Filter
         :return Search_and_filter

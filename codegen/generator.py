@@ -78,6 +78,10 @@ def fetch_openapi_specs(spec_url: str) -> dict:
     return r.json()
 
 
+def get_class_name(name: str) -> str:
+    return "".join([n.capitalize() for n in name.lower().split(" ")])
+
+
 def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base_url: str):
     """
     Generate the namespaced Class for the endpoints
@@ -88,7 +92,7 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         class_desc = namespace["x-displayName"]
         logging.warn("missing description: %s.%s" % (scope, namespace["x-displayName"]))
     vars = {
-        "class_name": namespace["x-displayName"].replace(" ", "_").lower().capitalize(),
+        "class_name": get_class_name(namespace["x-displayName"]),
         "class_description": class_desc.strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
