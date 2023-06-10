@@ -54,7 +54,7 @@ class Invites(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
@@ -80,7 +80,7 @@ class Invites(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         return self.request("DELETE", url_path)
 
@@ -109,7 +109,7 @@ class Invites(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
@@ -135,7 +135,7 @@ class Invites(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_key}/accept"
         return self.request("POST", url_path)
 
@@ -160,6 +160,6 @@ class Invites(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}/resend"
         return self.request("POST", url_path)

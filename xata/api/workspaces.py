@@ -96,7 +96,7 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}"
         return self.request("GET", url_path)
 
@@ -121,7 +121,7 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
@@ -145,7 +145,7 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}"
         return self.request("DELETE", url_path)
 
@@ -169,7 +169,7 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
 
@@ -195,7 +195,7 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
@@ -220,6 +220,6 @@ class Workspaces(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/members/{user_id}"
         return self.request("DELETE", url_path)

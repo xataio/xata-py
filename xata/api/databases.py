@@ -50,7 +50,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
 
@@ -74,7 +74,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
@@ -100,7 +100,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
@@ -125,7 +125,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
@@ -150,7 +150,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
@@ -177,7 +177,7 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}/rename"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
@@ -200,6 +200,6 @@ class Databases(Namespace):
         :return Response
         """
         if workspace_id is None:
-            workspace_id = self.client.get_config()["workspaceId"]
+            workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/regions"
         return self.request("GET", url_path)
