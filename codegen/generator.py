@@ -77,6 +77,7 @@ API_RENAMING = {
         "updateDatabaseMetadata": "update_metadata",
         "listRegions": "get_regions",
         "getDatabaseList": "get_databases",
+        "renameDatabase": "rename",
     },
     "users": {"getUser": "get", "updateUser": "update", "deleteUser": "delete"},
     "workspaces": {
@@ -108,10 +109,12 @@ API_RENAMING = {
         "executeBranchMigrationPlan": "execute_plan",
         "getBranchSchemaHistory": "get_schema_history",
         "compareBranchSchemas": "compare_schemas",
-        "updateBranchSchemas": "update",
+        "updateBranchSchemas": "update_schemas",
+        "updateBranchSchema": "upadte_schema",
         "previewBranchSchemaEdit": "preview",
         "applyBranchSchemaEdit": "apply",
         "pushBranchMigrations": "push",
+        "compareBranchWithUserSchema": "compare_branch_with_user_schema",
     },
     "records": {
         "insertRecord": "insert",

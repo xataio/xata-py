@@ -130,7 +130,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compareBranchWithUserSchema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def compare_branch_with_user_schema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Compare branch with user schema.
 
@@ -178,7 +178,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def updateBranchSchema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def upadte_schema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Update Branch schema
 

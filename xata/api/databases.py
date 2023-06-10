@@ -155,7 +155,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def renameDatabase(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def rename(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
         """
         Change the name of an existing database
 
