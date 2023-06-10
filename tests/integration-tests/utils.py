@@ -104,7 +104,7 @@ def get_file_content(file_name: str) -> bytes:
         return f.read().encode()
 
 
-def get_file(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120):
+def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 120):
     file_name = get_file_name(file_name)
     file_content = get_file_content(file_name)
 
@@ -112,6 +112,6 @@ def get_file(file_name: str, publicUrl: bool = True, signedUrlTimeout: int = 120
         "name": file_name.replace("/", "_"),
         "mediaType": magic.from_file(file_name, mime=True),
         "base64Content": file_content.decode("utf-8"),
-        "enablePublicUrl": publicUrl,
-        "signedUrlTimeout": signedUrlTimeout,
+        "enablePublicUrl": public_url,
+        "signedUrlTimeout": signed_url_timeout,
     }

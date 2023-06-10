@@ -17,12 +17,9 @@
 # under the License.
 #
 
-import os
 import unittest
 
-import pytest
-
-from xata.client import DEFAULT_REGION, XataClient
+from xata.client import XataClient
 
 
 class TestClientConfigGetters(unittest.TestCase):
