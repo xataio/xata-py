@@ -24,9 +24,6 @@ from xata.client import XataClient
 
 
 class TestWorkspacesNamespace(object):
-
-    #    workspace_id = None
-
     @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()

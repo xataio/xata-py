@@ -31,7 +31,7 @@ from .api.files import Files
 from .api.invites import Invites
 from .api.migrations import Migrations
 from .api.records import Records
-from .api.search_and_filter import Search_and_filter
+from .api.search_and_filter import SearchAndFilter
 from .api.table import Table
 from .api.users import Users
 from .api.workspaces import Workspaces
@@ -131,7 +131,7 @@ class XataClient:
         # init namespaces
         self._authentication = Authentication(self)
         self._branch = Branch(self)
-        self._search_and_filter = Search_and_filter(self)
+        self._search_and_filter = SearchAndFilter(self)
         self._databases = Databases(self)
         self._files = Files(self)
         self._invites = Invites(self)
@@ -159,13 +159,13 @@ class XataClient:
 
     def get_database_name(self) -> str:
         return self.get_config()["dbName"]
-    
+
     def get_branch_name(self) -> str:
         return self.get_config()["branchName"]
-    
+
     def get_region(self) -> str:
         return self.get_config()["region"]
-    
+
     def get_workspace_id(self) -> str:
         return self.get_config()["workspaceId"]
 
@@ -373,14 +373,14 @@ class XataClient:
         """
         return self._records
 
-    def search_and_filter(self) -> Search_and_filter:
+    def search_and_filter(self) -> SearchAndFilter:
         """
         Search_and_Filter Namespace
         :return Search_and_filter
         """
         return self._search_and_filter
 
-    def data(self) -> Search_and_filter:
+    def data(self) -> SearchAndFilter:
         """
         Shorter alias for Search_and_Filter
         :return Search_and_filter

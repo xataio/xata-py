@@ -335,7 +335,8 @@ class Transaction(object):
         :param table: str
         :param record: dict
         :param create_only: bool By default, if a record exists with the same explicit ID, Xata will overwrite
-            the record. You can adjust this behavior by setting `create_only` to `true` for the operation. Default: False
+            the record. You can adjust this behavior by setting `create_only` to `true` for the operation.
+            Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """

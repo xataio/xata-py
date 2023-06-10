@@ -25,6 +25,7 @@ import datetime
 import hashlib
 import json
 import logging
+import re
 import textwrap
 from typing import Any, Dict
 
@@ -63,94 +64,7 @@ RESERVED_WORDS = ["from"]
 REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
-
-API_RENAMING = {
-    "authentication": {
-        "getUserAPIKeys": "get_user_api_keys",
-        "createUserAPIKey": "create_user_api_keys",
-        "deleteUserAPIKey": "delete_user_api_keys",
-    },
-    "databases": {
-        "getDatabaseMetadata": "get_metadata",
-        "createDatabase": "create",
-        "deleteDatabase": "delete",
-        "updateDatabaseMetadata": "update_metadata",
-        "listRegions": "get_regions",
-        "getDatabaseList": "get_databases",
-    },
-    "users": {"getUser": "get", "updateUser": "update", "deleteUser": "delete"},
-    "workspaces": {
-        "getWorkspacesList": "get_workspaces",
-        "createWorkspace": "create",
-        "getWorkspace": "get",
-        "updateWorkspace": "update",
-        "deleteWorkspace": "delete",
-        "getWorkspaceMembersList": "get_members",
-        "updateWorkspaceMemberRole": "update_member",
-        "removeWorkspaceMember": "remove_member",
-    },
-    "branch": {
-        "getBranchList": "get_branches",
-        "getBranchDetails": "get_details",
-        "createBranch": "create",
-        "deleteBranch": "delete",
-        "getBranchMetadata": "get_metadata",
-        "updateBranchMetadata": "update_metadata",
-        "getBranchStats": "get_stats",
-        "resolveBranch": "resolve",
-    },
-    "migrations": {
-        "getBranchMigrationHistory": "get_history",
-        "getBranchMigrationPlan": "get_plan",
-        "executeBranchMigrationPlan": "execute_plan",
-        "getBranchSchemaHistory": "get_schema_history",
-        "compareBranchSchemas": "compare_schemas",
-        "updateBranchSchemas": "update",
-        "previewBranchSchemaEdit": "preview",
-        "applyBranchSchemaEdit": "apply",
-        "pushBranchMigrations": "push",
-    },
-    "records": {
-        "insertRecord": "insert",
-        "getRecord": "get",
-        "insertRecordWithID": "insert_with_id",
-        "upsertRecordWithID": "upsert_with_id",
-        "deleteRecord": "delete",
-        "updateRecordWithID": "update_with_id",
-        "bulkInsertTableRecords": "bulk_insert",
-        "branchTransaction": "transaction",
-    },
-    "search_and_filter": {
-        "queryTable": "query",
-        "searchTable": "search_table",
-        "searchBranch": "search_branch",
-        "vectorSearchTable": "vector_search",
-        "askTable": "ask",
-        "summarizeTable": "summarize",
-        "aggregateTable": "aggregate",
-    },
-    "table": {
-        "createTable": "create",
-        "deleteTable": "delete",
-        "updateTable": "update",
-        "getTableSchema": "get_schema",
-        "setTableSchema": "set_schema",
-        "getTableColumns": "get_columns",
-        "addTableColumn": "add_column",
-        "deleteColumn": "delete_column",
-        "addColumn": "add_column",
-        "getColumn": "get_column",
-        "updateColumn": "update_column",
-    },
-    "files": {
-        "getFileItem": "get_item",
-        "putFileItem": "put_item",
-        "deleteFileItem": "delete_item",
-        "getFile": "get",
-        "putFile": "put",
-        "deleteFile": "delete",
-    },
-}
+API_RENAMING = json.load(open("codegen/api-rename-mapping.json"))
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -165,6 +79,17 @@ def fetch_openapi_specs(spec_url: str) -> dict:
     return r.json()
 
 
+def get_class_name(name: str) -> str:
+    return "".join([n.capitalize() for n in name.lower().split(" ")])
+
+
+def get_param_name(name: str) -> str:
+    name = "_".join([n.lower() for n in re.findall("[a-zA-Z][^A-Z]*", name)])
+    if name in RESERVED_WORDS:
+        name = f"_{name}"
+    return name
+
+
 def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base_url: str):
     """
     Generate the namespaced Class for the endpoints
@@ -175,7 +100,7 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         class_desc = namespace["x-displayName"]
         logging.warn("missing description: %s.%s" % (scope, namespace["x-displayName"]))
     vars = {
-        "class_name": namespace["x-displayName"].replace(" ", "_").lower().capitalize(),
+        "class_name": get_class_name(namespace["x-displayName"]),
         "class_description": class_desc.strip(),
         "spec_scope": scope,
         "spec_version": spec_version,
@@ -346,7 +271,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                 p["description"] = ""
 
             p["name"] = p["name"].strip()
-            p["nameParam"] = replace_reserved_words(p["name"])
+            p["nameParam"] = get_param_name(p["name"])
             p["description"] = p["description"].strip()
             p["trueType"] = p["type"]
             if not p["required"]:
@@ -442,12 +367,6 @@ def type_replacement(t: str) -> str:
         if origType == isType:
             return replacement
     return origType
-
-
-def replace_reserved_words(n: str) -> str:
-    if n.lower() in RESERVED_WORDS:
-        return f"_{n}"
-    return n
 
 
 def checksum(dictionary: Dict[str, Any]) -> str:

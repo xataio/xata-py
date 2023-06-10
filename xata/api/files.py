@@ -32,7 +32,7 @@ class Files(Namespace):
 
     scope = "workspace"
 
-    def getItem(
+    def get_item(
         self,
         table_name: str,
         record_id: str,
@@ -67,7 +67,7 @@ class Files(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
         return self.request("GET", url_path)
 
-    def putItem(
+    def put_item(
         self,
         table_name: str,
         record_id: str,
@@ -106,7 +106,7 @@ class Files(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def deleteItem(
+    def delete_item(
         self,
         table_name: str,
         record_id: str,

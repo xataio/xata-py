@@ -31,7 +31,7 @@
        % endif
        % if params['smart_workspace_id'] :
        if workspace_id is None:
-           workspace_id = self.client.get_config()["workspaceId"]
+           workspace_id = self.client.get_workspace_id()
        % endif
        % if params['has_path_params'] :
        url_path = f"${path}"

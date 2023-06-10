@@ -108,11 +108,11 @@ class TestRecordsNamespace(object):
         assert r.json()["id"] == self.record_id
         assert r.json()["xata"]["version"] == 0
 
-        r = self.client.records().insert_with_id("Posts", self.record_id, record, createOnly=False)
+        r = self.client.records().insert_with_id("Posts", self.record_id, record, create_only=False)
         assert r.status_code == 200
         assert r.json()["xata"]["version"] == 1
 
-        r = self.client.records().insert_with_id("Posts", self.record_id, record, createOnly=True)
+        r = self.client.records().insert_with_id("Posts", self.record_id, record, create_only=True)
         assert r.status_code == 422
 
         r = self.client.records().insert_with_id("Posts", "", record)

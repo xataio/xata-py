@@ -17,16 +17,12 @@
 # under the License.
 #
 
-import os
 import unittest
 
-import pytest
-
-from xata.client import DEFAULT_REGION, XataClient
+from xata.client import XataClient
 
 
 class TestClientConfigGetters(unittest.TestCase):
-
     def test_get_region(self):
         region = "eu-south-42"
         client = XataClient(api_key="api_key", workspace_id="ws_id", region=region)
