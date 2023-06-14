@@ -148,9 +148,9 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     Generate a single endpoint
     """
     if "parameters" in endpoint:
-        endpointParams = get_endpoint_params(path, endpoint, parameters + endpoint["parameters"], references)
+        endpoint_params = get_endpoint_params(path, endpoint, parameters + endpoint["parameters"], references)
     else:
-        endpointParams = get_endpoint_params(path, endpoint, parameters, references)
+        endpoint_params = get_endpoint_params(path, endpoint, parameters, references)
     if "description" in endpoint:
         desc = endpoint["description"].strip()
     else:
@@ -171,7 +171,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
         "path": path,
-        "params": endpointParams,
+        "params": endpoint_params,
     }
 
     SCHEMA_OUT["endpoints"].append(
@@ -183,10 +183,10 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
             "description": desc,
             "method": vars["http_method"],
             "url_path": path,
-            "responses": endpointParams["response_codes"],
+            "responses": endpoint_params["response_codes"],
             "parameters": [
                 {"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]}
-                for p in list(endpointParams["list"])
+                for p in list(endpoint_params["list"])
             ],
         }
     )
