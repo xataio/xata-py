@@ -207,12 +207,12 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
     }
     if len(parameters) > 0:
         # Check for convience param swaps
-        curatedParamList = []
+        curated_param_list = []
         for r in parameters:
             if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
                 logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
                 # push two new params to cover for string creation
-                curatedParamList.append(
+                curated_param_list.append(
                     {
                         "name": "db_name",
                         "in": "path",
@@ -222,7 +222,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                         "required": False,
                     }
                 )
-                curatedParamList.append(
+                curated_param_list.append(
                     {
                         "name": "branch_name",
                         "in": "path",
@@ -236,7 +236,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
                 # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
                 logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
-                curatedParamList.append(
+                curated_param_list.append(
                     {
                         "name": "workspace_id",
                         "in": "path",
@@ -248,9 +248,9 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                 )
                 skel["smart_workspace_id"] = True
             else:
-                curatedParamList.append(r)
+                curated_param_list.append(r)
 
-        for r in curatedParamList:
+        for r in curated_param_list:
             p = None
             # if not in ref: endpoint specific params
             if "$ref" in r and r["$ref"] in references:
@@ -362,11 +362,11 @@ def resolve_references(spec: dict) -> dict:
 
 
 def type_replacement(t: str) -> str:
-    origType = t.lower()
-    for isType, replacement in TYPE_REPLACEMENTS.items():
-        if origType == isType:
+    orig_type = t.lower()
+    for is_type, replacement in TYPE_REPLACEMENTS.items():
+        if orig_type == is_type:
             return replacement
-    return origType
+    return orig_type
 
 
 def checksum(dictionary: Dict[str, Any]) -> str:
