@@ -1,7 +1,7 @@
 {
     "tables": [
        {
-          "name": "companies",
+          "name": "Companies",
           "columns": [
              {
                 "name": "name",
