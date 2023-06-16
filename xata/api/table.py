@@ -191,10 +191,7 @@ class Table(Namespace):
     def add_column(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
-        definition.  In the column definition, the 'name' field should contain the full path
-        separated by dots.  If the parent objects do not exists, they will be automatically
-        created.  For example, passing `"name": "address.city"` will auto-create the `address`
-        object if it doesn't exist.
+        definition.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: POST
@@ -219,8 +216,7 @@ class Table(Namespace):
 
     def get_column(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
-        Get the definition of a single column.  To refer to sub-objects, the column name can
-        contain dots.  For example `address.country`.
+        Get the definition of a single column.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: GET
@@ -247,8 +243,7 @@ class Table(Namespace):
         self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None
     ) -> Response:
         """
-        Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
-        For example `address.country`.
+        Deletes the specified column.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: DELETE
@@ -275,8 +270,7 @@ class Table(Namespace):
     ) -> Response:
         """
         Update column with partial data.  Can be used for renaming the column by providing a new
-        "name" field.  To refer to sub-objects, the column name can contain dots.  For example
-        `address.country`.
+        "name" field.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: PATCH

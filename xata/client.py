@@ -73,7 +73,7 @@ class XataClient:
     :param domain_workspace: The domain to use for "workspace", data plane. Defaults to xata.sh.
     """
 
-    configRead: bool = False
+    config_read: bool = False
     config = None
 
     def __init__(
@@ -201,9 +201,9 @@ class XataClient:
         if os.environ.get("XATA_API_KEY") is not None:
             return os.environ.get("XATA_API_KEY"), "env"
 
-        envVals = dotenv_values(".env")
-        if envVals.get("XATA_API_KEY") is not None:
-            return envVals.get("XATA_API_KEY"), "dotenv"
+        env_vals = dotenv_values(".env")
+        if env_vals.get("XATA_API_KEY") is not None:
+            return env_vals.get("XATA_API_KEY"), "dotenv"
 
         if os.path.isfile(os.path.expanduser(PERSONAL_API_KEY_LOCATION)):
             with open(os.path.expanduser(PERSONAL_API_KEY_LOCATION), "r") as f:
@@ -222,18 +222,18 @@ class XataClient:
                 "env",
             )
 
-        envVals = dotenv_values(".env")
-        if envVals.get("XATA_WORKSPACE_ID") is not None:
+        env_vals = dotenv_values(".env")
+        if env_vals.get("XATA_WORKSPACE_ID") is not None:
             return (
-                envVals.get("XATA_WORKSPACE_ID"),
-                envVals.get("XATA_REGION", DEFAULT_REGION),
+                env_vals.get("XATA_WORKSPACE_ID"),
+                env_vals.get("XATA_REGION", DEFAULT_REGION),
                 "dotenv",
             )
 
         self.ensure_config_read()
         if self.config is not None and self.config.get("databaseURL"):
-            workspaceID, region, _, _, _ = self._parse_database_url(self.config.get("databaseURL"))
-            return workspaceID, region, "config"
+            workspace_id, region, _, _, _ = self._parse_database_url(self.config.get("databaseURL"))
+            return workspace_id, region, "config"
         raise Exception(
             f"No workspace ID found. Searched in `XATA_WORKSPACE_ID` env, "
             f"`{PERSONAL_API_KEY_LOCATION}`, and `{os.path.abspath('.env')}`"
@@ -279,33 +279,33 @@ class XataClient:
             self.branch_name = branch_name
 
     def ensure_config_read(self) -> bool:
-        if self.configRead:
+        if self.config_read:
             return False
         if os.path.isfile(CONFIG_LOCATION):
             with open(CONFIG_LOCATION, "r") as f:
                 self.config = json.load(f)
-        self.configRead = True
+        self.config_read = True
         return True
 
-    def _parse_database_url(self, databaseURL: str) -> tuple[str, str, str, str, str]:
+    def _parse_database_url(self, database_url: str) -> tuple[str, str, str, str, str]:
         """
         Parse Database URL
         Branch name is optional.
         Format: https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}
         :return workspace_id, region, db_name, branch_name, domain
         """
-        (_, _, host, _, db_branch_name) = databaseURL.split("/")
+        (_, _, host, _, db_branch_name) = database_url.split("/")
         if host == "" or db_branch_name == "":
             raise Exception(
                 "Invalid database URL: '%s', expected the format: "
-                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % databaseURL
+                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % database_url
             )
         # split host {workspace_id}.{region}
         host_parts = host.split(".")
         if len(host_parts) < 4:
             raise Exception(
                 "Invalid format for workspaceId and region in the URL: '%s', expected the format: "
-                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % databaseURL
+                + "'https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}'" % database_url
             )
         # build domain name
         domain = ".".join(host_parts[2:])
