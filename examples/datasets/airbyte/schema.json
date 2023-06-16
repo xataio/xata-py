@@ -1,0 +1,37 @@
+{
+    "tables": [
+       {
+          "name": "Companies",
+          "columns": [
+             {
+                "name": "name",
+                "type": "string"
+             },
+             {
+                "name": "address",
+                "type": "string"
+             },
+             {
+                "name": "catch_phrase",
+                "type": "string"
+             },
+             {
+                "name": "ceo",
+                "type": "string"
+             },
+             {
+                "name": "phone",
+                "type": "string"
+             },
+             {
+                "name": "email",
+                "type": "string"
+             },
+             {
+                "name": "exchange",
+                "type": "string"
+             }
+          ]
+       }
+    ]
+}
