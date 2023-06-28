@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import logging
+
 from requests import Response, request
 
 from .errors import RateLimitException, ServerErrorException, UnauthorizedException
@@ -29,6 +31,7 @@ class Namespace:
 
     def __init__(self, client):
         self.client = client
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def get_scope(self) -> str:
         return self.scope
@@ -57,11 +60,10 @@ class Namespace:
         :raises UnauthorizedException
         :raises ServerErrorException
         """
-        headers = {
-            **headers,
-            **self.client.get_headers(),
-        }  # TODO use "|" when client py min version >= 3.9
+        # TODO use "|" when client py min version >= 3.9
+        headers = {**headers, **self.client.get_headers()}
 
+        # build url
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
         if payload is None:
             resp = request(http_method, url, headers=headers)
@@ -69,6 +71,10 @@ class Namespace:
             resp = request(http_method, url, headers=headers, data=data)
         else:
             resp = request(http_method, url, headers=headers, json=payload)
+
+        # log server message
+        if "x-xata-message" in resp.headers:
+            self.logger.warn(resp.headers["x-xata-message"])
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
