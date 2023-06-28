@@ -28,6 +28,7 @@ class TestSqlQuery(object):
         self.client = XataClient(domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev", workspace_id="benchmarking-e7n9vo", db_name="playground", branch_name="main")
 
     def test_query(self):
-        r = self.client.sql().query("SELECT * from people")
+        r = self.client.sql().query("SELECT * from people LIMIT 5")
         assert r.status_code == 200
-
+        assert "records" in r.json()
+        assert len(r.json()["records"]) == 5

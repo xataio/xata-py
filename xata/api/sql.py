@@ -24,14 +24,11 @@ from xata.namespace import Namespace
 
 class Sql(Namespace):
 
-    scope = "core"
+    scope = "workspace"
 
     def query(self, query: str, workspace_id: str = None, db_name: str = None, branch_name: str = None) -> Response:
-        if workspace_id is None:
-            workspace_id = self.client.get_workspace_id()
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-        url_path = f"/workspaces/{workspace_id}/db/{db_branch_name}/sql"
-        #url_path = f"/db/{db_branch_name}/sql"
+        url_path = f"/db/{db_branch_name}/sql"
         headers = {"content-type": "application/json"}
         payload = {"query": query}
         return self.request("POST", url_path, headers, payload)
