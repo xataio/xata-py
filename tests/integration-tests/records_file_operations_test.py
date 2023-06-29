@@ -33,7 +33,7 @@ class TestRecordsFileOperations(object):
         r = self.client.databases().create(
             self.db_name,
             {
-                "region": self.client.get_config()["region"],
+                "region": self.client.get_region(),
                 "branchName": self.client.get_config()["branchName"],
             },
         )
@@ -42,7 +42,7 @@ class TestRecordsFileOperations(object):
         assert r.status_code == 201
 
         # create schema
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Attachments",
             {
                 "columns": [
@@ -84,10 +84,19 @@ class TestRecordsFileOperations(object):
 
         assert "name" in record["one_file"]
         assert "mediaType" in record["one_file"]
-        # assert "size" in record["one_file"] # TODO should be here
+        #assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
 
         assert record["title"] == payload["title"]
         assert len(list(record["one_file"].keys())) == 2
         assert len(list(record["many_files"][0].keys())) == 3
+
+        r = self.client.records().get("Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"])
+        assert r.status_code == 200
+        record = r.json()
+
+        assert payload["one_file"]["base64Content"] == record["one_file"]["base64Content"]
+        assert payload["many_files"][0]["base64Content"] == record["many_files"][0]["base64Content"]
+        assert payload["many_files"][1]["base64Content"] == record["many_files"][1]["base64Content"]
+        assert payload["many_files"][2]["base64Content"] == record["many_files"][2]["base64Content"]

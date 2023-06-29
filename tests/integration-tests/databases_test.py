@@ -115,7 +115,9 @@ class TestDatabasesNamespace(object):
         r = self.client.databases().get_regions()
         assert r.status_code == 200
         assert "regions" in r.json()
-        assert len(r.json()["regions"]) == 3
+        assert len(r.json()["regions"]) == 5
+        assert "id" in r.json()["regions"][0]
+        assert "name" in r.json()["regions"][0]
 
         with pytest.raises(UnauthorizedException) as e:
             self.client.databases().get_regions(workspace_id="NonExistingWorkspaceId")

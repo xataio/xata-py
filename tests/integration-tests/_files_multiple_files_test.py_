@@ -42,15 +42,9 @@ class TestFilesMultipleFiles(object):
 
         r = self.client.table().create("Attachments")
         assert r.status_code == 201
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Attachments",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "one_file", "type": "file"},
-                    {"name": "many_files", "type": "file[]"},
-                ]
-            },
+            utils.get_attachments_schema(),
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
@@ -66,17 +60,14 @@ class TestFilesMultipleFiles(object):
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        obj_1, raw_1 = utils.get_file()
-        obj_2, raw_2 = utils.get_file()
-        file = self.client.files().putItem(
-            "Attachments", rid, "one_file", obj_1["base64Content"], "1234"
-        )  # obj_1["mediaType"])
-
-        assert file.status_code == 201, file.json()
-        assert "attributes" in file.json()
-        assert "mediaType" in file.json()
-        assert "name" in file.json()
-        assert "size" in file.json()
+        obj_1 = utils.get_file_content(utils.get_file_name("images/01.gif"))
+        obj_2 = utils.get_file_content(utils.get_file_name("images/02.gif"))
+        file_1 = self.client.files().put_item("Attachments", rid, "one_file", "1", obj_1)
+        assert file_1.status_code == 201
+        assert "attributes" in file_1.json()
+        assert "mediaType" in file_1.json()
+        assert "name" in file_1.json()
+        assert "size" in file_1.json()
 
         """
         assert not file.json()["attributes"]

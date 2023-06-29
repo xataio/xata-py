@@ -73,7 +73,7 @@ class Files(Namespace):
         record_id: str,
         column_name: str,
         file_id: str,
-        payload: dict,
+        data: bytes,
         db_name: str = None,
         branch_name: str = None,
     ) -> Response:
@@ -95,7 +95,7 @@ class Files(Namespace):
         :param record_id: str The Record name
         :param column_name: str The Column name
         :param file_id: str The File Identifier
-        :param payload: dict content
+        :param data: bytes content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -104,7 +104,7 @@ class Files(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
         headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        return self.request("PUT", url_path, headers, data=data)
 
     def delete_item(
         self,
@@ -175,6 +175,7 @@ class Files(Namespace):
         record_id: str,
         column_name: str,
         data: bytes,
+        content_type: str = "application/octet-stream",
         db_name: str = None,
         branch_name: str = None,
     ) -> Response:
@@ -195,7 +196,7 @@ class Files(Namespace):
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param column_name: str The Column name
-        :param payload: dict content
+        :param data: bytes
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -203,8 +204,7 @@ class Files(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-        # headers = {"content-type": "application/json"}
-        headers = {"content-type": "application/binary"}
+        headers = {"content-type": content_type}
         return self.request("PUT", url_path, headers, data=data)
 
     def delete(

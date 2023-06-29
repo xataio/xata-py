@@ -394,7 +394,5 @@ class XataClient:
         """
         return self._table
 
-    """
     def files(self) -> Files:
         return self._files
-    """
