@@ -97,11 +97,11 @@ class TestSearchAndFilterNamespace(object):
         assert "slug" in r.json()["records"][0]
         assert "text" not in r.json()["records"][0]
 
-        r = self.client.search_and_filter().queryTable("NonExistingTable", payload)
+        r = self.client.search_and_filter().queryTable("Posts", {"columns": ["non_existing_col"]})
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().queryTable("Posts", {"columns": [""]})
-        assert r.status_code == 400
+        r = self.client.search_and_filter().queryTable("NonExistingTable", payload)
+        assert r.status_code == 404
 
     def test_search_branch(self):
         """
