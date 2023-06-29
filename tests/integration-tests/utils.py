@@ -101,8 +101,8 @@ def get_file_name(file_name: str) -> str:
 
 
 def get_file_content(file_name: str) -> bytes:
-    with open(file_name, "r", encoding="utf-8") as f:
-        return f.read().encode()
+    with open(file_name, "rb") as f:
+        return f.read()
 
 
 def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 120):
@@ -112,7 +112,7 @@ def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 
     return {
         "name": file_name.replace("/", "_"),
         "mediaType": magic.from_file(file_name, mime=True),
-        "base64Content": base64.b64encode(file_content).decode("ascii"), # file_content.decode("utf-8"),
+        "base64Content": base64.b64encode(file_content).decode("ascii"),
         "enablePublicUrl": public_url,
         "signedUrlTimeout": signed_url_timeout,
     }
