@@ -42,7 +42,7 @@ class TestFilesSingleFile(object):
 
         r = self.client.table().create("Attachments")
         assert r.status_code == 201
-        r = self.client.table().setSchema(
+        r = self.client.table().set_schema(
             "Attachments",
             {
                 "columns": [
@@ -66,7 +66,7 @@ class TestFilesSingleFile(object):
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        attachment = utils.get_file("text/stocks.csv")
+        file = utils.get_file_content(utils.get_file_name("text/stocks.csv"))
 
         file = self.client.files().put("Attachments", rid, "one_file", attachment["base64Content"])
         assert file.status_code == 201, file.json()
