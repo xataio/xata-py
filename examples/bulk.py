@@ -32,6 +32,7 @@ fake = Faker()
 xata = XataClient()
 bp = BulkProcessor(xata)
 
+
 def generate_records(n: int):
     return [
         {
@@ -43,6 +44,7 @@ def generate_records(n: int):
         }
         for i in range(n)
     ]
+
 
 # Generate records
 records = generate_records(500)
@@ -61,9 +63,9 @@ bp.flush_queue()
 # Execution stats
 print(bp.get_stats())
 # {
-#   'total': 502, 
-#   'queue': 0, 
-#   'failed_batches': 0, 
+#   'total': 502,
+#   'queue': 0,
+#   'failed_batches': 0,
 #   'tables': {
 #       'people': 502
 #   }

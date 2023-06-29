@@ -111,7 +111,9 @@ class TestDatabasesNamespace(object):
         r = self.client.databases().listRegions()
         assert r.status_code == 200
         assert "regions" in r.json()
-        assert len(r.json()["regions"]) == 3
+        assert len(r.json()["regions"]) == 5
+        assert "id" in r.json()["regions"][0]
+        assert "name" in r.json()["regions"][0]
 
         r = self.client.databases().listRegions(workspace_id="NonExistingWorkspaceId")
         assert r.status_code == 401
