@@ -44,13 +44,7 @@ class TestFilesSingleFile(object):
         assert r.status_code == 201
         r = self.client.table().set_schema(
             "Attachments",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "one_file", "type": "file"},
-                    {"name": "many_files", "type": "file[]"},
-                ]
-            },
+            utils.get_attachments_schema(),
             db_name=self.db_name,
             branch_name=self.branch_name,
         )

@@ -77,23 +77,14 @@ def get_posts() -> list[str]:
         },
     ]
 
-
-"""
-def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
-    if cat is None:
-        cat = random.choice(["image", "audio", "video", "text"])
-    file_name = faker.file_path(depth=random.randint(0, 7), category=cat)
-    # different file types
-    file_content = faker.binary(random.randint(256, 1024))
-    encoded_string = base64.b64encode(file_content).decode("ascii")
+def get_attachments_schema() -> dict:
     return {
-        "name": file_name.replace("/", "_"),
-        "mediaType": faker.mime_type(category=cat),
-        "base64Content": encoded_string,
-        "enablePublicUrl": publicUrl,
-        "signedUrlTimeout": signedUrlTimeout,
-    }, file_content
-"""
+        "columns": [
+            {"name": "title", "type": "string"},
+            {"name": "one_file", "type": "file"},
+            {"name": "many_files", "type": "file[]"},
+        ]
+    }
 
 
 def get_file_name(file_name: str) -> str:
