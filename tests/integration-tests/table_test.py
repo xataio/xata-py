@@ -60,9 +60,6 @@ class TestTableNamespace(object):
     def new_column(self) -> dict:
         return {"name": "new_column", "type": "bool"}
 
-    #
-    # Table Ops
-    #
     def test_create_table(self):
         r = self.client.table().create("Posts")
         assert r.status_code == 201
@@ -96,9 +93,6 @@ class TestTableNamespace(object):
         r = self.client.table().delete("NonExistingTable")
         assert r.status_code == 404
 
-    #
-    # Schema Ops
-    #
     def test_set_table_schema(self, columns: dict):
         r = self.client.table().set_schema("Posts", columns)
         assert r.status_code == 200
@@ -114,9 +108,6 @@ class TestTableNamespace(object):
         r = self.client.table().get_schema("NonExistingTable")
         assert r.status_code == 404
 
-    #
-    # Column Ops
-    #
     def test_get_table_columns(self, columns: dict):
         r = self.client.table().get_columns("Posts")
         assert r.status_code == 200
@@ -196,3 +187,9 @@ class TestTableNamespace(object):
         r = self.client.table().get_columns("Posts")
         assert r.status_code == 200
         assert r.json() == columns
+
+    def test_deprecated_object_header(self):
+        r = self.client.table().create("Posts01")
+        assert r.status_code == 201
+        assert "x-xata-message" in r.headers
+        assert r.headers["x-xata-message"] == ""

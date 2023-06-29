@@ -18,6 +18,7 @@
 #
 
 import os
+import base64
 import random
 import string
 import time
@@ -111,7 +112,7 @@ def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 
     return {
         "name": file_name.replace("/", "_"),
         "mediaType": magic.from_file(file_name, mime=True),
-        "base64Content": file_content.decode("utf-8"),
+        "base64Content": base64.b64encode(file_content).decode("ascii"), # file_content.decode("utf-8"),
         "enablePublicUrl": public_url,
         "signedUrlTimeout": signed_url_timeout,
     }
