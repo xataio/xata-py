@@ -17,9 +17,21 @@
 # under the License.
 #
 
+import base64
+import os
 import random
 import string
 import time
+
+import magic
+from faker import Faker
+
+faker = Faker()
+Faker.seed(42)
+
+
+def get_faker() -> Faker:
+    return faker
 
 
 def get_db_name() -> str:
@@ -64,3 +76,35 @@ def get_posts() -> list[str]:
             "text": "I like to eat apples and bananas",
         },
     ]
+
+
+def get_attachments_schema() -> dict:
+    return {
+        "columns": [
+            {"name": "title", "type": "string"},
+            {"name": "one_file", "type": "file"},
+            {"name": "many_files", "type": "file[]"},
+        ]
+    }
+
+
+def get_file_name(file_name: str) -> str:
+    return "%s/tests/data/attachments/%s" % (os.getcwd(), file_name)
+
+
+def get_file_content(file_name: str) -> bytes:
+    with open(file_name, "rb") as f:
+        return f.read()
+
+
+def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 120):
+    file_name = get_file_name(file_name)
+    file_content = get_file_content(file_name)
+
+    return {
+        "name": file_name.replace("/", "_"),
+        "mediaType": magic.from_file(file_name, mime=True),
+        "base64Content": base64.b64encode(file_content).decode("ascii"),
+        "enablePublicUrl": public_url,
+        "signedUrlTimeout": signed_url_timeout,
+    }

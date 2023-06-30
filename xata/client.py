@@ -154,6 +154,7 @@ class XataClient:
         self._table = Table(self)
         self._users = Users(self)
         self._workspaces = Workspaces(self)
+        self._files = Files(self)
 
     def get_config(self) -> dict:
         """

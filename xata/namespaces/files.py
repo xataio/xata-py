@@ -197,6 +197,7 @@ class Files(Namespace):
         :param record_id: str The Record name
         :param column_name: str The Column name
         :param data: bytes
+        :param content_type: str, Default: "application/octet-stream",
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
