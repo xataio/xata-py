@@ -26,7 +26,7 @@ class Sql(Namespace):
 
     scope = "workspace"
 
-    def query(self, query: str, workspace_id: str = None, db_name: str = None, branch_name: str = None) -> Response:
+    def query(self, query: str, db_name: str = None, branch_name: str = None) -> Response:
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/sql"
         headers = {"content-type": "application/json"}
