@@ -39,6 +39,7 @@ from .namespaces.core.databases import Databases
 from .namespaces.core.invites import Invites
 from .namespaces.core.users import Users
 from .namespaces.core.workspaces import Workspaces
+from .namespaces.files import Files
 from .namespaces.workspace.branch import Branch
 from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
@@ -153,6 +154,7 @@ class XataClient:
         self._table = Table(self)
         self._users = Users(self)
         self._workspaces = Workspaces(self)
+        self._files = Files(self)
 
     def get_config(self) -> dict:
         """
@@ -836,3 +838,6 @@ class XataClient:
         :return Table
         """
         return self._table
+
+    def files(self) -> Files:
+        return self._files

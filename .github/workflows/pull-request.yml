@@ -5,9 +5,9 @@ name: Pull Request
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "0.x"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "0.x"]
 
 jobs:
   build:
