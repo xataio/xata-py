@@ -46,7 +46,9 @@ class Namespace:
         cfg = self.client.get_config()
         return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
-    def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data: bytes = None) -> Response:
+    def request(
+        self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data: bytes = None
+    ) -> Response:
         """
         :param http_method: str
         :param url_path: str
