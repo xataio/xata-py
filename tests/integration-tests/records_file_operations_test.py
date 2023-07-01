@@ -44,13 +44,7 @@ class TestRecordsFileOperations(object):
         # create schema
         r = self.client.table().set_schema(
             "Attachments",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "one_file", "type": "file"},
-                    {"name": "many_files", "type": "file[]"},
-                ]
-            },
+            utils.get_attachments_schema(),
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
@@ -84,7 +78,7 @@ class TestRecordsFileOperations(object):
 
         assert "name" in record["one_file"]
         assert "mediaType" in record["one_file"]
-        #assert "size" in record["one_file"] # TODO should be here
+        # assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
 
@@ -92,7 +86,9 @@ class TestRecordsFileOperations(object):
         assert len(list(record["one_file"].keys())) == 2
         assert len(list(record["many_files"][0].keys())) == 3
 
-        r = self.client.records().get("Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"])
+        r = self.client.records().get(
+            "Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"]
+        )
         assert r.status_code == 200
         record = r.json()
 

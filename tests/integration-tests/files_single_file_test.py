@@ -70,7 +70,7 @@ class TestFilesSingleFile(object):
         assert "size" in file.json()
 
         assert not file.json()["attributes"]
-        #assert attachment["mediaType"] == file.json()["mediaType"]
+        # assert attachment["mediaType"] == file.json()["mediaType"]
         assert file.json()["name"] == ""
         assert file.json()["size"] > 0  # TODO test against actual values
 
@@ -101,7 +101,7 @@ class TestFilesSingleFile(object):
 
         file = self.client.files().get("Attachments", rid, "one_file")
         assert file.status_code == 200, file.json()
-        assert file.headers.get('content-type') == "image/gif"
+        assert file.headers.get("content-type") == "image/gif"
         assert img == file.content
 
         proof = self.client.records().get("Attachments", rid)

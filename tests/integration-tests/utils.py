@@ -17,8 +17,8 @@
 # under the License.
 #
 
-import os
 import base64
+import os
 import random
 import string
 import time
@@ -76,6 +76,7 @@ def get_posts() -> list[str]:
             "text": "I like to eat apples and bananas",
         },
     ]
+
 
 def get_attachments_schema() -> dict:
     return {
