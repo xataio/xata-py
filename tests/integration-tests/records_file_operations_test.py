@@ -84,7 +84,7 @@ class TestRecordsFileOperations(object):
 
         assert "name" in record["one_file"]
         assert "mediaType" in record["one_file"]
-        #assert "size" in record["one_file"] # TODO should be here
+        # assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
 
@@ -92,7 +92,9 @@ class TestRecordsFileOperations(object):
         assert len(list(record["one_file"].keys())) == 2
         assert len(list(record["many_files"][0].keys())) == 3
 
-        r = self.client.records().getRecord("Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"])
+        r = self.client.records().getRecord(
+            "Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"]
+        )
         assert r.status_code == 200
         record = r.json()
 

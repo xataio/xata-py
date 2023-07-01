@@ -97,7 +97,7 @@ def get_file_content(file_name: str) -> bytes:
         return f.read()
 
 
-def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 120):
+def get_file(file_name: str, public_url: bool = False, signed_url_timeout: int = 30):
     file_name = get_file_name(file_name)
     file_content = get_file_content(file_name)
 
