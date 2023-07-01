@@ -17,8 +17,9 @@
 # under the License.
 #
 
-import utils
 import time
+
+import utils
 from requests import request
 
 from xata.client import XataClient
