@@ -31,7 +31,7 @@ class TestFilesMultipleFiles(object):
         self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        r = self.client.databases().create(
+        r = self.client.databases().createDatabase(
             self.db_name,
             {
                 "region": self.client.get_config()["region"],
@@ -40,9 +40,9 @@ class TestFilesMultipleFiles(object):
         )
         assert r.status_code == 201
 
-        r = self.client.table().create("Attachments")
+        r = self.client.table().createTable("Attachments")
         assert r.status_code == 201
-        r = self.client.table().set_schema(
+        r = self.client.table().setTableSchema(
             "Attachments",
             utils.get_attachments_schema(),
             db_name=self.db_name,
@@ -51,7 +51,7 @@ class TestFilesMultipleFiles(object):
         assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
+        r = self.client.databases().deleteDatabase(self.db_name)
         assert r.status_code == 200
 
     def test_put_file_item(self):
@@ -62,11 +62,11 @@ class TestFilesMultipleFiles(object):
                 utils.get_file("images/02.gif", public_url=True),
             ],
         }
-        r = self.client.records().insert("Attachments", payload)
+        r = self.client.records().insertRecord("Attachments", payload)
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        record = self.client.records().get("Attachments", rid, columns=["many_files.id", "many_files.url"])
+        record = self.client.records().getRecord("Attachments", rid, columns=["many_files.id", "many_files.url"])
         assert record.status_code == 200
         assert len(record.json()["many_files"]) == 2
 
@@ -92,7 +92,7 @@ class TestFilesMultipleFiles(object):
         assert "size" in file_1.json()
 
         prev_url = record.json()["many_files"][0]["url"]
-        record = self.client.records().get("Attachments", rid, columns=["many_files.id", "many_files.url"])
+        record = self.client.records().getRecord("Attachments", rid, columns=["many_files.id", "many_files.url"])
         assert prev_url != record.json()["many_files"][0]["url"]
 
         proof = request("GET", record.json()["many_files"][0]["url"])
@@ -107,11 +107,11 @@ class TestFilesMultipleFiles(object):
                 utils.get_file("images/02.gif", public_url=True),
             ],
         }
-        r = self.client.records().insert("Attachments", payload)
+        r = self.client.records().insertRecord("Attachments", payload)
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
+        record = self.client.records().getRecord("Attachments", rid, columns=["many_files.id"])
         assert record.status_code == 200
         assert len(record.json()["many_files"]) == 2
 
@@ -119,7 +119,7 @@ class TestFilesMultipleFiles(object):
         assert r.status_code == 200
         prev_id = record.json()["many_files"][0]["id"]
 
-        record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
+        record = self.client.records().getRecord("Attachments", rid, columns=["many_files.id"])
         assert record.status_code == 200
         assert len(record.json()["many_files"]) == 1
 
@@ -134,11 +134,11 @@ class TestFilesMultipleFiles(object):
                 utils.get_file("images/02.gif", public_url=True),
             ],
         }
-        r = self.client.records().insert("Attachments", payload)
+        r = self.client.records().insertRecord("Attachments", payload)
         assert r.status_code == 201, r.json()
 
         rid = r.json()["id"]
-        record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
+        record = self.client.records().getRecord("Attachments", rid, columns=["many_files.id"])
         assert record.status_code == 200
 
         item = self.client.files().get_item("Attachments", rid, "many_files", record.json()["many_files"][0]["id"])
