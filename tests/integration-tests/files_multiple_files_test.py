@@ -59,8 +59,8 @@ class TestFilesMultipleFiles(object):
             "title": self.fake.catch_phrase(),
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
-                utils.get_file("images/02.gif", public_url=True)
-            ]
+                utils.get_file("images/02.gif", public_url=True),
+            ],
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
@@ -82,7 +82,9 @@ class TestFilesMultipleFiles(object):
         assert img_2 == proof_2.content
 
         # overwrite item 1 with image 2
-        file_1 = self.client.files().put_item("Attachments", rid, "many_files", record.json()["many_files"][0]["id"], img_2)
+        file_1 = self.client.files().put_item(
+            "Attachments", rid, "many_files", record.json()["many_files"][0]["id"], img_2
+        )
         assert file_1.status_code == 200
         assert "attributes" in file_1.json()
         assert "mediaType" in file_1.json()
@@ -102,8 +104,8 @@ class TestFilesMultipleFiles(object):
             "title": self.fake.catch_phrase(),
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
-                utils.get_file("images/02.gif", public_url=True)
-            ]
+                utils.get_file("images/02.gif", public_url=True),
+            ],
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
@@ -129,8 +131,8 @@ class TestFilesMultipleFiles(object):
             "title": self.fake.catch_phrase(),
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
-                utils.get_file("images/02.gif", public_url=True)
-            ]
+                utils.get_file("images/02.gif", public_url=True),
+            ],
         }
         r = self.client.records().insert("Attachments", payload)
         assert r.status_code == 201, r.json()
