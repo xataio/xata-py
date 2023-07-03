@@ -24,7 +24,6 @@ from xata.client import XataClient
 
 
 class TestTableNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -40,7 +39,6 @@ class TestTableNamespace(object):
         )
         assert r.status_code == 201
 
-    @classmethod
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
         assert r.status_code == 200

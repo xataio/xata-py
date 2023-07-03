@@ -23,7 +23,6 @@ from xata.client import XataClient
 
 
 class TestUsersNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
