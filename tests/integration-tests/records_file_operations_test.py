@@ -37,9 +37,9 @@ class TestRecordsFileOperations(object):
                 "branchName": self.client.get_config()["branchName"],
             },
         )
-        assert r.status_code == 201
+        assert r.is_success()
         r = self.client.table().create("Attachments")
-        assert r.status_code == 201
+        assert r.is_success()
 
         # create schema
         r = self.client.table().set_schema(
@@ -48,11 +48,11 @@ class TestRecordsFileOperations(object):
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
-        assert r.status_code == 200
+        assert r.is_success()
 
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert r.is_success()
 
     def test_insert_record_with_files_and_read_it(self):
         payload = {
@@ -62,13 +62,13 @@ class TestRecordsFileOperations(object):
         }
 
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
-        assert "id" in r.json()
+        assert r.is_success(), r
+        assert "id" in r
 
-        r = self.client.records().get("Attachments", r.json()["id"])
-        assert r.status_code == 200
+        r = self.client.records().get("Attachments", r["id"])
+        assert r.is_success()
 
-        record = r.json()
+        record = r
         assert "id" not in record["one_file"]
         assert len(record["many_files"]) == len(payload["many_files"])
         # the id is used to address the file within the map
@@ -87,10 +87,10 @@ class TestRecordsFileOperations(object):
         assert len(list(record["many_files"][0].keys())) == 3
 
         r = self.client.records().get(
-            "Attachments", r.json()["id"], columns=["one_file.base64Content", "many_files.base64Content"]
+            "Attachments", r["id"], columns=["one_file.base64Content", "many_files.base64Content"]
         )
-        assert r.status_code == 200
-        record = r.json()
+        assert r.is_success()
+        record = r
 
         assert payload["one_file"]["base64Content"] == record["one_file"]["base64Content"]
         assert payload["many_files"][0]["base64Content"] == record["many_files"][0]["base64Content"]

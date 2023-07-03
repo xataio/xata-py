@@ -1,5 +1,5 @@
 
-    def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> Response:
+    def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> ApiResponse:
        """
        % for line in description :
        ${line}

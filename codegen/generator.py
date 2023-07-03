@@ -105,7 +105,7 @@ def generate_namespace(namespace: dict, scope: str, spec_version: str, spec_base
         "spec_scope": scope,
         "spec_version": spec_version,
     }
-    out = Template(filename="codegen/namespace.tpl", output_encoding="utf-8").render(**vars)
+    out = Template(filename="codegen/templates/namespace.tpl", output_encoding="utf-8").render(**vars)
     file_name = "%s/%s.py" % (WS_DIR, _sanitize_filename(namespace["name"]))
     fh = open(file_name, "w+")
     fh.write(out.decode("utf-8"))
@@ -190,7 +190,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
             ],
         }
     )
-    return Template(filename="codegen/endpoint.tpl", output_encoding="utf-8").render(**vars)
+    return Template(filename="codegen/templates/endpoint.tpl", output_encoding="utf-8").render(**vars)
 
 
 def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references: dict) -> list:

@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api.responses import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class Migrations(Namespace):
 
     scope = "workspace"
 
-    def get_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Get branch migration history [deprecated]
 
@@ -57,7 +56,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("GET", url_path, headers, payload)
 
-    def get_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Compute a migration plan from a target schema the branch should be migrated too.
 
@@ -81,7 +80,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def execute_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def execute_plan(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Apply a migration plan to the branch
 
@@ -105,7 +104,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def get_schema_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def get_schema_history(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Query schema history.
 
@@ -130,7 +129,9 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compare_branch_with_user_schema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def compare_branch_with_user_schema(
+        self, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
         """
         Compare branch with user schema.
 
@@ -154,7 +155,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compare_schemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def compare_schemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Compare branch schemas.
 
@@ -178,7 +179,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def upadte_schema(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def upadte_schema(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Update Branch schema
 
@@ -202,7 +203,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def preview(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def preview(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Preview branch schema edits.
 
@@ -227,7 +228,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def apply(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def apply(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Apply edit script.
 
@@ -251,7 +252,7 @@ class Migrations(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def push(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def push(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         The `schema/push` API accepts a list of migrations to be applied to the current branch.  A
         list of applicable migrations can be fetched using the `schema/history` API from another

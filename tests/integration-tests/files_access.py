@@ -33,28 +33,32 @@ class TestFilesAccess(object):
         self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert (
+            self.client.databases()
+            .create(
+                self.db_name,
+                {
+                    "region": self.client.get_config()["region"],
+                    "branchName": self.client.get_config()["branchName"],
+                },
+            )
+            .is_success()
         )
-        assert r.status_code == 201
 
-        r = self.client.table().create("Attachments")
-        assert r.status_code == 201
-        r = self.client.table().set_schema(
-            "Attachments",
-            utils.get_attachments_schema(),
-            db_name=self.db_name,
-            branch_name=self.branch_name,
+        assert self.client.table().create("Attachments").is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Attachments",
+                utils.get_attachments_schema(),
+                db_name=self.db_name,
+                branch_name=self.branch_name,
+            )
+            .is_success()
         )
-        assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_public_flag_true(self):
         payload = {
@@ -62,18 +66,18 @@ class TestFilesAccess(object):
             "one_file": utils.get_file("images/01.gif", public_url=True),
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
-        rid = r.json()["id"]
+        assert r.is_success()
+        rid = r["id"]
 
         file = self.client.records().get("Attachments", rid, columns=["one_file.signedUrl", "one_file.url"])
-        assert file.status_code == 200, file.json()
-        assert "signedUrl" in file.json()["one_file"]
-        assert "url" in file.json()["one_file"]
+        assert file.is_success()
+        assert "signedUrl" in file["one_file"]
+        assert "url" in file["one_file"]
 
-        proof_public = request("GET", file.json()["one_file"]["url"])
+        proof_public = request("GET", file["one_file"]["url"])
         assert proof_public.status_code == 200
 
-        proof_signed = request("GET", file.json()["one_file"]["signedUrl"])
+        proof_signed = request("GET", file["one_file"]["signedUrl"])
         assert proof_signed.status_code == 200
 
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
@@ -86,18 +90,18 @@ class TestFilesAccess(object):
             "one_file": utils.get_file("images/01.gif", public_url=False),
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
-        rid = r.json()["id"]
+        assert r.is_success()
+        rid = r["id"]
 
         file = self.client.records().get("Attachments", rid, columns=["one_file.signedUrl", "one_file.url"])
-        assert file.status_code == 200, file.json()
-        assert "signedUrl" in file.json()["one_file"]
-        assert "url" in file.json()["one_file"]
+        assert file.is_success()
+        assert "signedUrl" in file["one_file"]
+        assert "url" in file["one_file"]
 
-        proof_public = request("GET", file.json()["one_file"]["url"])
+        proof_public = request("GET", file["one_file"]["url"])
         assert proof_public.status_code == 403
 
-        proof_signed = request("GET", file.json()["one_file"]["signedUrl"])
+        proof_signed = request("GET", file["one_file"]["signedUrl"])
         assert proof_signed.status_code == 200
 
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
@@ -109,14 +113,14 @@ class TestFilesAccess(object):
             "one_file": utils.get_file("images/01.gif", public_url=False, signed_url_timeout=1),
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
-        rid = r.json()["id"]
+        assert r.is_success()
+        rid = r["id"]
 
         file = self.client.records().get("Attachments", rid, columns=["one_file.signedUrl"])
-        assert file.status_code == 200, file.json()
-        assert "signedUrl" in file.json()["one_file"]
+        assert file.is_success()
+        assert "signedUrl" in file["one_file"]
 
         time.sleep(1)
 
-        proof_signed = request("GET", file.json()["one_file"]["signedUrl"])
+        proof_signed = request("GET", file["one_file"]["signedUrl"])
         assert proof_signed.status_code == 403

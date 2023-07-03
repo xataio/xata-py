@@ -23,10 +23,8 @@
 # Specification: ${spec_scope}:v${spec_version}
 # ------------------------------------------------------- #
 
-from requests import Response
-
 from xata.namespace import Namespace
-
+from xata.api.responses import ApiResponse
 
 class ${class_name}(Namespace):
 

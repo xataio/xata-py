@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api.responses import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -34,7 +33,7 @@ class Users(Namespace):
 
     def get(
         self,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Return details of the user making the request
 
@@ -54,7 +53,7 @@ class Users(Namespace):
         url_path = "/user"
         return self.request("GET", url_path)
 
-    def update(self, payload: dict) -> Response:
+    def update(self, payload: dict) -> ApiResponse:
         """
         Update user info
 
@@ -78,7 +77,7 @@ class Users(Namespace):
 
     def delete(
         self,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Delete the user making the request
 

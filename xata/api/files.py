@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api.responses import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -40,7 +39,7 @@ class Files(Namespace):
         file_id: str,
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieves file content from an array by file ID
 
@@ -76,7 +75,7 @@ class Files(Namespace):
         data: bytes,
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Uploads the file content to an array given the file ID
 
@@ -114,7 +113,7 @@ class Files(Namespace):
         file_id: str,
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Deletes an item from an file array column given the file ID
 
@@ -142,7 +141,7 @@ class Files(Namespace):
 
     def get(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieves the file content from a file column
 
@@ -178,7 +177,7 @@ class Files(Namespace):
         content_type: str = "application/octet-stream",
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Uploads the file content to the given file column
 
@@ -209,7 +208,7 @@ class Files(Namespace):
 
     def delete(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Deletes a file referred in a file column
 

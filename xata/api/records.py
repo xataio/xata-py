@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api.responses import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class Records(Namespace):
 
     scope = "workspace"
 
-    def transaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def transaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Execute a transaction on a branch
 
@@ -59,7 +58,7 @@ class Records(Namespace):
 
     def insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Insert a new Record into the Table
 
@@ -89,7 +88,7 @@ class Records(Namespace):
 
     def get(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieve record by ID
 
@@ -126,7 +125,7 @@ class Records(Namespace):
         columns: list = None,
         create_only: bool = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
         this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
@@ -177,7 +176,7 @@ class Records(Namespace):
         branch_name: str = None,
         columns: list = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Upsert record with ID
 
@@ -216,7 +215,7 @@ class Records(Namespace):
 
     def delete(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Delete record from table
 
@@ -253,7 +252,7 @@ class Records(Namespace):
         branch_name: str = None,
         columns: list = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Update record with ID
 
@@ -291,7 +290,7 @@ class Records(Namespace):
 
     def bulk_insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Bulk insert records
 

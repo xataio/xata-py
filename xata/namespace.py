@@ -19,7 +19,9 @@
 
 import logging
 
-from requests import Response, request
+from requests import request
+
+from xata.api.responses import ApiResponse
 
 from .errors import RateLimitException, ServerErrorException, UnauthorizedException
 
@@ -48,7 +50,7 @@ class Namespace:
 
     def request(
         self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data: bytes = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         :param http_method: str
         :param url_path: str
@@ -56,7 +58,7 @@ class Namespace:
         :param payload: dict = None
         :param data: bytes = None
 
-        :return requests.Response
+        :return ApiResponse
 
         :raises RateLimitException
         :raises UnauthorizedException
@@ -74,10 +76,6 @@ class Namespace:
         else:
             resp = request(http_method, url, headers=headers, json=payload)
 
-        # log server message
-        if "x-xata-message" in resp.headers:
-            self.logger.warn(resp.headers["x-xata-message"])
-
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
             raise RateLimitException(f"code: {resp.status_code}, rate limited: {resp.json()}")
@@ -86,5 +84,4 @@ class Namespace:
         elif resp.status_code >= 500:
             raise ServerErrorException(f"code: {resp.status_code}, server error: {resp.text}")
 
-        # All clear!
-        return resp
+        return ApiResponse(resp)
