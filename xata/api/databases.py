@@ -32,7 +32,7 @@ class Databases(Namespace):
 
     scope = "core"
 
-    def get_databases(self, workspace_id: str = None) -> Response:
+    def list(self, workspace_id: str = None) -> Response:
         """
         List all databases available in your Workspace.
 

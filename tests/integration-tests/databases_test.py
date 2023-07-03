@@ -41,7 +41,7 @@ class TestDatabasesNamespace(object):
         assert r.status_code == 201
 
     def test_list_databases(self):
-        r = self.client.databases().get_databases()
+        r = self.client.databases().list()
         assert r.status_code == 200
         assert "databases" in r.json()
         assert len(r.json()["databases"]) > 0
@@ -54,7 +54,7 @@ class TestDatabasesNamespace(object):
         # assert r.json()["databases"][0]["region"] == self.get_config()["region"]
 
         with pytest.raises(UnauthorizedException) as e:
-            self.client.databases().get_databases("NonExistingWorkspaceId")
+            self.client.databases().list("NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
     def test_get_database_metadata(self):
