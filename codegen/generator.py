@@ -66,6 +66,39 @@ REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 API_RENAMING = json.load(open("codegen/api-rename-mapping.json"))
 
+OPTIONAL_CURATED_PARAM_DB_NAME = {
+    "name": "db_name",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The name of the database to query. Default: database name from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_BRANCH_NAME = {
+    "name": "branch_name",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The name of the branch to query. Default: branch name from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_WORKSPACE_ID = {
+    "name": "workspace_id",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The workspace identifier. Default: workspace Id from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_PAYLOAD = {
+    "name": "payload",
+    "nameParam": "payload",
+    "type": "dict",
+    "description": "content",
+    "in": "requestBody",
+    "required": True,  # TODO get required
+}
+
 
 def fetch_openapi_specs(spec_url: str) -> dict:
     """
@@ -212,40 +245,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
                 logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
                 # push two new params to cover for string creation
-                curated_param_list.append(
-                    {
-                        "name": "db_name",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The name of the database to query. Default: database name from the client.",
-                        "required": False,
-                    }
-                )
-                curated_param_list.append(
-                    {
-                        "name": "branch_name",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The name of the branch to query. Default: branch name from the client.",
-                        "required": False,
-                    }
-                )
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_DB_NAME)
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_BRANCH_NAME)
                 skel["smart_db_branch_name"] = True
             elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
                 # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
                 logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
-                curated_param_list.append(
-                    {
-                        "name": "workspace_id",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The workspace identifier. Default: workspace Id from the client.",
-                        "required": False,
-                    }
-                )
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_WORKSPACE_ID)
                 skel["smart_workspace_id"] = True
             else:
                 curated_param_list.append(r)
@@ -287,16 +293,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                 skel["has_optional_params"] += 1
 
     if "requestBody" in endpoint:
-        skel["list"].append(
-            {
-                "name": "payload",
-                "nameParam": "payload",
-                "type": "dict",
-                "description": "content",
-                "in": "requestBody",
-                "required": True,  # TODO get required
-            }
-        )
+        skel["list"].append(OPTIONAL_CURATED_PARAM_PAYLOAD)
         skel["has_payload"] = True
 
     # collect response schema
