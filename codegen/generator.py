@@ -65,6 +65,7 @@ REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 API_RENAMING = json.load(open("codegen/api-rename-mapping.json"))
+DEFAULT_TEMPLATE_REF = "endpoint"
 
 OPTIONAL_CURATED_PARAM_DB_NAME = {
     "name": "db_name",
@@ -193,13 +194,14 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     # replacements
     namespace = _sanitize_filename(endpoint["tags"][0])
     operation_id = endpoint["operationId"].strip()
+    template_ref = DEFAULT_TEMPLATE_REF
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
-        operation_id = API_RENAMING[namespace][operation_id]
-        logging.debug(
-            "replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id)
-        )
+        template_ref = API_RENAMING[namespace][operation_id]["template"]
+        operation_id = API_RENAMING[namespace][operation_id]["name"]
+        logging.debug("replacing name from %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id))
 
     vars = {
+        "template": template_ref,
         "operation_id": operation_id,
         "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
@@ -261,7 +263,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             # if not in ref: endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
-                p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                if "$ref" in p["schema"]:
+                    p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                elif "type" in p["schema"]:
+                    p["type"] = type_replacement(p["schema"]["type"])
+                else:
+                    logging.error("could resolve type of '%s' in the lookup." % r["$ref"])
+                    exit(11)
             # else if name not in r: method specific params
             elif "name" in r:
                 p = r

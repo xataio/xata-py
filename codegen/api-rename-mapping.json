@@ -1,104 +1,344 @@
 {
     "authentication": {
-        "getUserAPIKeys": "get_user_api_keys",
-        "createUserAPIKey": "create_user_api_keys",
-        "deleteUserAPIKey": "delete_user_api_keys"
+      "getUserAPIKeys": {
+        "template": "endpoint",
+        "name": "get_user_api_keys"
+      },
+      "createUserAPIKey": {
+        "template": "endpoint",
+        "name": "create_user_api_keys"
+      },
+      "deleteUserAPIKey": {
+        "template": "endpoint",
+        "name": "delete_user_api_keys"
+      }
     },
     "databases": {
-        "getDatabaseMetadata": "get_metadata",
-        "createDatabase": "create",
-        "deleteDatabase": "delete",
-        "updateDatabaseMetadata": "update_metadata",
-        "listRegions": "get_regions",
-        "getDatabaseList": "list",
-        "renameDatabase": "rename"
+      "getDatabaseMetadata": {
+        "template": "endpoint",
+        "name": "get_metadata"
+      },
+      "createDatabase": {
+        "template": "endpoint",
+        "name": "create"
+      },
+      "deleteDatabase": {
+        "template": "endpoint",
+        "name": "delete"
+      },
+      "updateDatabaseMetadata": {
+        "template": "endpoint",
+        "name": "update_metadata"
+      },
+      "listRegions": {
+        "template": "endpoint",
+        "name": "get_regions"
+      },
+      "getDatabaseList": {
+        "template": "endpoint",
+        "name": "list"
+      },
+      "renameDatabase": {
+        "template": "endpoint",
+        "name": "rename"
+      }
     },
     "users": {
-        "getUser": "get",
-        "updateUser": "update",
-        "deleteUser": "delete"
+      "getUser": {
+        "template": "endpoint",
+        "name": "get"
+      },
+      "updateUser": {
+        "template": "endpoint",
+        "name": "update"
+      },
+      "deleteUser": {
+        "template": "endpoint",
+        "name": "delete"
+      }
     },
     "workspaces": {
-        "getWorkspacesList": "get_workspaces",
-        "createWorkspace": "create",
-        "getWorkspace": "get",
-        "updateWorkspace": "update",
-        "deleteWorkspace": "delete",
-        "getWorkspaceMembersList": "get_members",
-        "updateWorkspaceMemberRole": "update_member",
-        "removeWorkspaceMember": "remove_member"
+      "getWorkspacesList": {
+        "template": "endpoint",
+        "name": "get_workspaces"
+      },
+      "createWorkspace": {
+        "template": "endpoint",
+        "name": "create"
+      },
+      "getWorkspace": {
+        "template": "endpoint",
+        "name": "get"
+      },
+      "updateWorkspace": {
+        "template": "endpoint",
+        "name": "update"
+      },
+      "deleteWorkspace": {
+        "template": "endpoint",
+        "name": "delete"
+      },
+      "getWorkspaceMembersList": {
+        "template": "endpoint",
+        "name": "get_members"
+      },
+      "updateWorkspaceMemberRole": {
+        "template": "endpoint",
+        "name": "update_member"
+      },
+      "removeWorkspaceMember": {
+        "template": "endpoint",
+        "name": "remove_member"
+      }
     },
     "branch": {
-        "getBranchList": "get_branches",
-        "getBranchDetails": "get_details",
-        "createBranch": "create",
-        "deleteBranch": "delete",
-        "getBranchMetadata": "get_metadata",
-        "updateBranchMetadata": "update_metadata",
-        "getBranchStats": "get_stats",
-        "resolveBranch": "resolve",
-        "getGitBranchesMapping": "get_git_branches_mapping",
-        "addGitBranchesEntry": "add_git_branches_entry",
-        "removeGitBranchesEntry": "remove_git_branches_entry"
+      "getBranchList": {
+        "template": "endpoint",
+        "name": "get_branches"
+      },
+      "getBranchDetails": {
+        "template": "endpoint",
+        "name": "get_details"
+      },
+      "createBranch": {
+        "template": "endpoint",
+        "name": "create"
+      },
+      "deleteBranch": {
+        "template": "endpoint",
+        "name": "delete"
+      },
+      "getBranchMetadata": {
+        "template": "endpoint",
+        "name": "get_metadata"
+      },
+      "updateBranchMetadata": {
+        "template": "endpoint",
+        "name": "update_metadata"
+      },
+      "getBranchStats": {
+        "template": "endpoint",
+        "name": "get_stats"
+      },
+      "resolveBranch": {
+        "template": "endpoint",
+        "name": "resolve"
+      },
+      "getGitBranchesMapping": {
+        "template": "endpoint",
+        "name": "get_git_branches_mapping"
+      },
+      "addGitBranchesEntry": {
+        "template": "endpoint",
+        "name": "add_git_branches_entry"
+      },
+      "removeGitBranchesEntry": {
+        "template": "endpoint",
+        "name": "remove_git_branches_entry"
+      }
     },
     "migrations": {
-        "getBranchMigrationHistory": "get_history",
-        "getBranchMigrationPlan": "get_plan",
-        "executeBranchMigrationPlan": "execute_plan",
-        "getBranchSchemaHistory": "get_schema_history",
-        "compareBranchSchemas": "compare_schemas",
-        "updateBranchSchemas": "update_schemas",
-        "updateBranchSchema": "upadte_schema",
-        "previewBranchSchemaEdit": "preview",
-        "applyBranchSchemaEdit": "apply",
-        "pushBranchMigrations": "push",
-        "compareBranchWithUserSchema": "compare_branch_with_user_schema"
+      "getBranchMigrationHistory": {
+        "template": "endpoint",
+        "name": "get_history"
+      },
+      "getBranchMigrationPlan": {
+        "template": "endpoint",
+        "name": "get_plan"
+      },
+      "executeBranchMigrationPlan": {
+        "template": "endpoint",
+        "name": "execute_plan"
+      },
+      "getBranchSchemaHistory": {
+        "template": "endpoint",
+        "name": "get_schema_history"
+      },
+      "compareBranchSchemas": {
+        "template": "endpoint",
+        "name": "compare_schemas"
+      },
+      "updateBranchSchemas": {
+        "template": "endpoint",
+        "name": "update_schemas"
+      },
+      "updateBranchSchema": {
+        "template": "endpoint",
+        "name": "upadte_schema"
+      },
+      "previewBranchSchemaEdit": {
+        "template": "endpoint",
+        "name": "preview"
+      },
+      "applyBranchSchemaEdit": {
+        "template": "endpoint",
+        "name": "apply"
+      },
+      "pushBranchMigrations": {
+        "template": "endpoint",
+        "name": "push"
+      },
+      "compareBranchWithUserSchema": {
+        "template": "endpoint",
+        "name": "compare_branch_with_user_schema"
+      }
     },
     "records": {
-        "insertRecord": "insert",
-        "getRecord": "get",
-        "insertRecordWithID": "insert_with_id",
-        "upsertRecordWithID": "upsert_with_id",
-        "deleteRecord": "delete",
-        "updateRecordWithID": "update_with_id",
-        "bulkInsertTableRecords": "bulk_insert",
-        "branchTransaction": "transaction"
+      "insertRecord": {
+        "template": "endpoint",
+        "name": "insert"
+      },
+      "getRecord": {
+        "template": "endpoint",
+        "name": "get"
+      },
+      "insertRecordWithID": {
+        "template": "endpoint",
+        "name": "insert_with_id"
+      },
+      "upsertRecordWithID": {
+        "template": "endpoint",
+        "name": "upsert_with_id"
+      },
+      "deleteRecord": {
+        "template": "endpoint",
+        "name": "delete"
+      },
+      "updateRecordWithID": {
+        "template": "endpoint",
+        "name": "update_with_id"
+      },
+      "bulkInsertTableRecords": {
+        "template": "endpoint",
+        "name": "bulk_insert"
+      },
+      "branchTransaction": {
+        "template": "endpoint",
+        "name": "transaction"
+      }
     },
     "search_and_filter": {
-        "queryTable": "query",
-        "searchTable": "search_table",
-        "searchBranch": "search_branch",
-        "vectorSearchTable": "vector_search",
-        "askTable": "ask",
-        "summarizeTable": "summarize",
-        "aggregateTable": "aggregate"
+      "queryTable": {
+        "template": "endpoint",
+        "name": "query"
+      },
+      "searchTable": {
+        "template": "endpoint",
+        "name": "search_table"
+      },
+      "searchBranch": {
+        "template": "endpoint",
+        "name": "search_branch"
+      },
+      "vectorSearchTable": {
+        "template": "endpoint",
+        "name": "vector_search"
+      },
+      "askTable": {
+        "template": "endpoint",
+        "name": "ask"
+      },
+      "summarizeTable": {
+        "template": "endpoint",
+        "name": "summarize"
+      },
+      "aggregateTable": {
+        "template": "endpoint",
+        "name": "aggregate"
+      }
     },
     "table": {
-        "createTable": "create",
-        "deleteTable": "delete",
-        "updateTable": "update",
-        "getTableSchema": "get_schema",
-        "setTableSchema": "set_schema",
-        "getTableColumns": "get_columns",
-        "addTableColumn": "add_column",
-        "deleteColumn": "delete_column",
-        "addColumn": "add_column",
-        "getColumn": "get_column",
-        "updateColumn": "update_column"
+      "createTable": {
+        "template": "endpoint",
+        "name": "create"
+      },
+      "deleteTable": {
+        "template": "endpoint",
+        "name": "delete"
+      },
+      "updateTable": {
+        "template": "endpoint",
+        "name": "update"
+      },
+      "getTableSchema": {
+        "template": "endpoint",
+        "name": "get_schema"
+      },
+      "setTableSchema": {
+        "template": "endpoint",
+        "name": "set_schema"
+      },
+      "getTableColumns": {
+        "template": "endpoint",
+        "name": "get_columns"
+      },
+      "addTableColumn": {
+        "template": "endpoint",
+        "name": "add_column"
+      },
+      "deleteColumn": {
+        "template": "endpoint",
+        "name": "delete_column"
+      },
+      "addColumn": {
+        "template": "endpoint",
+        "name": "add_column"
+      },
+      "getColumn": {
+        "template": "endpoint",
+        "name": "get_column"
+      },
+      "updateColumn": {
+        "template": "endpoint",
+        "name": "update_column"
+      }
     },
     "files": {
-        "getFileItem": "get_item",
-        "putFileItem": "put_item",
-        "deleteFileItem": "delete_item",
-        "getFile": "get",
-        "putFile": "put",
-        "deleteFile": "delete"
+      "getFileItem": {
+        "template": "endpoint",
+        "name": "get_item"
+      },
+      "putFileItem": {
+        "template": "endpoint",
+        "name": "put_item"
+      },
+      "deleteFileItem": {
+        "template": "endpoint",
+        "name": "delete_item"
+      },
+      "getFile": {
+        "template": "endpoint",
+        "name": "get"
+      },
+      "putFile": {
+        "template": "endpoint",
+        "name": "put"
+      },
+      "deleteFile": {
+        "template": "endpoint",
+        "name": "delete"
+      }
     },
     "invites": {
-        "inviteWorkspaceMember": "new",
-        "cancelWorkspaceMemberInvite": "cancel",
-        "updateWorkspaceMemberInvite": "update",
-        "acceptWorkspaceMemberInvite": "accept",
-        "resendWorkspaceMemberInvite": "resend"
+      "inviteWorkspaceMember": {
+        "template": "endpoint",
+        "name": "new"
+      },
+      "cancelWorkspaceMemberInvite": {
+        "template": "endpoint",
+        "name": "cancel"
+      },
+      "updateWorkspaceMemberInvite": {
+        "template": "endpoint",
+        "name": "update"
+      },
+      "acceptWorkspaceMemberInvite": {
+        "template": "endpoint",
+        "name": "accept"
+      },
+      "resendWorkspaceMemberInvite": {
+        "template": "endpoint",
+        "name": "resend"
+      }
     }
-}
+  }
