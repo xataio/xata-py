@@ -18,14 +18,13 @@
 #
 
 import logging
-
 from typing import Union
+
 from requests import Response
 from requests.exceptions import JSONDecodeError
 
 
 class ApiResponse(dict):
-
     def __init__(self, response: Response):
         self.response = response
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -48,7 +47,7 @@ class ApiResponse(dict):
         if "x-xata-message" in self.response.headers:
             return self.response.headers["x-xata-message"]
         return None
-    
+
     def status_code(self) -> int:
         """
         Get the status code of the response
@@ -69,7 +68,7 @@ class ApiResponse(dict):
         :return dict
         """
         return self.response.headers
-    
+
     def content(self) -> bytes:
         """
         For files support, to get the file content
