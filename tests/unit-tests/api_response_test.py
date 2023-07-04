@@ -23,5 +23,5 @@ from xata.client import DEFAULT_REGION, XataClient
 
 
 class TestApiResponse(unittest.TestCase):
-    #TODO
+    # TODO
     pass

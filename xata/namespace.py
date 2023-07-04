@@ -21,7 +21,7 @@ import logging
 
 from requests import request
 
-from xata.api.responses import ApiResponse
+from xata.api_response import ApiResponse
 
 from .errors import RateLimitException, ServerErrorException, UnauthorizedException
 

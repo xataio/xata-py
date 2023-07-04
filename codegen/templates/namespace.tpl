@@ -24,7 +24,7 @@
 # ------------------------------------------------------- #
 
 from xata.namespace import Namespace
-from xata.api.responses import ApiResponse
+from xata.api_response import ApiResponse
 
 class ${class_name}(Namespace):
 

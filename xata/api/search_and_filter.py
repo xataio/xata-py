@@ -23,7 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from xata.api.responses import ApiResponse
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
