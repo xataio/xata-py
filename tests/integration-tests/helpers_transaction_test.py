@@ -168,6 +168,27 @@ class TestHelpersTransaction(object):
         r = self.client.data().query("Posts", {})
         assert len(r["records"]) == (before_delete - len(delete_me))
 
+    def test_delete_records_with_fail_if_missing(self):
+        trx = Transaction(self.client)
+
+        # default value
+        trx.delete("Posts", "unknown")
+        response = trx.run()
+        assert response["status_code"] == 200
+        assert not response["has_errors"]
+
+        # explicit to False which is the default
+        trx.delete("Posts", "unknown", fail_if_missing=False)
+        response = trx.run()
+        assert response["status_code"] == 200
+        assert not response["has_errors"]
+
+        # set to True, to fail if missing
+        trx.delete("Posts", "unknown", fail_if_missing=True)
+        response = trx.run()
+        assert response["status_code"] == 400
+        assert response["has_errors"]
+
     def test_get_records(self):
         setup = Transaction(self.client)
         for it in range(0, 10):
