@@ -47,6 +47,6 @@ class TestNamespace(object):
         databases = XataClient().databases()
 
         # workspace_id should be provided by the the client implicitly
-        assert databases.create(db_name, {"region": "eu-west-1"}).is_success()
+        assert databases.create(db_name, region="eu-west-1").is_success()
         assert databases.get_metadata(db_name).is_success()
         assert databases.delete(db_name).is_success()

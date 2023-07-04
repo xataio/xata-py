@@ -32,39 +32,26 @@ class TestRecordsNamespace(object):
         self.fake = Faker()
         self.record_id = utils.get_random_string(24)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Posts",
+                {
+                    "columns": [
+                        {"name": "title", "type": "string"},
+                        {"name": "labels", "type": "multiple"},
+                        {"name": "slug", "type": "string"},
+                        {"name": "text", "type": "text"},
+                    ]
+                },
+            )
+            .is_success()
         )
-        assert r.is_success()
-
-        # create table posts
-        r = self.client.table().create("Posts")
-        assert r.is_success()
-
-        # create schema
-        r = self.client.table().set_schema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "labels", "type": "multiple"},
-                    {"name": "slug", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
-        assert r.is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:

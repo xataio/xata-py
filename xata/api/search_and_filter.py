@@ -362,7 +362,7 @@ class SearchAndFilter(Namespace):
         }
         return self.request("POST", url_path, headers, payload)
 
-    def chatSessionMessage(
+    def chat_session_message(
         self, table_name: str, session_id: str, payload: dict, db_name: str = None, branch_name: str = None
     ) -> ApiResponse:
         """

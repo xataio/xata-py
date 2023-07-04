@@ -19,7 +19,7 @@
         "name": "get_metadata"
       },
       "createDatabase": {
-        "template": "endpoint",
+        "template": "database_create",
         "name": "create"
       },
       "deleteDatabase": {
@@ -237,6 +237,10 @@
       "askTable": {
         "template": "endpoint",
         "name": "ask"
+      },
+      "chatSessionMessage": {
+        "template": "endpoint",
+        "name": "chat_session_message"
       },
       "summarizeTable": {
         "template": "endpoint",

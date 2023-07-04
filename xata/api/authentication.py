@@ -31,9 +31,7 @@ class Authentication(Namespace):
 
     scope = "core"
 
-    def get_user_api_keys(
-        self,
-    ) -> ApiResponse:
+    def get_user_api_keys(self) -> ApiResponse:
         """
         Retrieve a list of existing user API keys
 

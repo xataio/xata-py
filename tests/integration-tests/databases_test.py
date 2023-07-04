@@ -31,17 +31,7 @@ class TestDatabasesNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
     def test_create_database(self):
-        assert (
-            self.client.databases()
-            .create(
-                self.db_name,
-                {
-                    "region": self.client.get_config()["region"],
-                    "branchName": self.client.get_config()["branchName"],
-                },
-            )
-            .is_success()
-        )
+        assert self.client.databases().create(self.db_name).is_success()
 
     def test_list_databases(self):
         r = self.client.databases().list()

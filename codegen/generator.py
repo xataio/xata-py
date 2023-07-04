@@ -225,7 +225,8 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
             ],
         }
     )
-    return Template(filename="codegen/templates/endpoint.tpl", output_encoding="utf-8").render(**vars)
+    template_path = "codegen/templates/%s.tpl" % vars["template"]
+    return Template(filename=template_path, output_encoding="utf-8").render(**vars)
 
 
 def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references: dict) -> list:
