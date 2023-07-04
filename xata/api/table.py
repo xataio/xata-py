@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class Table(Namespace):
 
     scope = "workspace"
 
-    def create(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def create(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Creates a new table with the given name.  Returns 422 if a table with the same name
         already exists.
@@ -59,7 +58,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("PUT", url_path)
 
-    def delete(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def delete(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Deletes the table with the given name.
 
@@ -83,7 +82,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}"
         return self.request("DELETE", url_path)
 
-    def update(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def update(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Update table.  Currently there is only one update operation supported: renaming the table
         by providing a new name.  In the example below, we rename a table from “users” to
@@ -111,7 +110,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def get_schema(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_schema(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Get table schema
 
@@ -135,7 +134,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/schema"
         return self.request("GET", url_path)
 
-    def set_schema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def set_schema(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Update table schema
 
@@ -162,7 +161,7 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def get_columns(self, table_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_columns(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Retrieves the list of table columns and their definition.  This endpoint returns the
         column list with object columns being reported with their full dot-separated path
@@ -188,7 +187,7 @@ class Table(Namespace):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/columns"
         return self.request("GET", url_path)
 
-    def add_column(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def add_column(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Adds a new column to the table.  The body of the request should contain the column
         definition.
@@ -214,7 +213,9 @@ class Table(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def get_column(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
+    def get_column(
+        self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
         """
         Get the definition of a single column.
 
@@ -241,7 +242,7 @@ class Table(Namespace):
 
     def delete_column(
         self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Deletes the specified column.
 
@@ -267,7 +268,7 @@ class Table(Namespace):
 
     def update_column(
         self, table_name: str, column_name: str, payload: dict, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Update column with partial data.  Can be used for renaming the column by providing a new
         "name" field.

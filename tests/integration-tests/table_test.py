@@ -24,7 +24,6 @@ from xata.client import XataClient
 
 
 class TestTableNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -38,12 +37,11 @@ class TestTableNamespace(object):
                 "branchName": self.branch_name,
             },
         )
-        assert r.status_code == 201
+        assert r.is_success()
 
-    @classmethod
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert r.is_success()
 
     @pytest.fixture
     def columns(self) -> dict:
@@ -62,14 +60,14 @@ class TestTableNamespace(object):
 
     def test_create_table(self):
         r = self.client.table().create("Posts")
-        assert r.status_code == 201
-        assert r.json()["status"] == "completed"
-        assert r.json()["tableName"] == "Posts"
-        assert r.json()["branchName"] == self.client.get_db_branch_name()
+        assert r.is_success()
+        assert r["status"] == "completed"
+        assert r["tableName"] == "Posts"
+        assert r["branchName"] == self.client.get_db_branch_name()
 
     def test_update_table(self):
         r = self.client.table().create("RenameMe")
-        assert r.status_code == 201
+        assert r.is_success()
 
         r = self.client.table().update(
             "RenameMe",
@@ -77,122 +75,123 @@ class TestTableNamespace(object):
             db_name=self.db_name,
             branch_name=self.branch_name,
         )
-        assert r.status_code == 200
-        assert r.json()["status"] == "completed"
-        assert "migrationID" in r.json()
-        assert "parentMigrationID" in r.json()
+        assert r.is_success()
+        assert r["status"] == "completed"
+        assert "migrationID" in r
+        assert "parentMigrationID" in r
 
     def test_delete_table(self):
         r = self.client.table().create("DeleteMe")
-        assert r.status_code == 201
+        assert r.is_success()
 
         r = self.client.table().delete("DeleteMe")
-        assert r.status_code == 200
-        assert r.json()["status"] == "completed"
+        assert r.is_success()
+        assert r["status"] == "completed"
 
         r = self.client.table().delete("NonExistingTable")
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_set_table_schema(self, columns: dict):
         r = self.client.table().set_schema("Posts", columns)
-        assert r.status_code == 200
+        assert r.is_success()
 
         r = self.client.table().set_schema("NonExistingTable", columns)
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_get_table_schema(self, columns):
         r = self.client.table().get_schema("Posts")
-        assert r.status_code == 200
-        assert columns == r.json()
+        assert r.is_success()
+        assert columns == r
 
         r = self.client.table().get_schema("NonExistingTable")
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_get_table_columns(self, columns: dict):
         r = self.client.table().get_columns("Posts")
-        assert r.status_code == 200
-        assert r.json() == columns
+        assert r.is_success()
+        assert r == columns
 
         r = self.client.table().get_columns("NonExistingTable")
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_add_column(self, columns: dict, new_column: dict):
         r = self.client.table().add_column("Posts", new_column)
-        assert r.status_code == 200
-        assert r.json()["status"] == "completed"
-        assert "migrationID" in r.json()
-        assert "parentMigrationID" in r.json()
+        assert r.is_success()
+        assert r["status"] == "completed"
+        assert "migrationID" in r
+        assert "parentMigrationID" in r
 
         r = self.client.table().get_columns("Posts")
-        assert r.status_code == 200
+        assert r.is_success()
         columns["columns"].append(new_column)
-        assert r.json() == columns
+        assert r == columns
 
         r = self.client.table().add_column("NonExistingTable", {"name": "foo"})
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
         r = self.client.table().add_column("Posts", {"name": "foo"})
-        assert r.status_code == 400
+        assert r.status_code() == 400
         r = self.client.table().add_column("Posts", {"type": "bar"})
-        assert r.status_code == 400
+        assert r.status_code() == 400
 
     def test_get_column(self, new_column: dict):
         r = self.client.table().get_column("Posts", new_column["name"])
-        assert r.status_code == 200
-        assert r.json() == new_column
+        assert r.is_success()
+        assert r == new_column
 
         r = self.client.table().get_column("Posts", "NonExistingColumn")
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
         r = self.client.table().get_column("NonExistingTable", new_column["name"])
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_update_column(self, new_column: dict):
         newer_column = {"name": "a-newer-column"}
         r = self.client.table().update_column("Posts", new_column["name"], newer_column)
-        assert r.status_code == 200
-        assert r.json()["status"] == "completed"
-        assert "migrationID" in r.json()
-        assert "parentMigrationID" in r.json()
+        assert r.is_success()
+        assert r["status"] == "completed"
+        assert "migrationID" in r
+        assert "parentMigrationID" in r
 
         r = self.client.table().get_column("Posts", newer_column["name"])
-        assert r.status_code == 200
+        assert r.is_success()
 
         r = self.client.table().update_column("Posts", newer_column["name"], {})
-        assert r.status_code == 400
+        assert r.status_code() == 400
 
         r = self.client.table().update_column("Posts", new_column["name"], newer_column)
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
         r = self.client.table().update_column("NonExistingTable", new_column["name"], newer_column)
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
         r = self.client.table().update_column("Posts", "NonExistingColumn", newer_column)
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
     def test_delete_column(self, columns: dict):
         r = self.client.table().get_columns("Posts")
-        assert r.status_code == 200
-        assert (len(r.json()["columns"]) - 1) == len(columns["columns"])
+        assert r.is_success()
+        assert (len(r["columns"]) - 1) == len(columns["columns"])
 
         r = self.client.table().delete_column("Posts", "a-newer-column")
-        assert r.status_code == 200
-        assert r.json()["status"] == "completed"
-        assert "migrationID" in r.json()
-        assert "parentMigrationID" in r.json()
+        assert r.is_success()
+        assert r["status"] == "completed"
+        assert "migrationID" in r
+        assert "parentMigrationID" in r
 
         r = self.client.table().delete_column("Posts", "a-newer-column")
-        assert r.status_code == 404
+        assert r.status_code() == 404
 
         r = self.client.table().get_columns("Posts")
-        assert r.status_code == 200
-        assert r.json() == columns
+        assert r.is_success()
+        assert r == columns
 
     def test_deprecated_object_header(self):
         r = self.client.table().get_columns("Posts")
-        assert r.status_code == 200
-        assert "x-xata-message" in r.headers
+        assert r.is_success()
+        assert "x-xata-message" in r.headers()
         assert (
-            r.headers["x-xata-message"]
+            r.headers()["x-xata-message"]
             == "The deprecated object column type will be removed on Dec 13, 2023 - Please consult https://xata.io/to/object-migration for migration."
         )
+        assert r.server_message() == r.headers()["x-xata-message"]

@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -34,7 +33,7 @@ class Workspaces(Namespace):
 
     def get_workspaces(
         self,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieve the list of workspaces the user belongs to
 
@@ -54,7 +53,7 @@ class Workspaces(Namespace):
         url_path = "/workspaces"
         return self.request("GET", url_path)
 
-    def create(self, payload: dict) -> Response:
+    def create(self, payload: dict) -> ApiResponse:
         """
         Creates a new workspace with the user requesting it as its single owner.
 
@@ -76,7 +75,7 @@ class Workspaces(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def get(self, workspace_id: str = None) -> Response:
+    def get(self, workspace_id: str = None) -> ApiResponse:
         """
         Retrieve workspace info from a workspace ID
 
@@ -100,7 +99,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}"
         return self.request("GET", url_path)
 
-    def update(self, payload: dict, workspace_id: str = None) -> Response:
+    def update(self, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Update workspace info
 
@@ -126,7 +125,7 @@ class Workspaces(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def delete(self, workspace_id: str = None) -> Response:
+    def delete(self, workspace_id: str = None) -> ApiResponse:
         """
         Delete the workspace with the provided ID
 
@@ -149,7 +148,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}"
         return self.request("DELETE", url_path)
 
-    def get_members(self, workspace_id: str = None) -> Response:
+    def get_members(self, workspace_id: str = None) -> ApiResponse:
         """
         Retrieve the list of members of the given workspace
 
@@ -173,7 +172,7 @@ class Workspaces(Namespace):
         url_path = f"/workspaces/{workspace_id}/members"
         return self.request("GET", url_path)
 
-    def update_member(self, user_id: str, payload: dict, workspace_id: str = None) -> Response:
+    def update_member(self, user_id: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Update a workspace member role.  Workspaces must always have at least one owner, so this
         operation will fail if trying to remove owner role from the last owner in the workspace.
@@ -200,7 +199,7 @@ class Workspaces(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def remove_member(self, user_id: str, workspace_id: str = None) -> Response:
+    def remove_member(self, user_id: str, workspace_id: str = None) -> ApiResponse:
         """
         Remove the member from the workspace
 

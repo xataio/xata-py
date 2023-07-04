@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class Branch(Namespace):
 
     scope = "workspace"
 
-    def get_branches(self, db_name: str) -> Response:
+    def get_branches(self, db_name: str) -> ApiResponse:
         """
         List all available Branches
 
@@ -53,7 +52,7 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def get_details(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_details(self, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Get branch schema and metadata
 
@@ -76,7 +75,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}"
         return self.request("GET", url_path)
 
-    def create(self, payload: dict, db_name: str = None, branch_name: str = None, _from: str = None) -> Response:
+    def create(self, payload: dict, db_name: str = None, branch_name: str = None, _from: str = None) -> ApiResponse:
         """
         Create Database branch
 
@@ -105,7 +104,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def delete(self, db_name: str = None, branch_name: str = None) -> Response:
+    def delete(self, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Delete the branch in the database and all its resources
 
@@ -129,7 +128,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}"
         return self.request("DELETE", url_path)
 
-    def get_metadata(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_metadata(self, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Get Branch Metadata
 
@@ -152,7 +151,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}/metadata"
         return self.request("GET", url_path)
 
-    def update_metadata(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def update_metadata(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Update the branch metadata
 
@@ -176,7 +175,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def get_stats(self, db_name: str = None, branch_name: str = None) -> Response:
+    def get_stats(self, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Get branch usage metrics.
 
@@ -199,7 +198,7 @@ class Branch(Namespace):
         url_path = f"/db/{db_branch_name}/stats"
         return self.request("GET", url_path)
 
-    def get_git_branches_mapping(self, db_name: str) -> Response:
+    def get_git_branches_mapping(self, db_name: str) -> ApiResponse:
         """
         Lists all the git branches in the mapping, and their associated Xata branches.  Example
         response:  ```json {   "mappings": [       {         "gitBranch": "main",
@@ -223,7 +222,7 @@ class Branch(Namespace):
         url_path = f"/dbs/{db_name}/gitBranches"
         return self.request("GET", url_path)
 
-    def add_git_branches_entry(self, db_name: str, payload: dict) -> Response:
+    def add_git_branches_entry(self, db_name: str, payload: dict) -> ApiResponse:
         """
         Adds an entry to the mapping of git branches to Xata branches.  The git branch and the
         Xata branch must be present in the body of the request.  If the Xata branch doesn't exist,
@@ -253,7 +252,7 @@ class Branch(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def remove_git_branches_entry(self, db_name: str, git_branch: str) -> Response:
+    def remove_git_branches_entry(self, db_name: str, git_branch: str) -> ApiResponse:
         """
         Removes an entry from the mapping of git branches to Xata branches.  The name of the git
         branch must be passed as a query parameter.  If the git branch is not found, the endpoint
@@ -279,7 +278,7 @@ class Branch(Namespace):
             url_path += "?gitBranch={git_branch}"
         return self.request("DELETE", url_path)
 
-    def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> Response:
+    def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> ApiResponse:
         """
         In order to resolve the database branch, the following algorithm is used: * if the
         `gitBranch` was provided and is found in the [git branches mapping](/api-

@@ -24,7 +24,6 @@ from xata.client import XataClient
 
 
 class TestWorkspacesNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -33,13 +32,13 @@ class TestWorkspacesNamespace(object):
 
     def test_list_workspaces(self):
         r = self.client.workspaces().get_workspaces()
-        assert r.status_code == 200
-        assert "workspaces" in r.json()
-        assert len(r.json()["workspaces"]) > 0
-        assert "id" in r.json()["workspaces"][0]
-        assert "name" in r.json()["workspaces"][0]
-        assert "slug" in r.json()["workspaces"][0]
-        assert "role" in r.json()["workspaces"][0]
+        assert r.is_success()
+        assert "workspaces" in r
+        assert len(r["workspaces"]) > 0
+        assert "id" in r["workspaces"][0]
+        assert "name" in r["workspaces"][0]
+        assert "slug" in r["workspaces"][0]
+        assert "role" in r["workspaces"][0]
 
     def test_create_new_workspace(self):
         r = self.client.workspaces().create(
@@ -48,33 +47,32 @@ class TestWorkspacesNamespace(object):
                 "slug": "sluginator",
             }
         )
-        assert r.status_code == 201
-        assert "id" in r.json()
-        assert "name" in r.json()
-        assert "slug" in r.json()
-        assert "plan" in r.json()
-        assert "memberCount" in r.json()
-        assert r.json()["name"] == self.workspace_name
-        assert r.json()["slug"] == "sluginator"
+        assert r.is_success()
+        assert "id" in r
+        assert "name" in r
+        assert "slug" in r
+        assert "plan" in r
+        assert "memberCount" in r
+        assert r["name"] == self.workspace_name
+        assert r["slug"] == "sluginator"
 
-        pytest.workspaces["workspace"] = r.json()
+        pytest.workspaces["workspace"] = r
 
     def test_get_workspace(self):
         r = self.client.workspaces().get(workspace_id=pytest.workspaces["workspace"]["id"])
-        assert r.status_code == 200
-        assert "name" in r.json()
-        assert "slug" in r.json()
-        assert "id" in r.json()
-        assert "memberCount" in r.json()
-        assert "plan" in r.json()
-        assert r.json()["name"] == pytest.workspaces["workspace"]["name"]
-        assert r.json()["slug"] == pytest.workspaces["workspace"]["slug"]
-        assert r.json()["plan"] == pytest.workspaces["workspace"]["plan"]
-        assert r.json()["memberCount"] == pytest.workspaces["workspace"]["memberCount"]
-        assert r.json()["id"] == pytest.workspaces["workspace"]["id"]
+        assert r.is_success()
+        assert "name" in r
+        assert "slug" in r
+        assert "id" in r
+        assert "memberCount" in r
+        assert "plan" in r
+        assert r["name"] == pytest.workspaces["workspace"]["name"]
+        assert r["slug"] == pytest.workspaces["workspace"]["slug"]
+        assert r["plan"] == pytest.workspaces["workspace"]["plan"]
+        assert r["memberCount"] == pytest.workspaces["workspace"]["memberCount"]
+        assert r["id"] == pytest.workspaces["workspace"]["id"]
 
-        r = self.client.workspaces().get("NonExistingWorkspaceId")
-        assert r.status_code == 403
+        assert not self.client.workspaces().get("NonExistingWorkspaceId").is_success()
 
     def test_update_workspace(self):
         payload = {
@@ -85,68 +83,72 @@ class TestWorkspacesNamespace(object):
             payload,
             workspace_id=pytest.workspaces["workspace"]["id"],
         )
-        assert r.status_code == 200
-        assert "name" in r.json()
-        assert "slug" in r.json()
-        assert "id" in r.json()
-        assert "memberCount" in r.json()
-        assert "plan" in r.json()
-        assert r.json()["name"] == payload["name"]
-        assert r.json()["slug"] == payload["slug"]
+        assert r.is_success()
+        assert "name" in r
+        assert "slug" in r
+        assert "id" in r
+        assert "memberCount" in r
+        assert "plan" in r
+        assert r["name"] == payload["name"]
+        assert r["slug"] == payload["slug"]
 
         r = self.client.workspaces().update(
             {"name": "only-a-name"},
             workspace_id=pytest.workspaces["workspace"]["id"],
         )
-        assert r.status_code == 200
+        assert r.is_success()
 
-        r = self.client.workspaces().update(
-            {"slug": "only-a-slug"},
-            workspace_id=pytest.workspaces["workspace"]["id"],
+        assert (
+            not self.client.workspaces()
+            .update(
+                {"slug": "only-a-slug"},
+                workspace_id=pytest.workspaces["workspace"]["id"],
+            )
+            .is_success()
         )
-        assert r.status_code == 400
 
     def test_delete_workspace(self):
-        r = self.client.workspaces().delete(workspace_id=pytest.workspaces["workspace"]["id"])
-        assert r.status_code == 204
+        assert self.client.workspaces().delete(workspace_id=pytest.workspaces["workspace"]["id"]).is_success()
         pytest.workspaces["workspace"] = None
 
-        r = self.client.workspaces().delete(workspace_id="NonExistingWorkspace")
-        assert r.status_code == 403
+        assert not self.client.workspaces().delete(workspace_id="NonExistingWorkspace").is_success()
 
     #
     # Workspace Member Ops
     #
     def test_get_workspace_members(self):
         r = self.client.workspaces().get_members()
-        assert r.status_code == 200
-        assert "members" in r.json()
-        assert "invites" in r.json()
-        assert len(r.json()["members"]) > 0
-        assert "userId" in r.json()["members"][0]
-        assert "fullname" in r.json()["members"][0]
-        assert "email" in r.json()["members"][0]
-        assert "role" in r.json()["members"][0]
+        assert r.is_success()
+        assert "members" in r
+        assert "invites" in r
+        assert len(r["members"]) > 0
+        assert "userId" in r["members"][0]
+        assert "fullname" in r["members"][0]
+        assert "email" in r["members"][0]
+        assert "role" in r["members"][0]
 
-        pytest.workspaces["member"] = r.json()["members"][0]
+        pytest.workspaces["member"] = r["members"][0]
 
-        r = self.client.workspaces().get_members(workspace_id="NonExistingWorkspaceId")
-        assert r.status_code == 403
+        assert not self.client.workspaces().get_members(workspace_id="NonExistingWorkspaceId").is_success()
 
     def test_update_workspace_member(self):
         payload = {"role": "owner" if pytest.workspaces["member"]["role"] == "maintainer" else "owner"}
 
-        r = self.client.workspaces().update_member(pytest.workspaces["member"]["userId"], {"role": "spiderman"})
-        assert r.status_code == 400
-        r = self.client.workspaces().update_member(
-            pytest.workspaces["member"]["userId"],
-            payload,
-            workspace_id="NonExistingWorkspaceId",
+        assert (
+            not self.client.workspaces()
+            .update_member(pytest.workspaces["member"]["userId"], {"role": "spiderman"})
+            .is_success()
         )
-        assert r.status_code == 403
-        r = self.client.workspaces().update_member("NonExistingUserId", payload)
-        assert r.status_code == 403
-        r = self.client.workspaces().update_member(pytest.workspaces["member"]["userId"], {})
-        assert r.status_code == 400
+        assert (
+            not self.client.workspaces()
+            .update_member(
+                pytest.workspaces["member"]["userId"],
+                payload,
+                workspace_id="NonExistingWorkspaceId",
+            )
+            .is_success()
+        )
+        assert not self.client.workspaces().update_member("NonExistingUserId", payload).is_success()
+        assert not self.client.workspaces().update_member(pytest.workspaces["member"]["userId"], {}).is_success()
 
         pytest.workspaces["member"] = None

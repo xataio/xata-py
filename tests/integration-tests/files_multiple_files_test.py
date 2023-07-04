@@ -31,28 +31,31 @@ class TestFilesMultipleFiles(object):
         self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert (
+            self.client.databases()
+            .create(
+                self.db_name,
+                {
+                    "region": self.client.get_config()["region"],
+                    "branchName": self.client.get_config()["branchName"],
+                },
+            )
+            .is_success()
         )
-        assert r.status_code == 201
-
-        r = self.client.table().create("Attachments")
-        assert r.status_code == 201
-        r = self.client.table().set_schema(
-            "Attachments",
-            utils.get_attachments_schema(),
-            db_name=self.db_name,
-            branch_name=self.branch_name,
+        assert self.client.table().create("Attachments").is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Attachments",
+                utils.get_attachments_schema(),
+                db_name=self.db_name,
+                branch_name=self.branch_name,
+            )
+            .is_success()
         )
-        assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_put_file_item(self):
         payload = {
@@ -63,17 +66,17 @@ class TestFilesMultipleFiles(object):
             ],
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
+        assert r.is_success()
 
-        rid = r.json()["id"]
+        rid = r["id"]
         record = self.client.records().get("Attachments", rid, columns=["many_files.id", "many_files.url"])
-        assert record.status_code == 200
-        assert len(record.json()["many_files"]) == 2
+        assert record.is_success()
+        assert len(record["many_files"]) == 2
 
-        proof_1 = request("GET", record.json()["many_files"][0]["url"])
+        proof_1 = request("GET", record["many_files"][0]["url"])
         assert proof_1.status_code == 200
 
-        proof_2 = request("GET", record.json()["many_files"][1]["url"])
+        proof_2 = request("GET", record["many_files"][1]["url"])
         assert proof_2.status_code == 200
 
         img_1 = utils.get_file_content(utils.get_file_name("images/01.gif"))
@@ -82,20 +85,18 @@ class TestFilesMultipleFiles(object):
         assert img_2 == proof_2.content
 
         # overwrite item 1 with image 2
-        file_1 = self.client.files().put_item(
-            "Attachments", rid, "many_files", record.json()["many_files"][0]["id"], img_2
-        )
-        assert file_1.status_code == 200
-        assert "attributes" in file_1.json()
-        assert "mediaType" in file_1.json()
-        assert "name" in file_1.json()
-        assert "size" in file_1.json()
+        file_1 = self.client.files().put_item("Attachments", rid, "many_files", record["many_files"][0]["id"], img_2)
+        assert file_1.is_success()
+        assert "attributes" in file_1
+        assert "mediaType" in file_1
+        assert "name" in file_1
+        assert "size" in file_1
 
-        prev_url = record.json()["many_files"][0]["url"]
+        prev_url = record["many_files"][0]["url"]
         record = self.client.records().get("Attachments", rid, columns=["many_files.id", "many_files.url"])
-        assert prev_url != record.json()["many_files"][0]["url"]
+        assert prev_url != record["many_files"][0]["url"]
 
-        proof = request("GET", record.json()["many_files"][0]["url"])
+        proof = request("GET", record["many_files"][0]["url"])
         assert proof.status_code == 200
         assert proof.content == img_2
 
@@ -108,23 +109,23 @@ class TestFilesMultipleFiles(object):
             ],
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
+        assert r.is_success()
 
-        rid = r.json()["id"]
+        rid = r["id"]
         record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
-        assert record.status_code == 200
-        assert len(record.json()["many_files"]) == 2
+        assert record.is_success()
+        assert len(record["many_files"]) == 2
 
-        r = self.client.files().delete_item("Attachments", rid, "many_files", record.json()["many_files"][0]["id"])
-        assert r.status_code == 200
-        prev_id = record.json()["many_files"][0]["id"]
+        r = self.client.files().delete_item("Attachments", rid, "many_files", record["many_files"][0]["id"])
+        assert r.is_success()
+        prev_id = record["many_files"][0]["id"]
 
         record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
-        assert record.status_code == 200
-        assert len(record.json()["many_files"]) == 1
+        assert record.is_success()
+        assert len(record["many_files"]) == 1
 
         proof = self.client.files().get_item("Attachements", rid, "many_files", prev_id)
-        assert proof.status_code == 404
+        assert proof.status_code() == 404
 
     def test_get_item(self):
         payload = {
@@ -135,12 +136,12 @@ class TestFilesMultipleFiles(object):
             ],
         }
         r = self.client.records().insert("Attachments", payload)
-        assert r.status_code == 201, r.json()
+        assert r.is_success()
 
-        rid = r.json()["id"]
+        rid = r["id"]
         record = self.client.records().get("Attachments", rid, columns=["many_files.id"])
-        assert record.status_code == 200
+        assert record.is_success()
 
-        item = self.client.files().get_item("Attachments", rid, "many_files", record.json()["many_files"][0]["id"])
-        assert item.status_code == 200
-        assert item.content == utils.get_file_content(utils.get_file_name("images/01.gif"))
+        item = self.client.files().get_item("Attachments", rid, "many_files", record["many_files"][0]["id"])
+        assert item.is_success()
+        assert item.content() == utils.get_file_content(utils.get_file_name("images/01.gif"))

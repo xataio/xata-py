@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class Databases(Namespace):
 
     scope = "core"
 
-    def get_databases(self, workspace_id: str = None) -> Response:
+    def list(self, workspace_id: str = None) -> ApiResponse:
         """
         List all databases available in your Workspace.
 
@@ -54,7 +53,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs"
         return self.request("GET", url_path)
 
-    def get_metadata(self, db_name: str, workspace_id: str = None) -> Response:
+    def get_metadata(self, db_name: str, workspace_id: str = None) -> ApiResponse:
         """
         Retrieve metadata of the given database
 
@@ -78,7 +77,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def create(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def create(self, db_name: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Create Database with identifier name
 
@@ -105,7 +104,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def delete(self, db_name: str, workspace_id: str = None) -> Response:
+    def delete(self, db_name: str, workspace_id: str = None) -> ApiResponse:
         """
         Delete a database and all of its branches and tables permanently.
 
@@ -129,7 +128,7 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("DELETE", url_path)
 
-    def update_metadata(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def update_metadata(self, db_name: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Update the color of the selected database
 
@@ -155,7 +154,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def rename(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+    def rename(self, db_name: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Change the name of an existing database
 
@@ -182,7 +181,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def get_regions(self, workspace_id: str = None) -> Response:
+    def get_regions(self, workspace_id: str = None) -> ApiResponse:
         """
         List regions available to create a database on
 

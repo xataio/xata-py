@@ -17,17 +17,9 @@
 # under the License.
 #
 
-# ------------------------------------------------------- #
-# ${class_name}
-# ${class_description}
-# Specification: ${spec_scope}:v${spec_version}
-# ------------------------------------------------------- #
-
-from requests import Response
-
-from xata.namespace import Namespace
+import unittest
 
 
-class ${class_name}(Namespace):
-
-    scope = "${spec_scope}"
+class TestApiResponse(unittest.TestCase):
+    # TODO
+    pass

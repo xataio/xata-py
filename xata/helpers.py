@@ -392,10 +392,10 @@ class Transaction(object):
         """
         r = self.client.records().transaction(self.operations)
         result = {
-            "status_code": r.status_code,
-            "results": r.json()["results"] if "results" in r.json() else [],
-            "has_errors": True if "errors" in r.json() else False,
-            "errors": r.json()["errors"] if "errors" in r.json() else [],
+            "status_code": r.status_code(),
+            "results": r["results"] if "results" in r else [],
+            "has_errors": True if "errors" in r else False,
+            "errors": r["errors"] if "errors" in r else [],
         }
         self.operations["operations"] = []  # free memory
         return result

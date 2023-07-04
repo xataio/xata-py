@@ -10,7 +10,7 @@
         "deleteDatabase": "delete",
         "updateDatabaseMetadata": "update_metadata",
         "listRegions": "get_regions",
-        "getDatabaseList": "get_databases",
+        "getDatabaseList": "list",
         "renameDatabase": "rename"
     },
     "users": {

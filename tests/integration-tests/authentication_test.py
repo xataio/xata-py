@@ -23,7 +23,6 @@ from xata.client import XataClient
 
 
 class TestAuthenticateNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -32,36 +31,37 @@ class TestAuthenticateNamespace(object):
 
     def test_get_user_api_keys(self):
         r = self.client.authentication().get_user_api_keys()
-        assert r.status_code == 200
-        assert "keys" in r.json()
-        assert len(r.json()["keys"]) > 0
-        assert "name" in r.json()["keys"][0]
-        assert "createdAt" in r.json()["keys"][0]
+        assert r.is_success()
+        assert "keys" in r
+        assert len(r["keys"]) > 0
+        assert "name" in r["keys"][0]
+        assert "createdAt" in r["keys"][0]
 
     def test_create_user_api_keys(self):
         r = self.client.authentication().get_user_api_keys()
-        assert r.status_code == 200
-        count = len(r.json()["keys"])
+        assert r.is_success()
+        count = len(r["keys"])
 
         r = self.client.authentication().create_user_api_keys(self.new_api_key)
-        assert r.status_code == 201
-        assert "name" in r.json()
-        assert "key" in r.json()
-        assert "createdAt" in r.json()
-        assert self.new_api_key == r.json()["name"]
+        assert r.is_success()
+        assert "name" in r
+        assert "key" in r
+        assert "createdAt" in r
+        assert self.new_api_key == r["name"]
 
         r = self.client.authentication().get_user_api_keys()
-        assert len(r.json()["keys"]) == (count + 1)
+        assert len(r["keys"]) == (count + 1)
 
         r = self.client.authentication().create_user_api_keys(self.new_api_key)
-        assert r.status_code == 409
+        assert not r.is_success()
 
         r = self.client.authentication().create_user_api_keys("")
-        assert r.status_code == 404
+        assert not r.is_success()
 
     def test_delete_user_api_key(self):
         r = self.client.authentication().delete_user_api_keys(self.new_api_key)
-        assert r.status_code == 204
+        assert r.is_success()
 
         r = self.client.authentication().delete_user_api_keys("NonExistingApiKey")
-        assert r.status_code == 404
+        assert not r.is_success()
+        assert r.status_code() == 404

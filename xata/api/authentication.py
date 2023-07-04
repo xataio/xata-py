@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -34,7 +33,7 @@ class Authentication(Namespace):
 
     def get_user_api_keys(
         self,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieve a list of existing user API keys
 
@@ -54,7 +53,7 @@ class Authentication(Namespace):
         url_path = "/user/keys"
         return self.request("GET", url_path)
 
-    def create_user_api_keys(self, key_name: str) -> Response:
+    def create_user_api_keys(self, key_name: str) -> ApiResponse:
         """
         Create and return new API key
 
@@ -75,7 +74,7 @@ class Authentication(Namespace):
         url_path = f"/user/keys/{key_name}"
         return self.request("POST", url_path)
 
-    def delete_user_api_keys(self, key_name: str) -> Response:
+    def delete_user_api_keys(self, key_name: str) -> ApiResponse:
         """
         Delete an existing API key
 

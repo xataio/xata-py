@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class SearchAndFilter(Namespace):
 
     scope = "workspace"
 
-    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         The Query Table API can be used to retrieve all records in a table.  The API support
         filtering, sorting, selecting a subset of columns, and pagination.  The overall structure
@@ -235,7 +234,7 @@ class SearchAndFilter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Run a free text search operation across the database branch.
 
@@ -260,7 +259,7 @@ class SearchAndFilter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def search_table(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_table(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Run a free text search operation in a particular table.  The endpoint accepts a `query`
         parameter that is used for the free text search and a set of structured filters (via the
@@ -291,7 +290,9 @@ class SearchAndFilter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def vector_search(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def vector_search(
+        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
         """
         This endpoint can be used to perform vector-based similarity searches in a table.  It can
         be used for implementing semantic search and product recommendation.  To use this
@@ -326,7 +327,7 @@ class SearchAndFilter(Namespace):
         db_name: str = None,
         branch_name: str = None,
         response_content_type: str = "application/json",
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
         will stream the results back as SSE's.
@@ -361,7 +362,7 @@ class SearchAndFilter(Namespace):
         }
         return self.request("POST", url_path, headers, payload)
 
-    def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         This endpoint allows you to (optionally) define groups, and then to run calculations on
         the values in each group.  This is most helpful when  you'd like to understand the data
@@ -418,7 +419,7 @@ class SearchAndFilter(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def aggregate(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def aggregate(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         This endpoint allows you to run aggregations (analytics) on the data from one table.
         While the summary endpoint is served from a transactional store and the results are
