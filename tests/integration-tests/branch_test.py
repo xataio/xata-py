@@ -74,7 +74,7 @@ class TestBranchNamespace(object):
         assert r["branches"][0]["name"] == "main"
 
         r = self.client.branch().get_branches("NonExistingDatabase")
-        assert r.status_code() == 404
+        assert r.status_code == 404
         assert not r.is_success()
 
     def test_get_branch_details(self):
@@ -88,7 +88,7 @@ class TestBranchNamespace(object):
         # TODO be exhastive testing the ^ dict keys
 
         r = self.client.branch().get_details("NonExistingDatabase")
-        assert r.status_code() == 404
+        assert r.status_code == 404
         assert not r.is_success()
 
     def test_create_database_branch(self):
@@ -112,15 +112,15 @@ class TestBranchNamespace(object):
         pytest.branch["branch"] = payload
 
         r = self.client.branch().create(payload, branch_name="the-incredible-hulk", _from="avengers")
-        assert r.status_code() == 400
+        assert r.status_code == 400
         assert not r.is_success()
 
         r = self.client.branch().create(payload, db_name="NOPE", branch_name=self.branch_name)
-        assert r.status_code() == 404
+        assert r.status_code == 404
         assert not r.is_success()
 
         r = self.client.branch().create({})
-        assert r.status_code() == 422
+        assert r.status_code == 422
         assert not r.is_success()
 
     def test_get_branch_metadata(self):
@@ -138,10 +138,10 @@ class TestBranchNamespace(object):
         assert r.is_success()
 
         r = self.client.branch().get_metadata(db_name="NOPE")
-        assert r.status_code() == 404
+        assert r.status_code == 404
         assert not r.is_success()
         r = self.client.branch().get_metadata(branch_name="shrug")
-        assert r.status_code() == 404
+        assert r.status_code == 404
         assert not r.is_success()
 
     def test_get_branch_stats(self):

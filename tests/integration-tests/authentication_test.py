@@ -64,4 +64,4 @@ class TestAuthenticateNamespace(object):
 
         r = self.client.authentication().delete_user_api_keys("NonExistingApiKey")
         assert not r.is_success()
-        assert r.status_code() == 404
+        assert r.status_code == 404

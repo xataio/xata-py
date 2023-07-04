@@ -92,7 +92,7 @@ class TestRecordsNamespace(object):
         assert r["xata"]["version"] == 0
 
         r = self.client.records().insert("NonExistingTable", record)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_insert_record_with_id(self, record: dict):
         """
@@ -113,10 +113,10 @@ class TestRecordsNamespace(object):
         assert r["xata"]["version"] == 1
 
         r = self.client.records().insert_with_id("Posts", self.record_id, record, create_only=True)
-        assert r.status_code() == 422
+        assert r.status_code == 422
 
         r = self.client.records().insert_with_id("Posts", "", record)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_get_record(self, record: dict):
         """
@@ -141,17 +141,17 @@ class TestRecordsNamespace(object):
         assert r != keep
 
         r = self.client.records().get("Posts", "#######")
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
         r = self.client.records().get("NonExistingTable", self.record_id)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_update_record(self, record: dict):
         """
         PATCH /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         proof = self.client.records().get("Posts", self.record_id)
-        assert proof.status_code() == 200
+        assert proof.status_code == 200
 
         r = self.client.records().update_with_id("Posts", self.record_id, record)
         assert r.is_success()
@@ -170,10 +170,10 @@ class TestRecordsNamespace(object):
         assert r["title"] != proof["title"]
 
         r = self.client.records().update_with_id("NonExistingTable", self.record_id, record)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
         r = self.client.records().update_with_id("Posts", "NonExistingRecordId", record)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_upsert_record(self, record: dict):
         """
@@ -203,11 +203,11 @@ class TestRecordsNamespace(object):
         DELETE /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         r = self.client.records().delete("Posts", self.record_id)
-        assert r.status_code() == 204
+        assert r.status_code == 204
         assert r.is_success()
 
         r = self.client.records().delete("Posts", self.record_id)
-        assert r.status_code() == 204
+        assert r.status_code == 204
         assert r.is_success()
 
     def test_bulk_insert_table_records(self):

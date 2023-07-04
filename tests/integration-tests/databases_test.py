@@ -74,7 +74,7 @@ class TestDatabasesNamespace(object):
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
         r = self.client.databases().get_metadata("NonExistingDatabase")
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_update_database_metadata(self):
         metadata = {"ui": {"color": "green"}}
@@ -92,9 +92,9 @@ class TestDatabasesNamespace(object):
         assert r_new["ui"] == metadata["ui"]
 
         r = self.client.databases().update_metadata(self.db_name, {})
-        assert r.status_code() == 400
+        assert r.status_code == 400
         r = self.client.databases().update_metadata("NonExistingDatabase", metadata)
-        assert r.status_code() == 400
+        assert r.status_code == 400
 
         with pytest.raises(UnauthorizedException) as e:
             self.client.databases().update_metadata(self.db_name, metadata, workspace_id="NonExistingWorkspaceId")
@@ -107,7 +107,7 @@ class TestDatabasesNamespace(object):
         assert r["status"] == "completed"
 
         r = self.client.databases().delete("NonExistingDatabase")
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
         with pytest.raises(UnauthorizedException) as e:
             self.client.databases().delete(self.db_name, workspace_id="NonExistingWorkspaceId")

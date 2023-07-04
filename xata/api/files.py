@@ -73,6 +73,7 @@ class Files(Namespace):
         column_name: str,
         file_id: str,
         data: bytes,
+        content_type: str = "application/octet-stream",
         db_name: str = None,
         branch_name: str = None,
     ) -> ApiResponse:
@@ -95,6 +96,7 @@ class Files(Namespace):
         :param column_name: str The Column name
         :param file_id: str The File Identifier
         :param data: bytes content
+        :param content_type: str Default: "application/octet-stream"
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -102,7 +104,7 @@ class Files(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
-        headers = {"content-type": "application/json"}
+        headers = {"content-type": content_type}
         return self.request("PUT", url_path, headers, data=data)
 
     def delete_item(
