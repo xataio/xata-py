@@ -361,7 +361,7 @@ class Transaction(object):
     def delete(self, table: str, record_id: str, columns: list[str] = [], fail_if_missing: bool = False) -> None:
         """
         A delete is used to remove records. Delete can operate on records from the same transaction, and will
-        not cancel a transaction if no record is found. 
+        not cancel a transaction if no record is found.
         https://xata.io/docs/api-reference/db/db_branch_name/transaction#execute-a-transaction-on-a-branch
 
         :param table: str
@@ -371,7 +371,9 @@ class Transaction(object):
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"delete": {"table": table, "id": record_id, "columns": columns, "failIfMissing": fail_if_missing}})
+        self._add_operation(
+            {"delete": {"table": table, "id": record_id, "columns": columns, "failIfMissing": fail_if_missing}}
+        )
 
     def get(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
