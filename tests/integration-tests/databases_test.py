@@ -21,7 +21,7 @@ import pytest
 import utils
 
 from xata.client import XataClient
-from xata.errors import UnauthorizedException
+from xata.errors import UnauthorizedError
 
 
 class TestDatabasesNamespace(object):
@@ -46,7 +46,7 @@ class TestDatabasesNamespace(object):
         # assert r["databases"][0]["name"] == self.db_name
         # assert r["databases"][0]["region"] == self.get_config()["region"]
 
-        with pytest.raises(UnauthorizedException) as e:
+        with pytest.raises(UnauthorizedError) as e:
             self.client.databases().list("NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
@@ -59,7 +59,7 @@ class TestDatabasesNamespace(object):
         assert r["name"] == self.db_name
         assert r["region"] == self.client.get_config()["region"]
 
-        with pytest.raises(UnauthorizedException) as e:
+        with pytest.raises(UnauthorizedError) as e:
             self.client.databases().get_metadata(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
@@ -86,7 +86,7 @@ class TestDatabasesNamespace(object):
         r = self.client.databases().update_metadata("NonExistingDatabase", metadata)
         assert r.status_code == 400
 
-        with pytest.raises(UnauthorizedException) as e:
+        with pytest.raises(UnauthorizedError) as e:
             self.client.databases().update_metadata(self.db_name, metadata, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
@@ -99,7 +99,7 @@ class TestDatabasesNamespace(object):
         r = self.client.databases().delete("NonExistingDatabase")
         assert r.status_code == 404
 
-        with pytest.raises(UnauthorizedException) as e:
+        with pytest.raises(UnauthorizedError) as e:
             self.client.databases().delete(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
@@ -111,6 +111,6 @@ class TestDatabasesNamespace(object):
         assert "id" in r["regions"][0]
         assert "name" in r["regions"][0]
 
-        with pytest.raises(UnauthorizedException) as e:
+        with pytest.raises(UnauthorizedError) as e:
             self.client.databases().get_regions(workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"

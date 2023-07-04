@@ -45,7 +45,6 @@ class Authentication(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-
         :return Response
         """
         url_path = "/user/keys"

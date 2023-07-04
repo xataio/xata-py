@@ -23,7 +23,7 @@ from requests import request
 
 from xata.api_response import ApiResponse
 
-from .errors import RateLimitException, ServerErrorException, UnauthorizedException
+from .errors import RateLimitError, UnauthorizedError, XataServerError
 
 
 class Namespace:
@@ -60,9 +60,9 @@ class Namespace:
 
         :return ApiResponse
 
-        :raises RateLimitException
-        :raises UnauthorizedException
-        :raises ServerErrorException
+        :raises RateLimitError
+        :raises UnauthorizedError
+        :raises ServerError
         """
         # TODO use "|" when client py min version >= 3.9
         headers = {**headers, **self.client.get_headers()}
@@ -78,10 +78,10 @@ class Namespace:
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
-            raise RateLimitException(f"code: {resp.status_code}, rate limited: {resp.json()}")
+            raise RateLimitError(f"code: {resp.status_code}, rate limited: {resp.json()}")
         if resp.status_code == 401:
-            raise UnauthorizedException(f"code: {resp.status_code}, unauthorized: {resp.json()}")
+            raise UnauthorizedError(f"code: {resp.status_code}, unauthorized: {resp.json()}")
         elif resp.status_code >= 500:
-            raise ServerErrorException(f"code: {resp.status_code}, server error: {resp.text}")
+            raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
 
         return ApiResponse(resp)
