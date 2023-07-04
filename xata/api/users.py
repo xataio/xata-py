@@ -31,9 +31,7 @@ class Users(Namespace):
 
     scope = "core"
 
-    def get(
-        self,
-    ) -> ApiResponse:
+    def get(self) -> ApiResponse:
         """
         Return details of the user making the request
 
@@ -75,9 +73,7 @@ class Users(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def delete(
-        self,
-    ) -> ApiResponse:
+    def delete(self) -> ApiResponse:
         """
         Delete the user making the request
 

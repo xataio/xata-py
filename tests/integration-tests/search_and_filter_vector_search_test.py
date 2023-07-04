@@ -32,19 +32,8 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
-        )
-        assert r.is_success()
-
-        # create table posts
-        r = self.client.table().create("users")
-        assert r.is_success()
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("users").is_success()
 
         # create schema
         r = self.client.table().set_schema(
@@ -74,8 +63,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         utils.wait_until_records_are_indexed("users")
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_vector_search_table_simple(self):
         payload = {

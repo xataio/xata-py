@@ -33,18 +33,7 @@ class TestFilesAccess(object):
         self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        assert (
-            self.client.databases()
-            .create(
-                self.db_name,
-                {
-                    "region": self.client.get_config()["region"],
-                    "branchName": self.client.get_config()["branchName"],
-                },
-            )
-            .is_success()
-        )
-
+        assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Attachments").is_success()
         assert (
             self.client.table()

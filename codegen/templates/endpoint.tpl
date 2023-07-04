@@ -1,5 +1,9 @@
 
+    %if params['list']:
     def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> ApiResponse:
+    %else:
+    def ${operation_id}(self) -> ApiResponse:
+    %endif
        """
        % for line in description :
        ${line}

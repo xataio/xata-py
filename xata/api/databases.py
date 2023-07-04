@@ -77,7 +77,9 @@ class Databases(Namespace):
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         return self.request("GET", url_path)
 
-    def create(self, db_name: str, payload: dict, workspace_id: str = None) -> ApiResponse:
+    def create(
+        self, db_name: str, workspace_id: str = None, region: str = None, branch_name: str = None
+    ) -> ApiResponse:
         """
         Create Database with identifier name
 
@@ -93,13 +95,18 @@ class Databases(Namespace):
         Response: application/json
 
         :param db_name: str The Database Name
-        :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
+        :param region: str = None Which region to deploy. Default: region defined in the client, if not specified: us-east-1
+        :param branch_name: str = None Which branch to create. Default: branch name used from the client, if not speicifed: main
 
         :return Response
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
+        payload = {
+            "region": region if region else self.client.get_region(),
+            "branchName": branch_name if branch_name else self.client.get_branch_name(),
+        }
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)

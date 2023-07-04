@@ -30,29 +30,21 @@ class TestRecordsFileOperations(object):
         self.client.set_header("X-Xata-Files", "true")
         self.fake = utils.get_faker()
 
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_region(),
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Attachments").is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Attachments",
+                utils.get_attachments_schema(),
+                db_name=self.db_name,
+                branch_name=self.branch_name,
+            )
+            .is_success()
         )
-        assert r.is_success()
-        r = self.client.table().create("Attachments")
-        assert r.is_success()
-
-        # create schema
-        r = self.client.table().set_schema(
-            "Attachments",
-            utils.get_attachments_schema(),
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
-        assert r.is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_insert_record_with_files_and_read_it(self):
         payload = {

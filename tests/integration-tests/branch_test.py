@@ -30,17 +30,7 @@ class TestBranchNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        assert (
-            self.client.databases()
-            .create(
-                self.db_name,
-                {
-                    "region": self.client.get_config()["region"],
-                    "branchName": self.client.get_config()["branchName"],
-                },
-            )
-            .is_success()
-        )
+        assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success
         assert (
             self.client.table()

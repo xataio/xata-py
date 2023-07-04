@@ -65,6 +65,40 @@ REF_DB_BRANCH_NAME_PARAM = "#/components/parameters/DBBranchNameParam"
 REF_WORKSPACE_ID_PARAM = "#/components/parameters/WorkspaceIDParam"
 REF_WORKSPACE_ID_PARAM_EXCLUSIONS = [""]
 API_RENAMING = json.load(open("codegen/api-rename-mapping.json"))
+DEFAULT_TEMPLATE_REF = "endpoint"
+
+OPTIONAL_CURATED_PARAM_DB_NAME = {
+    "name": "db_name",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The name of the database to query. Default: database name from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_BRANCH_NAME = {
+    "name": "branch_name",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The name of the branch to query. Default: branch name from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_WORKSPACE_ID = {
+    "name": "workspace_id",
+    "in": "path",
+    "schema": {"type": "string"},
+    "type": "str",
+    "description": "The workspace identifier. Default: workspace Id from the client.",
+    "required": False,
+}
+OPTIONAL_CURATED_PARAM_PAYLOAD = {
+    "name": "payload",
+    "nameParam": "payload",
+    "type": "dict",
+    "description": "content",
+    "in": "requestBody",
+    "required": True,  # TODO get required
+}
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -160,13 +194,14 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     # replacements
     namespace = _sanitize_filename(endpoint["tags"][0])
     operation_id = endpoint["operationId"].strip()
+    template_ref = DEFAULT_TEMPLATE_REF
     if namespace in API_RENAMING and operation_id in API_RENAMING[namespace]:
-        operation_id = API_RENAMING[namespace][operation_id]
-        logging.debug(
-            "replacing operation id of %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id)
-        )
+        template_ref = API_RENAMING[namespace][operation_id]["template"]
+        operation_id = API_RENAMING[namespace][operation_id]["name"]
+        logging.debug("replacing name from %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id))
 
     vars = {
+        "template": template_ref,
         "operation_id": operation_id,
         "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
@@ -190,7 +225,8 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
             ],
         }
     )
-    return Template(filename="codegen/templates/endpoint.tpl", output_encoding="utf-8").render(**vars)
+    template_path = "codegen/templates/%s.tpl" % vars["template"]
+    return Template(filename=template_path, output_encoding="utf-8").render(**vars)
 
 
 def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references: dict) -> list:
@@ -212,40 +248,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
                 logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
                 # push two new params to cover for string creation
-                curated_param_list.append(
-                    {
-                        "name": "db_name",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The name of the database to query. Default: database name from the client.",
-                        "required": False,
-                    }
-                )
-                curated_param_list.append(
-                    {
-                        "name": "branch_name",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The name of the branch to query. Default: branch name from the client.",
-                        "required": False,
-                    }
-                )
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_DB_NAME)
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_BRANCH_NAME)
                 skel["smart_db_branch_name"] = True
             elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
                 # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
                 logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
-                curated_param_list.append(
-                    {
-                        "name": "workspace_id",
-                        "in": "path",
-                        "schema": {"type": "string"},
-                        "type": "str",
-                        "description": "The workspace identifier. Default: workspace Id from the client.",
-                        "required": False,
-                    }
-                )
+                curated_param_list.append(OPTIONAL_CURATED_PARAM_WORKSPACE_ID)
                 skel["smart_workspace_id"] = True
             else:
                 curated_param_list.append(r)
@@ -255,7 +264,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             # if not in ref: endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
-                p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                if "$ref" in p["schema"]:
+                    p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                elif "type" in p["schema"]:
+                    p["type"] = type_replacement(p["schema"]["type"])
+                else:
+                    logging.error("could resolve type of '%s' in the lookup." % r["$ref"])
+                    exit(11)
             # else if name not in r: method specific params
             elif "name" in r:
                 p = r
@@ -287,16 +302,7 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
                 skel["has_optional_params"] += 1
 
     if "requestBody" in endpoint:
-        skel["list"].append(
-            {
-                "name": "payload",
-                "nameParam": "payload",
-                "type": "dict",
-                "description": "content",
-                "in": "requestBody",
-                "required": True,  # TODO get required
-            }
-        )
+        skel["list"].append(OPTIONAL_CURATED_PARAM_PAYLOAD)
         skel["has_payload"] = True
 
     # collect response schema

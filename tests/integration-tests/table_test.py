@@ -29,19 +29,10 @@ class TestTableNamespace(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.branch_name,
-            },
-        )
-        assert r.is_success()
+        assert self.client.databases().create(self.db_name).is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def columns(self) -> dict:
