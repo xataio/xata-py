@@ -37,23 +37,25 @@ Example Usage
 -------------
 .. code-block:: python
 
-    import xata
+    from xata import XataClient
 
-    client = xata.client.XataClient()
+    xata = XataClient()
 
-    # create a record
-    client.create("Posts", record={"title": "Hello World", "slug": "hello-world"})
-
-    # get one record
-    post = client.get_first("Posts", filter={"slug": "hello-world"})
-    print(post)
-
-    # make a query
-    page = client.query("Posts", filter={"title": "Hello World"})
-    print page.get("records")
+    posts = xata.data().query("Posts", {
+        "columns": [
+            "title", 
+            "slug"
+        ],
+        "sort": {
+            "slug": "desc"
+        },
+        "page": {
+            "size": 5
+        }
+    })
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    api
