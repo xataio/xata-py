@@ -80,7 +80,7 @@ class TestFilesSingleFile(object):
 
         file = self.client.files().get("Attachments", rid, "one_file")
         assert file.is_success()
-        assert csv == file.content()
+        assert csv == file.content
 
         proof = self.client.records().get("Attachments", rid)
         assert proof.is_success()
@@ -104,8 +104,8 @@ class TestFilesSingleFile(object):
 
         file = self.client.files().get("Attachments", rid, "one_file")
         assert file.is_success()
-        assert file.headers().get("content-type") == "image/gif"
-        assert img == file.content()
+        assert file.headers.get("content-type") == "image/gif"
+        assert img == file.content
 
         proof = self.client.records().get("Attachments", rid)
         assert proof.is_success()
@@ -126,7 +126,7 @@ class TestFilesSingleFile(object):
         assert file.is_success()
 
         raw = utils.get_file_content(utils.get_file_name("archives/assets.zip"))
-        assert raw == file.content()
+        assert raw == file.content
 
     def test_put_file_to_overwrite(self):
         img_1 = utils.get_file("images/01.gif")
@@ -141,7 +141,7 @@ class TestFilesSingleFile(object):
         first = self.client.files().get("Attachments", rid, "one_file")
         assert first.is_success()
         raw = utils.get_file_content(utils.get_file_name("images/01.gif"))
-        assert raw == first.content()
+        assert raw == first.content
 
         img_2 = utils.get_file_content(utils.get_file_name("images/02.gif"))
         file = self.client.files().put("Attachments", rid, "one_file", img_2)
@@ -149,7 +149,7 @@ class TestFilesSingleFile(object):
 
         second = self.client.files().get("Attachments", rid, "one_file")
         assert second.is_success()
-        assert second.content() != first.content()
+        assert second.content != first.content
 
     def test_delete_file(self):
         payload = {

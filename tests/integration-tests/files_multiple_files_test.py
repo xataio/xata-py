@@ -125,7 +125,7 @@ class TestFilesMultipleFiles(object):
         assert len(record["many_files"]) == 1
 
         proof = self.client.files().get_item("Attachements", rid, "many_files", prev_id)
-        assert proof.status_code() == 404
+        assert proof.status_code == 404
 
     def test_get_item(self):
         payload = {
@@ -144,4 +144,4 @@ class TestFilesMultipleFiles(object):
 
         item = self.client.files().get_item("Attachments", rid, "many_files", record["many_files"][0]["id"])
         assert item.is_success()
-        assert item.content() == utils.get_file_content(utils.get_file_name("images/01.gif"))
+        assert item.content == utils.get_file_content(utils.get_file_name("images/01.gif"))

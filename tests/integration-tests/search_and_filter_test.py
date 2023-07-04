@@ -98,7 +98,7 @@ class TestSearchAndFilterNamespace(object):
         assert "text" not in r["records"][0]
 
         r = self.client.search_and_filter().query("NonExistingTable", payload)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_query_unknown_columns(self):
         assert not self.client.search_and_filter().query("Posts", {"columns": ["does", "not", "exist"]}).is_success()
@@ -123,10 +123,10 @@ class TestSearchAndFilterNamespace(object):
         assert r["records"][0]["title"] == self.posts[0]["title"]
 
         r = self.client.search_and_filter().search_branch({"tables": [""], "query": "woopsie!"})
-        assert r.status_code() == 400
+        assert r.status_code == 400
 
         r = self.client.search_and_filter().search_branch({"invalid": "query"})
-        assert r.status_code() == 400
+        assert r.status_code == 400
 
     def test_search_table(self):
         """
@@ -146,10 +146,10 @@ class TestSearchAndFilterNamespace(object):
         assert r.is_success()
 
         r = self.client.search_and_filter().search_table("NonExistingTable", payload)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
         r = self.client.search_and_filter().search_table("Posts", {"invalid": "query"})
-        assert r.status_code() == 400
+        assert r.status_code == 400
 
     def test_summarize_table(self):
         """
@@ -162,7 +162,7 @@ class TestSearchAndFilterNamespace(object):
         assert len(r["summaries"]) > 1
 
         r = self.client.search_and_filter().summarize("NonExistingTable", payload)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
     def test_aggregate_table(self):
         """
@@ -176,7 +176,7 @@ class TestSearchAndFilterNamespace(object):
         assert r["aggs"]["titles"] == len(self.posts)
 
         r = self.client.search_and_filter().aggregate("NonExistingTable", payload)
-        assert r.status_code() == 404
+        assert r.status_code == 404
 
         r = self.client.search_and_filter().aggregate("Posts", {"aggs": {"foo": "bar"}})
-        assert r.status_code() == 400
+        assert r.status_code == 400
