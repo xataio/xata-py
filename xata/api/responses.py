@@ -64,6 +64,10 @@ class ApiResponse(dict):
         return 200 <= self.status_code() < 300
 
     def headers(self) -> dict:
+        """
+        Get the response headers
+        :return dict
+        """
         return self.response.headers
     
     def content(self) -> bytes:
