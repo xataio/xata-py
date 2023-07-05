@@ -37,22 +37,22 @@ class ApiResponse(dict):
             pass
 
         # log server message
+        self._server_message = None
         if "x-xata-message" in self.headers:
+            self._server_message = self.headers["x-xata-message"]
             self.logger.warn(self.headers["x-xata-message"])
 
     def server_message(self) -> Union[str, None]:
         """
         Get the server message from the response
-        :return str | None
+        :returns str | None
         """
-        if "x-xata-message" in self.headers:
-            return self.headers["x-xata-message"]
-        return None
+        self._server_message
 
     def is_success(self) -> bool:
         """
         Was the request successful?
-        :return bool
+        :returns bool
         """
         return 200 <= self.status_code < 300
 
@@ -64,7 +64,7 @@ class ApiResponse(dict):
     def json(self) -> dict:
         """
         Legacy support for requests.Response from 0.x
-        :return dict
+        :returns dict
         """
         return self.response.json()
 
@@ -72,7 +72,7 @@ class ApiResponse(dict):
     def status_code(self) -> int:
         """
         Get the status code of the response
-        :return int
+        :returns int
         """
         return self.response.status_code
 
@@ -80,7 +80,7 @@ class ApiResponse(dict):
     def headers(self) -> dict:
         """
         Get the response headers
-        :return dict
+        :returns dict
         """
         return self.response.headers
 
@@ -88,6 +88,6 @@ class ApiResponse(dict):
     def content(self) -> bytes:
         """
         For files support, to get the file content
-        :return bytes
+        :returns bytes
         """
         return self.response.content
