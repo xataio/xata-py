@@ -20,6 +20,7 @@
 import logging
 from typing import Union
 
+import deprecation
 from requests import Response
 from requests.exceptions import JSONDecodeError
 
@@ -54,6 +55,18 @@ class ApiResponse(dict):
         :return bool
         """
         return 200 <= self.status_code < 300
+
+    @deprecation.deprecated(
+        deprecated_in="1.0.0a2",
+        removed_in="2.0.0",
+        details="This method is obsolete as this class directly returns a dict",
+    )
+    def json(self) -> dict:
+        """
+        Legacy support for requests.Response from 0.x
+        :return dict
+        """
+        return self.response.json()
 
     @property
     def status_code(self) -> int:
