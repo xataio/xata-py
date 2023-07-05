@@ -46,7 +46,7 @@ class Workspaces(Namespace):
         Response: application/json
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/workspaces"
         return self.request("GET", url_path)
@@ -67,7 +67,7 @@ class Workspaces(Namespace):
 
         :param payload: dict content
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/workspaces"
         headers = {"content-type": "application/json"}
@@ -90,7 +90,7 @@ class Workspaces(Namespace):
 
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -115,7 +115,7 @@ class Workspaces(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -139,7 +139,7 @@ class Workspaces(Namespace):
 
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -163,7 +163,7 @@ class Workspaces(Namespace):
 
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -189,7 +189,7 @@ class Workspaces(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -214,7 +214,7 @@ class Workspaces(Namespace):
         :param user_id: str UserID
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()

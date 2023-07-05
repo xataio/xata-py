@@ -49,7 +49,7 @@ class Records(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/transaction"
@@ -77,7 +77,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data"
@@ -107,7 +107,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -151,7 +151,7 @@ class Records(Namespace):
         :param create_only: bool = None
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -199,7 +199,7 @@ class Records(Namespace):
         :param columns: list = None Column filters
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -235,7 +235,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -274,7 +274,7 @@ class Records(Namespace):
         :param columns: list = None Column filters
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -310,7 +310,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/bulk"

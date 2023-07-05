@@ -50,7 +50,7 @@ class Invites(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -76,7 +76,7 @@ class Invites(Namespace):
         :param invite_id: str Invite identifier
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -105,7 +105,7 @@ class Invites(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -131,7 +131,7 @@ class Invites(Namespace):
         :param invite_key: str Invite Key (secret) for the invited user
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -156,7 +156,7 @@ class Invites(Namespace):
         :param invite_id: str Invite identifier
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()

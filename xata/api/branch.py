@@ -47,7 +47,7 @@ class Branch(Namespace):
 
         :param db_name: str The Database Name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/dbs/{db_name}"
         return self.request("GET", url_path)
@@ -69,13 +69,13 @@ class Branch(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         return self.request("GET", url_path)
 
-    def create(self, payload: dict, db_name: str = None, branch_name: str = None, _from: str = None) -> ApiResponse:
+    def create(self, payload: dict, db_name: str = None, branch_name: str = None, from_: str = None) -> ApiResponse:
         """
         Create Database branch
 
@@ -93,14 +93,14 @@ class Branch(Namespace):
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
-        :param _from: str = None Name of source branch to branch the new schema from
+        :param from_: str = None Name of source branch to branch the new schema from
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
-        if _from is not None:
-            url_path += "?from={_from}"
+        if from_ is not None:
+            url_path += "?from={from_}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
@@ -122,7 +122,7 @@ class Branch(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
@@ -145,7 +145,7 @@ class Branch(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
@@ -168,7 +168,7 @@ class Branch(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/metadata"
@@ -192,7 +192,7 @@ class Branch(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/stats"
@@ -217,7 +217,7 @@ class Branch(Namespace):
 
         :param db_name: str The Database Name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         return self.request("GET", url_path)
@@ -246,7 +246,7 @@ class Branch(Namespace):
         :param db_name: str The Database Name
         :param payload: dict content
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         headers = {"content-type": "application/json"}
@@ -271,7 +271,7 @@ class Branch(Namespace):
         :param db_name: str The Database Name
         :param git_branch: str The Git Branch to remove from the mapping
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         if git_branch is not None:
@@ -304,7 +304,7 @@ class Branch(Namespace):
         :param git_branch: str = None The Git Branch
         :param fallback_branch: str = None Default branch to fallback to
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/dbs/{db_name}/resolveBranch"
         query_params = []

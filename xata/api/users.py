@@ -46,7 +46,7 @@ class Users(Namespace):
         Response: application/json
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         return self.request("GET", url_path)
@@ -67,7 +67,7 @@ class Users(Namespace):
 
         :param payload: dict content
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         headers = {"content-type": "application/json"}
@@ -87,7 +87,7 @@ class Users(Namespace):
         - 5XX: Unexpected Error
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         return self.request("DELETE", url_path)
