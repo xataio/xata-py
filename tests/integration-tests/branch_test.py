@@ -101,7 +101,7 @@ class TestBranchNamespace(object):
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().create(payload, branch_name="the-incredible-hulk", _from="avengers")
+        r = self.client.branch().create(payload, branch_name="the-incredible-hulk", from_="avengers")
         assert r.status_code == 400
         assert not r.is_success()
 

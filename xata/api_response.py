@@ -37,9 +37,7 @@ class ApiResponse(dict):
             pass
 
         # log server message
-        self._server_message = None
         if "x-xata-message" in self.headers:
-            self._server_message = self.headers["x-xata-message"]
             self.logger.warn(self.headers["x-xata-message"])
 
     def server_message(self) -> Union[str, None]:
@@ -47,7 +45,7 @@ class ApiResponse(dict):
         Get the server message from the response
         :returns str | None
         """
-        self._server_message
+        return self.headers["x-xata-message"] if "x-xata-message" in self.headers else None
 
     def is_success(self) -> bool:
         """

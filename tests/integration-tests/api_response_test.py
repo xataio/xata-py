@@ -36,5 +36,3 @@ class TestApiResponse(object):
         user = XataClient().users().get()
         assert user.is_success()
         assert user == user.json()
-
-        
