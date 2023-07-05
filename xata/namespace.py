@@ -58,7 +58,7 @@ class Namespace:
         :param payload: dict = None
         :param data: bytes = None
 
-        :return ApiResponse
+        :returns ApiResponse
 
         :raises RateLimitError
         :raises UnauthorizedError

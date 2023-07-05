@@ -43,7 +43,7 @@ Example Usage
 
     posts = xata.data().query("Posts", {
         "columns": [
-            "title", 
+            "title",
             "slug"
         ],
         "sort": {

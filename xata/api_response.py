@@ -20,6 +20,7 @@
 import logging
 from typing import Union
 
+import deprecation
 from requests import Response
 from requests.exceptions import JSONDecodeError
 
@@ -42,24 +43,34 @@ class ApiResponse(dict):
     def server_message(self) -> Union[str, None]:
         """
         Get the server message from the response
-        :return str | None
+        :returns str | None
         """
-        if "x-xata-message" in self.headers:
-            return self.headers["x-xata-message"]
-        return None
+        return self.headers["x-xata-message"] if "x-xata-message" in self.headers else None
 
     def is_success(self) -> bool:
         """
         Was the request successful?
-        :return bool
+        :returns bool
         """
         return 200 <= self.status_code < 300
+
+    @deprecation.deprecated(
+        deprecated_in="1.0.0a2",
+        removed_in="2.0.0",
+        details="This method is obsolete as this class directly returns a dict",
+    )
+    def json(self) -> dict:
+        """
+        Legacy support for requests.Response from 0.x
+        :returns dict
+        """
+        return self.response.json()
 
     @property
     def status_code(self) -> int:
         """
         Get the status code of the response
-        :return int
+        :returns int
         """
         return self.response.status_code
 
@@ -67,7 +78,7 @@ class ApiResponse(dict):
     def headers(self) -> dict:
         """
         Get the response headers
-        :return dict
+        :returns dict
         """
         return self.response.headers
 
@@ -75,6 +86,6 @@ class ApiResponse(dict):
     def content(self) -> bytes:
         """
         For files support, to get the file content
-        :return bytes
+        :returns bytes
         """
         return self.response.content

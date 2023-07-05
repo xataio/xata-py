@@ -46,7 +46,7 @@ class Databases(Namespace):
 
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -70,7 +70,7 @@ class Databases(Namespace):
         :param db_name: str The Database Name
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -128,7 +128,7 @@ class Databases(Namespace):
         :param db_name: str The Database Name
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -153,7 +153,7 @@ class Databases(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -180,7 +180,7 @@ class Databases(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -203,7 +203,7 @@ class Databases(Namespace):
 
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()

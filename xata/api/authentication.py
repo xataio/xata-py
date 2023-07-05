@@ -45,7 +45,8 @@ class Authentication(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :return Response
+
+        :returns ApiResponse
         """
         url_path = "/user/keys"
         return self.request("GET", url_path)
@@ -66,7 +67,7 @@ class Authentication(Namespace):
 
         :param key_name: str API Key name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("POST", url_path)
@@ -86,7 +87,7 @@ class Authentication(Namespace):
 
         :param key_name: str API Key name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("DELETE", url_path)

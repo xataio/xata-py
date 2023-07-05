@@ -28,7 +28,7 @@
        :param ${param['nameParam']}: ${param['type']} ${param['description']}
        % endfor
 
-       :return Response
+       :returns ApiResponse
        """
        % if params['smart_db_branch_name'] :
        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
