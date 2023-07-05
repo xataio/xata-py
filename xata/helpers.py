@@ -162,7 +162,7 @@ class BulkProcessor(object):
     def get_failed_batches(self) -> list[dict]:
         """
         Get the batched records that could not be processed with the error
-        :return list[dict]
+        :returns list[dict]
         """
         return self.failed_batches_queue
 
@@ -170,7 +170,7 @@ class BulkProcessor(object):
         """
         Get processing statistics
 
-        :return dict
+        :returns dict
         """
         return self.stats
 
@@ -231,7 +231,7 @@ class BulkProcessor(object):
             """
             Get the next batch of records to persist
 
-            :return dict
+            :returns dict
             """
             table_name = ""
             with self.lock:
@@ -291,7 +291,7 @@ def to_rfc339(dt: datetime, tz=timezone.utc) -> str:
 
     :param dt: datetime instance to convert
     :param tz: timezone to convert in, default: UTC
-    :return str
+    :returns str
     """
     return dt.replace(tzinfo=tz).isoformat()
 
@@ -392,7 +392,7 @@ class Transaction(object):
         """
         Commit the transactions. Flushes the operations queue
 
-        :return dict
+        :returns dict
         """
         r = self.client.records().transaction(self.operations)
         result = {
@@ -407,6 +407,6 @@ class Transaction(object):
     def size(self) -> int:
         """
         Get amount of operations in queue
-        :return int
+        :returns int
         """
         return len(self.operations["operations"])
