@@ -120,7 +120,7 @@ def get_class_name(name: str) -> str:
 def get_param_name(name: str) -> str:
     name = "_".join([n.lower() for n in re.findall("[a-zA-Z][^A-Z]*", name)])
     if name in RESERVED_WORDS:
-        name = f"_{name}"
+        name = f"{name}_"
     return name
 
 
