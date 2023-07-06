@@ -63,7 +63,7 @@
         "name": "list"
       },
       "createWorkspace": {
-        "template": "endpoint",
+        "template": "workspace_create",
         "name": "create"
       },
       "getWorkspace": {

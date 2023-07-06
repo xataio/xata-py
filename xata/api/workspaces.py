@@ -51,7 +51,7 @@ class Workspaces(Namespace):
         url_path = "/workspaces"
         return self.request("GET", url_path)
 
-    def create(self, payload: dict) -> ApiResponse:
+    def create(self, name: str, slug: str = None) -> ApiResponse:
         """
         Creates a new workspace with the user requesting it as its single owner.
 
@@ -65,11 +65,15 @@ class Workspaces(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param payload: dict content
+        :param name: str Workspace name
+        :param slug: str = None Slug to use
 
-        :returns ApiResponse
+        :return Response
         """
-        url_path = "/workspaces"
+        payload = {"name": name}
+        if slug:
+            payload["slug"] = slug
+        url_path = f"/workspaces"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
