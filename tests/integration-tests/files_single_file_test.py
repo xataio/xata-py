@@ -28,7 +28,6 @@ class TestFilesSingleFile(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.client.set_header("X-Xata-Files", "true")
         self.fake = Faker()
 
         assert self.client.databases().create(self.db_name).is_success()
