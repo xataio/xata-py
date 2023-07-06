@@ -161,7 +161,7 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def rename(self, db_name: str, payload: dict, workspace_id: str = None) -> ApiResponse:
+    def rename(self, db_name: str, new_name: str, workspace_id: str = None) -> ApiResponse:
         """
         Change the name of an existing database
 
@@ -176,14 +176,15 @@ class Databases(Namespace):
         - 5XX: Unexpected Error
         Response: application/json
 
-        :param db_name: str The Database Name
-        :param payload: dict content
+        :param db_name: str Current database name
+        :param new_name: str New database name
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :returns ApiResponse
+        :return Response
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
+        payload = {"newName": new_name}
         url_path = f"/workspaces/{workspace_id}/dbs/{db_name}/rename"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)

@@ -39,7 +39,7 @@
         "name": "list"
       },
       "renameDatabase": {
-        "template": "endpoint",
+        "template": "database_rename",
         "name": "rename"
       }
     },

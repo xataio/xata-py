@@ -90,7 +90,6 @@ class TestDatabasesNamespace(object):
             self.client.databases().update_metadata(self.db_name, metadata, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
 
-    # run last for cleanup
     def test_delete_database(self):
         r = self.client.databases().delete(self.db_name)
         assert r.is_success()
@@ -102,6 +101,28 @@ class TestDatabasesNamespace(object):
         with pytest.raises(UnauthorizedError) as e:
             self.client.databases().delete(self.db_name, workspace_id="NonExistingWorkspaceId")
         assert str(e.value)[0:23] == "code: 401, unauthorized"
+
+    def test_rename_database(self):
+        h = utils.get_random_string(6)
+        new_name = "rename_new-db-test-%s" % h
+        orig_name = "rename_orig-db-test-%s" % h
+        assert self.client.databases().create(orig_name).is_success()
+
+        r = self.client.databases().rename(orig_name, new_name)
+        assert r.is_success()
+        assert "name" in r
+        assert "region" in r
+        assert r["name"] == new_name
+        assert r["region"] == self.client.get_region()
+
+        assert not self.client.databases().rename("NonExistingDatabase", new_name).is_success()
+        assert not self.client.databases().rename("NonExistingDatabase", orig_name).is_success()
+
+        with pytest.raises(UnauthorizedError) as e:
+            self.client.databases().rename(new_name, orig_name, workspace_id="NonExistingWorkspaceId")
+        assert str(e.value)[0:23] == "code: 401, unauthorized"
+
+        assert self.client.databases().delete(new_name).is_success()
 
     def test_get_available_regions(self):
         r = self.client.databases().get_regions()
