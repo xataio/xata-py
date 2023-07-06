@@ -94,7 +94,7 @@
     "branch": {
       "getBranchList": {
         "template": "endpoint",
-        "name": "get_branches"
+        "name": "list"
       },
       "getBranchDetails": {
         "template": "endpoint",

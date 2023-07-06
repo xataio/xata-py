@@ -31,7 +31,7 @@ class Branch(Namespace):
 
     scope = "workspace"
 
-    def get_branches(self, db_name: str) -> ApiResponse:
+    def list(self, db_name: str) -> ApiResponse:
         """
         List all available Branches
 
