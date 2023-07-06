@@ -31,7 +31,7 @@ class TestWorkspacesNamespace(object):
         self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
 
     def test_list_workspaces(self):
-        r = self.client.workspaces().get_workspaces()
+        r = self.client.workspaces().list()
         assert r.is_success()
         assert "workspaces" in r
         assert len(r["workspaces"]) > 0

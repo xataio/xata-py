@@ -31,7 +31,7 @@ class Workspaces(Namespace):
 
     scope = "core"
 
-    def get_workspaces(self) -> ApiResponse:
+    def list(self) -> ApiResponse:
         """
         Retrieve the list of workspaces the user belongs to
 
