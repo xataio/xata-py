@@ -31,7 +31,7 @@ class TestWorkspacesNamespace(object):
         self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
 
     def test_list_workspaces(self):
-        r = self.client.workspaces().get_workspaces()
+        r = self.client.workspaces().list()
         assert r.is_success()
         assert "workspaces" in r
         assert len(r["workspaces"]) > 0
@@ -41,12 +41,7 @@ class TestWorkspacesNamespace(object):
         assert "role" in r["workspaces"][0]
 
     def test_create_new_workspace(self):
-        r = self.client.workspaces().create(
-            {
-                "name": self.workspace_name,
-                "slug": "sluginator",
-            }
-        )
+        r = self.client.workspaces().create(self.workspace_name, "sluginator")
         assert r.is_success()
         assert "id" in r
         assert "name" in r
@@ -57,6 +52,14 @@ class TestWorkspacesNamespace(object):
         assert r["slug"] == "sluginator"
 
         pytest.workspaces["workspace"] = r
+
+    def test_create_new_workspace_without_slug(self):
+        ws_id = "py-sdk-test-ws-without-slug-%s" % utils.get_random_string(4)
+        r = self.client.workspaces().create(ws_id)
+        assert r.is_success()
+        assert r["name"] == ws_id
+        assert r["slug"] == ws_id
+        assert self.client.workspaces().delete(r["id"]).is_success()
 
     def test_get_workspace(self):
         r = self.client.workspaces().get(workspace_id=pytest.workspaces["workspace"]["id"])

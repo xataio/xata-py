@@ -46,6 +46,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -70,6 +71,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Not Found
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -97,6 +99,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -122,6 +125,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -148,6 +152,7 @@ class Table(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -175,6 +180,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -200,6 +206,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -227,6 +234,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -254,6 +262,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param column_name: str The Column name
@@ -281,6 +290,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param column_name: str The Column name

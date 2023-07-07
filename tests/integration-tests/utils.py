@@ -108,3 +108,23 @@ def get_file(file_name: str, public_url: bool = False, signed_url_timeout: int =
         "enablePublicUrl": public_url,
         "signedUrlTimeout": signed_url_timeout,
     }
+
+
+def get_post() -> dict:
+    return {
+        "title": get_faker().company(),
+        "labels": [get_faker().domain_word(), get_faker().domain_word()],
+        "slug": get_faker().catch_phrase(),
+        "content": get_faker().text(),
+    }
+
+
+def get_posts_schema() -> dict:
+    return {
+        "columns": [
+            {"name": "title", "type": "string"},
+            {"name": "labels", "type": "multiple"},
+            {"name": "slug", "type": "string"},
+            {"name": "content", "type": "text"},
+        ]
+    }

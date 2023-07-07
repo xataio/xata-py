@@ -53,7 +53,7 @@ class TestBranchNamespace(object):
         assert r.is_success()
 
     def test_get_branch_list(self):
-        r = self.client.branch().get_branches(self.db_name)
+        r = self.client.branch().list(self.db_name)
         assert r.is_success()
         assert "databaseName" in r
         assert "branches" in r
@@ -63,7 +63,7 @@ class TestBranchNamespace(object):
         assert "createdAt" in r["branches"][0]
         assert r["branches"][0]["name"] == "main"
 
-        r = self.client.branch().get_branches("NonExistingDatabase")
+        r = self.client.branch().list("NonExistingDatabase")
         assert r.status_code == 404
         assert not r.is_success()
 
