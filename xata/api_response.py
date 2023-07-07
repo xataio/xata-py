@@ -54,6 +54,26 @@ class ApiResponse(dict):
         """
         return 200 <= self.status_code < 300
 
+    def get_cursor(self) -> Union[str, None]:
+        """
+        If the response has a cursor, return it
+        :returns str or None
+        """
+        try:
+            return self.response.json()["meta"]["page"]["cursor"]
+        except Exception:
+            return None
+
+    def has_more_results(self) -> bool:
+        """
+        Are there more result pages available?
+        :return bool
+        """
+        try:
+            return self.response.json()["meta"]["page"].get("more", False)
+        except Exception:
+            return False
+
     @deprecation.deprecated(
         deprecated_in="1.0.0a2",
         removed_in="2.0.0",

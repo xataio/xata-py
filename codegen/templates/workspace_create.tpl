@@ -28,6 +28,6 @@
        payload = {"name": name}
        if slug:
           payload["slug"] = slug
-       url_path = f"${path}"
+       url_path = "${path}"
        headers = {"content-type": "application/json"}
        return self.request("${http_method}", url_path, headers, payload)

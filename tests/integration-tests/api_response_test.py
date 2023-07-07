@@ -17,10 +17,38 @@
 # under the License.
 #
 
+import utils
+
 from xata.client import XataClient
 
 
 class TestApiResponse(object):
+    def setup_class(self):
+        self.db_name = utils.get_db_name()
+        self.client = XataClient(db_name=self.db_name)
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
+
+        payload = {
+            "operations": [
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+                {"insert": {"table": "Posts", "record": utils.get_post()}},
+            ]
+        }
+        assert self.client.records().transaction(payload).is_success()
+
+    def teardown_class(self):
+        assert self.client.databases().delete(self.db_name).is_success()
+
     def test_is_success_true(self):
         user = XataClient().users().get()
         assert user.is_success()
@@ -36,3 +64,23 @@ class TestApiResponse(object):
         user = XataClient().users().get()
         assert user.is_success()
         assert user == user.json()
+
+    def test_get_cursor_and_has_more_results(self):
+        query = {
+            "columns": ["*"],
+            "page": {"size": 9, "after": None},
+        }
+        posts = self.client.data().query("Posts", query)
+        assert posts.is_success()
+        assert len(posts["records"]) == 9
+        assert posts.has_more_results()
+        assert posts.get_cursor() is not None
+
+        query = {
+            "columns": ["*"],
+            "page": {"size": 6, "after": posts.get_cursor()},
+        }
+        posts = self.client.data().query("Posts", query)
+        assert posts.is_success()
+        assert len(posts["records"]) == 1
+        assert not posts.has_more_results()

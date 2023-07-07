@@ -43,6 +43,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -70,6 +71,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -100,6 +102,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name

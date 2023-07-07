@@ -43,6 +43,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -68,6 +69,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -92,6 +94,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -116,6 +119,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -143,6 +147,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -167,6 +172,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -191,6 +197,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -215,6 +222,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -240,6 +248,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -270,6 +279,7 @@ class Migrations(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.

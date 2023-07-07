@@ -50,8 +50,7 @@ class TestHelpersBulkProcessor(object):
         assert r.is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:

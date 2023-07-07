@@ -73,7 +73,7 @@ class Workspaces(Namespace):
         payload = {"name": name}
         if slug:
             payload["slug"] = slug
-        url_path = f"/workspaces"
+        url_path = "/workspaces"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 

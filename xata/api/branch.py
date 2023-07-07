@@ -43,6 +43,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -64,6 +65,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -88,6 +90,7 @@ class Branch(Namespace):
         - 404: Example response
         - 423: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -117,6 +120,7 @@ class Branch(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -140,6 +144,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -163,6 +168,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -187,6 +193,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -213,6 +220,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -241,6 +249,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -267,6 +276,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: The git branch was not found in the mapping
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param db_name: str The Database Name
         :param git_branch: str The Git Branch to remove from the mapping
@@ -298,6 +308,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
