@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg">
+  <img width="300" src="./logo.svg">
 </p>
 
 # Python SDK for Xata
