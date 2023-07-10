@@ -1,6 +1,6 @@
 <p align="center">
-  <img width="200" src="https://raw.githubusercontent.com/xataio/company/main/logo/non-resizable/for-light-backgrounds/colored-with-text.png#gh-light-mode-only" />
-  <img width="200" src="https://raw.githubusercontent.com/xataio/company/main/logo/non-resizable/for-dark-backgrounds/colored-with-text.png#gh-dark-mode-only" />
+  ![Alt text](./logo.svg)
+  <img src="./logo.svg">
 </p>
 
 # Python SDK for Xata
