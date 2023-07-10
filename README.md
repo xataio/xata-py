@@ -2,7 +2,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./assets/logo_dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="./assets/logo_light.svg">
-    <img alt="Xata" src="./assets/logo_dark.svg">
+    <img width="400" alt="Xata" src="./assets/logo_dark.svg">
   </picture>
 </p>
 
