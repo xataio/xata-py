@@ -11,6 +11,9 @@
 
        Path: ${path}
        Method: ${http_method}
+       % if status == "experimental":
+       Status: Experimental
+       % endif
        Response status codes:
        % for rc in params['response_codes']:
        - ${rc["code"]}: ${rc["description"]}
