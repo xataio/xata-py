@@ -200,6 +200,12 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         operation_id = API_RENAMING[namespace][operation_id]["name"]
         logging.debug("replacing name from %s.%s to %s." % (namespace, endpoint["operationId"].strip(), operation_id))
 
+    # status of the API
+    status = "GA"
+    if "x-experimental" in endpoint:
+        status = "experimental"
+
+    # template variables
     vars = {
         "template": template_ref,
         "operation_id": operation_id,
@@ -207,6 +213,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "http_method": method.upper(),
         "path": path,
         "params": endpoint_params,
+        "status": status,
     }
 
     SCHEMA_OUT["endpoints"].append(
@@ -219,12 +226,15 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
             "method": vars["http_method"],
             "url_path": path,
             "responses": endpoint_params["response_codes"],
+            "status": status,
             "parameters": [
                 {"name": p["name"], "description": p["description"], "in": p["in"], "required": p["required"]}
                 for p in list(endpoint_params["list"])
             ],
         }
     )
+
+    # render template
     template_path = "codegen/templates/%s.tpl" % vars["template"]
     return Template(filename=template_path, output_encoding="utf-8").render(**vars)
 

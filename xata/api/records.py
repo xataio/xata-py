@@ -299,6 +299,7 @@ class Records(Namespace):
 
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
+        Status: Experimental
         Response status codes:
         - 200: OK
         - 400: Response with multiple errors of the bulk execution
