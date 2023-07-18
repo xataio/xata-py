@@ -42,6 +42,7 @@ class Records(Namespace):
         - 400: Returns errors from a failed transaction.
         - 401: Authentication Error
         - 404: Example response
+        - 429: Rate limit exceeded
         - 5XX: Unexpected Error
         - default: Unexpected Error
         Response: application/json

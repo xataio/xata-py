@@ -113,6 +113,30 @@ class TestBranchNamespace(object):
         assert r.status_code == 422
         assert not r.is_success()
 
+    def test_create_database_branch_from_other_branch_with_param(self):
+        payload = {
+            "metadata": {
+                "repository": "github.com/xataio/xata-py",
+                "branch": "integration-testing-%s" % utils.get_random_string(6),
+                "stage": "testing",
+            },
+        }
+        r = self.client.branch().create(payload, branch_name="source-from")
+        assert r.status_code == 201
+
+        r = self.client.branch().create(payload, branch_name="new-branch", from_="source-from")
+        assert r.status_code == 201
+        assert r["status"] == "completed"
+
+        assert (
+            not self.client.branch().create(payload, branch_name="the-incredible-hulk", from_="avengers").is_success()
+        )
+        assert (
+            not self.client.branch()
+            .create(payload, db_name="marvel-042", branch_name="the-incredible-hulk", from_="avengers")
+            .is_success()
+        )
+
     def test_get_branch_metadata(self):
         r = self.client.branch().get_metadata()
         assert r.is_success()

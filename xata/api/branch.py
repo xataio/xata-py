@@ -103,7 +103,7 @@ class Branch(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         if from_ is not None:
-            url_path += "?from={from_}"
+            url_path += f"?from={from_}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
@@ -285,7 +285,7 @@ class Branch(Namespace):
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         if git_branch is not None:
-            url_path += "?gitBranch={git_branch}"
+            url_path += f"?gitBranch={git_branch}"
         return self.request("DELETE", url_path)
 
     def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> ApiResponse:
