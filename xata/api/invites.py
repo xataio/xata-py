@@ -35,6 +35,7 @@ class Invites(Namespace):
         """
         Invite some user to join the workspace with the given role
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites#invite-a-user-to-join-the-workspace
         Path: /workspaces/{workspace_id}/invites
         Method: POST
         Response status codes:
@@ -63,6 +64,7 @@ class Invites(Namespace):
         This operation provides a way to cancel invites by deleting them.  Already accepted
         invites cannot be deleted.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#deletes-an-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: DELETE
         Response status codes:
@@ -89,6 +91,7 @@ class Invites(Namespace):
         place; they do not change the invite link, the expiry time, nor do they re-notify the
         recipient of the invite.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#updates-an-existing-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: PATCH
         Response status codes:
@@ -118,6 +121,7 @@ class Invites(Namespace):
         Accept the invitation to join a workspace.  If the operation succeeds the user will be a
         member of the workspace
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_key/accept#accept-the-invitation-to-join-a-workspace
         Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
         Method: POST
         Response status codes:
@@ -143,6 +147,7 @@ class Invites(Namespace):
         This operation provides a way to resend an Invite notification.  Invite notifications can
         only be sent for Invites not yet accepted.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id/resend#resend-invite-notification
         Path: /workspaces/{workspace_id}/invites/{invite_id}/resend
         Method: POST
         Response status codes:

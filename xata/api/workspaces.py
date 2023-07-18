@@ -35,6 +35,7 @@ class Workspaces(Namespace):
         """
         Retrieve the list of workspaces the user belongs to
 
+        Reference: https://xata.io/docs/api-reference/workspaces#get-list-of-workspaces
         Path: /workspaces
         Method: GET
         Response status codes:
@@ -81,6 +82,7 @@ class Workspaces(Namespace):
         """
         Retrieve workspace info from a workspace ID
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id#get-an-existing-workspace
         Path: /workspaces/{workspace_id}
         Method: GET
         Response status codes:
@@ -105,6 +107,7 @@ class Workspaces(Namespace):
         """
         Update workspace info
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id#update-an-existing-workspace
         Path: /workspaces/{workspace_id}
         Method: PUT
         Response status codes:
@@ -131,6 +134,7 @@ class Workspaces(Namespace):
         """
         Delete the workspace with the provided ID
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id#delete-an-existing-workspace
         Path: /workspaces/{workspace_id}
         Method: DELETE
         Response status codes:
@@ -154,6 +158,7 @@ class Workspaces(Namespace):
         """
         Retrieve the list of members of the given workspace
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/members#get-the-list-members-of-a-workspace
         Path: /workspaces/{workspace_id}/members
         Method: GET
         Response status codes:
@@ -179,6 +184,7 @@ class Workspaces(Namespace):
         Update a workspace member role.  Workspaces must always have at least one owner, so this
         operation will fail if trying to remove owner role from the last owner in the workspace.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/members/user_id#update-workspace-member-role
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: PUT
         Response status codes:
@@ -205,6 +211,7 @@ class Workspaces(Namespace):
         """
         Remove the member from the workspace
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/members/user_id#remove-a-member-from-the-workspace
         Path: /workspaces/{workspace_id}/members/{user_id}
         Method: DELETE
         Response status codes:

@@ -212,6 +212,7 @@ class SearchAndFilter(Namespace):
         /db/demo:main/tables/table/query {   "page": {     "size": 10,     "before": "end"   } }
         ```
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/query#query-table
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
         Response status codes:
@@ -238,6 +239,7 @@ class SearchAndFilter(Namespace):
         """
         Run a free text search operation across the database branch.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/search#free-text-search
         Path: /db/{db_branch_name}/search
         Method: POST
         Response status codes:
@@ -269,6 +271,7 @@ class SearchAndFilter(Namespace):
         work on columns of type `text` * filtering on columns of type `multiple` is currently
         unsupported
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/search#free-text-search-in-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
         Response status codes:
@@ -299,6 +302,7 @@ class SearchAndFilter(Namespace):
         endpoint, you need a column of type vector.  The input vector must have the same dimension
         as the vector column.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/vectorSearch#vector-similarity-search-in-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
         Response status codes:
@@ -332,6 +336,7 @@ class SearchAndFilter(Namespace):
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
         will stream the results back as SSE's.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask#ask-your-table-a-question
         Path: /db/{db_branch_name}/tables/{table_name}/ask
         Method: POST
         Response status codes:
@@ -369,6 +374,7 @@ class SearchAndFilter(Namespace):
         Ask a follow-up question.  If the `Accept` header is set to `text/event-stream`, Xata will
         stream the results back as SSE's.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask/session_id#ask-follow-up-questions-of-your-data
         Path: /db/{db_branch_name}/tables/{table_name}/ask/{session_id}
         Method: POST
         Response status codes:
@@ -430,6 +436,7 @@ class SearchAndFilter(Namespace):
         and `summariesFilter` when it's not  possible to use `filter`.  `page.size`: tells Xata
         how many records to return.  If unspecified, Xata will return the default size.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/summarize#summarize-table
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
         Response status codes:
@@ -461,6 +468,7 @@ class SearchAndFilter(Namespace):
         for cardinality), and is generally faster and can do more complex aggregations.  For
         usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/aggregate#run-aggregations-over-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
         Response status codes:

@@ -35,6 +35,7 @@ class Records(Namespace):
         """
         Execute a transaction on a branch
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/transaction#execute-a-transaction-on-a-branch
         Path: /db/{db_branch_name}/transaction
         Method: POST
         Response status codes:
@@ -64,6 +65,7 @@ class Records(Namespace):
         """
         Insert a new Record into the Table
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data#insert-record
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
         Response status codes:
@@ -95,6 +97,7 @@ class Records(Namespace):
         """
         Retrieve record by ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#get-record-by-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: GET
         Response status codes:
@@ -135,6 +138,7 @@ class Records(Namespace):
         this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
         automatic ID generation.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#insert-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
         Response status codes:
@@ -184,6 +188,7 @@ class Records(Namespace):
         """
         Upsert record with ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#upsert-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
         Response status codes:
@@ -223,6 +228,7 @@ class Records(Namespace):
         """
         Delete record from table
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#delete-record-from-table
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: DELETE
         Response status codes:
@@ -260,6 +266,7 @@ class Records(Namespace):
         """
         Update record with ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#update-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
         Response status codes:
@@ -298,6 +305,7 @@ class Records(Namespace):
         """
         Bulk insert records
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/bulk#bulk-insert-records
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
         Status: Experimental

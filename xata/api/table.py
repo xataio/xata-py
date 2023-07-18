@@ -36,6 +36,7 @@ class Table(Namespace):
         Creates a new table with the given name.  Returns 422 if a table with the same name
         already exists.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name#create-table
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PUT
         Response status codes:
@@ -63,6 +64,7 @@ class Table(Namespace):
         """
         Deletes the table with the given name.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name#delete-table
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: DELETE
         Response status codes:
@@ -90,6 +92,7 @@ class Table(Namespace):
         by providing a new name.  In the example below, we rename a table from “users” to
         “people”:  ```json // PATCH /db/test:main/tables/users  {   "name": "people" } ```
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name#update-table
         Path: /db/{db_branch_name}/tables/{table_name}
         Method: PATCH
         Response status codes:
@@ -117,6 +120,7 @@ class Table(Namespace):
         """
         Get table schema
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/schema#get-table-schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: GET
         Response status codes:
@@ -142,6 +146,7 @@ class Table(Namespace):
         """
         Update table schema
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/schema#update-table-schema
         Path: /db/{db_branch_name}/tables/{table_name}/schema
         Method: PUT
         Response status codes:
@@ -172,6 +177,7 @@ class Table(Namespace):
         column list with object columns being reported with their full dot-separated path
         (flattened).
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns#list-table-columns
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: GET
         Response status codes:
@@ -198,6 +204,7 @@ class Table(Namespace):
         Adds a new column to the table.  The body of the request should contain the column
         definition.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns#create-new-column
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: POST
         Response status codes:
@@ -226,6 +233,7 @@ class Table(Namespace):
         """
         Get the definition of a single column.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns/column_name#get-column-information
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: GET
         Response status codes:
@@ -254,6 +262,7 @@ class Table(Namespace):
         """
         Deletes the specified column.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns/column_name#delete-column
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: DELETE
         Response status codes:
@@ -282,6 +291,7 @@ class Table(Namespace):
         Update column with partial data.  Can be used for renaming the column by providing a new
         "name" field.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns/column_name#update-column
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: PATCH
         Response status codes:

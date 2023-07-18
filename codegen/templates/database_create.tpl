@@ -5,6 +5,7 @@
        ${line}
        % endfor
 
+       Reference: ${docs_url}
        Path: ${path}
        Method: ${http_method}
        Response status codes:

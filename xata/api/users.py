@@ -35,6 +35,7 @@ class Users(Namespace):
         """
         Return details of the user making the request
 
+        Reference: https://xata.io/docs/api-reference/user#get-user-details
         Path: /user
         Method: GET
         Response status codes:
@@ -55,6 +56,7 @@ class Users(Namespace):
         """
         Update user info
 
+        Reference: https://xata.io/docs/api-reference/user#update-user-info
         Path: /user
         Method: PUT
         Response status codes:
@@ -77,6 +79,7 @@ class Users(Namespace):
         """
         Delete the user making the request
 
+        Reference: https://xata.io/docs/api-reference/user#delete-user
         Path: /user
         Method: DELETE
         Response status codes:

@@ -205,6 +205,12 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     if "x-experimental" in endpoint:
         status = "experimental"
 
+    # docs url
+    slug = "%s#%s" % (
+        re.sub("[\{\}]", "", path.strip()),
+        re.sub("[ ]", "-", endpoint["summary"].lower()),
+    )
+
     # template variables
     vars = {
         "template": template_ref,
@@ -214,6 +220,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
         "path": path,
         "params": endpoint_params,
         "status": status,
+        "docs_url": f"https://xata.io/docs/api-reference{slug}",
     }
 
     SCHEMA_OUT["endpoints"].append(
