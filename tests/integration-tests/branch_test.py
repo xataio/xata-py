@@ -108,14 +108,34 @@ class TestBranchNamespace(object):
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
-        assert r.status_code == 400
-
         r = self.client.branch().createBranch(payload, db_name="NOPE", branch_name=self.branch_name)
         assert r.status_code == 404
 
         r = self.client.branch().createBranch({})
         assert r.status_code == 422
+
+    def test_create_database_branch_from_other_branch_with_param(self):
+        payload = {
+            "metadata": {
+                "repository": "github.com/xataio/xata-py",
+                "branch": "integration-testing-%s" % utils.get_random_string(6),
+                "stage": "testing",
+            },
+        }
+        r = self.client.branch().createBranch(payload, branch_name="source-from")
+        assert r.status_code == 201
+
+        r = self.client.branch().createBranch(payload, branch_name="new-branch", _from="source-from")
+        assert r.status_code == 201
+        assert r.json()["status"] == "completed"
+
+        r = self.client.branch().createBranch(payload, branch_name="the-incredible-hulk", _from="avengers")
+        assert r.status_code == 404
+
+        r = self.client.branch().createBranch(
+            payload, db_name="marvel-042", branch_name="the-incredible-hulk", _from="avengers"
+        )
+        assert r.status_code == 404
 
     def test_get_branch_metadata(self):
         r = self.client.branch().getBranchMetadata()

@@ -155,6 +155,33 @@ class Databases(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
+    def renameDatabase(self, db_name: str, payload: dict, workspace_id: str = None) -> Response:
+        """
+        Change the name of an existing database
+
+        Path: /workspaces/{workspace_id}/dbs/{db_name}/rename
+        Method: POST
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 422: Example response
+        - 423: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
+
+        :param db_name: str The Database Name
+        :param payload: dict content
+        :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
+
+        :return Response
+        """
+        if workspace_id is None:
+            workspace_id = self.client.get_config()["workspaceId"]
+        url_path = f"/workspaces/{workspace_id}/dbs/{db_name}/rename"
+        headers = {"content-type": "application/json"}
+        return self.request("POST", url_path, headers, payload)
+
     def listRegions(self, workspace_id: str = None) -> Response:
         """
         List regions available to create a database on

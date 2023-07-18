@@ -44,6 +44,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -65,6 +66,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -89,6 +91,7 @@ class Branch(Namespace):
         - 404: Example response
         - 423: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -101,7 +104,7 @@ class Branch(Namespace):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}"
         if _from is not None:
-            url_path += "?from={_from}"
+            url_path += f"?from={_from}"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
@@ -118,6 +121,7 @@ class Branch(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -141,6 +145,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -164,6 +169,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -188,6 +194,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -214,6 +221,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -242,6 +250,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name
@@ -268,6 +277,7 @@ class Branch(Namespace):
         - 401: Authentication Error
         - 404: The git branch was not found in the mapping
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param db_name: str The Database Name
         :param gitBranch: str The Git Branch to remove from the mapping
@@ -276,7 +286,7 @@ class Branch(Namespace):
         """
         url_path = f"/dbs/{db_name}/gitBranches"
         if gitBranch is not None:
-            url_path += "?gitBranch={gitBranch}"
+            url_path += f"?gitBranch={gitBranch}"
         return self.request("DELETE", url_path)
 
     def resolveBranch(self, db_name: str, gitBranch: str = None, fallbackBranch: str = None) -> Response:
@@ -299,6 +309,7 @@ class Branch(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param db_name: str The Database Name

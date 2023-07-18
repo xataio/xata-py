@@ -106,10 +106,7 @@ def generate_endpoints(path: str, endpoints: dict, references: dict):
     for method in HTTP_METHODS:
         if method in endpoints:
             out = generate_endpoint(path, method, endpoints[method], params, references)
-            file_name = "%s/%s.py" % (
-                WS_DIR,
-                endpoints[method]["tags"][0].replace(" ", "_").lower(),
-            )
+            file_name = "%s/%s.py" % (WS_DIR, endpoints[method]["tags"][0].replace(" ", "_").lower())
             fh = open(file_name, "a+")
             fh.write(out.decode("utf-8"))
             fh.close()
@@ -217,7 +214,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             # if not in ref -> endpoint specific params
             if "$ref" in r and r["$ref"] in references:
                 p = references[r["$ref"]]
-                p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                if "$ref" in p["schema"]:
+                    p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+                elif "type" in p["schema"]:
+                    p["type"] = type_replacement(p["schema"]["type"])
+                else:
+                    logging.error("could resolve type of '%s' in the lookup." % r["$ref"])
+                    exit(11)
             # else if name not in r -> method specific params
             elif "name" in r:
                 p = r

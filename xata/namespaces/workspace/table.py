@@ -47,6 +47,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -71,6 +72,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Not Found
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -98,6 +100,7 @@ class Table(Namespace):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -123,6 +126,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -149,6 +153,7 @@ class Table(Namespace):
         - 404: Example response
         - 409: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -176,6 +181,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -191,10 +197,7 @@ class Table(Namespace):
     def addTableColumn(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
         """
         Adds a new column to the table.  The body of the request should contain the column
-        definition.  In the column definition, the 'name' field should contain the full path
-        separated by dots.  If the parent objects do not exists, they will be automatically
-        created.  For example, passing `"name": "address.city"` will auto-create the `address`
-        object if it doesn't exist.
+        definition.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns
         Method: POST
@@ -204,6 +207,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -219,8 +223,7 @@ class Table(Namespace):
 
     def getColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
-        Get the definition of a single column.  To refer to sub-objects, the column name can
-        contain dots.  For example `address.country`.
+        Get the definition of a single column.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: GET
@@ -230,6 +233,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param table_name: str The Table name
@@ -245,8 +249,7 @@ class Table(Namespace):
 
     def deleteColumn(self, table_name: str, column_name: str, db_name: str = None, branch_name: str = None) -> Response:
         """
-        Deletes the specified column.  To refer to sub-objects, the column name can contain dots.
-        For example `address.country`.
+        Deletes the specified column.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: DELETE
@@ -256,6 +259,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param column_name: str The Column name
@@ -273,8 +277,7 @@ class Table(Namespace):
     ) -> Response:
         """
         Update column with partial data.  Can be used for renaming the column by providing a new
-        "name" field.  To refer to sub-objects, the column name can contain dots.  For example
-        `address.country`.
+        "name" field.
 
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}
         Method: PATCH
@@ -284,6 +287,7 @@ class Table(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param column_name: str The Column name

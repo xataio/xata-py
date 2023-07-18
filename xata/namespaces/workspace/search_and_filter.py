@@ -220,6 +220,7 @@ class Search_and_filter(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
 
         :param table_name: str The Table name
@@ -245,7 +246,7 @@ class Search_and_filter(Namespace):
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
-        - 503: Unexpected Error
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
 
         :param payload: dict content
@@ -360,6 +361,38 @@ class Search_and_filter(Namespace):
             "content-type": "application/json",
             "accept": response_content_type,
         }
+        return self.request("POST", url_path, headers, payload)
+
+    def chatSessionMessage(
+        self, table_name: str, session_id: str, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> Response:
+        """
+        Ask a follow-up question.  If the `Accept` header is set to `text/event-stream`, Xata will
+        stream the results back as SSE's.
+
+        Path: /db/{db_branch_name}/tables/{table_name}/ask/{session_id}
+        Method: POST
+        Response status codes:
+        - 200: Response to the question
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 429: Rate limit exceeded
+        - 503: ServiceUnavailable
+        - 5XX: Unexpected Error
+        Response: application/json
+
+        :param table_name: str The Table name
+        :param session_id: str
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :return Response
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/ask/{session_id}"
+        headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
     def summarizeTable(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:

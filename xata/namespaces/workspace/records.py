@@ -43,7 +43,9 @@ class Records(Namespace):
         - 400: Returns errors from a failed transaction.
         - 401: Authentication Error
         - 404: Example response
+        - 429: Rate limit exceeded
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
@@ -66,11 +68,12 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
         Response status codes:
-        - 201: Record ID and version
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -101,6 +104,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -135,8 +139,8 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
         Response status codes:
-        - 200: Record ID and version
-        - 201: Record ID and version
+        - 200: Record ID and metadata
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -184,8 +188,8 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
         Response status codes:
-        - 200: Record ID and version
-        - 201: Record ID and version
+        - 200: Record ID and metadata
+        - 201: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response
@@ -260,7 +264,7 @@ class Records(Namespace):
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
         Response status codes:
-        - 200: Record ID and version
+        - 200: Record ID and metadata
         - 400: Bad Request
         - 401: Authentication Error
         - 404: Example response

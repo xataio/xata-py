@@ -60,7 +60,7 @@
          % if param['trueType'] == 'list' :
          url_path += "?${param['name']}=%s" % ",".join(${param['nameParam']})
          % else :
-         url_path += "?${param['name']}={${param['nameParam']}}"
+         url_path += f"?${param['name']}={${param['nameParam']}}"
          % endif
        % endif
        % endfor
