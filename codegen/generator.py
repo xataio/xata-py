@@ -45,11 +45,11 @@ SCHEMA_OUT = {}
 HTTP_METHODS = ["get", "put", "post", "delete", "patch"]
 SPECS = {
     "core": {
-        "spec_url": "https://xata.io/docs/api/openapi?scope=core",
+        "spec_url": "https://xata.io/api/openapi?scope=core",
         "base_url": "https://api.xata.io",
     },
     "workspace": {
-        "spec_url": "https://xata.io/docs/api/openapi?scope=workspace",
+        "spec_url": "https://xata.io/api/openapi?scope=workspace",
         "base_url": "https://{workspaceId}.{regionId}.xata.sh",
     },
 }

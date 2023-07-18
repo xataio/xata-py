@@ -89,7 +89,7 @@ class TestSearchAndFilterNamespace(object):
         assert not self.client.search_and_filter().query("Posts", {"columns": ["does", "not", "exist"]}).is_success()
 
     def test_query_empty_columns(self):
-        r = self.client.search_and_filter().query("Posts", {"columns": [""]})
+        r = self.client.search_and_filter().query("Posts", {"columns": ["*"]})
         assert r.is_success()
         assert len(r["records"]) > 0
 
