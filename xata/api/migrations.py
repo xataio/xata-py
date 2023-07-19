@@ -35,6 +35,7 @@ class Migrations(Namespace):
         """
         Get branch migration history [deprecated]
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/migrations#get-branch-migration-history-[deprecated]
         Path: /db/{db_branch_name}/migrations
         Method: GET
         Response status codes:
@@ -61,6 +62,7 @@ class Migrations(Namespace):
         """
         Compute a migration plan from a target schema the branch should be migrated too.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/migrations/plan#compute-migration-plan-[deprecated]
         Path: /db/{db_branch_name}/migrations/plan
         Method: POST
         Response status codes:
@@ -86,6 +88,7 @@ class Migrations(Namespace):
         """
         Apply a migration plan to the branch
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/migrations/execute#migrate-branch-[deprecated]
         Path: /db/{db_branch_name}/migrations/execute
         Method: POST
         Response status codes:
@@ -111,6 +114,7 @@ class Migrations(Namespace):
         """
         Query schema history.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/history#query-schema-history.
         Path: /db/{db_branch_name}/schema/history
         Method: POST
         Response status codes:
@@ -139,6 +143,7 @@ class Migrations(Namespace):
         """
         Compare branch with user schema.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/compare#compare-branch-with-user-schema.
         Path: /db/{db_branch_name}/schema/compare
         Method: POST
         Response status codes:
@@ -164,6 +169,7 @@ class Migrations(Namespace):
         """
         Compare branch schemas.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/compare/branch_name#compare-branch-schemas.
         Path: /db/{db_branch_name}/schema/compare/{branch_name}
         Method: POST
         Response status codes:
@@ -189,6 +195,7 @@ class Migrations(Namespace):
         """
         Update Branch schema
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/update#update-branch-schema
         Path: /db/{db_branch_name}/schema/update
         Method: POST
         Response status codes:
@@ -214,6 +221,7 @@ class Migrations(Namespace):
         """
         Preview branch schema edits.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/preview#preview-branch-schema-edits.
         Path: /db/{db_branch_name}/schema/preview
         Method: POST
         Response status codes:
@@ -240,6 +248,7 @@ class Migrations(Namespace):
         """
         Apply edit script.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/apply#apply-edit-script.
         Path: /db/{db_branch_name}/schema/apply
         Method: POST
         Response status codes:
@@ -271,6 +280,7 @@ class Migrations(Namespace):
         generated and verified by xata.  The operation fails if any migration in the list has an
         invalid checksum.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/push#push-migrations.
         Path: /db/{db_branch_name}/schema/push
         Method: POST
         Response status codes:

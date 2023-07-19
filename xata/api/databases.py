@@ -35,6 +35,7 @@ class Databases(Namespace):
         """
         List all databases available in your Workspace.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs#list-databases
         Path: /workspaces/{workspace_id}/dbs
         Method: GET
         Response status codes:
@@ -57,6 +58,7 @@ class Databases(Namespace):
         """
         Retrieve metadata of the given database
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs/db_name#get-database-metadata
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: GET
         Response status codes:
@@ -83,6 +85,7 @@ class Databases(Namespace):
         """
         Create Database with identifier name
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs/db_name#create-database
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PUT
         Response status codes:
@@ -115,6 +118,7 @@ class Databases(Namespace):
         """
         Delete a database and all of its branches and tables permanently.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs/db_name#delete-database
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: DELETE
         Response status codes:
@@ -139,6 +143,7 @@ class Databases(Namespace):
         """
         Update the color of the selected database
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs/db_name#update-database-metadata
         Path: /workspaces/{workspace_id}/dbs/{db_name}
         Method: PATCH
         Response status codes:
@@ -165,6 +170,7 @@ class Databases(Namespace):
         """
         Change the name of an existing database
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/dbs/db_name/rename#rename-database
         Path: /workspaces/{workspace_id}/dbs/{db_name}/rename
         Method: POST
         Response status codes:
@@ -193,6 +199,7 @@ class Databases(Namespace):
         """
         List regions available to create a database on
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/regions#list-available-regions
         Path: /workspaces/{workspace_id}/regions
         Method: GET
         Response status codes:

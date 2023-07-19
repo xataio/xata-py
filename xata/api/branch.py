@@ -35,6 +35,7 @@ class Branch(Namespace):
         """
         List all available Branches
 
+        Reference: https://xata.io/docs/api-reference/dbs/db_name#list-branches
         Path: /dbs/{db_name}
         Method: GET
         Response status codes:
@@ -57,6 +58,7 @@ class Branch(Namespace):
         """
         Get branch schema and metadata
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name#get-branch-schema-and-metadata
         Path: /db/{db_branch_name}
         Method: GET
         Response status codes:
@@ -81,6 +83,7 @@ class Branch(Namespace):
         """
         Create Database branch
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name#create-database-branch
         Path: /db/{db_branch_name}
         Method: PUT
         Response status codes:
@@ -111,6 +114,7 @@ class Branch(Namespace):
         """
         Delete the branch in the database and all its resources
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name#delete-database-branch
         Path: /db/{db_branch_name}
         Method: DELETE
         Response status codes:
@@ -136,6 +140,7 @@ class Branch(Namespace):
         """
         Get Branch Metadata
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/metadata#get-branch-metadata
         Path: /db/{db_branch_name}/metadata
         Method: GET
         Response status codes:
@@ -160,6 +165,7 @@ class Branch(Namespace):
         """
         Update the branch metadata
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/metadata#update-branch-metadata
         Path: /db/{db_branch_name}/metadata
         Method: PUT
         Response status codes:
@@ -185,6 +191,7 @@ class Branch(Namespace):
         """
         Get branch usage metrics.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/stats#branch-stats
         Path: /db/{db_branch_name}/stats
         Method: GET
         Response status codes:
@@ -213,6 +220,7 @@ class Branch(Namespace):
         "xataBranch": "xataBranch1"       }       {         "gitBranch": "xataBranch2",
         "xataBranch": "xataBranch2"       }   ] } ```
 
+        Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#list-git-branches-mapping
         Path: /dbs/{db_name}/gitBranches
         Method: GET
         Response status codes:
@@ -241,6 +249,7 @@ class Branch(Namespace):
         POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches {   "gitBranch": "fix/bug123",
         "xataBranch": "fix_bug" } ```
 
+        Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#link-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/gitBranches
         Method: POST
         Response status codes:
@@ -268,6 +277,7 @@ class Branch(Namespace):
         returns a 404 status code.  Example request:  ```json // DELETE https://tutorial-
         ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
 
+        Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#unlink-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/gitBranches
         Method: DELETE
         Response status codes:
@@ -301,6 +311,7 @@ class Branch(Namespace):
         Example response:  ```json {   "branch": "main",   "reason": {     "code":
         "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
 
+        Reference: https://xata.io/docs/api-reference/dbs/db_name/resolveBranch#resolve-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/resolveBranch
         Method: GET
         Response status codes:

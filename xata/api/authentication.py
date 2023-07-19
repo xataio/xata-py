@@ -35,6 +35,7 @@ class Authentication(Namespace):
         """
         Retrieve a list of existing user API keys
 
+        Reference: https://xata.io/docs/api-reference/user/keys#get-the-list-of-user-api-keys
         Path: /user/keys
         Method: GET
         Response status codes:
@@ -55,6 +56,7 @@ class Authentication(Namespace):
         """
         Create and return new API key
 
+        Reference: https://xata.io/docs/api-reference/user/keys/key_name#create-and-return-new-api-key
         Path: /user/keys/{key_name}
         Method: POST
         Response status codes:
@@ -76,6 +78,7 @@ class Authentication(Namespace):
         """
         Delete an existing API key
 
+        Reference: https://xata.io/docs/api-reference/user/keys/key_name#delete-an-existing-api-key
         Path: /user/keys/{key_name}
         Method: DELETE
         Response status codes:
