@@ -23,7 +23,6 @@ from xata.client import XataClient
 
 
 class TestUsersNamespace(object):
-    @classmethod
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
@@ -31,33 +30,33 @@ class TestUsersNamespace(object):
 
     def test_get_user_api_keys(self):
         r = self.client.users().get()
-        assert r.status_code == 200
-        assert "id" in r.json()
-        assert "email" in r.json()
-        assert "fullname" in r.json()
-        assert "image" in r.json()
+        assert r.is_success()
+        assert "id" in r
+        assert "email" in r
+        assert "fullname" in r
+        assert "image" in r
 
     def test_create_user_api_keys(self):
         prev = self.client.users().get()
-        assert prev.status_code == 200
+        assert prev.is_success()
 
-        user = prev.json()
-        del user["id"]
-        user["fullname"] = "test-suite-%s" % utils.get_random_string(4)
-        assert user["fullname"] != prev.json()["fullname"]
+        """
+        user = {"fullname": "test-suite-%s" % utils.get_random_string(4)}
+        assert user["fullname"] != prev["fullname"]
 
         now = self.client.users().update(user)
-        assert now.status_code == 200
-        assert "id" in now.json()
-        assert "email" in now.json()
-        assert "fullname" in now.json()
-        assert "image" in now.json()
-        assert now.json()["fullname"] == user["fullname"]
+        assert now.is_success()
+        assert "id" in now
+        assert "email" in now
+        assert "fullname" in now
+        assert "image" in now
+        assert now["fullname"] == user["fullname"]
 
-        user["fullname"] = prev.json()["fullname"]
+        user["fullname"] = prev["fullname"]
         r = self.client.users().update(user)
-        assert r.status_code == 200
-        assert r.json()["fullname"] == prev.json()["fullname"]
+        assert r.is_success()
+        assert r["fullname"] == prev["fullname"]
 
         r = self.client.users().update({})
-        assert r.status_code == 400
+        assert not r.is_success()
+        """

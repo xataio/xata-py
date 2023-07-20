@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,10 +31,11 @@ class Records(Namespace):
 
     scope = "workspace"
 
-    def transaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def transaction(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Execute a transaction on a branch
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/transaction#execute-a-transaction-on-a-branch
         Path: /db/{db_branch_name}/transaction
         Method: POST
         Response status codes:
@@ -43,14 +43,16 @@ class Records(Namespace):
         - 400: Returns errors from a failed transaction.
         - 401: Authentication Error
         - 404: Example response
+        - 429: Rate limit exceeded
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: application/json
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/transaction"
@@ -59,10 +61,11 @@ class Records(Namespace):
 
     def insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Insert a new Record into the Table
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data#insert-record
         Path: /db/{db_branch_name}/tables/{table_name}/data
         Method: POST
         Response status codes:
@@ -71,6 +74,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -78,7 +82,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data"
@@ -89,10 +93,11 @@ class Records(Namespace):
 
     def get(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieve record by ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#get-record-by-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: GET
         Response status codes:
@@ -101,6 +106,7 @@ class Records(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -108,7 +114,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -126,12 +132,13 @@ class Records(Namespace):
         columns: list = None,
         create_only: bool = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
         this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
         automatic ID generation.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#insert-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PUT
         Response status codes:
@@ -152,7 +159,7 @@ class Records(Namespace):
         :param create_only: bool = None
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -177,10 +184,11 @@ class Records(Namespace):
         branch_name: str = None,
         columns: list = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Upsert record with ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#upsert-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: POST
         Response status codes:
@@ -200,7 +208,7 @@ class Records(Namespace):
         :param columns: list = None Column filters
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -216,10 +224,11 @@ class Records(Namespace):
 
     def delete(
         self, table_name: str, record_id: str, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Delete record from table
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#delete-record-from-table
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: DELETE
         Response status codes:
@@ -236,7 +245,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -253,10 +262,11 @@ class Records(Namespace):
         branch_name: str = None,
         columns: list = None,
         if_version: int = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Update record with ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#update-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         Method: PATCH
         Response status codes:
@@ -275,7 +285,7 @@ class Records(Namespace):
         :param columns: list = None Column filters
         :param if_version: int = None
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
@@ -291,12 +301,14 @@ class Records(Namespace):
 
     def bulk_insert(
         self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None, columns: list = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Bulk insert records
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/bulk#bulk-insert-records
         Path: /db/{db_branch_name}/tables/{table_name}/bulk
         Method: POST
+        Status: Experimental
         Response status codes:
         - 200: OK
         - 400: Response with multiple errors of the bulk execution
@@ -311,7 +323,7 @@ class Records(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param columns: list = None Column filters
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/bulk"

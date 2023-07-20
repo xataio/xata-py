@@ -34,19 +34,8 @@ class TestHelpersBulkProcessor(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
         self.fake = Faker()
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
-        )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().create("Posts")
-        assert r.status_code == 201
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
 
         # create schema
         r = self.client.table().set_schema(
@@ -58,11 +47,10 @@ class TestHelpersBulkProcessor(object):
                 ]
             },
         )
-        assert r.status_code == 200
+        assert r.is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:
@@ -90,7 +78,7 @@ class TestHelpersBulkProcessor(object):
         utils.wait_until_records_are_indexed("Posts")
 
         r = self.client.search_and_filter().search_table("Posts", {})
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) > 0
-        assert len(r.json()["records"]) <= 10
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) > 0
+        assert len(r["records"]) <= 10

@@ -32,23 +32,11 @@ class TestSearchAndFilterAskTableEndpoint(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
-        )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().create("Posts")
-        assert r.status_code == 201
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_ask_table_for_response_shape_and_empty_response(self):
         # TODO
@@ -58,9 +46,9 @@ class TestSearchAndFilterAskTableEndpoint(object):
         # - default response content-type
         # payload = {"question": "how much is the fish?"}
         # r = self.client.search_and_filter().askTable("Posts", payload)
-        # assert r.status_code == 200
-        # assert "answer" in r.json()
-        # assert r.json()["answer"] == "No records found! I'm not able to help you sorry."
+        # assert r.is_success()
+        # assert "answer" in r
+        # assert r["answer"] == "No records found! I'm not able to help you sorry."
         # assert "content-type" in r.headers
         # assert r.headers["content-type"] == "application/json; charset=UTF-8"
         assert True
@@ -69,7 +57,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         # TODO
         # payload = {"question": "how much is the fish?"}
         # r = self.client.search_and_filter().askTable("Posts", payload, response_content_type="text/event-stream")
-        # assert r.status_code == 200
+        # assert r.is_success()
         # assert "content-type" in r.headers
         # assert r.headers["content-type"] == "text/event-stream; charset=UTF-8"
         assert True

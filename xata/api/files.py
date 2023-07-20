@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -40,7 +39,7 @@ class Files(Namespace):
         file_id: str,
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieves file content from an array by file ID
 
@@ -73,10 +72,11 @@ class Files(Namespace):
         record_id: str,
         column_name: str,
         file_id: str,
-        payload: dict,
+        data: bytes,
+        content_type: str = "application/octet-stream",
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Uploads the file content to an array given the file ID
 
@@ -95,7 +95,8 @@ class Files(Namespace):
         :param record_id: str The Record name
         :param column_name: str The Column name
         :param file_id: str The File Identifier
-        :param payload: dict content
+        :param data: bytes content
+        :param content_type: str Default: "application/octet-stream"
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -103,8 +104,8 @@ class Files(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
-        headers = {"content-type": "application/json"}
-        return self.request("PUT", url_path, headers, payload)
+        headers = {"content-type": content_type}
+        return self.request("PUT", url_path, headers, data=data)
 
     def delete_item(
         self,
@@ -114,7 +115,7 @@ class Files(Namespace):
         file_id: str,
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Deletes an item from an file array column given the file ID
 
@@ -142,7 +143,7 @@ class Files(Namespace):
 
     def get(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Retrieves the file content from a file column
 
@@ -175,9 +176,10 @@ class Files(Namespace):
         record_id: str,
         column_name: str,
         data: bytes,
+        content_type: str = "application/octet-stream",
         db_name: str = None,
         branch_name: str = None,
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Uploads the file content to the given file column
 
@@ -195,7 +197,7 @@ class Files(Namespace):
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param column_name: str The Column name
-        :param payload: dict content
+        :param data: bytes
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -203,13 +205,12 @@ class Files(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
-        # headers = {"content-type": "application/json"}
-        headers = {"content-type": "application/binary"}
+        headers = {"content-type": content_type}
         return self.request("PUT", url_path, headers, data=data)
 
     def delete(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Deletes a file referred in a file column
 

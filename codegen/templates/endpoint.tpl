@@ -1,12 +1,20 @@
 
-    def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> Response:
+    %if params['list']:
+    def ${operation_id}(self, ${', '.join([f"{p['nameParam']}: {p['type']}" for p in params['list']])}) -> ApiResponse:
+    %else:
+    def ${operation_id}(self) -> ApiResponse:
+    %endif
        """
        % for line in description :
        ${line}
        % endfor
 
+       Reference: ${docs_url}
        Path: ${path}
        Method: ${http_method}
+       % if status == "experimental":
+       Status: Experimental
+       % endif
        Response status codes:
        % for rc in params['response_codes']:
        - ${rc["code"]}: ${rc["description"]}
@@ -24,7 +32,7 @@
        :param ${param['nameParam']}: ${param['type']} ${param['description']}
        % endfor
 
-       :return Response
+       :returns ApiResponse
        """
        % if params['smart_db_branch_name'] :
        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
@@ -60,7 +68,7 @@
          % if param['trueType'] == 'list' :
          url_path += "?${param['name']}=%s" % ",".join(${param['nameParam']})
          % else :
-         url_path += "?${param['name']}={${param['nameParam']}}"
+         url_path += f"?${param['name']}={${param['nameParam']}}"
          % endif
        % endif
        % endfor

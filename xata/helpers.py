@@ -162,7 +162,7 @@ class BulkProcessor(object):
     def get_failed_batches(self) -> list[dict]:
         """
         Get the batched records that could not be processed with the error
-        :return list[dict]
+        :returns list[dict]
         """
         return self.failed_batches_queue
 
@@ -170,7 +170,7 @@ class BulkProcessor(object):
         """
         Get processing statistics
 
-        :return dict
+        :returns dict
         """
         return self.stats
 
@@ -231,7 +231,7 @@ class BulkProcessor(object):
             """
             Get the next batch of records to persist
 
-            :return dict
+            :returns dict
             """
             table_name = ""
             with self.lock:
@@ -291,7 +291,7 @@ def to_rfc339(dt: datetime, tz=timezone.utc) -> str:
 
     :param dt: datetime instance to convert
     :param tz: timezone to convert in, default: UTC
-    :return str
+    :returns str
     """
     return dt.replace(tzinfo=tz).isoformat()
 
@@ -358,18 +358,22 @@ class Transaction(object):
         """
         self._add_operation({"update": {"table": table, "id": record_id, "fields": fields, "upsert": upsert}})
 
-    def delete(self, table: str, record_id: str, columns: list[str] = []) -> None:
+    def delete(self, table: str, record_id: str, columns: list[str] = [], fail_if_missing: bool = False) -> None:
         """
         A delete is used to remove records. Delete can operate on records from the same transaction, and will
         not cancel a transaction if no record is found.
+        https://xata.io/docs/api-reference/db/db_branch_name/transaction#execute-a-transaction-on-a-branch
 
         :param table: str
         :param record_id: str
         :param columns: list of columns to retrieve
+        :param fail_if_missing: bool, Default: False
 
         :raises Exception if limit of 1000 operations is exceeded
         """
-        self._add_operation({"delete": {"table": table, "id": record_id, "columns": columns}})
+        self._add_operation(
+            {"delete": {"table": table, "id": record_id, "columns": columns, "failIfMissing": fail_if_missing}}
+        )
 
     def get(self, table: str, record_id: str, columns: list[str] = []) -> None:
         """
@@ -388,14 +392,14 @@ class Transaction(object):
         """
         Commit the transactions. Flushes the operations queue
 
-        :return dict
+        :returns dict
         """
         r = self.client.records().transaction(self.operations)
         result = {
             "status_code": r.status_code,
-            "results": r.json()["results"] if "results" in r.json() else [],
-            "has_errors": True if "errors" in r.json() else False,
-            "errors": r.json()["errors"] if "errors" in r.json() else [],
+            "results": r["results"] if "results" in r else [],
+            "has_errors": True if "errors" in r else False,
+            "errors": r["errors"] if "errors" in r else [],
         }
         self.operations["operations"] = []  # free memory
         return result
@@ -403,6 +407,6 @@ class Transaction(object):
     def size(self) -> int:
         """
         Get amount of operations in queue
-        :return int
+        :returns int
         """
         return len(self.operations["operations"])

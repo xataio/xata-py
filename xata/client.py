@@ -39,7 +39,7 @@ from .api.workspaces import Workspaces
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "1.0.0.a1"
+__version__ = "1.0.0a4"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_DATA_PLANE_DOMAIN = "xata.sh"
@@ -191,7 +191,7 @@ class XataClient:
         """
         Delete a header from the scope. A header name will be lowercased.
         :param name: str
-        :return bool
+        :returns bool
         """
         name = name.lower().strip()
         if name not in self.headers:
@@ -260,7 +260,7 @@ class XataClient:
         :param db_name: str
         :branch_name: str
 
-        :return str
+        :returns str
         """
         if db_name is None:
             db_name = self.db_name
@@ -294,7 +294,7 @@ class XataClient:
         Parse Database URL
         Branch name is optional.
         Format: https://{workspace_id}.{region}.xata.sh/db/{db_name}:{branch_name}
-        :return workspace_id, region, db_name, branch_name, domain
+        :returns workspace_id, region, db_name, branch_name, domain
         """
         (_, _, host, _, db_branch_name) = database_url.split("/")
         if host == "" or db_branch_name == "":
@@ -322,84 +322,86 @@ class XataClient:
     def authentication(self) -> Authentication:
         """
         Authentication Namespace
-        :return Authentication
+        :returns Authentication
         """
         return self._authentication
 
     def databases(self) -> Databases:
         """
         Databases Namespace
-        :return Databases
+        :returns Databases
         """
         return self._databases
 
     def invites(self) -> Invites:
         """
         Invites Namespace
-        :return Invites
+        :returns Invites
         """
         return self._invites
 
     def users(self) -> Users:
         """
         Users Namespace
-        :return Users
+        :returns Users
         """
         return self._users
 
     def workspaces(self) -> Workspaces:
         """
         Workspaces Namespace
-        :return Workspaces
+        :returns Workspaces
         """
         return self._workspaces
 
     def branch(self) -> Branch:
         """
         Branch Namespace
-        :return Branch
+        :returns Branch
         """
         return self._branch
 
     def migrations(self) -> Migrations:
         """
         Migrations Namespace
-        :return Migrations
+        :returns Migrations
         """
         return self._migrations
 
     def records(self) -> Records:
         """
         Records Namespace
-        :return Records
+        :returns Records
         """
         return self._records
 
     def search_and_filter(self) -> SearchAndFilter:
         """
         Search_and_Filter Namespace
-        :return Search_and_filter
+        :returns Search_and_filter
         """
         return self._search_and_filter
 
     def data(self) -> SearchAndFilter:
         """
         Shorter alias for Search_and_Filter
-        :return Search_and_filter
+        :returns Search_and_filter
         """
         return self._search_and_filter
 
     def table(self) -> Table:
         """
         Table Namespace
-        :return Table
+        :returns Table
         """
         return self._table
 
-    """
     def files(self) -> Files:
         return self._files
+<<<<<<< HEAD
     """
 
     def sql(self) -> Sql:
         return self._sql
+=======
+>>>>>>> main

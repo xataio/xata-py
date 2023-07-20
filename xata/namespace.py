@@ -17,9 +17,13 @@
 # under the License.
 #
 
-from requests import Response, request
+import logging
 
-from .errors import RateLimitException, ServerErrorException, UnauthorizedException
+from requests import request
+
+from xata.api_response import ApiResponse
+
+from .errors import RateLimitError, UnauthorizedError, XataServerError
 
 
 class Namespace:
@@ -29,6 +33,7 @@ class Namespace:
 
     def __init__(self, client):
         self.client = client
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     def get_scope(self) -> str:
         return self.scope
@@ -43,27 +48,28 @@ class Namespace:
         cfg = self.client.get_config()
         return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
-    def request(self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data=None) -> Response:
+    def request(
+        self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data: bytes = None
+    ) -> ApiResponse:
         """
         :param http_method: str
         :param url_path: str
         :headers: dict = {}
         :param payload: dict = None
-        :param data = None
+        :param data: bytes = None
 
-        :return requests.Response
+        :returns ApiResponse
 
-        :raises RateLimitException
-        :raises UnauthorizedException
-        :raises ServerErrorException
+        :raises RateLimitError
+        :raises UnauthorizedError
+        :raises ServerError
         """
-        headers = {
-            **headers,
-            **self.client.get_headers(),
-        }  # TODO use "|" when client py min version >= 3.9
+        # TODO use "|" when client py min version >= 3.9
+        headers = {**headers, **self.client.get_headers()}
 
+        # build url
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
-        if payload is None:
+        if payload is None and data is None:
             resp = request(http_method, url, headers=headers)
         elif data is not None:
             resp = request(http_method, url, headers=headers, data=data)
@@ -72,11 +78,10 @@ class Namespace:
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
-            raise RateLimitException(f"code: {resp.status_code}, rate limited: {resp.json()}")
+            raise RateLimitError(f"code: {resp.status_code}, rate limited: {resp.json()}")
         if resp.status_code == 401:
-            raise UnauthorizedException(f"code: {resp.status_code}, unauthorized: {resp.json()}")
+            raise UnauthorizedError(f"code: {resp.status_code}, unauthorized: {resp.json()}")
         elif resp.status_code >= 500:
-            raise ServerErrorException(f"code: {resp.status_code}, server error: {resp.text}")
+            raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
 
-        # All clear!
-        return resp
+        return ApiResponse(resp)

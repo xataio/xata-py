@@ -32,39 +32,26 @@ class TestRecordsNamespace(object):
         self.fake = Faker()
         self.record_id = utils.get_random_string(24)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Posts",
+                {
+                    "columns": [
+                        {"name": "title", "type": "string"},
+                        {"name": "labels", "type": "multiple"},
+                        {"name": "slug", "type": "string"},
+                        {"name": "text", "type": "text"},
+                    ]
+                },
+            )
+            .is_success()
         )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().create("Posts")
-        assert r.status_code == 201
-
-        # create schema
-        r = self.client.table().set_schema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "labels", "type": "multiple"},
-                    {"name": "slug", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-            db_name=self.db_name,
-            branch_name=self.branch_name,
-        )
-        assert r.status_code == 200
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:
@@ -83,13 +70,13 @@ class TestRecordsNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/data
         """
         r = self.client.records().insert("Posts", record)
-        assert r.status_code == 201
-        assert "id" in r.json()
-        assert "xata" in r.json()
-        assert "version" in r.json()["xata"]
-        assert "createdAt" in r.json()["xata"]
-        assert "updatedAt" in r.json()["xata"]
-        assert r.json()["xata"]["version"] == 0
+        assert r.is_success()
+        assert "id" in r
+        assert "xata" in r
+        assert "version" in r["xata"]
+        assert "createdAt" in r["xata"]
+        assert "updatedAt" in r["xata"]
+        assert r["xata"]["version"] == 0
 
         r = self.client.records().insert("NonExistingTable", record)
         assert r.status_code == 404
@@ -99,18 +86,18 @@ class TestRecordsNamespace(object):
         PUT /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         r = self.client.records().insert_with_id("Posts", self.record_id, record)
-        assert r.status_code == 201
-        assert "id" in r.json()
-        assert "xata" in r.json()
-        assert "version" in r.json()["xata"]
-        assert "createdAt" in r.json()["xata"]
-        assert "updatedAt" in r.json()["xata"]
-        assert r.json()["id"] == self.record_id
-        assert r.json()["xata"]["version"] == 0
+        assert r.is_success()
+        assert "id" in r
+        assert "xata" in r
+        assert "version" in r["xata"]
+        assert "createdAt" in r["xata"]
+        assert "updatedAt" in r["xata"]
+        assert r["id"] == self.record_id
+        assert r["xata"]["version"] == 0
 
         r = self.client.records().insert_with_id("Posts", self.record_id, record, create_only=False)
-        assert r.status_code == 200
-        assert r.json()["xata"]["version"] == 1
+        assert r.is_success()
+        assert r["xata"]["version"] == 1
 
         r = self.client.records().insert_with_id("Posts", self.record_id, record, create_only=True)
         assert r.status_code == 422
@@ -123,22 +110,22 @@ class TestRecordsNamespace(object):
         GET /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         r = self.client.records().get("Posts", self.record_id)
-        assert r.status_code == 200
-        assert "id" in r.json()
-        assert "version" in r.json()["xata"]
-        assert "createdAt" in r.json()["xata"]
-        assert "updatedAt" in r.json()["xata"]
-        assert r.json()["id"] == self.record_id
-        assert r.json()["xata"]["version"] == 1
-        assert len(r.json().keys()) == len(record.keys()) + 2
-        keep = r.json()
+        assert r.is_success()
+        assert "id" in r
+        assert "version" in r["xata"]
+        assert "createdAt" in r["xata"]
+        assert "updatedAt" in r["xata"]
+        assert r["id"] == self.record_id
+        assert r["xata"]["version"] == 1
+        assert len(r.keys()) == len(record.keys()) + 2
+        keep = r
 
         r = self.client.records().get("Posts", self.record_id, columns=["id", "slug"])
-        assert r.status_code == 200
-        assert r.json()["id"] == self.record_id
-        assert r.json()["slug"] == keep["slug"]
-        assert len(r.json().keys()) == 3
-        assert r.json() != keep
+        assert r.is_success()
+        assert r["id"] == self.record_id
+        assert r["slug"] == keep["slug"]
+        assert len(r.keys()) == 3
+        assert r != keep
 
         r = self.client.records().get("Posts", "#######")
         assert r.status_code == 404
@@ -154,20 +141,20 @@ class TestRecordsNamespace(object):
         assert proof.status_code == 200
 
         r = self.client.records().update_with_id("Posts", self.record_id, record)
-        assert r.status_code == 200
-        assert "id" in r.json()
-        assert "version" in r.json()["xata"]
-        assert "createdAt" in r.json()["xata"]
-        assert "updatedAt" in r.json()["xata"]
-        assert r.json()["id"] == self.record_id
-        assert r.json()["xata"]["version"] == proof.json()["xata"]["version"] + 1
+        assert r.is_success()
+        assert "id" in r
+        assert "version" in r["xata"]
+        assert "createdAt" in r["xata"]
+        assert "updatedAt" in r["xata"]
+        assert r["id"] == self.record_id
+        assert r["xata"]["version"] == proof["xata"]["version"] + 1
 
         r = self.client.records().get("Posts", self.record_id)
-        assert r.status_code == 200
-        assert r.json()["slug"] == record["slug"]
-        assert r.json()["slug"] != proof.json()["slug"]
-        assert r.json()["title"] == record["title"]
-        assert r.json()["title"] != proof.json()["title"]
+        assert r.is_success()
+        assert r["slug"] == record["slug"]
+        assert r["slug"] != proof["slug"]
+        assert r["title"] == record["title"]
+        assert r["title"] != proof["title"]
 
         r = self.client.records().update_with_id("NonExistingTable", self.record_id, record)
         assert r.status_code == 404
@@ -181,22 +168,22 @@ class TestRecordsNamespace(object):
         """
         rec_id = utils.get_random_string(24)
         r = self.client.records().upsert_with_id("Posts", rec_id, record)
-        assert r.status_code == 201
+        assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
-        assert r.status_code == 200
-        assert r.json()["id"] == rec_id
-        proof = r.json()
+        assert r.is_success()
+        assert r["id"] == rec_id
+        proof = r
 
         update = self._get_record()
         assert record != update
         r = self.client.records().upsert_with_id("Posts", rec_id, update)
-        assert r.status_code == 200
+        assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
-        assert r.status_code == 200
-        assert r.json()["id"] == rec_id
-        assert r.json() != proof
+        assert r.is_success()
+        assert r["id"] == rec_id
+        assert r != proof
 
     def test_delete_record(self):
         """
@@ -204,9 +191,11 @@ class TestRecordsNamespace(object):
         """
         r = self.client.records().delete("Posts", self.record_id)
         assert r.status_code == 204
+        assert r.is_success()
 
         r = self.client.records().delete("Posts", self.record_id)
         assert r.status_code == 204
+        assert r.is_success()
 
     def test_bulk_insert_table_records(self):
         """
@@ -215,4 +204,4 @@ class TestRecordsNamespace(object):
         posts = [self._get_record() for i in range(10)]
 
         r = self.client.records().bulk_insert("Posts", {"records": posts})
-        assert r.status_code == 200
+        assert r.is_success()

@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,12 +31,11 @@ class Authentication(Namespace):
 
     scope = "core"
 
-    def get_user_api_keys(
-        self,
-    ) -> Response:
+    def get_user_api_keys(self) -> ApiResponse:
         """
         Retrieve a list of existing user API keys
 
+        Reference: https://xata.io/docs/api-reference/user/keys#get-the-list-of-user-api-keys
         Path: /user/keys
         Method: GET
         Response status codes:
@@ -49,15 +47,16 @@ class Authentication(Namespace):
         Response: application/json
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user/keys"
         return self.request("GET", url_path)
 
-    def create_user_api_keys(self, key_name: str) -> Response:
+    def create_user_api_keys(self, key_name: str) -> ApiResponse:
         """
         Create and return new API key
 
+        Reference: https://xata.io/docs/api-reference/user/keys/key_name#create-and-return-new-api-key
         Path: /user/keys/{key_name}
         Method: POST
         Response status codes:
@@ -70,15 +69,16 @@ class Authentication(Namespace):
 
         :param key_name: str API Key name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("POST", url_path)
 
-    def delete_user_api_keys(self, key_name: str) -> Response:
+    def delete_user_api_keys(self, key_name: str) -> ApiResponse:
         """
         Delete an existing API key
 
+        Reference: https://xata.io/docs/api-reference/user/keys/key_name#delete-an-existing-api-key
         Path: /user/keys/{key_name}
         Method: DELETE
         Response status codes:
@@ -90,7 +90,7 @@ class Authentication(Namespace):
 
         :param key_name: str API Key name
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("DELETE", url_path)

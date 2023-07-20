@@ -23,8 +23,7 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,7 +31,7 @@ class SearchAndFilter(Namespace):
 
     scope = "workspace"
 
-    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         The Query Table API can be used to retrieve all records in a table.  The API support
         filtering, sorting, selecting a subset of columns, and pagination.  The overall structure
@@ -213,6 +212,7 @@ class SearchAndFilter(Namespace):
         /db/demo:main/tables/table/query {   "page": {     "size": 10,     "before": "end"   } }
         ```
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/query#query-table
         Path: /db/{db_branch_name}/tables/{table_name}/query
         Method: POST
         Response status codes:
@@ -228,17 +228,18 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Run a free text search operation across the database branch.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/search#free-text-search
         Path: /db/{db_branch_name}/search
         Method: POST
         Response status codes:
@@ -253,14 +254,14 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/search"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def search_table(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def search_table(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         Run a free text search operation in a particular table.  The endpoint accepts a `query`
         parameter that is used for the free text search and a set of structured filters (via the
@@ -270,6 +271,7 @@ class SearchAndFilter(Namespace):
         work on columns of type `text` * filtering on columns of type `multiple` is currently
         unsupported
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/search#free-text-search-in-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/search
         Method: POST
         Response status codes:
@@ -284,20 +286,23 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/search"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def vector_search(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def vector_search(
+        self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
         """
         This endpoint can be used to perform vector-based similarity searches in a table.  It can
         be used for implementing semantic search and product recommendation.  To use this
         endpoint, you need a column of type vector.  The input vector must have the same dimension
         as the vector column.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/vectorSearch#vector-similarity-search-in-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/vectorSearch
         Method: POST
         Response status codes:
@@ -312,7 +317,7 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/vectorSearch"
@@ -326,11 +331,12 @@ class SearchAndFilter(Namespace):
         db_name: str = None,
         branch_name: str = None,
         response_content_type: str = "application/json",
-    ) -> Response:
+    ) -> ApiResponse:
         """
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
         will stream the results back as SSE's.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask#ask-your-table-a-question
         Path: /db/{db_branch_name}/tables/{table_name}/ask
         Method: POST
         Response status codes:
@@ -339,7 +345,7 @@ class SearchAndFilter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 429: Rate limit exceeded
-        - 503: ServiceUnavailable
+        - 503: Unexpected Error
         - 5XX: Unexpected Error
         Responses:
         - application/json
@@ -351,7 +357,7 @@ class SearchAndFilter(Namespace):
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
         :param response_content_type: str = "application/json" Content type of the response. Default: application/json
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
@@ -361,7 +367,40 @@ class SearchAndFilter(Namespace):
         }
         return self.request("POST", url_path, headers, payload)
 
-    def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def chat_session_message(
+        self, table_name: str, session_id: str, payload: dict, db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
+        """
+        Ask a follow-up question.  If the `Accept` header is set to `text/event-stream`, Xata will
+        stream the results back as SSE's.
+
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask/session_id#ask-follow-up-questions-of-your-data
+        Path: /db/{db_branch_name}/tables/{table_name}/ask/{session_id}
+        Method: POST
+        Response status codes:
+        - 200: Response to the question
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 429: Rate limit exceeded
+        - 503: ServiceUnavailable
+        - 5XX: Unexpected Error
+        Response: application/json
+
+        :param table_name: str The Table name
+        :param session_id: str
+        :param payload: dict content
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :returns ApiResponse
+        """
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/tables/{table_name}/ask/{session_id}"
+        headers = {"content-type": "application/json"}
+        return self.request("POST", url_path, headers, payload)
+
+    def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         This endpoint allows you to (optionally) define groups, and then to run calculations on
         the values in each group.  This is most helpful when  you'd like to understand the data
@@ -397,6 +436,7 @@ class SearchAndFilter(Namespace):
         and `summariesFilter` when it's not  possible to use `filter`.  `page.size`: tells Xata
         how many records to return.  If unspecified, Xata will return the default size.
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/summarize#summarize-table
         Path: /db/{db_branch_name}/tables/{table_name}/summarize
         Method: POST
         Response status codes:
@@ -411,14 +451,14 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/summarize"
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def aggregate(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> Response:
+    def aggregate(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         This endpoint allows you to run aggregations (analytics) on the data from one table.
         While the summary endpoint is served from a transactional store and the results are
@@ -428,6 +468,7 @@ class SearchAndFilter(Namespace):
         for cardinality), and is generally faster and can do more complex aggregations.  For
         usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/aggregate#run-aggregations-over-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
         Method: POST
         Response status codes:
@@ -442,7 +483,7 @@ class SearchAndFilter(Namespace):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/aggregate"

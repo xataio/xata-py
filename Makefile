@@ -6,9 +6,10 @@ install: ## Install dependencies
 lint: ## Linter
 	export PIP_USER=0; poetry run pre-commit run --all-files
 
-api-docs: ## Generate the API documentation
-	mkdir -vp api-docs && rm -Rfv api-docs/*
-	poetry run pdoc3 --html -o api-docs/. xata/.
+api-docs:  ## Generate rtd
+	poetry install
+	cd docs
+	poetry run make html
 
 check-license-header: ## Check if all *.py files have a license header
 	curl -s https://raw.githubusercontent.com/lluissm/license-header-checker/master/install.sh | bash

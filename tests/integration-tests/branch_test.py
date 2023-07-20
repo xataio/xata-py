@@ -30,63 +30,56 @@ class TestBranchNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
         # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success
+        assert (
+            self.client.table()
+            .set_schema(
+                "Posts",
+                {
+                    "columns": [
+                        {"name": "title", "type": "string"},
+                        {"name": "labels", "type": "multiple"},
+                        {"name": "slug", "type": "string"},
+                        {"name": "text", "type": "text"},
+                    ]
+                },
+            )
+            .is_success()
         )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().create("Posts")
-        assert r.status_code == 201
-
-        # create schema
-        r = self.client.table().set_schema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "labels", "type": "multiple"},
-                    {"name": "slug", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-        )
-        assert r.status_code == 200
 
     def teardown_class(self):
         r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert r.is_success()
 
     def test_get_branch_list(self):
-        r = self.client.branch().get_branches(self.db_name)
-        assert r.status_code == 200
-        assert "databaseName" in r.json()
-        assert "branches" in r.json()
-        assert r.json()["databaseName"] == self.db_name
-        assert len(r.json()["branches"]) == 1
-        assert "name" in r.json()["branches"][0]
-        assert "createdAt" in r.json()["branches"][0]
-        assert r.json()["branches"][0]["name"] == "main"
+        r = self.client.branch().list(self.db_name)
+        assert r.is_success()
+        assert "databaseName" in r
+        assert "branches" in r
+        assert r["databaseName"] == self.db_name
+        assert len(r["branches"]) == 1
+        assert "name" in r["branches"][0]
+        assert "createdAt" in r["branches"][0]
+        assert r["branches"][0]["name"] == "main"
 
-        r = self.client.branch().get_branches("NonExistingDatabase")
+        r = self.client.branch().list("NonExistingDatabase")
         assert r.status_code == 404
+        assert not r.is_success()
 
     def test_get_branch_details(self):
         r = self.client.branch().get_details()
-        assert r.status_code == 200
-        assert "databaseName" in r.json()
-        assert "branchName" in r.json()
-        assert "metadata" in r.json()
-        assert "schema" in r.json()
-        assert r.json()["databaseName"] == self.client.get_config()["dbName"]
+        assert r.is_success()
+        assert "databaseName" in r
+        assert "branchName" in r
+        assert "metadata" in r
+        assert "schema" in r
+        assert r["databaseName"] == self.client.get_config()["dbName"]
         # TODO be exhastive testing the ^ dict keys
 
         r = self.client.branch().get_details("NonExistingDatabase")
         assert r.status_code == 404
+        assert not r.is_success()
 
     def test_create_database_branch(self):
         payload = {
@@ -98,47 +91,76 @@ class TestBranchNamespace(object):
             },
         }
         r = self.client.branch().create(payload, branch_name="new-super-duper-feature")
-        assert r.status_code == 201
-        assert "databaseName" in r.json()
-        assert "branchName" in r.json()
-        assert "status" in r.json()
-        assert r.json()["databaseName"] == self.client.get_config()["dbName"]
-        assert r.json()["branchName"] == "new-super-duper-feature"
-        assert r.json()["status"] == "completed"
+        assert r.is_success()
+        assert "databaseName" in r
+        assert "branchName" in r
+        assert "status" in r
+        assert r["databaseName"] == self.client.get_config()["dbName"]
+        assert r["branchName"] == "new-super-duper-feature"
+        assert r["status"] == "completed"
 
         pytest.branch["branch"] = payload
 
-        r = self.client.branch().create(payload, branch_name="the-incredible-hulk", _from="avengers")
+        r = self.client.branch().create(payload, branch_name="the-incredible-hulk", from_="avengers")
         assert r.status_code == 400
+        assert not r.is_success()
 
         r = self.client.branch().create(payload, db_name="NOPE", branch_name=self.branch_name)
         assert r.status_code == 404
+        assert not r.is_success()
 
         r = self.client.branch().create({})
         assert r.status_code == 422
+        assert not r.is_success()
+
+    def test_create_database_branch_from_other_branch_with_param(self):
+        payload = {
+            "metadata": {
+                "repository": "github.com/xataio/xata-py",
+                "branch": "integration-testing-%s" % utils.get_random_string(6),
+                "stage": "testing",
+            },
+        }
+        r = self.client.branch().create(payload, branch_name="source-from")
+        assert r.status_code == 201
+
+        r = self.client.branch().create(payload, branch_name="new-branch", from_="source-from")
+        assert r.status_code == 201
+        assert r["status"] == "completed"
+
+        assert (
+            not self.client.branch().create(payload, branch_name="the-incredible-hulk", from_="avengers").is_success()
+        )
+        assert (
+            not self.client.branch()
+            .create(payload, db_name="marvel-042", branch_name="the-incredible-hulk", from_="avengers")
+            .is_success()
+        )
 
     def test_get_branch_metadata(self):
         r = self.client.branch().get_metadata()
-        assert r.status_code == 200
+        assert r.is_success()
 
         # TODO test from a previously created branch
-        # assert "repository" in r.json()
-        # assert "branch" in r.json()
-        # assert "stage" in r.json()
+        # assert "repository" in r
+        # assert "branch" in r
+        # assert "stage" in r
 
         r = self.client.branch().get_metadata(branch_name=self.branch_name)
-        assert r.status_code == 200
+        assert r.is_success()
         r = self.client.branch().get_metadata(db_name=self.db_name)
-        assert r.status_code == 200
+        assert r.is_success()
 
         r = self.client.branch().get_metadata(db_name="NOPE")
         assert r.status_code == 404
+        assert not r.is_success()
         r = self.client.branch().get_metadata(branch_name="shrug")
         assert r.status_code == 404
+        assert not r.is_success()
 
     def test_get_branch_stats(self):
         r = self.client.branch().get_stats()
-        assert r.status_code == 200
-        assert "timestamp" in r.json()
-        assert "interval" in r.json()
+        assert r.is_success()
+        assert "timestamp" in r
+        assert "interval" in r
         # TODO test more ^ dict keys

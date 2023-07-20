@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,10 +31,11 @@ class Invites(Namespace):
 
     scope = "core"
 
-    def new(self, payload: dict, workspace_id: str = None) -> Response:
+    def new(self, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         Invite some user to join the workspace with the given role
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites#invite-a-user-to-join-the-workspace
         Path: /workspaces/{workspace_id}/invites
         Method: POST
         Response status codes:
@@ -51,7 +51,7 @@ class Invites(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -59,11 +59,12 @@ class Invites(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def cancel(self, invite_id: str, workspace_id: str = None) -> Response:
+    def cancel(self, invite_id: str, workspace_id: str = None) -> ApiResponse:
         """
         This operation provides a way to cancel invites by deleting them.  Already accepted
         invites cannot be deleted.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#deletes-an-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: DELETE
         Response status codes:
@@ -77,19 +78,20 @@ class Invites(Namespace):
         :param invite_id: str Invite identifier
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_id}"
         return self.request("DELETE", url_path)
 
-    def update(self, invite_id: str, payload: dict, workspace_id: str = None) -> Response:
+    def update(self, invite_id: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
         This operation provides a way to update an existing invite.  Updates are performed in-
         place; they do not change the invite link, the expiry time, nor do they re-notify the
         recipient of the invite.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#updates-an-existing-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
         Method: PATCH
         Response status codes:
@@ -106,7 +108,7 @@ class Invites(Namespace):
         :param payload: dict content
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
@@ -114,11 +116,12 @@ class Invites(Namespace):
         headers = {"content-type": "application/json"}
         return self.request("PATCH", url_path, headers, payload)
 
-    def accept(self, invite_key: str, workspace_id: str = None) -> Response:
+    def accept(self, invite_key: str, workspace_id: str = None) -> ApiResponse:
         """
         Accept the invitation to join a workspace.  If the operation succeeds the user will be a
         member of the workspace
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_key/accept#accept-the-invitation-to-join-a-workspace
         Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
         Method: POST
         Response status codes:
@@ -132,18 +135,19 @@ class Invites(Namespace):
         :param invite_key: str Invite Key (secret) for the invited user
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()
         url_path = f"/workspaces/{workspace_id}/invites/{invite_key}/accept"
         return self.request("POST", url_path)
 
-    def resend(self, invite_id: str, workspace_id: str = None) -> Response:
+    def resend(self, invite_id: str, workspace_id: str = None) -> ApiResponse:
         """
         This operation provides a way to resend an Invite notification.  Invite notifications can
         only be sent for Invites not yet accepted.
 
+        Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id/resend#resend-invite-notification
         Path: /workspaces/{workspace_id}/invites/{invite_id}/resend
         Method: POST
         Response status codes:
@@ -157,7 +161,7 @@ class Invites(Namespace):
         :param invite_id: str Invite identifier
         :param workspace_id: str = None The workspace identifier. Default: workspace Id from the client.
 
-        :return Response
+        :returns ApiResponse
         """
         if workspace_id is None:
             workspace_id = self.client.get_workspace_id()

@@ -23,8 +23,7 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -32,12 +31,11 @@ class Users(Namespace):
 
     scope = "core"
 
-    def get(
-        self,
-    ) -> Response:
+    def get(self) -> ApiResponse:
         """
         Return details of the user making the request
 
+        Reference: https://xata.io/docs/api-reference/user#get-user-details
         Path: /user
         Method: GET
         Response status codes:
@@ -49,15 +47,16 @@ class Users(Namespace):
         Response: application/json
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         return self.request("GET", url_path)
 
-    def update(self, payload: dict) -> Response:
+    def update(self, payload: dict) -> ApiResponse:
         """
         Update user info
 
+        Reference: https://xata.io/docs/api-reference/user#update-user-info
         Path: /user
         Method: PUT
         Response status codes:
@@ -70,18 +69,17 @@ class Users(Namespace):
 
         :param payload: dict content
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def delete(
-        self,
-    ) -> Response:
+    def delete(self) -> ApiResponse:
         """
         Delete the user making the request
 
+        Reference: https://xata.io/docs/api-reference/user#delete-user
         Path: /user
         Method: DELETE
         Response status codes:
@@ -92,7 +90,7 @@ class Users(Namespace):
         - 5XX: Unexpected Error
 
 
-        :return Response
+        :returns ApiResponse
         """
         url_path = "/user"
         return self.request("DELETE", url_path)

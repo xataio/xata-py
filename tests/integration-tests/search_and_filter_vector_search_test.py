@@ -32,19 +32,8 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        # create database
-        r = self.client.databases().create(
-            self.db_name,
-            {
-                "region": self.client.get_config()["region"],
-                "branchName": self.client.get_config()["branchName"],
-            },
-        )
-        assert r.status_code == 201
-
-        # create table posts
-        r = self.client.table().create("users")
-        assert r.status_code == 201
+        assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("users").is_success()
 
         # create schema
         r = self.client.table().set_schema(
@@ -60,7 +49,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
                 ]
             },
         )
-        assert r.status_code == 200
+        assert r.is_success()
 
         self.users = [
             {"full_name": "r1", "full_name_vec": [0.1, 0.2, 0.3, 0.5]},
@@ -70,12 +59,11 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         ]
 
         r = self.client.records().bulk_insert("users", {"records": self.users})
-        assert r.status_code == 200
+        assert r.is_success()
         utils.wait_until_records_are_indexed("users")
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.status_code == 200
+        assert self.client.databases().delete(self.db_name).is_success()
 
     def test_vector_search_table_simple(self):
         payload = {
@@ -83,9 +71,9 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [1, 2, 3, 4],
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        rec1 = r.json()["records"]
+        assert r.is_success()
+        assert "records" in r
+        rec1 = r["records"]
         assert len(rec1) == 4
         res_order = [x["full_name"] for x in rec1]
         assert res_order == ["r4", "r1", "r2", "r3"]
@@ -95,8 +83,8 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "queryVector": [0.4, 0.3, 0.2, 0.1],
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        rec2 = r.json()["records"]
+        assert r.is_success()
+        rec2 = r["records"]
         assert len(rec2) == 4
         res_order = [x["full_name"] for x in rec2]
         assert res_order == ["r2", "r3", "r4", "r1"]
@@ -109,9 +97,9 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "size": 2,
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) == 2
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) == 2
 
         payload = {
             "column": "full_name_vec",
@@ -119,9 +107,9 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "size": 1000,
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) == 4
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) == 4
 
     def test_vector_search_table_similarity_param(self):
         payload = {
@@ -130,9 +118,9 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "similarityFunction": "l1",  # euclidian
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        res_order = [x["full_name"] for x in r.json()["records"]]
+        assert r.is_success()
+        assert "records" in r
+        res_order = [x["full_name"] for x in r["records"]]
         assert res_order[0:2] == ["r4", "r2"]  # only test the first two items
         # TODO ^ flaky test, better fine grained data set to query
         # assumption tie breaker between r3 and r1 flips
@@ -144,10 +132,10 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) == 2
-        res_order = [x["full_name"] for x in r.json()["records"]]
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) == 2
+        res_order = [x["full_name"] for x in r["records"]]
         assert res_order == ["r4", "r3"]
 
     def test_vector_search_table_filter_and_size_param(self):
@@ -158,10 +146,10 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) == 1
-        assert r.json()["records"][0]["full_name"] == "r4"
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) == 1
+        assert r["records"][0]["full_name"] == "r4"
 
     def test_vector_search_table_filter_and_size_and_similarity_param(self):
         payload = {
@@ -172,7 +160,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
             "filter": {"full_name": {"$any": ["r3", "r4"]}},
         }
         r = self.client.search_and_filter().vector_search("users", payload)
-        assert r.status_code == 200
-        assert "records" in r.json()
-        assert len(r.json()["records"]) == 1
-        assert r.json()["records"][0]["full_name"] == "r4"
+        assert r.is_success()
+        assert "records" in r
+        assert len(r["records"]) == 1
+        assert r["records"][0]["full_name"] == "r4"

@@ -17,6 +17,7 @@
 # under the License.
 #
 
+import base64
 import os
 import random
 import string
@@ -77,22 +78,14 @@ def get_posts() -> list[str]:
     ]
 
 
-"""
-def get_file(publicUrl: bool = True, signedUrlTimeout: int = 120, cat: str = None):
-    if cat is None:
-        cat = random.choice(["image", "audio", "video", "text"])
-    file_name = faker.file_path(depth=random.randint(0, 7), category=cat)
-    # different file types
-    file_content = faker.binary(random.randint(256, 1024))
-    encoded_string = base64.b64encode(file_content).decode("ascii")
+def get_attachments_schema() -> dict:
     return {
-        "name": file_name.replace("/", "_"),
-        "mediaType": faker.mime_type(category=cat),
-        "base64Content": encoded_string,
-        "enablePublicUrl": publicUrl,
-        "signedUrlTimeout": signedUrlTimeout,
-    }, file_content
-"""
+        "columns": [
+            {"name": "title", "type": "string"},
+            {"name": "one_file", "type": "file"},
+            {"name": "many_files", "type": "file[]"},
+        ]
+    }
 
 
 def get_file_name(file_name: str) -> str:
@@ -100,18 +93,38 @@ def get_file_name(file_name: str) -> str:
 
 
 def get_file_content(file_name: str) -> bytes:
-    with open(file_name, "r", encoding="utf-8") as f:
-        return f.read().encode()
+    with open(file_name, "rb") as f:
+        return f.read()
 
 
-def get_file(file_name: str, public_url: bool = True, signed_url_timeout: int = 120):
+def get_file(file_name: str, public_url: bool = False, signed_url_timeout: int = 30):
     file_name = get_file_name(file_name)
     file_content = get_file_content(file_name)
 
     return {
         "name": file_name.replace("/", "_"),
         "mediaType": magic.from_file(file_name, mime=True),
-        "base64Content": file_content.decode("utf-8"),
+        "base64Content": base64.b64encode(file_content).decode("ascii"),
         "enablePublicUrl": public_url,
         "signedUrlTimeout": signed_url_timeout,
+    }
+
+
+def get_post() -> dict:
+    return {
+        "title": get_faker().company(),
+        "labels": [get_faker().domain_word(), get_faker().domain_word()],
+        "slug": get_faker().catch_phrase(),
+        "content": get_faker().text(),
+    }
+
+
+def get_posts_schema() -> dict:
+    return {
+        "columns": [
+            {"name": "title", "type": "string"},
+            {"name": "labels", "type": "multiple"},
+            {"name": "slug", "type": "string"},
+            {"name": "content", "type": "text"},
+        ]
     }

@@ -56,12 +56,12 @@ while more:
     resp = xata.data().query("nba_teams", query)
 
     # Print teams
-    for team in resp.json()["records"]:
+    for team in resp["records"]:
         print("[%s] %s: %s, %s" % (team["conference"], team["state"], team["name"], team["city"]))
 
     # Update controls
-    more = resp.json()["meta"]["page"].get("more", False)  # has another page with results
-    cursor = resp.json()["meta"]["page"]["cursor"]  # save next cursor for results
+    more = resp.has_more_results()  # has another page with results
+    cursor = resp.get_cursor()  # save next cursor for results
 
 # Output:
 # [west] California: LA Lakers, Los Angeles

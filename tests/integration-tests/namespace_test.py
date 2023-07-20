@@ -30,13 +30,13 @@ class TestNamespace(object):
         """
         users = XataClient().users()
         r1 = users.get()
-        assert r1.status_code == 200
+        assert r1.is_success()
 
         client = XataClient()
         r2 = client.users().get()
-        assert r2.status_code == 200
+        assert r2.is_success()
 
-        assert r1.json() == r2.json()
+        assert r1 == r2
 
     def test_direct_instance_in_namespace_wit_client_dependencies(self):
         """
@@ -47,6 +47,6 @@ class TestNamespace(object):
         databases = XataClient().databases()
 
         # workspace_id should be provided by the the client implicitly
-        assert databases.create(db_name, {"region": "eu-west-1"}).status_code == 201
-        assert databases.get_metadata(db_name).status_code == 200
-        assert databases.delete(db_name).status_code == 200
+        assert databases.create(db_name, region="eu-west-1").is_success()
+        assert databases.get_metadata(db_name).is_success()
+        assert databases.delete(db_name).is_success()
