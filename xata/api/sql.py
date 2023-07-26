@@ -17,8 +17,7 @@
 # under the License.
 #
 
-from requests import Response
-
+from xata.api_response import ApiResponse
 from xata.namespace import Namespace
 
 
@@ -26,9 +25,30 @@ class Sql(Namespace):
 
     scope = "workspace"
 
-    def query(self, query: str, db_name: str = None, branch_name: str = None) -> Response:
+    def query(
+        self, query: str, params: list = None, consistency: str = "strong", db_name: str = None, branch_name: str = None
+    ) -> ApiResponse:
+        """
+        This endpoint performs the SQL query across the entire database branch. Set your SQL query in the parameter `query`.
+
+        Path: /db/{db_branch_name}/sql'
+        Method: POST
+        Response: application/json
+
+        :param query: str The quety string
+        :param params: dict The query parameters list. default: None
+        :param consistency: str The consistency level for this request. default: strong
+        :param db_name: str = None The name of the database to query. Default: database name from the client.
+        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
+
+        :returns ApiResponse
+        """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/sql"
         headers = {"content-type": "application/json"}
-        payload = {"query": query}
+        payload = {
+            "query": query,
+            "params": params,
+            "consistency": consistency,
+        }
         return self.request("POST", url_path, headers, payload)

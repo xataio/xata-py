@@ -398,10 +398,6 @@ class XataClient:
 
     def files(self) -> Files:
         return self._files
-<<<<<<< HEAD
-    """
 
     def sql(self) -> Sql:
         return self._sql
-=======
->>>>>>> main
