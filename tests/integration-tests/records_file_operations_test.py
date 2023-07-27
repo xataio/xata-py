@@ -25,9 +25,7 @@ from xata.client import XataClient
 class TestRecordsFileOperations(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.client.set_header("X-Xata-Files", "true")
+        self.client = XataClient(db_name=self.db_name)
         self.fake = utils.get_faker()
 
         assert self.client.databases().create(self.db_name).is_success()
@@ -38,7 +36,6 @@ class TestRecordsFileOperations(object):
                 "Attachments",
                 utils.get_attachments_schema(),
                 db_name=self.db_name,
-                branch_name=self.branch_name,
             )
             .is_success()
         )

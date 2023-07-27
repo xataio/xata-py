@@ -17,8 +17,9 @@
 # under the License.
 #
 
-import utils
 import random
+
+import utils
 from faker import Faker
 
 from xata.client import XataClient
@@ -84,15 +85,15 @@ class TestSearchAndFilterRevLinks(object):
     def test_revlinks_with_alias(self):
         payload = {
             "columns": [
-            "name",
+                "name",
                 {
                     "name": "<-Posts.author",
                     "columns": ["title"],
                     "as": "posts",
                     "limit": 5,
                     "offset": 0,
-                    "order": [{"column": "createdAt", "order": "desc"}]
-                }
+                    "order": [{"column": "createdAt", "order": "desc"}],
+                },
             ],
             "page": {"size": 5},
         }
@@ -114,13 +115,7 @@ class TestSearchAndFilterRevLinks(object):
 
     def test_revlinks_without_alias(self):
         payload = {
-            "columns": [
-            "name",
-                {
-                    "name": "<-Posts.author",
-                    "columns": ["title"]
-                }
-            ],
+            "columns": ["name", {"name": "<-Posts.author", "columns": ["title"]}],
             "page": {"size": 1},
         }
         r = self.client.data().query("Users", payload)
@@ -132,15 +127,7 @@ class TestSearchAndFilterRevLinks(object):
 
     def test_revlinks_with_limit_control(self):
         payload = {
-            "columns": [
-            "name",
-                {
-                    "name": "<-Posts.author",
-                    "columns": ["title"],
-                    "as": "posts",
-                    "limit": 1
-                }
-            ],
+            "columns": ["name", {"name": "<-Posts.author", "columns": ["title"], "as": "posts", "limit": 1}],
             "page": {"size": 5},
         }
         r = self.client.data().query("Users", payload)

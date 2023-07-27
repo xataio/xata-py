@@ -19,7 +19,6 @@
 
 import pytest
 import utils
-from faker import Faker
 
 from xata.client import XataClient
 
@@ -27,43 +26,20 @@ from xata.client import XataClient
 class TestRecordsNamespace(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.fake = Faker()
+        self.client = XataClient(db_name=self.db_name)
+        self.fake = utils.get_faker()
         self.record_id = utils.get_random_string(24)
 
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
-        assert (
-            self.client.table()
-            .set_schema(
-                "Posts",
-                {
-                    "columns": [
-                        {"name": "title", "type": "string"},
-                        {"name": "labels", "type": "multiple"},
-                        {"name": "slug", "type": "string"},
-                        {"name": "text", "type": "text"},
-                    ]
-                },
-            )
-            .is_success()
-        )
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:
-        return self._get_record()
-
-    def _get_record(self) -> dict:
-        return {
-            "title": self.fake.company(),
-            "labels": [self.fake.domain_word(), self.fake.domain_word()],
-            "slug": self.fake.catch_phrase(),
-            "text": self.fake.text(),
-        }
+        return utils.get_post()
 
     def test_insert_record(self, record: dict):
         """
@@ -175,7 +151,7 @@ class TestRecordsNamespace(object):
         assert r["id"] == rec_id
         proof = r
 
-        update = self._get_record()
+        update = utils.get_post()
         assert record != update
         r = self.client.records().upsert_with_id("Posts", rec_id, update)
         assert r.is_success()
@@ -198,10 +174,5 @@ class TestRecordsNamespace(object):
         assert r.is_success()
 
     def test_bulk_insert_table_records(self):
-        """
-        POST /db/{db_branch_name}/tables/{table_name}/bulk
-        """
-        posts = [self._get_record() for i in range(10)]
-
-        r = self.client.records().bulk_insert("Posts", {"records": posts})
+        r = self.client.records().bulk_insert("Posts", {"records": utils.get_posts(10)})
         assert r.is_success()
