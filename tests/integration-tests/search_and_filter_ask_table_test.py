@@ -94,6 +94,9 @@ class TestSearchAndFilterAskTableEndpoint(object):
         answer = self.client.data().ask("xata", "does the data model have link type?", streaming_results=True)
         assert answer.is_success()
 
+        # TODO 
+        # use stream=True in namespace.request
+
         #assert "answer" in answer
         #assert "records" in answer
         #assert "sessionId" in answer
@@ -104,3 +107,14 @@ class TestSearchAndFilterAskTableEndpoint(object):
 
         #assert answer.headers["content-type"].lower().startswith("text/event-stream")
         assert True
+
+    def test_ask_follow_up_question(self):
+        first_answer = self.client.data().ask("xata", "does xata have a python sdk")
+        assert first_answer.is_success()
+        
+        session_id = first_answer["sessionId"]
+        
+        second_answer = self.client.data().ask_follow_up("xata", session_id, "what is the best way to do bulk?")
+        assert second_answer.is_success()
+        assert "answer" in second_answer
+        assert second_answer["answer"] is not None
