@@ -19,8 +19,6 @@
 
 import unittest
 
-import pytest
-
 from xata.client import XataClient
 from xata.helpers import Transaction
 
