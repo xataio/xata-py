@@ -23,11 +23,11 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
-from xata.namespace import Namespace
 
 
-class SearchAndFilter(Namespace):
+class SearchAndFilter(ApiRequest):
 
     scope = "workspace"
 
@@ -365,11 +365,9 @@ class SearchAndFilter(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
-
-        payload = options
-        payload["question"] = question
-        payload["rules"] = rules
-
+        payload = {
+            "question": question,
+        }
         headers = {
             "content-type": "application/json",
             "accept": "text/event-stream" if streaming_results else "application/json",

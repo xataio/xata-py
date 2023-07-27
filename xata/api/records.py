@@ -23,11 +23,11 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
-from xata.namespace import Namespace
 
 
-class Records(Namespace):
+class Records(ApiRequest):
 
     scope = "workspace"
 
