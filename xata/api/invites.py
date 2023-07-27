@@ -23,11 +23,11 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
-from xata.namespace import Namespace
 
 
-class Invites(Namespace):
+class Invites(ApiRequest):
 
     scope = "core"
 
