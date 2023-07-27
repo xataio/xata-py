@@ -42,7 +42,5 @@ jobs:
         env:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_TEST_WORKSPACE }}
           XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
-          XATA_TEST_ASK_DATABASE: ${{ secrets.XATA_TEST_ASK_DATABASE }}
-          XATA_TEST_ASK_WORKSPACE: ${{ secrets.XATA_TEST_ASK_WORKSPACE }}
         run: |
           poetry run pytest -v --tb=short -W ignore::DeprecationWarning tests/integration-tests/

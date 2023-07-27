@@ -17,17 +17,12 @@
 # under the License.
 #
 
-from dotenv import dotenv_values
-
 from xata.client import XataClient
 
 
 class TestSearchAndFilterAskTableEndpoint(object):
     def setup_class(self):
-        env = dotenv_values(".env")
-        self.client = XataClient(
-            workspace_id=env.get("XATA_TEST_ASK_WORKSPACE"), db_name=env.get("XATA_TEST_ASK_DATABASE")
-        )
+        self.client = XataClient(workspace_id="sample-databases-v0sn1n", db_name="docs")
 
     def test_ask_table_for_response_shape(self):
         answer = self.client.data().ask("xata", "does xata have a python sdk")
