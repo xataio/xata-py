@@ -22,7 +22,7 @@ import unittest
 from xata.client import DEFAULT_REGION, XataClient
 
 
-class TestNamespaceCustomDomains(unittest.TestCase):
+class TestApiRequestCustomDomains(unittest.TestCase):
     def test_core_domain(self):
         domain = "api.hallo.hey"
         client = XataClient(
