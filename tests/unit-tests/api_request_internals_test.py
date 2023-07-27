@@ -24,19 +24,24 @@ from xata.client import DEFAULT_REGION, XataClient
 
 class TestApiRequestInternals(unittest.TestCase):
     def test_get_scope(self):
-        client = XataClient(db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042")
+        client = XataClient(api_key="123", db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042")
 
         assert "core" == client.databases().get_scope()
         assert "workspace" == client.table().get_scope()
 
     def test_is_control_plane(self):
-        client = XataClient(db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042")
+        client = XataClient(api_key="123", db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042")
 
         assert client.databases().is_control_plane()
         assert not client.table().is_control_plane()
 
     def test_get_base_url(self):
-        c = XataClient(workspace_id="testopia-ab2", domain_core="custom.name", domain_workspace="sub.subsub.name.lol")
+        c = XataClient(
+            api_key="123",
+            workspace_id="testopia-ab2",
+            domain_core="custom.name",
+            domain_workspace="sub.subsub.name.lol",
+        )
 
         assert "https://custom.name" == c.authentication().get_base_url()
 
