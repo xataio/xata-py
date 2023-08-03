@@ -35,7 +35,7 @@ class Sql(ApiRequest):
         Method: POST
         Response: application/json
 
-        :param query: str The quety string
+        :param query: str The query string
         :param params: dict The query parameters list. default: None
         :param consistency: str The consistency level for this request. default: strong
         :param db_name: str = None The name of the database to query. Default: database name from the client.
