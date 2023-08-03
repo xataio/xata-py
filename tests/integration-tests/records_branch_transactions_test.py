@@ -18,6 +18,7 @@
 #
 
 import pytest
+import utils
 from faker import Faker
 
 from xata.client import XataClient
@@ -30,9 +31,40 @@ class TestRecordsBranchTransactionsNamespace(object):
     """
 
     def setup_class(self):
-        self.client = XataClient(db_name="sandbox-py", branch_name="main")
+        self.db_name = utils.get_db_name()
+        self.client = XataClient(db_name=self.db_name)
         self.fake = Faker()
         self.record_ids = []
+
+        assert (
+            self.client.databases()
+            .createDatabase(
+                self.db_name,
+                {
+                    "region": self.client.get_config()["region"],
+                    "branchName": self.client.get_config()["branchName"],
+                },
+            )
+            .status_code
+            == 201
+        )
+        assert self.client.table().createTable("Posts").status_code == 201
+        r = self.client.table().setTableSchema(
+            "Posts",
+            {
+                "columns": [
+                    {"name": "title", "type": "string"},
+                    {"name": "labels", "type": "multiple"},
+                    {"name": "slug", "type": "string"},
+                    {"name": "content", "type": "text"},
+                ]
+            },
+            db_name=self.db_name,
+        )
+        assert r.status_code == 200
+
+    def teardown_class(self):
+        assert self.client.databases().deleteDatabase(self.db_name).status_code == 200
 
     @pytest.fixture
     def record(self) -> dict:
@@ -45,13 +77,6 @@ class TestRecordsBranchTransactionsNamespace(object):
             "slug": self.fake.catch_phrase(),
             "content": self.fake.text(),
         }
-
-    def teardown_class(self):
-        payload = {"operations": []}
-        for id in pytest.branch_transactions["record_ids"]:
-            payload["operations"].append({"delete": {"table": "Posts", "id": id}})
-        r = self.client.records().branchTransaction(payload)
-        assert r.status_code == 200
 
     def test_insert_only(self, record: dict):
         payload = {
@@ -81,12 +106,12 @@ class TestRecordsBranchTransactionsNamespace(object):
 
         pytest.branch_transactions["record_ids"] = [x["id"] for x in r.json()["results"]]
 
-    def test_get_only(self, record: dict):
+    def test_get_only(self):
         payload = {
             "operations": [
-                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
-                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][1]}},
-                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][0]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][1]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][2]}},
             ]
         }
 
@@ -101,9 +126,9 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert "operation" in r.json()["results"][0]
         assert "get" == r.json()["results"][0]["operation"]
 
-        assert pytest.branch_transactions["hardcoded_ids"][0] == r.json()["results"][0]["columns"]["id"]
-        assert pytest.branch_transactions["hardcoded_ids"][1] == r.json()["results"][1]["columns"]["id"]
-        assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
+        assert pytest.branch_transactions["record_ids"][0] == r.json()["results"][0]["columns"]["id"]
+        assert pytest.branch_transactions["record_ids"][1] == r.json()["results"][1]["columns"]["id"]
+        assert pytest.branch_transactions["record_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
     def test_get_with_columns(self, record: dict):
         payload = {
@@ -111,21 +136,21 @@ class TestRecordsBranchTransactionsNamespace(object):
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][0],
+                        "id": pytest.branch_transactions["record_ids"][0],
                         "columns": ["id", "title", "labels"],
                     }
                 },
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][1],
-                        "columns": ["timestamp", "slug"],
+                        "id": pytest.branch_transactions["record_ids"][1],
+                        "columns": ["slug"],
                     }
                 },
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][2],
+                        "id": pytest.branch_transactions["record_ids"][2],
                         "columns": ["content", "xata"],
                     }
                 },
@@ -144,7 +169,6 @@ class TestRecordsBranchTransactionsNamespace(object):
 
         assert "title" in r.json()["results"][0]["columns"]
         assert "labels" in r.json()["results"][0]["columns"]
-        assert "timestamp" in r.json()["results"][1]["columns"]
         assert "slug" in r.json()["results"][1]["columns"]
         assert "content" in r.json()["results"][2]["columns"]
 
@@ -155,9 +179,9 @@ class TestRecordsBranchTransactionsNamespace(object):
     def test_get_only_with_existing_and_nonexisting_records(self, record: dict):
         payload = {
             "operations": [
-                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][0]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][0]}},
                 {"get": {"table": "Posts", "id": "unknown-1"}},
-                {"get": {"table": "Posts", "id": pytest.branch_transactions["hardcoded_ids"][2]}},
+                {"get": {"table": "Posts", "id": pytest.branch_transactions["record_ids"][2]}},
                 {"get": {"table": "Posts", "id": "unknown-2"}},
             ]
         }
@@ -172,8 +196,8 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert "get" == r.json()["results"][1]["operation"]
         assert "get" == r.json()["results"][3]["operation"]
 
-        assert pytest.branch_transactions["hardcoded_ids"][0] == r.json()["results"][0]["columns"]["id"]
-        assert pytest.branch_transactions["hardcoded_ids"][2] == r.json()["results"][2]["columns"]["id"]
+        assert pytest.branch_transactions["record_ids"][0] == r.json()["results"][0]["columns"]["id"]
+        assert pytest.branch_transactions["record_ids"][2] == r.json()["results"][2]["columns"]["id"]
 
     def test_delete_only(self, record: dict):
         payload = {
@@ -227,15 +251,15 @@ class TestRecordsBranchTransactionsNamespace(object):
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][0],
+                        "id": pytest.branch_transactions["record_ids"][0],
                         "columns": ["id", "title", "labels"],
                     }
                 },
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][1],
-                        "columns": ["timestamp", "slug"],
+                        "id": pytest.branch_transactions["record_ids"][1],
+                        "columns": ["slug"],
                     }
                 },
                 {"insert": {"table": "Posts", "record": self._get_record()}},
@@ -243,7 +267,7 @@ class TestRecordsBranchTransactionsNamespace(object):
                 {
                     "get": {
                         "table": "Posts",
-                        "id": pytest.branch_transactions["hardcoded_ids"][2],
+                        "id": pytest.branch_transactions["record_ids"][2],
                         "columns": ["content", "xata"],
                     }
                 },
