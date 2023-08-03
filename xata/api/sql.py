@@ -17,11 +17,11 @@
 # under the License.
 #
 
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
-from xata.namespace import Namespace
 
 
-class Sql(Namespace):
+class Sql(ApiRequest):
 
     scope = "workspace"
 

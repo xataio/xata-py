@@ -26,9 +26,7 @@ class TestSqlQuery(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.client = XataClient(
-            domain_core="api.staging-xata.dev",
-            domain_workspace="staging-xata.dev",
-            db_name=self.db_name
+            domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev", db_name=self.db_name
         )
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Users").is_success()
@@ -100,7 +98,7 @@ class TestSqlQuery(object):
         assert "records" in r
 
     def test_query_with_params(self):
-        r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = $1", ["keanu@example.com"])
+        r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])
         assert r.is_success()
         assert "records" in r
         assert len(r["records"]) == 1
