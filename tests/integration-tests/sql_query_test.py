@@ -28,8 +28,7 @@ class TestSqlQuery(object):
         self.client = XataClient(
             domain_core="api.staging-xata.dev",
             domain_workspace="staging-xata.dev",
-            db_name=self.db_name,
-            branch_name="main",
+            db_name=self.db_name
         )
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Users").is_success()
@@ -41,15 +40,14 @@ class TestSqlQuery(object):
             )
             .is_success()
         )
-        # ingests posts
-        self.posts = [
+        users = [
             {
                 "name": utils.get_faker().name(),
                 "email": utils.get_faker().email(),
             }
-            for i in range(25)
+            for i in range(50)
         ]
-        assert self.client.records().bulk_insert("Users", {"records": self.posts}).is_success()
+        assert self.client.records().bulk_insert("Users", {"records": users}).is_success()
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
@@ -102,7 +100,7 @@ class TestSqlQuery(object):
         assert "records" in r
 
     def test_query_with_params(self):
-        r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = '$1'", ["keanu@example.com"])
+        r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = $1", ["keanu@example.com"])
         assert r.is_success()
         assert "records" in r
         assert len(r["records"]) == 1
