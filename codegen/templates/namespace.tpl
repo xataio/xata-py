@@ -23,9 +23,9 @@
 # Specification: ${spec_scope}:v${spec_version}
 # ------------------------------------------------------- #
 
-from xata.namespace import Namespace
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
 
-class ${class_name}(Namespace):
+class ${class_name}(ApiRequest):
 
     scope = "${spec_scope}"

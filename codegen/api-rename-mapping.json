@@ -235,12 +235,12 @@
         "name": "vector_search"
       },
       "askTable": {
-        "template": "endpoint",
+        "template": "data_ask",
         "name": "ask"
       },
-      "chatSessionMessage": {
-        "template": "endpoint",
-        "name": "chat_session_message"
+      "askTableSession": {
+        "template": "data_ask_follow_up",
+        "name": "ask_follow_up"
       },
       "summarizeTable": {
         "template": "endpoint",

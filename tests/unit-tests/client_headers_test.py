@@ -28,7 +28,7 @@ class TestClientHeaders(unittest.TestCase):
         client1 = XataClient(api_key=api_key, workspace_id="ws_id")
         headers1 = client1.get_headers()
 
-        assert len(headers1) == 5
+        assert len(headers1) == 6
         assert "authorization" in headers1
         assert headers1["authorization"] == f"Bearer {api_key}"
         assert "user-agent" in headers1

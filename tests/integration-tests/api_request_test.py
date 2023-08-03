@@ -22,7 +22,7 @@ import utils
 from xata.client import XataClient
 
 
-class TestNamespace(object):
+class TestApiRequest(object):
     def test_direct_instance_in_namespace_without_client_dependencies(self):
         """
         Direct namespace invocation without implicit config

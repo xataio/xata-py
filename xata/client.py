@@ -124,6 +124,7 @@ class XataClient:
         self.headers = {
             "authorization": f"Bearer {self.api_key}",
             "user-agent": f"xataio/xata-py:{__version__}",
+            "connection": "keep-alive",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
             "x-xata-agent": f"client=PY_SDK;version={__version__};",
@@ -321,63 +322,54 @@ class XataClient:
 
     def authentication(self) -> Authentication:
         """
-        Authentication Namespace
         :returns Authentication
         """
         return self._authentication
 
     def databases(self) -> Databases:
         """
-        Databases Namespace
         :returns Databases
         """
         return self._databases
 
     def invites(self) -> Invites:
         """
-        Invites Namespace
         :returns Invites
         """
         return self._invites
 
     def users(self) -> Users:
         """
-        Users Namespace
         :returns Users
         """
         return self._users
 
     def workspaces(self) -> Workspaces:
         """
-        Workspaces Namespace
         :returns Workspaces
         """
         return self._workspaces
 
     def branch(self) -> Branch:
         """
-        Branch Namespace
         :returns Branch
         """
         return self._branch
 
     def migrations(self) -> Migrations:
         """
-        Migrations Namespace
         :returns Migrations
         """
         return self._migrations
 
     def records(self) -> Records:
         """
-        Records Namespace
         :returns Records
         """
         return self._records
 
     def search_and_filter(self) -> SearchAndFilter:
         """
-        Search_and_Filter Namespace
         :returns Search_and_filter
         """
         return self._search_and_filter
@@ -391,12 +383,14 @@ class XataClient:
 
     def table(self) -> Table:
         """
-        Table Namespace
         :returns Table
         """
         return self._table
 
     def files(self) -> Files:
+        """
+        :returns Files
+        """
         return self._files
 
     def sql(self) -> Sql:

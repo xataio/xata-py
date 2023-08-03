@@ -26,9 +26,9 @@ from xata.api_response import ApiResponse
 from .errors import RateLimitError, UnauthorizedError, XataServerError
 
 
-class Namespace:
+class ApiRequest:
     """
-    Parent class for Namespaces
+    Parent class for API requests
     """
 
     def __init__(self, client):

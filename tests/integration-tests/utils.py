@@ -52,32 +52,6 @@ def get_random_string(length):
     return "".join(random.choice(letters) for i in range(length))
 
 
-def get_posts() -> list[str]:
-    """
-    List of three Posts
-    """
-    return [
-        {
-            "title": "Hello world",
-            "labels": ["hello", "world"],
-            "slug": "hello-world",
-            "text": "This is a test post",
-        },
-        {
-            "title": "HeLLo universe",
-            "labels": ["hello", "universe"],
-            "slug": "hello-universe",
-            "text": "hello, is it me you're looking for?",
-        },
-        {
-            "title": "HELlO internet",
-            "labels": ["hello", "internet"],
-            "slug": "hello-internet",
-            "text": "I like to eat apples and bananas",
-        },
-    ]
-
-
 def get_attachments_schema() -> dict:
     return {
         "columns": [
@@ -117,6 +91,13 @@ def get_post() -> dict:
         "slug": get_faker().catch_phrase(),
         "content": get_faker().text(),
     }
+
+
+def get_posts(n: int = 3) -> list[str]:
+    """
+    List of three Posts
+    """
+    return [get_post() for i in range(3)]
 
 
 def get_posts_schema() -> dict:

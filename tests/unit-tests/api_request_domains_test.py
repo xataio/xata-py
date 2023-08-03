@@ -22,18 +22,18 @@ import unittest
 from xata.client import DEFAULT_REGION, XataClient
 
 
-class TestNamespaceCustomDomains(unittest.TestCase):
+class TestApiRequestCustomDomains(unittest.TestCase):
     def test_core_domain(self):
         domain = "api.hallo.hey"
         client = XataClient(
-            db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042", domain_core=domain
+            api_key="123", db_url="https://py-sdk-unit-test-12345.eu-west-1.xata.sh/db/testopia-042", domain_core=domain
         )
         assert "https://" + domain == client.databases().get_base_url()
 
     def test_workspace_domain(self):
         domain = "hello.is.it.me-you-are-looking.for"
         ws_id = "testopia-042"
-        client = XataClient(workspace_id=ws_id, domain_workspace=domain)
+        client = XataClient(workspace_id=ws_id, domain_workspace=domain, api_key="123")
 
         expected = "https://%s.%s.%s" % (ws_id, DEFAULT_REGION, domain)
         assert expected == client.table().get_base_url()

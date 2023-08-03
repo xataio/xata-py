@@ -23,11 +23,11 @@
 # Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
+from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
-from xata.namespace import Namespace
 
 
-class SearchAndFilter(Namespace):
+class SearchAndFilter(ApiRequest):
 
     scope = "workspace"
 
@@ -327,10 +327,12 @@ class SearchAndFilter(Namespace):
     def ask(
         self,
         table_name: str,
-        payload: dict,
+        question: str,
+        rules: list[str] = [],
+        options: dict = {},
+        streaming_results: bool = False,
         db_name: str = None,
         branch_name: str = None,
-        response_content_type: str = "application/json",
     ) -> ApiResponse:
         """
         Ask your table a question.  If the `Accept` header is set to `text/event-stream`, Xata
@@ -345,36 +347,46 @@ class SearchAndFilter(Namespace):
         - 401: Authentication Error
         - 404: Example response
         - 429: Rate limit exceeded
-        - 503: Unexpected Error
+        - 503: ServiceUnavailable
         - 5XX: Unexpected Error
         Responses:
         - application/json
         - text/event-stream
 
         :param table_name: str The Table name
-        :param payload: dict content
+        :param question: str follow up question to ask
+        :param rules: list[str] specific rules you want to apply, default: []
+        :param options: dict more options to adjust the query, default: {}
+        :param streaming_results: bool get the results streamed, default: False
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
-        :param response_content_type: str = "application/json" Content type of the response. Default: application/json
 
         :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask"
+        payload = {
+            "question": question,
+        }
         headers = {
             "content-type": "application/json",
-            "accept": response_content_type,
+            "accept": "text/event-stream" if streaming_results else "application/json",
         }
         return self.request("POST", url_path, headers, payload)
 
-    def chat_session_message(
-        self, table_name: str, session_id: str, payload: dict, db_name: str = None, branch_name: str = None
+    def ask_follow_up(
+        self,
+        table_name: str,
+        session_id: str,
+        question: str,
+        streaming_results: bool = False,
+        db_name: str = None,
+        branch_name: str = None,
     ) -> ApiResponse:
         """
-        Ask a follow-up question.  If the `Accept` header is set to `text/event-stream`, Xata will
-        stream the results back as SSE's.
+        Ask a follow-up question.
 
-        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask/session_id#ask-follow-up-questions-of-your-data
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/ask/session_id#continue-a-conversation-with-your-data
         Path: /db/{db_branch_name}/tables/{table_name}/ask/{session_id}
         Method: POST
         Response status codes:
@@ -385,11 +397,14 @@ class SearchAndFilter(Namespace):
         - 429: Rate limit exceeded
         - 503: ServiceUnavailable
         - 5XX: Unexpected Error
-        Response: application/json
+        Responses:
+        - application/json
+        - text/event-stream
 
         :param table_name: str The Table name
-        :param session_id: str
-        :param payload: dict content
+        :param session_id: str Session id from initial question
+        :param question: str follow up question to ask
+        :param streaming_results: bool get the results streamed, default: False
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
@@ -397,7 +412,13 @@ class SearchAndFilter(Namespace):
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/ask/{session_id}"
-        headers = {"content-type": "application/json"}
+        payload = {
+            "message": question,
+        }
+        headers = {
+            "content-type": "application/json",
+            "accept": "text/event-stream" if streaming_results else "application/json",
+        }
         return self.request("POST", url_path, headers, payload)
 
     def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
