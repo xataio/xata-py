@@ -19,7 +19,7 @@
 
 import logging
 
-from requests import request
+from requests import Session, request
 
 from xata.api_response import ApiResponse
 
@@ -27,11 +27,8 @@ from .errors import RateLimitError, UnauthorizedError, XataServerError
 
 
 class ApiRequest:
-    """
-    Parent class for API requests
-    """
-
     def __init__(self, client):
+        self.session = Session()
         self.client = client
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -49,7 +46,13 @@ class ApiRequest:
         return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
     def request(
-        self, http_method: str, url_path: str, headers: dict = {}, payload: dict = None, data: bytes = None
+        self,
+        http_method: str,
+        url_path: str,
+        headers: dict = {},
+        payload: dict = None,
+        data: bytes = None,
+        is_streaming: bool = False,
     ) -> ApiResponse:
         """
         :param http_method: str
@@ -57,6 +60,7 @@ class ApiRequest:
         :headers: dict = {}
         :param payload: dict = None
         :param data: bytes = None
+        :param is_streaming: bool = False
 
         :returns ApiResponse
 
@@ -64,17 +68,26 @@ class ApiRequest:
         :raises UnauthorizedError
         :raises ServerError
         """
-        # TODO use "|" when client py min version >= 3.9
         headers = {**headers, **self.client.get_headers()}
-
-        # build url
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
-        if payload is None and data is None:
-            resp = request(http_method, url, headers=headers)
-        elif data is not None:
-            resp = request(http_method, url, headers=headers, data=data)
+
+        # In order not exhaust the connection pool with open connections from unread streams
+        # we opt for Session usage on all non-stream requests
+        # https://requests.readthedocs.io/en/latest/user/advanced/#body-content-workflow
+        if is_streaming:
+            if payload is None and data is None:
+                resp = request(http_method, url, headers=headers, stream=True)
+            elif data is not None:
+                resp = request(http_method, url, headers=headers, data=data, stream=True)
+            else:
+                resp = request(http_method, url, headers=headers, json=payload, stream=True)
         else:
-            resp = request(http_method, url, headers=headers, json=payload)
+            if payload is None and data is None:
+                resp = self.session.request(http_method, url, headers=headers)
+            elif data is not None:
+                resp = self.session.request(http_method, url, headers=headers, data=data)
+            else:
+                resp = self.session.request(http_method, url, headers=headers, json=payload)
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
