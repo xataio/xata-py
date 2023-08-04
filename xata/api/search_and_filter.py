@@ -372,7 +372,7 @@ class SearchAndFilter(ApiRequest):
             "content-type": "application/json",
             "accept": "text/event-stream" if streaming_results else "application/json",
         }
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers, payload, is_streaming=streaming_results)
 
     def ask_follow_up(
         self,
@@ -419,7 +419,7 @@ class SearchAndFilter(ApiRequest):
             "content-type": "application/json",
             "accept": "text/event-stream" if streaming_results else "application/json",
         }
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers, payload, is_streaming=streaming_results)
 
     def summarize(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """

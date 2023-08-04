@@ -11,6 +11,10 @@
       "deleteUserAPIKey": {
         "template": "endpoint",
         "name": "delete_user_api_keys"
+      },
+      "getUserOAuthClients": {
+        "template": "endpoint",
+        "name": "get_oauth_user_clients"
       }
     },
     "databases": {

@@ -90,7 +90,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
         assert answer.is_success()
 
         assert "transfer-encoding" in answer.headers
-        assert answer.headers.get('transfer-encoding') == "chunked"
+        assert answer.headers.get("transfer-encoding") == "chunked"
 
     def test_ask_follow_up_question(self):
         first_answer = self.client.data().ask("xata", "does xata have a python sdk")
