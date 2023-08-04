@@ -19,7 +19,7 @@
 
 import logging
 
-from requests import request
+from requests import Session
 
 from xata.api_response import ApiResponse
 
@@ -32,6 +32,7 @@ class ApiRequest:
     """
 
     def __init__(self, client):
+        self.session = Session()
         self.client = client
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -64,17 +65,21 @@ class ApiRequest:
         :raises UnauthorizedError
         :raises ServerError
         """
-        # TODO use "|" when client py min version >= 3.9
         headers = {**headers, **self.client.get_headers()}
+
+        # streaming response ?
+        stream_resp = False
+        if headers.get('accept', '').startswith("text/event-stream"):
+            stream_resp = True
 
         # build url
         url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
         if payload is None and data is None:
-            resp = request(http_method, url, headers=headers)
+            resp = self.session.request(http_method, url, headers=headers, stream=stream_resp)
         elif data is not None:
-            resp = request(http_method, url, headers=headers, data=data)
+            resp = self.session.request(http_method, url, headers=headers, data=data, stream=stream_resp)
         else:
-            resp = request(http_method, url, headers=headers, json=payload)
+            resp = self.session.request(http_method, url, headers=headers, json=payload, stream=stream_resp)
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
