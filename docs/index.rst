@@ -33,26 +33,25 @@ connection information in `.xatarc` and `.env`. The Python SDK automatically rea
 files, but it's also possible to pass the connection information directly to the
 `xata.Client` constructor.
 
+See more information about the installation in the Xata_Python_SDK_Install_Docs_.
+
 Example Usage
 -------------
 .. code-block:: python
 
-    from xata import XataClient
-
-    xata = XataClient()
-
-    posts = xata.data().query("Posts", {
-        "columns": [
-            "title",
-            "slug"
-        ],
-        "sort": {
-            "slug": "desc"
-        },
-        "page": {
-            "size": 5
-        }
+    from xata.client import XataClient
+ 
+    resp = xata.data().query("Avengers", {
+        "columns": ["name", "thumbnail"],  # the columns we want returned
+        "filter": { "job": "spiderman" },  # optional filters to apply
+        "sort": { "name": "desc" }  # optional sorting key and order (asc/desc)
     })
+    assert resp.is_success()
+    print(resp["records"])
+    # [{"id": "spidey", "name": "Peter Parker", "job": "spiderman"}]
+    # Note it will be an array, even if there is only one record matching the filters
+
+See more examples in the Xata_Python_SDK_Examples_Docs_.
 
 .. toctree::
    :maxdepth: 3
@@ -71,3 +70,5 @@ Indices and tables
 
 .. _Xata: https://xata.io
 .. _Xata_CLI: https://xata.io/docs/getting-started/cli
+.. _Xata_Python_SDK_Install_Docs: https://xata.io/docs/python-sdk/overview
+.. _Xata_Python_SDK_Examples_Docs: https://xata.io/docs/python-sdk/examples
