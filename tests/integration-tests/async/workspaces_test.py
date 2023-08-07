@@ -22,7 +22,6 @@ import utils
 
 from xata.client import XataClient
 
-
 class TestWorkspacesNamespace(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
@@ -30,8 +29,9 @@ class TestWorkspacesNamespace(object):
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
         self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
 
-    def test_create_new_workspace(self):
-        r = self.client.workspaces().create_async(self.workspace_name, "sluginator")
+    @pytest.mark.asyncio
+    async def test_create_new_workspace(self):
+        r = await self.client.workspaces().create_async(self.workspace_name, "sluginator")
         assert r.is_success()
         assert "id" in r
         assert "name" in r

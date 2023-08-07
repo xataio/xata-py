@@ -79,8 +79,7 @@ class Workspaces(ApiRequest):
         return self.request("POST", url_path, headers, payload)
 
     async def create_async(self, name: str, slug: str = None) -> ApiResponse:
-        api_response = await self.create(name, slug)
-        return api_response
+        return await self.create(name, slug)
 
     def get(self, workspace_id: str = None) -> ApiResponse:
         """
