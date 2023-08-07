@@ -449,7 +449,9 @@ if __name__ == "__main__":
         logging.info("generating %d paths .." % len(spec["paths"]))
         it = 1
         for path, endpoints in spec["paths"].items():
-            logging.info("[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints["summary"]))
+            logging.info(
+                "[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints.get("summary", "missing-summary"))
+            )
             generate_endpoints(path, endpoints, references)
             it += 1
 

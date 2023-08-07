@@ -115,3 +115,24 @@ class Authentication(ApiRequest):
         """
         url_path = "/user/oauth/clients"
         return self.request("GET", url_path)
+
+    def getUserOAuthAccessTokens(self) -> ApiResponse:
+        """
+        Retrieve the list of valid OAuth Access Tokens on the current user's account
+
+        Reference: https://xata.io/docs/api-reference/user/oauth/tokens#get-the-list-of-user-oauth-access-tokens
+        Path: /user/oauth/tokens
+        Method: GET
+        Response status codes:
+        - 200: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 5XX: Unexpected Error
+        Response: application/json
+
+
+        :returns ApiResponse
+        """
+        url_path = "/user/oauth/tokens"
+        return self.request("GET", url_path)

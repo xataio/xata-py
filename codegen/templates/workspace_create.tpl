@@ -31,3 +31,7 @@
        url_path = "${path}"
        headers = {"content-type": "application/json"}
        return self.request("${http_method}", url_path, headers, payload)
+
+    async def ${operation_id}_async(self, name: str, slug: str = None) -> ApiResponse:
+       api_response = await self.${operation_id}(name, slug)
+       return api_response

@@ -78,6 +78,10 @@ class Workspaces(ApiRequest):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
+    async def create_async(self, name: str, slug: str = None) -> ApiResponse:
+        api_response = await self.create(name, slug)
+        return api_response
+
     def get(self, workspace_id: str = None) -> ApiResponse:
         """
         Retrieve workspace info from a workspace ID
