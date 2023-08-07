@@ -38,4 +38,4 @@
             "content-type": "application/json",
             "accept": "text/event-stream" if streaming_results else "application/json",
         }
-        return self.request("POST", url_path, headers, payload)
+        return self.request("POST", url_path, headers, payload, is_streaming=streaming_results)

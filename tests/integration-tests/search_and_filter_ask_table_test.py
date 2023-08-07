@@ -89,19 +89,8 @@ class TestSearchAndFilterAskTableEndpoint(object):
         answer = self.client.data().ask("xata", "does the data model have link type?", streaming_results=True)
         assert answer.is_success()
 
-        # TODO
-        # use stream=True in namespace.request
-
-        # assert "answer" in answer
-        # assert "records" in answer
-        # assert "sessionId" in answer
-
-        # assert answer["answer"] is not None
-        # assert answer["sessionId"] is not None
-        # assert len(answer["records"]) > 0
-
-        # assert answer.headers["content-type"].lower().startswith("text/event-stream")
-        assert True
+        assert "transfer-encoding" in answer.headers
+        assert answer.headers.get("transfer-encoding") == "chunked"
 
     def test_ask_follow_up_question(self):
         first_answer = self.client.data().ask("xata", "does xata have a python sdk")
