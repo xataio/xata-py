@@ -149,6 +149,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -199,6 +200,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -238,6 +240,7 @@ class Records(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -276,6 +279,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -316,6 +320,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
