@@ -51,12 +51,16 @@ class TestFilesTransformations(object):
         payload = {"title": self.fake.catch_phrase()}
         r = self.client.records().insert("Attachments", payload)
         assert r.is_success()
-        rid = r["id"]
+
         meta = utils.get_file("images/01.gif", public_url=True)
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
-        assert self.client.files().put("Attachments", rid, "one_file", img, meta["mediaType"]).is_success()
+        file = self.client.files().put("Attachments", r["id"], "one_file", img, meta["mediaType"])
+        assert file.is_success()
 
-        rot_180 = self.client.files().transform(r["id"], {"rotate": 180})
+        # TODO get image it
+        assert file == ""
+
+        rot_180 = self.client.files().transform(file["one_file"]["id"], {"rotate": 180})
         assert img != rot_180
 
         proof_rot_180 = Image.open(utils.get_file_name("images/01.gif")).rotate(180)
