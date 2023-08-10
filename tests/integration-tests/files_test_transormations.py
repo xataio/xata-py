@@ -52,7 +52,7 @@ class TestFilesTransformations(object):
         r = self.client.records().insert("Attachments", payload)
         assert r.is_success()
         rid = r["id"]
-        meta = utils.get_file("images/01.gif")
+        meta = utils.get_file("images/01.gif", public_url=True)
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
         assert self.client.files().put("Attachments", rid, "one_file", img, meta["mediaType"]).is_success()
 
@@ -67,7 +67,7 @@ class TestFilesTransformations(object):
         r = self.client.records().insert("Attachments", payload)
         assert r.is_success()
         rid = r["id"]
-        meta = utils.get_file("images/01.gif")
+        meta = utils.get_file("images/01.gif", public_url=True)
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
         assert self.client.files().put("Attachments", rid, "one_file", img, meta["mediaType"]).is_success()
 
