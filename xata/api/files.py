@@ -23,8 +23,11 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
+from requests import request
+
 from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
+from xata.errors import XataServerError
 
 
 class Files(ApiRequest):
@@ -60,7 +63,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -100,7 +103,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -135,7 +138,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -164,7 +167,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -201,7 +204,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -229,8 +232,26 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
+
+    def transform(self, image_id: str, operations: dict[str, any]) -> ApiResponse:
+        """
+        Image transformations
+        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
+
+        :param image_id: str Id of the image
+        :param operations: dict Image operations
+
+        :return Response
+        """
+        ops = ",".join(f"{o}={p}" for o, p in operations.items())
+        url = "https://%s.storage.xata.sh/transform/%s/%s" % (self.client.get_region(), ops, image_id)
+        print(url)
+        resp = request("GET", url, headers=self.client.get_headers())
+        if resp.status_code != 200:
+            raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
+        return resp.content
