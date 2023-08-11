@@ -25,7 +25,9 @@ from xata.client import XataClient
 class TestSqlQuery(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.client = XataClient(db_name=self.db_name)
+        self.client = XataClient(
+            db_name=self.db_name, domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev"
+        )
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Users").is_success()
         assert (
@@ -65,19 +67,19 @@ class TestSqlQuery(object):
     def test_query_statement_with_missing_params(self):
         r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = '$1'")
         assert r.is_success()
-        assert "records" in r
-        assert len(r["records"]) == 0
+        assert len(r) == 0
 
     def test_query_statement_with_params_and_no_param_references(self):
         r = self.client.sql().query('SELECT * FROM "Users"', ["This is important"])
         assert not r.is_success()
 
-    def test_query_statement_with_incorrect_amount_of_params(self):
+    def test_query_statement_with_too_many_params(self):
         r = self.client.sql().query(
             'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Shrek", "shrek@example.com", "Hi, I'm too much!"]
         )
         assert not r.is_success()
 
+    def test_query_statement_with_not_enough_params(self):
         r = self.client.sql().query('INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Shrek"])
         assert not r.is_success()
 
@@ -86,14 +88,14 @@ class TestSqlQuery(object):
             "INSERT INTO \"Users\" (name, email) VALUES ('Leslie Nielsen', 'leslie@example.com')"
         )
         assert r.is_success()
-        assert "records" in r
+        assert not r
 
     def test_insert_with_params(self):
         r = self.client.sql().query(
             'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Keanu Reeves", "keanu@example.com"]
         )
         assert r.is_success()
-        assert "records" in r
+        assert not r
 
     def test_query_with_params(self):
         r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])

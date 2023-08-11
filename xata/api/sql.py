@@ -26,7 +26,12 @@ class Sql(ApiRequest):
     scope = "workspace"
 
     def query(
-        self, query: str, params: list = None, consistency: str = "strong", db_name: str = None, branch_name: str = None
+        self,
+        statement: str,
+        params: list = None,
+        consistency: str = "strong",
+        db_name: str = None,
+        branch_name: str = None,
     ) -> ApiResponse:
         """
         This endpoint performs the SQL query across the entire database branch. Set your SQL query in the parameter `query`.
@@ -35,7 +40,7 @@ class Sql(ApiRequest):
         Method: POST
         Response: application/json
 
-        :param query: str The query string
+        :param statement: str The statement to run
         :param params: dict The query parameters list. default: None
         :param consistency: str The consistency level for this request. default: strong
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -47,7 +52,7 @@ class Sql(ApiRequest):
         url_path = f"/db/{db_branch_name}/sql"
         headers = {"content-type": "application/json"}
         payload = {
-            "query": query,
+            "statement": statement,
             "params": params,
             "consistency": consistency,
         }
