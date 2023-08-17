@@ -222,6 +222,7 @@ class SearchAndFilter(ApiRequest):
         - 404: Example response
         - 503: ServiceUnavailable
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -249,6 +250,7 @@ class SearchAndFilter(ApiRequest):
         - 404: Example response
         - 503: ServiceUnavailable
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
@@ -280,6 +282,7 @@ class SearchAndFilter(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -311,6 +314,7 @@ class SearchAndFilter(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -466,6 +470,7 @@ class SearchAndFilter(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
@@ -498,6 +503,7 @@ class SearchAndFilter(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content

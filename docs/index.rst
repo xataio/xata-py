@@ -40,7 +40,7 @@ Example Usage
 .. code-block:: python
 
     from xata.client import XataClient
- 
+
     resp = xata.data().query("Avengers", {
         "columns": ["name", "thumbnail"],  # the columns we want returned
         "filter": { "job": "spiderman" },  # optional filters to apply
