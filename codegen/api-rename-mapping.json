@@ -202,7 +202,7 @@
       },
       "upsertRecordWithID": {
         "template": "endpoint",
-        "name": "upsert_with_id"
+        "name": "upsert"
       },
       "deleteRecord": {
         "template": "endpoint",

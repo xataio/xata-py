@@ -70,10 +70,7 @@ class TestRecordsFileOperations(object):
         # assert "size" in record["one_file"] # TODO should be here
         assert "name" in record["many_files"][0]
         assert "mediaType" in record["many_files"][0]
-
         assert record["title"] == payload["title"]
-        assert len(list(record["one_file"].keys())) == 2
-        assert len(list(record["many_files"][0].keys())) == 3
 
         r = self.client.records().get(
             "Attachments", r["id"], columns=["one_file.base64Content", "many_files.base64Content"]

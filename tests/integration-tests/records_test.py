@@ -143,7 +143,7 @@ class TestRecordsNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         rec_id = utils.get_random_string(24)
-        r = self.client.records().upsert_with_id("Posts", rec_id, record)
+        r = self.client.records().upsert("Posts", rec_id, record)
         assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
@@ -153,7 +153,7 @@ class TestRecordsNamespace(object):
 
         update = utils.get_post()
         assert record != update
-        r = self.client.records().upsert_with_id("Posts", rec_id, update)
+        r = self.client.records().upsert("Posts", rec_id, update)
         assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
