@@ -210,7 +210,7 @@
       },
       "updateRecordWithID": {
         "template": "endpoint",
-        "name": "update_with_id"
+        "name": "update"
       },
       "bulkInsertTableRecords": {
         "template": "endpoint",

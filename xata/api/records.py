@@ -256,7 +256,7 @@ class Records(ApiRequest):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("DELETE", url_path)
 
-    def update_with_id(
+    def update(
         self,
         table_name: str,
         record_id: str,
