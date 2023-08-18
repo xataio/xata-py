@@ -40,6 +40,7 @@ from .namespaces.core.invites import Invites
 from .namespaces.core.users import Users
 from .namespaces.core.workspaces import Workspaces
 from .namespaces.files import Files
+from .namespaces.sql import Sql
 from .namespaces.workspace.branch import Branch
 from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
@@ -48,7 +49,7 @@ from .namespaces.workspace.table import Table
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
-__version__ = "0.11.2"
+__version__ = "0.12.0"
 
 PERSONAL_API_KEY_LOCATION = "~/.config/xata/key"
 DEFAULT_DATA_PLANE_DOMAIN = "xata.sh"
@@ -155,6 +156,7 @@ class XataClient:
         self._users = Users(self)
         self._workspaces = Workspaces(self)
         self._files = Files(self)
+        self._sql = Sql(self)
 
     def get_config(self) -> dict:
         """
@@ -841,3 +843,6 @@ class XataClient:
 
     def files(self) -> Files:
         return self._files
+
+    def sql(self) -> Files:
+        return self._sql

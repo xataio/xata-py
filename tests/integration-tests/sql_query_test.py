@@ -1,0 +1,103 @@
+#
+# Licensed to Xatabase, Inc under one or more contributor
+# license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright
+# ownership. Xatabase, Inc licenses this file to you under the
+# Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You
+# may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+import utils
+
+from xata.client import XataClient
+
+
+class TestSqlQuery(object):
+    def setup_class(self):
+        self.db_name = utils.get_db_name()
+        self.client = XataClient(db_name=self.db_name)
+        assert self.client.databases().createDatabase(self.db_name, {"region": "us-east-1"}).status_code == 201
+        assert self.client.table().createTable("Users").status_code == 201
+        assert (
+            self.client.table()
+            .setTableSchema(
+                "Users",
+                {"columns": [{"name": "name", "type": "string"}, {"name": "email", "type": "string"}]},
+            )
+            .status_code
+            == 200
+        )
+        users = [
+            {
+                "name": utils.get_faker().name(),
+                "email": utils.get_faker().email(),
+            }
+            for i in range(50)
+        ]
+        assert self.client.records().bulkInsertTableRecords("Users", {"records": users}).status_code == 200
+
+    def teardown_class(self):
+        assert self.client.databases().deleteDatabase(self.db_name).status_code == 200
+
+    def test_query(self):
+        r = self.client.sql().query('SELECT * FROM "Users" LIMIT 5')
+        assert r.status_code == 200
+        assert "records" in r.json()
+        assert len(r.json()["records"]) == 5
+
+    def test_query_on_non_existing_table(self):
+        r = self.client.sql().query('SELECT * FROM "DudeWhereIsMyTable"')
+        assert r.status_code > 299
+
+    def test_query_with_invalid_statement(self):
+        r = self.client.sql().query("SELECT ' fr_o-")
+        assert r.status_code > 299
+
+    def test_query_statement_with_missing_params(self):
+        r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = '$1'")
+        assert r.status_code == 200
+        assert len(r.json()) == 0
+
+    def test_query_statement_with_params_and_no_param_references(self):
+        r = self.client.sql().query('SELECT * FROM "Users"', ["This is important"])
+        assert r.status_code > 299
+
+    def test_query_statement_with_too_many_params(self):
+        r = self.client.sql().query(
+            'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Shrek", "shrek@example.com", "Hi, I'm too much!"]
+        )
+        assert r.status_code > 299
+
+    def test_query_statement_with_not_enough_params(self):
+        r = self.client.sql().query('INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Shrek"])
+        assert r.status_code > 299
+
+    def test_insert(self):
+        r = self.client.sql().query(
+            "INSERT INTO \"Users\" (name, email) VALUES ('Leslie Nielsen', 'leslie@example.com')"
+        )
+        assert r.status_code == 201
+        assert not r.json()
+
+    def test_insert_with_params(self):
+        r = self.client.sql().query(
+            'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Keanu Reeves", "keanu@example.com"]
+        )
+        assert r.status_code == 201
+        assert not r.json()
+
+    def test_query_with_params(self):
+        r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])
+        assert r.status_code == 200
+        assert "records" in r.json()
+        assert len(r.json()["records"]) == 1
