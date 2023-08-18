@@ -215,7 +215,9 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     vars = {
         "template": template_ref,
         "operation_id": operation_id,
-        "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
+        "description": desc.strip(
+            "\n\r"
+        ),  # textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
         "http_method": method.upper(),
         "path": path,
         "params": endpoint_params,

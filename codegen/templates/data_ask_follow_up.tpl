@@ -1,6 +1,6 @@
     def ${operation_id}(self, table_name: str, session_id: str, question: str, streaming_results: bool = False, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        Ask a follow-up question.
+        ${description}
 
         Reference: ${docs_url}
         Path: ${path}

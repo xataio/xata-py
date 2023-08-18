@@ -134,9 +134,7 @@ class Records(ApiRequest):
         if_version: int = None,
     ) -> ApiResponse:
         """
-        By default, IDs are auto-generated when data is insterted into Xata.  Sending a request to
-        this endpoint allows us to insert a record with a pre-existing ID, bypassing the default
-        automatic ID generation.
+        By default, IDs are auto-generated when data is insterted into Xata. Sending a request to this endpoint allows us to insert a record with a pre-existing ID, bypassing the default automatic ID generation.
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id#insert-record-with-id
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}

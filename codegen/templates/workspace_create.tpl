@@ -1,9 +1,7 @@
 
     def ${operation_id}(self, name: str, slug: str = None) -> ApiResponse:
        """
-       % for line in description :
-       ${line}
-       % endfor
+       ${description}
 
        Path: ${path}
        Method: ${http_method}
