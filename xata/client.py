@@ -45,6 +45,7 @@ from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
 from .namespaces.workspace.search_and_filter import Search_and_filter
 from .namespaces.workspace.table import Table
+from .namespaces.sql import Sql
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync
@@ -155,6 +156,7 @@ class XataClient:
         self._users = Users(self)
         self._workspaces = Workspaces(self)
         self._files = Files(self)
+        self._sql = Sql(self)
 
     def get_config(self) -> dict:
         """
@@ -841,3 +843,6 @@ class XataClient:
 
     def files(self) -> Files:
         return self._files
+
+    def sql(self) -> Files:
+        return self._sql
