@@ -223,7 +223,7 @@
     },
     "search_and_filter": {
       "queryTable": {
-        "template": "endpoint",
+        "template": "data_query",
         "name": "query"
       },
       "searchTable": {

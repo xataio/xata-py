@@ -31,7 +31,7 @@ class SearchAndFilter(ApiRequest):
 
     scope = "workspace"
 
-    def query(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
+    def query(self, table_name: str, payload: dict = None, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
         The Query Table API can be used to retrieve all records in a table.
         The API support filtering, sorting, selecting a subset of columns, and pagination.
@@ -853,6 +853,8 @@ class SearchAndFilter(ApiRequest):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
         headers = {"content-type": "application/json"}
+        if not payload:
+            payload = {}
         return self.request("POST", url_path, headers, payload)
 
     def search_branch(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
