@@ -214,11 +214,28 @@ class Branch(ApiRequest):
 
     def get_git_branches_mapping(self, db_name: str) -> ApiResponse:
         """
-        Lists all the git branches in the mapping, and their associated Xata branches.  Example
-        response:  ```json {   "mappings": [       {         "gitBranch": "main",
-        "xataBranch": "main"       },       {         "gitBranch": "gitBranch1",
-        "xataBranch": "xataBranch1"       }       {         "gitBranch": "xataBranch2",
-        "xataBranch": "xataBranch2"       }   ] } ```
+        Lists all the git branches in the mapping, and their associated Xata branches.
+
+        Example response:
+
+        ```json
+        {
+          "mappings": [
+              {
+                "gitBranch": "main",
+                "xataBranch": "main"
+              },
+              {
+                "gitBranch": "gitBranch1",
+                "xataBranch": "xataBranch1"
+              }
+              {
+                "gitBranch": "xataBranch2",
+                "xataBranch": "xataBranch2"
+              }
+          ]
+        }
+        ```
 
         Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#list-git-branches-mapping
         Path: /dbs/{db_name}/gitBranches
@@ -240,14 +257,19 @@ class Branch(ApiRequest):
 
     def add_git_branches_entry(self, db_name: str, payload: dict) -> ApiResponse:
         """
-        Adds an entry to the mapping of git branches to Xata branches.  The git branch and the
-        Xata branch must be present in the body of the request.  If the Xata branch doesn't exist,
-        a 400 error is returned.  If the git branch is already present in the mapping, the old
-        entry is overwritten, and a warning message is included in the response.  If the git
-        branch is added and didn't exist before, the response code is 204. If the git branch
-        existed and it was overwritten, the response code is 201.  Example request:  ```json //
-        POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches {   "gitBranch": "fix/bug123",
-        "xataBranch": "fix_bug" } ```
+        Adds an entry to the mapping of git branches to Xata branches. The git branch and the Xata branch must be present in the body of the request. If the Xata branch doesn't exist, a 400 error is returned.
+
+        If the git branch is already present in the mapping, the old entry is overwritten, and a warning message is included in the response. If the git branch is added and didn't exist before, the response code is 204. If the git branch existed and it was overwritten, the response code is 201.
+
+        Example request:
+
+        ```json
+        // POST https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches
+        {
+          "gitBranch": "fix/bug123",
+          "xataBranch": "fix_bug"
+        }
+        ```
 
         Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#link-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/gitBranches
@@ -272,10 +294,13 @@ class Branch(ApiRequest):
 
     def remove_git_branches_entry(self, db_name: str, git_branch: str) -> ApiResponse:
         """
-        Removes an entry from the mapping of git branches to Xata branches.  The name of the git
-        branch must be passed as a query parameter.  If the git branch is not found, the endpoint
-        returns a 404 status code.  Example request:  ```json // DELETE https://tutorial-
-        ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123 ```
+        Removes an entry from the mapping of git branches to Xata branches. The name of the git branch must be passed as a query parameter. If the git branch is not found, the endpoint returns a 404 status code.
+
+        Example request:
+
+        ```json
+        // DELETE https://tutorial-ng7s8c.xata.sh/dbs/demo/gitBranches?gitBranch=fix%2Fbug123
+        ```
 
         Reference: https://xata.io/docs/api-reference/dbs/db_name/gitBranches#unlink-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/gitBranches
@@ -300,16 +325,29 @@ class Branch(ApiRequest):
 
     def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> ApiResponse:
         """
-        In order to resolve the database branch, the following algorithm is used: * if the
-        `gitBranch` was provided and is found in the [git branches mapping](/api-
-        reference/dbs/db_name/gitBranches), the associated Xata branch is returned * else, if a
-        Xata branch with the exact same name as `gitBranch` exists, return it * else, if
-        `fallbackBranch` is provided and a branch with that name exists, return it * else, return
-        the default branch of the DB (`main` or the first branch)  Example call:  ```json // GET
-        https://tutorial-
-        ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg ```
-        Example response:  ```json {   "branch": "main",   "reason": {     "code":
-        "DEFAULT_BRANCH",     "message": "Default branch for this database (main)"   } } ```
+        In order to resolve the database branch, the following algorithm is used:
+        * if the `gitBranch` was provided and is found in the [git branches mapping](/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned
+        * else, if a Xata branch with the exact same name as `gitBranch` exists, return it
+        * else, if `fallbackBranch` is provided and a branch with that name exists, return it
+        * else, return the default branch of the DB (`main` or the first branch)
+
+        Example call:
+
+        ```json
+        // GET https://tutorial-ng7s8c.xata.sh/dbs/demo/dbs/demo/resolveBranch?gitBranch=test&fallbackBranch=tsg
+        ```
+
+        Example response:
+
+        ```json
+        {
+          "branch": "main",
+          "reason": {
+            "code": "DEFAULT_BRANCH",
+            "message": "Default branch for this database (main)"
+          }
+        }
+        ```
 
         Reference: https://xata.io/docs/api-reference/dbs/db_name/resolveBranch#resolve-a-git-branch-to-a-xata-branch
         Path: /dbs/{db_name}/resolveBranch

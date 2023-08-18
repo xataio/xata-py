@@ -94,24 +94,3 @@ class Authentication(ApiRequest):
         """
         url_path = f"/user/keys/{key_name}"
         return self.request("DELETE", url_path)
-
-    def get_oauth_user_clients(self) -> ApiResponse:
-        """
-        Retrieve the list of OAuth Clients that a user has authorized
-
-        Reference: https://xata.io/docs/api-reference/user/oauth/clients#get-the-list-of-user-oauth-clients
-        Path: /user/oauth/clients
-        Method: GET
-        Response status codes:
-        - 200: OK
-        - 400: Bad Request
-        - 401: Authentication Error
-        - 404: Example response
-        - 5XX: Unexpected Error
-        Response: application/json
-
-
-        :returns ApiResponse
-        """
-        url_path = "/user/oauth/clients"
-        return self.request("GET", url_path)

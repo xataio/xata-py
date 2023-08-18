@@ -181,8 +181,7 @@ class Workspaces(ApiRequest):
 
     def update_member(self, user_id: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
-        Update a workspace member role.  Workspaces must always have at least one owner, so this
-        operation will fail if trying to remove owner role from the last owner in the workspace.
+        Update a workspace member role. Workspaces must always have at least one owner, so this operation will fail if trying to remove owner role from the last owner in the workspace.
 
         Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/members/user_id#update-workspace-member-role
         Path: /workspaces/{workspace_id}/members/{user_id}

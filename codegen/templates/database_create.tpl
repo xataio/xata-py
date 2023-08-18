@@ -1,9 +1,7 @@
 
     def ${operation_id}(self, db_name: str, workspace_id: str = None, region: str = None, branch_name: str = None) -> ApiResponse:
        """
-       % for line in description :
-       ${line}
-       % endfor
+       ${description}
 
        Reference: ${docs_url}
        Path: ${path}

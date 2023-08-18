@@ -33,8 +33,7 @@ class Table(ApiRequest):
 
     def create(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        Creates a new table with the given name.  Returns 422 if a table with the same name
-        already exists.
+        Creates a new table with the given name. Returns 422 if a table with the same name already exists.
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name#create-table
         Path: /db/{db_branch_name}/tables/{table_name}
@@ -88,9 +87,17 @@ class Table(ApiRequest):
 
     def update(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        Update table.  Currently there is only one update operation supported: renaming the table
-        by providing a new name.  In the example below, we rename a table from “users” to
-        “people”:  ```json // PATCH /db/test:main/tables/users  {   "name": "people" } ```
+        Update table. Currently there is only one update operation supported: renaming the table by providing a new name.
+
+        In the example below, we rename a table from “users” to “people”:
+
+        ```json
+        // PATCH /db/test:main/tables/users
+
+        {
+          "name": "people"
+        }
+        ```
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name#update-table
         Path: /db/{db_branch_name}/tables/{table_name}
@@ -173,9 +180,8 @@ class Table(ApiRequest):
 
     def get_columns(self, table_name: str, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        Retrieves the list of table columns and their definition.  This endpoint returns the
-        column list with object columns being reported with their full dot-separated path
-        (flattened).
+        Retrieves the list of table columns and their definition. This endpoint returns the column list with object columns being reported with their
+        full dot-separated path (flattened).
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns#list-table-columns
         Path: /db/{db_branch_name}/tables/{table_name}/columns
@@ -201,8 +207,7 @@ class Table(ApiRequest):
 
     def add_column(self, table_name: str, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        Adds a new column to the table.  The body of the request should contain the column
-        definition.
+        Adds a new column to the table. The body of the request should contain the column definition.
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns#create-new-column
         Path: /db/{db_branch_name}/tables/{table_name}/columns
@@ -288,8 +293,7 @@ class Table(ApiRequest):
         self, table_name: str, column_name: str, payload: dict, db_name: str = None, branch_name: str = None
     ) -> ApiResponse:
         """
-        Update column with partial data.  Can be used for renaming the column by providing a new
-        "name" field.
+        Update column with partial data. Can be used for renaming the column by providing a new "name" field.
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/columns/column_name#update-column
         Path: /db/{db_branch_name}/tables/{table_name}/columns/{column_name}

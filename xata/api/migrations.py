@@ -272,13 +272,16 @@ class Migrations(ApiRequest):
 
     def push(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        The `schema/push` API accepts a list of migrations to be applied to the current branch.  A
-        list of applicable migrations can be fetched using the `schema/history` API from another
-        branch or database.  The most recent migration must be part of the list or referenced (via
-        `parentID`) by the first migration in the list of migrations to be pushed.  Each migration
-        in the list has an `id`, `parentID`, and `checksum`. The checksum for migrations are
-        generated and verified by xata.  The operation fails if any migration in the list has an
-        invalid checksum.
+        The `schema/push` API accepts a list of migrations to be applied to the
+        current branch. A list of applicable migrations can be fetched using
+        the `schema/history` API from another branch or database.
+
+        The most recent migration must be part of the list or referenced (via
+        `parentID`) by the first migration in the list of migrations to be pushed.
+
+        Each migration in the list has an `id`, `parentID`, and `checksum`. The
+        checksum for migrations are generated and verified by xata. The
+        operation fails if any migration in the list has an invalid checksum.
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/schema/push#push-migrations.
         Path: /db/{db_branch_name}/schema/push
