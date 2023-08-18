@@ -32,6 +32,7 @@ from .api.invites import Invites
 from .api.migrations import Migrations
 from .api.records import Records
 from .api.search_and_filter import SearchAndFilter
+from .api.sql import Sql
 from .api.table import Table
 from .api.users import Users
 from .api.workspaces import Workspaces
@@ -138,6 +139,7 @@ class XataClient:
         self._invites = Invites(self)
         self._migrations = Migrations(self)
         self._records = Records(self)
+        self._sql = Sql(self)
         self._table = Table(self)
         self._users = Users(self)
         self._workspaces = Workspaces(self)
@@ -390,3 +392,6 @@ class XataClient:
         :returns Files
         """
         return self._files
+
+    def sql(self) -> Sql:
+        return self._sql
