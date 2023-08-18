@@ -40,12 +40,12 @@ from .namespaces.core.invites import Invites
 from .namespaces.core.users import Users
 from .namespaces.core.workspaces import Workspaces
 from .namespaces.files import Files
+from .namespaces.sql import Sql
 from .namespaces.workspace.branch import Branch
 from .namespaces.workspace.migrations import Migrations
 from .namespaces.workspace.records import Records
 from .namespaces.workspace.search_and_filter import Search_and_filter
 from .namespaces.workspace.table import Table
-from .namespaces.sql import Sql
 
 # TODO this is a manual task, to keep in sync with pyproject.toml
 # could/should be automated to keep in sync

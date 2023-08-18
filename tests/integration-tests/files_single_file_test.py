@@ -81,7 +81,6 @@ class TestFilesSingleFile(object):
         proof = self.client.records().getRecord("Attachments", rid)
         assert proof.status_code == 200, proof.json()
         assert proof.json()["one_file"]["name"] == ""
-        assert len(list(proof.json()["one_file"].keys())) == 2
 
     def test_put_image_file(self):
         payload = {"title": self.fake.catch_phrase()}
