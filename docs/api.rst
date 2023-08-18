@@ -32,6 +32,10 @@ Data API
 .. autoclass:: Files
    :members:
 
+.. py:module:: xata.api.sql
+.. autoclass:: SQL
+   :members:
+
 Management API
 --------------
 
