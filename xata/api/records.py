@@ -149,6 +149,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -175,7 +176,7 @@ class Records(ApiRequest):
         headers = {"content-type": "application/json"}
         return self.request("PUT", url_path, headers, payload)
 
-    def upsert_with_id(
+    def upsert(
         self,
         table_name: str,
         record_id: str,
@@ -199,6 +200,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -238,6 +240,7 @@ class Records(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -253,7 +256,7 @@ class Records(ApiRequest):
             url_path += "?columns=%s" % ",".join(columns)
         return self.request("DELETE", url_path)
 
-    def update_with_id(
+    def update(
         self,
         table_name: str,
         record_id: str,
@@ -276,6 +279,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -316,6 +320,7 @@ class Records(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param payload: dict content
