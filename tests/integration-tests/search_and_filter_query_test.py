@@ -27,6 +27,7 @@ class TestSearchAndFilterQueryApi(object):
     """
     POST /db/{db_branch_name}/tables/{table_name}/query
     """
+
     def setup_class(self):
         self.fake = Faker()
         self.db_name = utils.get_db_name()

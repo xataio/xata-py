@@ -36,5 +36,5 @@ Response: ${params['response_content_types'][0]["content_type"]}
        url_path = f"/db/{db_branch_name}/tables/{table_name}/query"
        headers = {"content-type": "application/json"}
        if not payload:
-         payload = {} 
+         payload = {}
        return self.request("POST", url_path, headers, payload)
