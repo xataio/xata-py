@@ -348,5 +348,27 @@
         "template": "endpoint",
         "name": "resend"
       }
+    },
+    "oauth": {
+      "getUserOAuthClients": {
+        "template": "endpoint",
+        "name": "get_clients"
+      },
+      "deleteUserOAuthClient": {
+        "template": "endpoint",
+        "name": "delete_clients"
+      },
+      "getUserOAuthAccessTokens": {
+        "template": "endpoint",
+        "name": "get_access_tokens"
+      },
+      "deleteOAuthAccessToken": {
+        "template": "endpoint",
+        "name": "delete_access_tokens"
+      },
+      "updateOAuthAccessToken": {
+        "template": "endpoint",
+        "name": "update_access_tokens"
+      }
     }
   }
