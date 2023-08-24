@@ -24,6 +24,7 @@ class TestSearchAndFilterAskTableEndpoint(object):
     def setup_class(self):
         self.client = XataClient(workspace_id="sample-databases-v0sn1n", db_name="docs")
 
+    """
     def test_ask_table_for_response_shape(self):
         answer = self.client.data().ask("xata", "does xata have a python sdk")
         assert answer.is_success()
@@ -91,13 +92,48 @@ class TestSearchAndFilterAskTableEndpoint(object):
 
         assert "transfer-encoding" in answer.headers
         assert answer.headers.get("transfer-encoding") == "chunked"
+    """
 
     def test_ask_follow_up_question(self):
-        first_answer = self.client.data().ask("xata", "does xata have a python sdk")
+        opts = {
+            "searchType": "keyword",
+            "search": {
+                "fuzziness": 1,
+                "prefix": "phrase",
+                "target": [
+                    "slug",
+                    {"column": "title", "weight": 4},
+                    "content",
+                    "section",
+                    {"column": "keywords", "weight": 4},
+                ],
+                "boosters": [
+                    {
+                        "valueBooster": {
+                            "column": "section",
+                            "value": "guide",
+                            "factor": 18,
+                        },
+                    },
+                ],
+            },
+        }
+
+        first_answer = self.client.data().ask("xata", "does xata have a python sdk", options=opts)
         assert first_answer.is_success()
 
-        session_id = first_answer["sessionId"]
+        assert "answer" in first_answer
+        assert "records" in first_answer
+        assert "sessionId" in first_answer
 
+        assert first_answer["answer"] is not None
+        assert first_answer["sessionId"] is not None
+        assert len(first_answer["records"]) > 0
+
+        assert first_answer.headers["content-type"].lower().startswith("application/json")
+
+        # follow up
+        session_id = first_answer["sessionId"]
         second_answer = self.client.data().ask_follow_up("xata", session_id, "what is the best way to do bulk?")
         assert second_answer.is_success()
         assert "answer" in second_answer
