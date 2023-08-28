@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/logo_dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./assets/logo_light.svg">
-    <img width="400" alt="Xata" src="./assets/logo_dark.svg">
-  </picture>
+  <img width="400" alt="Xata" src="https://raw.githubusercontent.com/xataio/xata-py/main/assets/logo_light.svg">
 </p>
 
 # Python SDK for Xata
