@@ -61,8 +61,7 @@ class Invites(ApiRequest):
 
     def cancel(self, invite_id: str, workspace_id: str = None) -> ApiResponse:
         """
-        This operation provides a way to cancel invites by deleting them.  Already accepted
-        invites cannot be deleted.
+        This operation provides a way to cancel invites by deleting them. Already accepted invites cannot be deleted.
 
         Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#deletes-an-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
@@ -87,9 +86,7 @@ class Invites(ApiRequest):
 
     def update(self, invite_id: str, payload: dict, workspace_id: str = None) -> ApiResponse:
         """
-        This operation provides a way to update an existing invite.  Updates are performed in-
-        place; they do not change the invite link, the expiry time, nor do they re-notify the
-        recipient of the invite.
+        This operation provides a way to update an existing invite. Updates are performed in-place; they do not change the invite link, the expiry time, nor do they re-notify the recipient of the invite.
 
         Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id#updates-an-existing-invite
         Path: /workspaces/{workspace_id}/invites/{invite_id}
@@ -118,8 +115,7 @@ class Invites(ApiRequest):
 
     def accept(self, invite_key: str, workspace_id: str = None) -> ApiResponse:
         """
-        Accept the invitation to join a workspace.  If the operation succeeds the user will be a
-        member of the workspace
+        Accept the invitation to join a workspace. If the operation succeeds the user will be a member of the workspace
 
         Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_key/accept#accept-the-invitation-to-join-a-workspace
         Path: /workspaces/{workspace_id}/invites/{invite_key}/accept
@@ -144,8 +140,7 @@ class Invites(ApiRequest):
 
     def resend(self, invite_id: str, workspace_id: str = None) -> ApiResponse:
         """
-        This operation provides a way to resend an Invite notification.  Invite notifications can
-        only be sent for Invites not yet accepted.
+        This operation provides a way to resend an Invite notification. Invite notifications can only be sent for Invites not yet accepted.
 
         Reference: https://xata.io/docs/api-reference/workspaces/workspace_id/invites/invite_id/resend#resend-invite-notification
         Path: /workspaces/{workspace_id}/invites/{invite_id}/resend

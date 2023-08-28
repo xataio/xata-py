@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "xata"
-version = "1.0.0a7"
+version = "1.0.0"
 description = "Python client for Xata.io"
 authors = ["Xata <support@xata.io>"]
 license = "Apache-2.0"
-readme = "README.md"
+readme = "README_PYPI.md"
 documentation = "https://xata-py.readthedocs.io"
 
 [tool.poetry.dependencies]

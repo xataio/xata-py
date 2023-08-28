@@ -1,8 +1,6 @@
     def ${operation_id}(self, table_name: str, question: str, rules: list[str] = [], options: dict = {}, streaming_results: bool = False, db_name: str = None, branch_name: str = None) -> ApiResponse:
         """
-        % for line in description :
-        ${line}
-        % endfor
+        ${description}
 
         Reference: ${docs_url}
         Path: ${path}

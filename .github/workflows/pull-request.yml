@@ -20,6 +20,11 @@ jobs:
         with:
           python-version: "3.10"
 
+      # credit: https://stackoverflow.com/a/75640388
+      - name: readme synced
+        run: diff <(tail -n +8 README.md) <(tail -n +4 README_PYPI.md)
+          
+
       - name: Install dependencies
         run: |
           python3 -m pip install -U poetry

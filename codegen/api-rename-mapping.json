@@ -202,7 +202,7 @@
       },
       "upsertRecordWithID": {
         "template": "endpoint",
-        "name": "upsert_with_id"
+        "name": "upsert"
       },
       "deleteRecord": {
         "template": "endpoint",
@@ -210,7 +210,7 @@
       },
       "updateRecordWithID": {
         "template": "endpoint",
-        "name": "update_with_id"
+        "name": "update"
       },
       "bulkInsertTableRecords": {
         "template": "endpoint",
@@ -223,7 +223,7 @@
     },
     "search_and_filter": {
       "queryTable": {
-        "template": "endpoint",
+        "template": "data_query",
         "name": "query"
       },
       "searchTable": {
@@ -347,6 +347,28 @@
       "resendWorkspaceMemberInvite": {
         "template": "endpoint",
         "name": "resend"
+      }
+    },
+    "oauth": {
+      "getUserOAuthClients": {
+        "template": "endpoint",
+        "name": "get_clients"
+      },
+      "deleteUserOAuthClient": {
+        "template": "endpoint",
+        "name": "delete_clients"
+      },
+      "getUserOAuthAccessTokens": {
+        "template": "endpoint",
+        "name": "get_access_tokens"
+      },
+      "deleteOAuthAccessToken": {
+        "template": "endpoint",
+        "name": "delete_access_tokens"
+      },
+      "updateOAuthAccessToken": {
+        "template": "endpoint",
+        "name": "update_access_tokens"
       }
     }
   }

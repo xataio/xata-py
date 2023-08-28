@@ -27,10 +27,9 @@ class TestSearchAndFilterNamespace(object):
     def setup_class(self):
         self.fake = Faker()
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
         self.record_id = utils.get_random_string(24)
-        self.posts = utils.get_posts(10)
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.posts = utils.get_posts(50)
+        self.client = XataClient(db_name=self.db_name)
 
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
@@ -41,43 +40,12 @@ class TestSearchAndFilterNamespace(object):
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
 
-    def test_query_table(self):
-        """
-        POST /db/{db_branch_name}/tables/{table_name}/query
-        """
-        payload = {
-            "columns": ["title", "slug"],
-            "sort": {"slug": "desc"},
-            "page": {"size": 5},
-        }
-        r = self.client.search_and_filter().query("Posts", payload)
-        assert r.is_success()
-        assert "records" in r
-        assert len(r["records"]) > 0
-        assert "meta" in r
-        assert "id" in r["records"][0]
-        assert "xata" in r["records"][0]
-        assert "title" in r["records"][0]
-        assert "slug" in r["records"][0]
-        assert "text" not in r["records"][0]
-
-        r = self.client.search_and_filter().query("NonExistingTable", payload)
-        assert r.status_code == 404
-
-    def test_query_unknown_columns(self):
-        assert not self.client.search_and_filter().query("Posts", {"columns": ["does", "not", "exist"]}).is_success()
-
-    def test_query_empty_columns(self):
-        r = self.client.search_and_filter().query("Posts", {"columns": ["*"]})
-        assert r.is_success()
-        assert len(r["records"]) > 0
-
     def test_search_branch(self):
         """
         POST /db/{db_branch_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.search_and_filter().search_branch(payload)
+        r = self.client.data().search_branch(payload)
         assert r.is_success()
         assert "records" in r
         assert len(r["records"]) >= 1
@@ -86,10 +54,10 @@ class TestSearchAndFilterNamespace(object):
         assert "title" in r["records"][0]
         assert r["records"][0]["title"] == self.posts[0]["title"]
 
-        r = self.client.search_and_filter().search_branch({"tables": [""], "query": "woopsie!"})
+        r = self.client.data().search_branch({"tables": [""], "query": "woopsie!"})
         assert r.status_code == 400
 
-        r = self.client.search_and_filter().search_branch({"invalid": "query"})
+        r = self.client.data().search_branch({"invalid": "query"})
         assert r.status_code == 400
 
     def test_search_table(self):
@@ -97,7 +65,7 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/search
         """
         payload = {"query": self.posts[0]["title"]}
-        r = self.client.search_and_filter().search_table("Posts", payload)
+        r = self.client.data().search_table("Posts", payload)
         assert r.is_success()
         assert "records" in r
         assert len(r["records"]) >= 1
@@ -106,13 +74,13 @@ class TestSearchAndFilterNamespace(object):
         assert "title" in r["records"][0]
         assert r["records"][0]["title"] == self.posts[0]["title"]
 
-        r = self.client.search_and_filter().search_table("Posts", {})
+        r = self.client.data().search_table("Posts", {})
         assert r.is_success()
 
-        r = self.client.search_and_filter().search_table("NonExistingTable", payload)
+        r = self.client.data().search_table("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().search_table("Posts", {"invalid": "query"})
+        r = self.client.data().search_table("Posts", {"invalid": "query"})
         assert r.status_code == 400
 
     def test_summarize_table(self):
@@ -120,12 +88,12 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/summarize
         """
         payload = {"columns": ["title", "slug"]}
-        r = self.client.search_and_filter().summarize("Posts", payload)
+        r = self.client.data().summarize("Posts", payload)
         assert r.is_success()
         assert "summaries" in r
         assert len(r["summaries"]) > 1
 
-        r = self.client.search_and_filter().summarize("NonExistingTable", payload)
+        r = self.client.data().summarize("NonExistingTable", payload)
         assert r.status_code == 404
 
     def test_aggregate_table(self):
@@ -133,14 +101,14 @@ class TestSearchAndFilterNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/aggregate
         """
         payload = {"aggs": {"titles": {"count": "*"}}}
-        r = self.client.search_and_filter().aggregate("Posts", payload)
+        r = self.client.data().aggregate("Posts", payload)
         assert r.is_success()
         assert "aggs" in r
         assert "titles" in r["aggs"]
         assert r["aggs"]["titles"] == len(self.posts)
 
-        r = self.client.search_and_filter().aggregate("NonExistingTable", payload)
+        r = self.client.data().aggregate("NonExistingTable", payload)
         assert r.status_code == 404
 
-        r = self.client.search_and_filter().aggregate("Posts", {"aggs": {"foo": "bar"}})
+        r = self.client.data().aggregate("Posts", {"aggs": {"foo": "bar"}})
         assert r.status_code == 400

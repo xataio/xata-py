@@ -215,7 +215,7 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     vars = {
         "template": template_ref,
         "operation_id": operation_id,
-        "description": textwrap.wrap(desc, width=90, expand_tabs=True, fix_sentence_endings=True),
+        "description": desc.strip("\n\r"),
         "http_method": method.upper(),
         "path": path,
         "params": endpoint_params,
@@ -450,7 +450,7 @@ if __name__ == "__main__":
         it = 1
         for path, endpoints in spec["paths"].items():
             logging.info(
-                "[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints.get("summary", "MISSING SUMMARY"))
+                "[%2d/%2d] %s: %s" % (it, len(spec["paths"]), path, endpoints.get("summary", "MISSING-SUMMARY"))
             )
             generate_endpoints(path, endpoints, references)
             it += 1

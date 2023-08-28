@@ -116,7 +116,7 @@ class TestRecordsNamespace(object):
         proof = self.client.records().get("Posts", self.record_id)
         assert proof.status_code == 200
 
-        r = self.client.records().update_with_id("Posts", self.record_id, record)
+        r = self.client.records().update("Posts", self.record_id, record)
         assert r.is_success()
         assert "id" in r
         assert "version" in r["xata"]
@@ -132,10 +132,10 @@ class TestRecordsNamespace(object):
         assert r["title"] == record["title"]
         assert r["title"] != proof["title"]
 
-        r = self.client.records().update_with_id("NonExistingTable", self.record_id, record)
+        r = self.client.records().update("NonExistingTable", self.record_id, record)
         assert r.status_code == 404
 
-        r = self.client.records().update_with_id("Posts", "NonExistingRecordId", record)
+        r = self.client.records().update("Posts", "NonExistingRecordId", record)
         assert r.status_code == 404
 
     def test_upsert_record(self, record: dict):
@@ -143,7 +143,7 @@ class TestRecordsNamespace(object):
         POST /db/{db_branch_name}/tables/{table_name}/data/{record_id}
         """
         rec_id = utils.get_random_string(24)
-        r = self.client.records().upsert_with_id("Posts", rec_id, record)
+        r = self.client.records().upsert("Posts", rec_id, record)
         assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
@@ -153,7 +153,7 @@ class TestRecordsNamespace(object):
 
         update = utils.get_post()
         assert record != update
-        r = self.client.records().upsert_with_id("Posts", rec_id, update)
+        r = self.client.records().upsert("Posts", rec_id, update)
         assert r.is_success()
 
         r = self.client.records().get("Posts", rec_id)
