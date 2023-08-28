@@ -6,7 +6,7 @@
 
 [![Documentation Status](https://readthedocs.org/projects/xata-py/badge/?version=latest)](https://xata-py.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/xata.svg)](https://badge.fury.io/py/xata)
 
-Xata is a serverless data platform, based on PostgreSQL. The scalable and reliable Postgres service is the core of the data platform and brings full-text search, vector similarity search, and file/image attachments. Xata supports also native database branches and a developer workflow that integrates seamlessly with GitHub and platforms like Vercel and Netlify.
+Xata is a serverless data platform, based on PostgreSQL. The data platform brings full-text search, vector similarity search, and file/image attachments on top of PostgreSQL. Xata supports also native database branches and a developer workflow that integrates seamlessly with GitHub and platforms like Vercel and Netlify.
 
 The Python SDK uses type annotations and requires Python 3.8 or higher.
 
