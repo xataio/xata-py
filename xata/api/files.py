@@ -238,7 +238,7 @@ class Files(ApiRequest):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
 
-    def transform(self, image_id: str, operations: dict[str, any]) -> ApiResponse:
+    def transform(self, image_id: str, operations: dict[str, any]) -> bytes:
         """
         Image transformations
         All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
