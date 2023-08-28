@@ -25,9 +25,7 @@ from xata.client import XataClient
 class TestSqlQuery(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.client = XataClient(
-            db_name=self.db_name, domain_core="api.staging-xata.dev", domain_workspace="staging-xata.dev"
-        )
+        self.client = XataClient(db_name=self.db_name)
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Users").is_success()
         assert (
