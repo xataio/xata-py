@@ -18,6 +18,7 @@
 #
 
 import io
+import json
 
 import pytest
 import utils
@@ -98,6 +99,21 @@ class TestFilesTransformations(object):
         # rot_180_pil = Image.open(io.BytesIO(rot_180))
         # proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
         # assert rot_180_pil == proof_rot_180
+
+    def test_format_json_operations(self):
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": utils.get_file("images/03.png", public_url=True, signed_url_timeout=120),
+        }
+        upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
+        assert upload.is_success()
+
+        resp = self.client.files().transform(
+            upload["one_file"]["url"],
+            {"dpr": 2, "height": 200, "fit": "contain", "background": "pink", "format": "json"},
+        )
+        resp = json.load(io.BytesIO(resp))
+        assert resp == {'height': 400, 'original': {'file_size': 72786, 'format': 'image/png', 'height': 1646, 'width': 1504}, 'width': 365}
 
     def test_unknown_operations(self):
         payload = {
