@@ -48,19 +48,21 @@ class TestFilesTransformations(object):
         assert self.client.databases().delete(self.db_name).is_success()
 
     def test_rotate_file(self):
-        payload = {"title": self.fake.catch_phrase()}
+        payload = {"title": self.fake.catch_phrase(), "one_file": {"enablePublicUrl": True}}
         r = self.client.records().insert("Attachments", payload)
         assert r.is_success()
 
         meta = utils.get_file("images/01.gif", public_url=True)
         img = utils.get_file_content(utils.get_file_name("images/01.gif"))
-        file = self.client.files().put("Attachments", r["id"], "one_file", img, meta["mediaType"])
-        assert file.is_success()
+        upload = self.client.files().put("Attachments", r["id"], "one_file", img, meta["mediaType"])
+        assert upload.is_success()
+        assert upload == ""
 
-        # TODO get image it
+        file = self.client.records().get("Attachments", r["id"], columns=["*"])
+        assert file.is_success()
         assert file == ""
 
-        rot_180 = self.client.files().transform(file["one_file"]["id"], {"rotate": 180})
+        rot_180 = self.client.files().transform(file["id"], {"rotate": 180})
         assert img != rot_180
 
         proof_rot_180 = Image.open(utils.get_file_name("images/01.gif")).rotate(180)
