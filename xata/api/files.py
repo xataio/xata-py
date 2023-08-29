@@ -274,7 +274,6 @@ class Files(ApiRequest):
         else:
             endpoint = "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
 
-        print(endpoint)
         resp = request("GET", endpoint)
         if resp.status_code != 200:
             raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
