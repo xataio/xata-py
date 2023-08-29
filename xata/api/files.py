@@ -29,6 +29,7 @@ from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
 from xata.errors import XataServerError
 
+
 class Files(ApiRequest):
 
     scope = "workspace"

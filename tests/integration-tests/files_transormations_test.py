@@ -18,13 +18,13 @@
 #
 
 import io
+
 import pytest
 import utils
 from faker import Faker
-
-from xata.client import XataClient
 from PIL import Image, ImageChops
 
+from xata.client import XataClient
 
 
 class TestFilesTransformations(object):
@@ -60,10 +60,10 @@ class TestFilesTransformations(object):
         rot_180 = self.client.files().transform(upload["one_file"]["url"], {"rotate": 180})
         assert img != rot_180
 
-        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
-        #rot_180_pil = Image.open(io.BytesIO(rot_180))
-        #diff = ImageChops.difference(proof_rot_180, rot_180_pil)
-        #assert diff.getbbox()
+        # proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        # rot_180_pil = Image.open(io.BytesIO(rot_180))
+        # diff = ImageChops.difference(proof_rot_180, rot_180_pil)
+        # assert diff.getbbox()
 
     def test_rotate_file_with_signed_url(self):
         payload = {
@@ -77,9 +77,9 @@ class TestFilesTransformations(object):
         rot_180 = self.client.files().transform(upload["one_file"]["signedUrl"], {"rotate": 180})
         assert img != rot_180
 
-        #rot_180_pil = Image.open(io.BytesIO(rot_180))
-        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
-        #assert rot_180_pil == proof_rot_180
+        # rot_180_pil = Image.open(io.BytesIO(rot_180))
+        # proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        # assert rot_180_pil == proof_rot_180
 
     def test_with_nested_operations(self):
         payload = {
@@ -90,16 +90,14 @@ class TestFilesTransformations(object):
         assert upload.is_success()
 
         img = utils.get_file_content(utils.get_file_name("images/03.png"))
-        rot_180 = self.client.files().transform(upload["one_file"]["url"], {
-            "rotate": 180,
-            "blur": 50,
-            "gravity": {"x": 0, "y": 1}
-        })
+        rot_180 = self.client.files().transform(
+            upload["one_file"]["url"], {"rotate": 180, "blur": 50, "gravity": {"x": 0, "y": 1}}
+        )
         assert img != rot_180
 
-        #rot_180_pil = Image.open(io.BytesIO(rot_180))
-        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
-        #assert rot_180_pil == proof_rot_180
+        # rot_180_pil = Image.open(io.BytesIO(rot_180))
+        # proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        # assert rot_180_pil == proof_rot_180
 
     def test_unknown_operations(self):
         payload = {
@@ -111,7 +109,7 @@ class TestFilesTransformations(object):
 
         with pytest.raises(Exception) as e:
             self.client.files().transform(upload["one_file"]["url"], {})
-        
+
         with pytest.raises(Exception) as e:
             self.client.files().transform(upload["one_file"]["url"], {"donkey": "kong"})
 

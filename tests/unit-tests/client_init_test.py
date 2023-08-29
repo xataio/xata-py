@@ -22,7 +22,7 @@ import unittest
 
 import pytest
 
-from xata.client import DEFAULT_REGION, XataClient
+from xata.client import DEFAULT_BRANCH_NAME, DEFAULT_REGION, XataClient
 
 
 class TestClientInit(unittest.TestCase):
@@ -82,6 +82,12 @@ class TestClientInit(unittest.TestCase):
         assert "yay" == cfg["branchName"]
 
         os.environ.pop("XATA_DATABASE_URL")
+
+    def test_init_explicit_branch_name_with_db_url(self):
+        client = XataClient(db_url="https://test-12345.us-east-1.xata.sh/db/attachments", branch_name="super-file-42")
+        assert client.get_workspace_id() == "test-12345"
+        assert client.get_branch_name() != "super-file-42"
+        assert client.get_branch_name() == DEFAULT_BRANCH_NAME
 
     def test_init_db_url_with_param_and_envvar(self):
         # Parameter should take precendence over envvar
