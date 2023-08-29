@@ -23,6 +23,8 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
+from urllib.parse import urlencode
+
 from requests import request
 
 from xata.api_request import ApiRequest
@@ -248,18 +250,32 @@ class Files(ApiRequest):
 
         :return Response
         """
-        ops = ",".join(f"{o}={p}" for o, p in operations.items())
+        # valid url ?
         url_parts = url.split("/")
-        # public url
-        if len(url_parts) == 4:
-            endpoint = "https://%s/transform/%s/%s" % (url_parts[2], ops, url_parts[3])
-        # signed url
-        elif len(url_parts) == 5:
-            endpoint = "https://%s/file/transform/%s/%s" % (url_parts[2], ops, url_parts[4])
-        else:
+        if 4 < len(url_parts) < 5:
             raise Exception("invalid image url")
 
-        resp = request("GET", endpoint, headers=self.client.get_headers())
+        # build operations - turn objects into lists
+        ops = []
+        for k, v in operations.items():
+            if type(v) is dict:
+                v = ";".join([str(x) for x in v.values()])
+            ops.append(f"{k}={v}")
+        # ops = ",".join(["%s=%s" % (k, ";".join(list(v.values()))) if type(v) is dict else f"{k}={v}" for k, v in operations.items()])
+        if len(ops) == 0:
+            raise Exception("missing image operations")
+
+        region = url_parts[2].split(".")[0]
+        file_id = url_parts[-1]
+        # signed url
+        if len(url_parts) == 5:
+            endpoint = "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
+        # public url
+        else:
+            endpoint = "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+
+        print(endpoint)
+        resp = request("GET", endpoint)
         if resp.status_code != 200:
             raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
         return resp.content

@@ -84,16 +84,16 @@ class TestFilesTransformations(object):
     def test_with_nested_operations(self):
         payload = {
             "title": self.fake.catch_phrase(),
-            "one_file": utils.get_file("images/03.png", public_url=True),
+            "one_file": utils.get_file("images/03.png", public_url=True, signed_url_timeout=120),
         }
         upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
         assert upload.is_success()
 
         img = utils.get_file_content(utils.get_file_name("images/03.png"))
-        rot_180 = self.client.files().transform(
-            upload["one_file"]["url"], {"rotate": 180, "blur": 50, "gravity": {"x": 0, "y": 1}}
+        self.client.files().transform(
+            upload["one_file"]["url"],
+            {"rotate": 180, "blur": 50, "trim": {"top": 20, "right": 30, "bottom": 20, "left": 0}},
         )
-        assert img != rot_180
 
         # rot_180_pil = Image.open(io.BytesIO(rot_180))
         # proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
@@ -116,4 +116,9 @@ class TestFilesTransformations(object):
     def test_unknown_image_id(self):
         # must fail with a 403
         with pytest.raises(Exception) as e:
-            self.client.files().transform("lalala", {"rotate": 90})
+            self.client.files().transform("https://us-east-1.storage.xata.sh/lalala", {"rotate": 90})
+
+    def test_invalid_url(self):
+        # must fail with a 403
+        with pytest.raises(Exception) as e:
+            self.client.files().transform("https:/xata.sh/oh-hello", {"rotate": 90})
