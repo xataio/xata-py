@@ -23,7 +23,7 @@ jobs:
       # credit: https://stackoverflow.com/a/75640388
       - name: readme synced
         run: diff <(tail -n +8 README.md) <(tail -n +4 README_PYPI.md)
-          
+
 
       - name: Install dependencies
         run: |

@@ -23,8 +23,13 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
+from urllib.parse import urlencode
+
+from requests import request
+
 from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
+from xata.errors import XataServerError
 
 
 class Files(ApiRequest):
@@ -60,7 +65,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -100,7 +105,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -135,7 +140,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -164,7 +169,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -201,7 +206,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -229,8 +234,48 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return Response
+        :return ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
+
+    def transform(self, url: str, operations: dict[str, any]) -> bytes:
+        """
+        Image transformations
+        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
+
+        :param url: str Public or signed URL of the image
+        :param operations: dict Image operations
+
+        :return Response
+        """
+        # valid url ?
+        url_parts = url.split("/")
+        if 4 < len(url_parts) < 5:
+            raise Exception("invalid image url")
+
+        # build operations - turn objects into lists
+        ops = []
+        for k, v in operations.items():
+            if type(v) is dict:
+                v = ";".join([str(x) for x in v.values()])
+            ops.append(f"{k}={v}")
+        # ops = ",".join(["%s=%s" % (k, ";".join(list(v.values()))) if type(v) is dict else f"{k}={v}" for k, v in operations.items()])
+        if len(ops) == 0:
+            raise Exception("missing image operations")
+
+        region = url_parts[2].split(".")[0]
+        file_id = url_parts[-1]
+        # signed url
+        if len(url_parts) == 5:
+            endpoint = "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
+        # public url
+        else:
+            endpoint = "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+
+        print(endpoint)
+        resp = request("GET", endpoint)
+        if resp.status_code != 200:
+            raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
+        return resp.content
