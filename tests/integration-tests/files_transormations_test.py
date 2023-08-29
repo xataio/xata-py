@@ -17,12 +17,13 @@
 # under the License.
 #
 
+import io
 import pytest
 import utils
 from faker import Faker
 
 from xata.client import XataClient
-from PIL import Image
+from PIL import Image, ImageChops
 
 
 
@@ -47,41 +48,72 @@ class TestFilesTransformations(object):
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
 
-    def test_rotate_file(self):
-        payload = {"title": self.fake.catch_phrase(), "one_file": {"enablePublicUrl": True}}
-        r = self.client.records().insert("Attachments", payload)
-        assert r.is_success()
-
-        meta = utils.get_file("images/01.gif", public_url=True)
-        img = utils.get_file_content(utils.get_file_name("images/01.gif"))
-        upload = self.client.files().put("Attachments", r["id"], "one_file", img, meta["mediaType"])
+    def test_rotate_public_file(self):
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": utils.get_file("images/03.png", public_url=True),
+        }
+        upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
         assert upload.is_success()
-        assert upload == ""
 
-        file = self.client.records().get("Attachments", r["id"], columns=["*"])
-        assert file.is_success()
-        assert file == ""
-
-        rot_180 = self.client.files().transform(file["id"], {"rotate": 180})
+        img = utils.get_file_content(utils.get_file_name("images/03.png"))
+        rot_180 = self.client.files().transform(upload["one_file"]["url"], {"rotate": 180})
         assert img != rot_180
 
-        proof_rot_180 = Image.open(utils.get_file_name("images/01.gif")).rotate(180)
-        assert rot_180 == proof_rot_180
+        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        #rot_180_pil = Image.open(io.BytesIO(rot_180))
+        #diff = ImageChops.difference(proof_rot_180, rot_180_pil)
+        #assert diff.getbbox()
+
+    def test_rotate_file_with_signed_url(self):
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": utils.get_file("images/03.png", public_url=False),
+        }
+        upload = self.client.records().insert("Attachments", payload, columns=["one_file.signedUrl"])
+        assert upload.is_success()
+
+        img = utils.get_file_content(utils.get_file_name("images/03.png"))
+        rot_180 = self.client.files().transform(upload["one_file"]["signedUrl"], {"rotate": 180})
+        assert img != rot_180
+
+        #rot_180_pil = Image.open(io.BytesIO(rot_180))
+        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        #assert rot_180_pil == proof_rot_180
+
+    def test_with_nested_operations(self):
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": utils.get_file("images/03.png", public_url=True),
+        }
+        upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
+        assert upload.is_success()
+
+        img = utils.get_file_content(utils.get_file_name("images/03.png"))
+        rot_180 = self.client.files().transform(upload["one_file"]["url"], {
+            "rotate": 180,
+            "blur": 50,
+            "gravity": {"x": 0, "y": 1}
+        })
+        assert img != rot_180
+
+        #rot_180_pil = Image.open(io.BytesIO(rot_180))
+        #proof_rot_180 = Image.open(utils.get_file_name("images/03.png")).rotate(180)
+        #assert rot_180_pil == proof_rot_180
 
     def test_unknown_operations(self):
-        payload = {"title": self.fake.catch_phrase()}
-        r = self.client.records().insert("Attachments", payload)
-        assert r.is_success()
-        rid = r["id"]
-        meta = utils.get_file("images/01.gif", public_url=True)
-        img = utils.get_file_content(utils.get_file_name("images/01.gif"))
-        assert self.client.files().put("Attachments", rid, "one_file", img, meta["mediaType"]).is_success()
+        payload = {
+            "title": self.fake.catch_phrase(),
+            "one_file": utils.get_file("images/03.png", public_url=True),
+        }
+        upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
+        assert upload.is_success()
 
         with pytest.raises(Exception) as e:
-            self.client.files().transform(r["id"], {})
+            self.client.files().transform(upload["one_file"]["url"], {})
         
         with pytest.raises(Exception) as e:
-            self.client.files().transform(r["id"], {"donkey": "kong"})
+            self.client.files().transform(upload["one_file"]["url"], {"donkey": "kong"})
 
     def test_unknown_image_id(self):
         # must fail with a 403

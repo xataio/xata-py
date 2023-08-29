@@ -29,7 +29,6 @@ from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
 from xata.errors import XataServerError
 
-
 class Files(ApiRequest):
 
     scope = "workspace"
@@ -238,20 +237,28 @@ class Files(ApiRequest):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
 
-    def transform(self, image_id: str, operations: dict[str, any]) -> bytes:
+    def transform(self, url: str, operations: dict[str, any]) -> bytes:
         """
         Image transformations
         All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
 
-        :param image_id: str Id of the image
+        :param url: str Public or signed URL of the image
         :param operations: dict Image operations
 
         :return Response
         """
         ops = ",".join(f"{o}={p}" for o, p in operations.items())
-        url = "https://%s.storage.xata.sh/transform/%s/%s" % (self.client.get_region(), ops, image_id)
-        print(url)
-        resp = request("GET", url, headers=self.client.get_headers())
+        url_parts = url.split("/")
+        # public url
+        if len(url_parts) == 4:
+            endpoint = "https://%s/transform/%s/%s" % (url_parts[2], ops, url_parts[3])
+        # signed url
+        elif len(url_parts) == 5:
+            endpoint = "https://%s/file/transform/%s/%s" % (url_parts[2], ops, url_parts[4])
+        else:
+            raise Exception("invalid image url")
+
+        resp = request("GET", endpoint, headers=self.client.get_headers())
         if resp.status_code != 200:
             raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
         return resp.content
