@@ -23,8 +23,6 @@
 # Specification: core:v1.0
 # ------------------------------------------------------- #
 
-from urllib.parse import urlencode
-
 from requests import request
 
 from xata.api_request import ApiRequest
