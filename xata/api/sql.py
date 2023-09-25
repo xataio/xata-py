@@ -17,6 +17,12 @@
 # under the License.
 #
 
+# ------------------------------------------------------- #
+# Sql
+# SQL service access
+# Specification: workspace:v1.0
+# ------------------------------------------------------- #
+
 from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
 
@@ -34,11 +40,20 @@ class Sql(ApiRequest):
         branch_name: str = None,
     ) -> ApiResponse:
         """
-        This endpoint performs the SQL query across the entire database branch. Set your SQL query in the parameter `query`.
+        Run an SQL query across the database branch.
 
-        Path: /db/{db_branch_name}/sql'
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/sql#sql-query
+        Path: /db/{db_branch_name}/sql
         Method: POST
-        Response: application/json
+        Response status codes:
+        - 200: OK
+        - 201: OK
+        - 400: Bad Request
+        - 401: Authentication Error
+        - 404: Example response
+        - 503: ServiceUnavailable
+        - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param statement: str The statement to run
         :param params: dict The query parameters list. default: None
