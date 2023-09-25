@@ -370,5 +370,11 @@
         "template": "endpoint",
         "name": "update_access_tokens"
       }
+    },
+    "sql": {
+        "sqlQuery": {
+          "template": "sql_query",
+          "name": "query"
+        }
     }
   }

@@ -46,6 +46,7 @@ class Oauth(ApiRequest):
         - 5XX: Unexpected Error
         Response: application/json
 
+
         :returns ApiResponse
         """
         url_path = "/user/oauth/clients"
@@ -86,6 +87,7 @@ class Oauth(ApiRequest):
         - 404: Example response
         - 5XX: Unexpected Error
         Response: application/json
+
 
         :returns ApiResponse
         """
