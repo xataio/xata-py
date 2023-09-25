@@ -331,3 +331,18 @@ class TestHelpersTransaction(object):
 
         after_insert = len(self.client.data().query("Posts", {})["records"])
         assert before_insert == after_insert
+
+    def test_alternative_branch_on_run(self):
+        # create new branch
+        branch_name = "testing-issue-170"
+        assert self.client.branch().create({"from": "main"}, branch_name=branch_name).is_success()
+        before_insert = len(self.client.data().query("Posts", branch_name=branch_name)["records"])
+
+        trx = Transaction(self.client)
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        trx.run(branch_name=branch_name)
+
+        after_insert = len(self.client.data().query("Posts", branch_name=branch_name)["records"])
+        assert after_insert > before_insert

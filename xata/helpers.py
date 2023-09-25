@@ -388,13 +388,15 @@ class Transaction(object):
         """
         self._add_operation({"get": {"table": table, "id": record_id, "columns": columns}})
 
-    def run(self) -> dict:
+    def run(self, branch_name: str = None) -> dict:
         """
         Commit the transactions. Flushes the operations queue
 
+        :param branch_name: str Override the branch name from the client init
+
         :returns dict
         """
-        r = self.client.records().transaction(self.operations)
+        r = self.client.records().transaction(self.operations, branch_name=branch_name)
         result = {
             "status_code": r.status_code,
             "results": r["results"] if "results" in r else [],
