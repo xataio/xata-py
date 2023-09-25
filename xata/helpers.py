@@ -32,6 +32,7 @@ BP_DEFAULT_THROW_EXCEPTION = False
 BP_VERSION = "0.2.1"
 TRX_MAX_OPERATIONS = 1000
 TRX_VERSION = "0.1.0"
+TRX_BACKOFF = 0.1
 
 
 class BulkProcessor(object):
@@ -74,7 +75,9 @@ class BulkProcessor(object):
             raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
-        self.client.set_header("x-xata-helper", f"bulkprocessor/{BP_VERSION}")
+        telemetry = "%shelper=bp;v=%s" % (self.client.get_headers()["x-xata-agent"], BP_VERSION)
+        self.client.set_header("x-xata-agent", telemetry)
+
         self.processing_timeout = processing_timeout
         self.batch_size = batch_size
         self.flush_interval = flush_interval
@@ -316,7 +319,8 @@ class Transaction(object):
         :param client: XataClient
         """
         self.client = client
-        self.client.set_header("x-xata-helper", f"transaction/{TRX_VERSION}")
+        telemetry = "%shelper=trx;v=%s" % (self.client.get_headers()["x-xata-agent"], TRX_VERSION)
+        self.client.set_header("x-xata-agent", telemetry)
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
         self.has_run = False
@@ -408,7 +412,7 @@ class Transaction(object):
         if r.status_code == 429 and retry:
             # back off and retry
             while attempt < 3 and not r.is_success():
-                wait = attempt * 0.1
+                wait = attempt * TRX_BACKOFF
                 time.sleep(wait)
                 self.logger.info(f"request {attempt} encountered a 429: too many requests error. will retry in {wait} ms.")
                 r = self.client.records().transaction(self.operations, branch_name=branch_name)
