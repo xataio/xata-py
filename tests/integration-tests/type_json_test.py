@@ -17,8 +17,9 @@
 # under the License.
 #
 
-import utils
 import json
+
+import utils
 from faker import Faker
 
 from xata.client import XataClient
@@ -31,34 +32,40 @@ class TestJsonColumnType(object):
         self.record_id = utils.get_random_string(24)
         self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()   
+        assert self.client.databases().create(self.db_name).is_success()
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
 
     def test_create_table_with_type(self):
         assert self.client.table().create("Posts").is_success()
-        assert self.client.table().set_schema("Posts", {
-            "columns": [
-                {"name": "title", "type": "string"},
-                {"name": "meta", "type": "json"},
-            ]
-        }).is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Posts",
+                {
+                    "columns": [
+                        {"name": "title", "type": "string"},
+                        {"name": "meta", "type": "json"},
+                    ]
+                },
+            )
+            .is_success()
+        )
 
     def test_insert_records(self):
-        result = self.client.records().bulk_insert("Posts", {"records": [
+        result = self.client.records().bulk_insert(
+            "Posts",
             {
-                "title": self.fake.catch_phrase(),
-                "meta": json.dumps({
-                    "number": it,
-                    "nested": {
-                        "random": it * it,
-                        "a": "b"
+                "records": [
+                    {
+                        "title": self.fake.catch_phrase(),
+                        "meta": json.dumps({"number": it, "nested": {"random": it * it, "a": "b"}}),
                     }
-                })
-            }
-            for it in range(25)
-        ]})
+                    for it in range(25)
+                ]
+            },
+        )
         assert result.is_success()
 
     def test_query_records(self):

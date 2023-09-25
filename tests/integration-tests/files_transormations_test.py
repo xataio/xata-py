@@ -113,7 +113,11 @@ class TestFilesTransformations(object):
             {"dpr": 2, "height": 200, "fit": "contain", "background": "pink", "format": "json"},
         )
         resp = json.load(io.BytesIO(resp))
-        assert resp == {'height': 400, 'original': {'file_size': 72786, 'format': 'image/png', 'height': 1646, 'width': 1504}, 'width': 365}
+        assert resp == {
+            "height": 400,
+            "original": {"file_size": 72786, "format": "image/png", "height": 1646, "width": 1504},
+            "width": 365,
+        }
 
     def test_unknown_operations(self):
         payload = {
