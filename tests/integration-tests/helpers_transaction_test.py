@@ -75,13 +75,15 @@ class TestHelpersTransaction(object):
         assert "has_errors" in response
         assert "results" in response
         assert "errors" in response
+        assert "attempts" in response
 
         assert response["status_code"] == 200
         assert not response["has_errors"]
         assert response["errors"] == []
         assert len(response["results"]) == 5
+        assert response["attempts"] == 1
 
-        r = self.client.data().query("Posts", {})
+        r = self.client.data().query("Posts")
         assert len(r["records"]) == 5
 
     def test_insert_records_with_create_only_option_existing_record(self):
@@ -103,7 +105,7 @@ class TestHelpersTransaction(object):
         assert len(response["errors"]) == 1
 
     def test_insert_records_with_create_only_option_new_record_id(self):
-        before_insert = len(self.client.data().query("Posts", {})["records"])
+        before_insert = len(self.client.data().query("Posts")["records"])
 
         trx = Transaction(self.client)
         trx.insert("Posts", {"id": "record-123", "title": "a new title #1", "content": "yes!"}, True)
@@ -114,7 +116,7 @@ class TestHelpersTransaction(object):
         assert response["status_code"] == 200
         assert len(response["errors"]) == 0
 
-        after_insert = len(self.client.data().query("Posts", {})["records"])
+        after_insert = len(self.client.data().query("Posts")["records"])
         assert before_insert == (after_insert - 2)
 
     def test_delete_records(self):
@@ -124,7 +126,7 @@ class TestHelpersTransaction(object):
         response = setup.run()
         delete_me = [x["id"] for x in response["results"]]
         assert len(delete_me) > 0
-        before_delete = len(self.client.data().query("Posts", {})["records"])
+        before_delete = len(self.client.data().query("Posts")["records"])
 
         trx = Transaction(self.client)
         for rid in delete_me:
@@ -136,7 +138,7 @@ class TestHelpersTransaction(object):
         assert response["errors"] == []
         assert len(response["results"]) == len(delete_me)
 
-        r = self.client.data().query("Posts", {})
+        r = self.client.data().query("Posts")
         assert len(r["records"]) == (before_delete - len(delete_me))
 
     def test_delete_records_with_columns(self):
@@ -146,7 +148,7 @@ class TestHelpersTransaction(object):
         response = setup.run()
         delete_me = [x["id"] for x in response["results"]]
         assert len(delete_me) > 0
-        before_delete = len(self.client.data().query("Posts", {})["records"])
+        before_delete = len(self.client.data().query("Posts")["records"])
 
         trx = Transaction(self.client)
         trx.delete("Posts", delete_me[0])
@@ -165,7 +167,7 @@ class TestHelpersTransaction(object):
         assert list(response["results"][3]["columns"].keys()) == ["content", "title"]
         assert list(response["results"][4]["columns"].keys()) == ["content", "id", "title"]
 
-        r = self.client.data().query("Posts", {})
+        r = self.client.data().query("Posts")
         assert len(r["records"]) == (before_delete - len(delete_me))
 
     def test_delete_records_with_fail_if_missing(self):
@@ -249,7 +251,7 @@ class TestHelpersTransaction(object):
         assert len(response["results"]) == len(update_me)
 
     def test_update_records_via_upsert(self):
-        before_upsert = len(self.client.data().query("Posts", {})["records"])
+        before_upsert = len(self.client.data().query("Posts")["records"])
 
         trx = Transaction(self.client)
         for rid in range(0, 5):
@@ -261,7 +263,7 @@ class TestHelpersTransaction(object):
         assert response["errors"] == []
         assert len(response["results"]) == 5
 
-        after_upsert = len(self.client.data().query("Posts", {})["records"])
+        after_upsert = len(self.client.data().query("Posts")["records"])
         assert before_upsert == after_upsert
 
     def test_mixed_operations(self):
@@ -313,7 +315,7 @@ class TestHelpersTransaction(object):
         assert not r["has_errors"]
 
     def test_has_errors_insert(self):
-        before_insert = len(self.client.data().query("Posts", {})["records"])
+        before_insert = len(self.client.data().query("Posts")["records"])
 
         trx = Transaction(self.client)
         trx.insert("Posts", self._get_record())  # good
@@ -329,7 +331,7 @@ class TestHelpersTransaction(object):
         assert response["errors"][1]["index"] == 3
         assert len(response["results"]) == 0
 
-        after_insert = len(self.client.data().query("Posts", {})["records"])
+        after_insert = len(self.client.data().query("Posts")["records"])
         assert before_insert == after_insert
 
     def test_alternative_branch_on_run(self):
@@ -346,3 +348,21 @@ class TestHelpersTransaction(object):
 
         after_insert = len(self.client.data().query("Posts", branch_name=branch_name)["records"])
         assert after_insert > before_insert
+
+    def test_flush_on_error_flag(self):
+        trx = Transaction(self.client)
+        trx.insert("PostsThatDoNotExist", self._get_record())  # bad
+        trx.insert("Posts", self._get_record())  # good
+        trx.insert("Posts", {"foo": "bar"})  # bad
+
+        before_run = trx.size()
+        assert before_run == 3
+        response = trx.run(flush_on_error=False)
+        
+        assert response["status_code"] == 400
+        assert response["has_errors"]
+        assert trx.size() == before_run
+
+        response = trx.run(flush_on_error=True)
+        assert response["status_code"] == 400
+        assert trx.size() == 0
