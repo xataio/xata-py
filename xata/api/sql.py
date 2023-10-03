@@ -27,6 +27,10 @@ from xata.api_request import ApiRequest
 from xata.api_response import ApiResponse
 
 
+import aiohttp
+import asyncio
+
+
 class Sql(ApiRequest):
 
     scope = "workspace"
@@ -72,3 +76,21 @@ class Sql(ApiRequest):
             "consistency": consistency,
         }
         return self.request("POST", url_path, headers, payload)
+    
+    def query_async(
+        self,
+        statement: str,
+        params: list = None,
+        consistency: str = "strong",
+        db_name: str = None,
+        branch_name: str = None,
+    ) -> ApiResponse:
+        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        url_path = f"/db/{db_branch_name}/sql"
+        headers = {"content-type": "application/json"}
+        payload = {
+            "statement": statement,
+            "params": params,
+            "consistency": consistency,
+        }
+        return self.request_async("POST", url_path, headers, payload)

@@ -20,6 +20,7 @@
 import logging
 
 from requests import Session, request
+from aiohttp import ClientSession
 
 from xata.api_response import ApiResponse
 
@@ -29,6 +30,7 @@ from .errors import RateLimitError, UnauthorizedError, XataServerError
 class ApiRequest:
     def __init__(self, client):
         self.session = Session()
+        self.session_async = ClientSession()
         self.client = client
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -88,6 +90,50 @@ class ApiRequest:
                 resp = self.session.request(http_method, url, headers=headers, data=data)
             else:
                 resp = self.session.request(http_method, url, headers=headers, json=payload)
+
+        # Any special status code we can raise an exception for ?
+        if resp.status_code == 429:
+            raise RateLimitError(f"code: {resp.status_code}, rate limited: {resp.json()}")
+        if resp.status_code == 401:
+            raise UnauthorizedError(f"code: {resp.status_code}, unauthorized: {resp.json()}")
+        elif resp.status_code >= 500:
+            raise XataServerError(f"code: {resp.status_code}, server error: {resp.text}")
+
+        return ApiResponse(resp)
+    
+    async def request_async(
+        self,
+        http_method: str,
+        url_path: str,
+        headers: dict = {},
+        payload: dict = None,
+        data: bytes = None
+    ) -> ApiResponse:
+        """
+        Perform Request as async
+
+        :param http_method: str
+        :param url_path: str
+        :headers: dict = {}
+        :param payload: dict = None
+        :param data: bytes = None
+
+        :returns ApiResponse
+
+        :raises RateLimitError
+        :raises UnauthorizedError
+        :raises ServerError
+        """
+        headers = {**headers, **self.client.get_headers()}
+        url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
+
+        async with ClientSession() as session:
+            if payload is None and data is None:
+                resp = await session.request(http_method, url, headers=headers)
+            elif data is not None:
+                resp = await session.request(http_method, url, headers=headers, data=data)
+            else:
+                resp = await session.request(http_method, url, headers=headers, json=payload)
 
         # Any special status code we can raise an exception for ?
         if resp.status_code == 429:
