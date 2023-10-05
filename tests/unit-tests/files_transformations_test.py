@@ -22,7 +22,7 @@ import unittest
 from xata.client import XataClient
 
 class TestFileTransformations(unittest.TestCase):
-    def test_transform_url(self):
+    def test_single_transform_url(self):
         client = XataClient(api_key="api_key", workspace_id="ws_id")
 
         url = client.files().transform_url(
@@ -33,6 +33,27 @@ class TestFileTransformations(unittest.TestCase):
         )
 
         expected = "https://us-east-1.storage.xata.sh/transform/height=100/4u1fh2o6p10blbutjnphcste94"
-        self.assertEqual(url, expected)
+        assert url == expected
+
+    def test_multiple_transform_url(self):
+        client = XataClient(api_key="api_key", workspace_id="ws_id")
+
+        url = client.files().transform_url(
+            "https://us-east-1.storage.xata.sh/4u1fh2o6p10blbutjnphcste94",
+            {
+                "width": 100,
+                "height": 100,
+                "fit": "cover",
+                "gravity": {
+                    "x": 0,
+                    "y": 1
+                }
+            }
+        )
+
+        excepted = "https://us-east-1.storage.xata.sh/transform/width=100,height=100,fit=cover,gravity=0x1/4u1fh2o6p10blbutjnphcste94"
+
+        assert url == excepted
+        
 
         
