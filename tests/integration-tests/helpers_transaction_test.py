@@ -366,3 +366,29 @@ class TestHelpersTransaction(object):
         response = trx.run(flush_on_error=True)
         assert response["status_code"] == 400
         assert trx.size() == 0
+
+    def test_object_response_without_errors(self):
+        trx = Transaction(self.client)
+        trx.insert("Posts", self._get_record())
+        trx.insert("Posts", self._get_record())
+        response = trx.run()
+
+        assert response["status_code"] == 200
+        assert response.status_code == response["status_code"]
+        assert response.has_errors == response["has_errors"]
+        assert response.errors == response["errors"]
+        assert response.results == response["results"]
+        assert response.attempts == response["attempts"]
+
+    def test_object_response_with_errors(self):
+        trx = Transaction(self.client)
+        trx.insert("Posts", self._get_record())
+        trx.insert("ChooChoo", self._get_record())
+        response = trx.run()
+
+        assert response["status_code"] == 400
+        assert response.status_code == response["status_code"]
+        assert response.has_errors == response["has_errors"]
+        assert response.errors == response["errors"]
+        assert response.results == response["results"]
+        assert response.attempts == response["attempts"]
