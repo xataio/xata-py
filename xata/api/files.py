@@ -237,6 +237,14 @@ class Files(ApiRequest):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
+    
+
+    def transform_url(self, url: str, operations: dict[str, any]):
+        """
+        Image transformations url
+        Returns the url to the file only
+        """
+        pass
 
     def transform(self, url: str, operations: dict[str, any]) -> bytes:
         """
