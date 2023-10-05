@@ -237,24 +237,11 @@ class Files(ApiRequest):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
-    
 
     def transform_url(self, url: str, operations: dict[str, any]):
         """
         Image transformations url
         Returns the url to the file only
-        """
-        pass
-
-    def transform(self, url: str, operations: dict[str, any]) -> bytes:
-        """
-        Image transformations
-        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
-
-        :param url: str Public or signed URL of the image
-        :param operations: dict Image operations
-
-        :return Response
         """
         # valid url ?
         url_parts = url.split("/")
@@ -267,7 +254,7 @@ class Files(ApiRequest):
             if type(v) is dict:
                 v = ";".join([str(x) for x in v.values()])
             ops.append(f"{k}={v}")
-        # ops = ",".join(["%s=%s" % (k, ";".join(list(v.values()))) if type(v) is dict else f"{k}={v}" for k, v in operations.items()])
+
         if len(ops) == 0:
             raise Exception("missing image operations")
 
@@ -275,10 +262,22 @@ class Files(ApiRequest):
         file_id = url_parts[-1]
         # signed url
         if len(url_parts) == 5:
-            endpoint = "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
+            return "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
         # public url
         else:
-            endpoint = "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+            return "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+
+    def transform(self, url: str, operations: dict[str, any]) -> bytes:
+        """
+        Image transformations
+        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
+
+        :param url: str Public or signed URL of the image
+        :param operations: dict Image operations
+
+        :return Response
+        """
+        endpoint = self.transform_url(url, operations)
 
         resp = request("GET", endpoint)
         if resp.status_code != 200:
