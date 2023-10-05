@@ -21,6 +21,7 @@ import unittest
 
 from xata.client import XataClient
 
+
 class TestFileTransformations(unittest.TestCase):
     def test_single_transform_url(self):
         client = XataClient(api_key="api_key", workspace_id="ws_id")
@@ -28,7 +29,7 @@ class TestFileTransformations(unittest.TestCase):
         url = client.files().transform_url(
             "https://us-east-1.storage.xata.sh/4u1fh2o6p10blbutjnphcste94",
             {
-                "height": 100, 
+                "height": 100,
             }
         )
 
@@ -54,6 +55,3 @@ class TestFileTransformations(unittest.TestCase):
         excepted = "https://us-east-1.storage.xata.sh/transform/width=100,height=100,fit=cover,gravity=0x1/4u1fh2o6p10blbutjnphcste94"
 
         assert url == excepted
-        
-
-        
