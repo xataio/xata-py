@@ -358,7 +358,7 @@ class TestHelpersTransaction(object):
         before_run = trx.size()
         assert before_run == 3
         response = trx.run(flush_on_error=False)
-        
+
         assert response["status_code"] == 400
         assert response["has_errors"]
         assert trx.size() == before_run
