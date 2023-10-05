@@ -238,6 +238,46 @@ class Files(ApiRequest):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
 
+    def transform_url(self, url: str, operations: dict[str, any]) -> str:
+        """
+        Image transformations url
+        Returns the file url only for the given operations.
+        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
+
+        :param url: str Public or signed URL of the image
+        :param operations: dict Image operations
+
+        :return str
+        """
+        # valid url ?
+        url_parts = url.split("/")
+        if 4 < len(url_parts) < 5:
+            raise Exception("invalid image url")
+
+        # build operations - turn objects into lists
+        ops = []
+        for k, v in operations.items():
+            # Coordinates on the gravity operation use an "x" as separator
+            if type(v) is dict and k == "gravity":
+                v = "x".join([str(x) for x in v.values()])
+            # All the other ones use a semicolon.
+            elif type(v) is dict:
+                v = ";".join([str(x) for x in v.values()])
+            ops.append(f"{k}={v}")
+
+        if len(ops) == 0:
+            raise Exception("missing image operations")
+
+        region = url_parts[2].split(".")[0]
+        file_id = url_parts[-1]
+
+        # signed url
+        if len(url_parts) == 5:
+            return "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
+        # public url
+        else:
+            return "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+
     def transform(self, url: str, operations: dict[str, any]) -> bytes:
         """
         Image transformations
@@ -248,29 +288,7 @@ class Files(ApiRequest):
 
         :return Response
         """
-        # valid url ?
-        url_parts = url.split("/")
-        if 4 < len(url_parts) < 5:
-            raise Exception("invalid image url")
-
-        # build operations - turn objects into lists
-        ops = []
-        for k, v in operations.items():
-            if type(v) is dict:
-                v = ";".join([str(x) for x in v.values()])
-            ops.append(f"{k}={v}")
-        # ops = ",".join(["%s=%s" % (k, ";".join(list(v.values()))) if type(v) is dict else f"{k}={v}" for k, v in operations.items()])
-        if len(ops) == 0:
-            raise Exception("missing image operations")
-
-        region = url_parts[2].split(".")[0]
-        file_id = url_parts[-1]
-        # signed url
-        if len(url_parts) == 5:
-            endpoint = "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
-        # public url
-        else:
-            endpoint = "https://%s.storage.xata.sh/transform/%s/%s" % (region, ",".join(ops), file_id)
+        endpoint = self.transform_url(url, operations)
 
         resp = request("GET", endpoint)
         if resp.status_code != 200:
