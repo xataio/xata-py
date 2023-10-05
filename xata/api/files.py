@@ -251,7 +251,11 @@ class Files(ApiRequest):
         # build operations - turn objects into lists
         ops = []
         for k, v in operations.items():
-            if type(v) is dict:
+            # Coordinates on the gravity op use an "x" as separator
+            if type(v) is dict and k == "gravity":
+                v = "x".join([str(x) for x in v.values()])
+            # All the other ones use a semicolon.
+            elif type(v) is dict:
                 v = ";".join([str(x) for x in v.values()])
             ops.append(f"{k}={v}")
 
