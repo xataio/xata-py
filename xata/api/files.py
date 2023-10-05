@@ -238,10 +238,16 @@ class Files(ApiRequest):
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         return self.request("DELETE", url_path)
 
-    def transform_url(self, url: str, operations: dict[str, any]):
+    def transform_url(self, url: str, operations: dict[str, any]) -> str:
         """
         Image transformations url
-        Returns the url to the file only
+        Returns the file url only for the given operations.
+        All possible combinations: https://xata.io/docs/concepts/file-storage#image-transformations
+
+        :param url: str Public or signed URL of the image
+        :param operations: dict Image operations
+
+        :return str
         """
         # valid url ?
         url_parts = url.split("/")
@@ -251,7 +257,7 @@ class Files(ApiRequest):
         # build operations - turn objects into lists
         ops = []
         for k, v in operations.items():
-            # Coordinates on the gravity op use an "x" as separator
+            # Coordinates on the gravity operation use an "x" as separator
             if type(v) is dict and k == "gravity":
                 v = "x".join([str(x) for x in v.values()])
             # All the other ones use a semicolon.
@@ -264,6 +270,7 @@ class Files(ApiRequest):
 
         region = url_parts[2].split(".")[0]
         file_id = url_parts[-1]
+
         # signed url
         if len(url_parts) == 5:
             return "https://%s.xata.sh/transform/%s/file/%s" % (region, ",".join(ops), file_id)
