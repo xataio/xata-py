@@ -22,6 +22,8 @@ import time
 from datetime import datetime, timezone
 from threading import Lock, Thread
 
+from xata.api_response import ApiResponse
+
 from .client import XataClient
 
 BP_DEFAULT_THREAD_POOL_SIZE = 4
@@ -396,7 +398,7 @@ class Transaction(object):
     def run(self, branch_name: str = None, retry: bool = True, flush_on_error: bool = False) -> dict:
         """
         Commit the transactions. Flushes the operations queue if no error happened.
-        In case of too many connections, hitting rate limits, two extra attempts are taken 
+        In case of too many connections, hitting rate limits, two extra attempts are taken
         with an incremental back off.
 
         :param branch_name: str Override the branch name from the client init
@@ -414,7 +416,9 @@ class Transaction(object):
             while attempt < 3 and not r.is_success():
                 wait = attempt * TRX_BACKOFF
                 time.sleep(wait)
-                self.logger.info(f"request {attempt} encountered a 429: too many requests error. will retry in {wait} ms.")
+                self.logger.info(
+                    f"request {attempt} encountered a 429: too many requests error. will retry in {wait} ms."
+                )
                 r = self.client.records().transaction(self.operations, branch_name=branch_name)
                 attempt += 1
 
@@ -423,13 +427,7 @@ class Transaction(object):
             self.operations["operations"] = []
 
         # build response
-        return {
-            "status_code": r.status_code,
-            "results": r["results"] if "results" in r else [],
-            "has_errors": True if "errors" in r else False,
-            "errors": r["errors"] if "errors" in r else [],
-            "attempts": attempt
-        }
+        return self.Summary(r, attempt)
 
     def size(self) -> int:
         """
@@ -437,3 +435,36 @@ class Transaction(object):
         :returns int
         """
         return len(self.operations["operations"])
+
+    class Summary(dict):
+        """
+        :link https://github.com/xataio/xata-py/issues/170
+        """
+
+        def __init__(self, response: ApiResponse, attempts: int):
+            super()
+            super().__setitem__("status_code", response.status_code)
+            super().__setitem__("results", response.get("results", []))
+            super().__setitem__("errors", response.get("errors", []))
+            super().__setitem__("has_errors", len(response.get("errors", [])) > 0)
+            super().__setitem__("attempts", attempts)
+
+        @property
+        def status_code(self) -> int:
+            return self.__getitem__("status_code")
+
+        @property
+        def attempts(self) -> int:
+            return self.__getitem__("attempts")
+
+        @property
+        def results(self) -> list:
+            return self.__getitem__("results")
+
+        @property
+        def errors(self) -> list:
+            return self.__getitem__("errors")
+
+        @property
+        def has_errors(self) -> bool:
+            return self.__getitem__("has_errors")
