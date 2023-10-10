@@ -94,7 +94,7 @@ def client() -> XataClient:
 
 @pytest.fixture
 def demo_db(client: XataClient) -> string:
-    db_name = f"sdk-py-e2e-test-{utils.get_random_string(6)}"
+    db_name = f"sdk-integration-py-{utils.get_random_string(6)}"
     create_demo_db(client, db_name)
     client.set_db_and_branch_names(db_name, "main")
     yield db_name
