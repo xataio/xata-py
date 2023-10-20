@@ -30,7 +30,7 @@ class TestFileTransformations(unittest.TestCase):
             "https://us-east-1.storage.xata.sh/4u1fh2o6p10blbutjnphcste94",
             {
                 "height": 100,
-            }
+            },
         )
 
         expected = "https://us-east-1.storage.xata.sh/transform/height=100/4u1fh2o6p10blbutjnphcste94"
@@ -41,15 +41,7 @@ class TestFileTransformations(unittest.TestCase):
 
         url = client.files().transform_url(
             "https://us-east-1.storage.xata.sh/4u1fh2o6p10blbutjnphcste94",
-            {
-                "width": 100,
-                "height": 100,
-                "fit": "cover",
-                "gravity": {
-                    "x": 0,
-                    "y": 1
-                }
-            }
+            {"width": 100, "height": 100, "fit": "cover", "gravity": {"x": 0, "y": 1}},
         )
 
         excepted = "https://us-east-1.storage.xata.sh/transform/width=100,height=100,fit=cover,gravity=0x1/4u1fh2o6p10blbutjnphcste94"
