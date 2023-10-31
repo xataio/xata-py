@@ -169,10 +169,38 @@ class TestRecordsNamespace(object):
         assert r.status_code == 204
         assert r.is_success()
 
-        r = self.client.records().delete("Posts", self.record_id)
-        assert r.status_code == 204
+    def test_delete_record_columns_returning(self, record: dict):
+        inserted = self.client.records().insert("Posts", record)
+        assert inserted.is_success()
+
+        r = self.client.records().delete("Posts", inserted["id"], columns=["labels", "slug"])
+        assert r.status_code == 200
         assert r.is_success()
+        assert "id" in r
+        assert "slug" in r
+        assert "labels" in r
+        assert "xata" in r
+
+        assert "title" not in r
+        assert "content" not in r
 
     def test_bulk_insert_table_records(self):
         r = self.client.records().bulk_insert("Posts", {"records": utils.get_posts(10)})
         assert r.is_success()
+        assert "recordIDs" in r
+        assert len(r["recordIDs"]) == 10
+
+    def test_bulk_insert_table_records_with_column_projections(self):
+        r = self.client.records().bulk_insert("Posts", {"records": utils.get_posts(10)}, columns=["title", "slug"])
+        assert r.is_success()
+
+        assert "records" in r
+        assert len(r["records"]) == 10
+        assert "id" in r["records"][0]
+        assert "slug" in r["records"][0]
+        assert "title" in r["records"][0]
+        assert "xata" in r["records"][0]
+
+        assert "recordIDs" not in r
+        assert "labels" not in r["records"][0]
+        assert "content" not in r["records"][0]

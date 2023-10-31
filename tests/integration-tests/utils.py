@@ -97,7 +97,7 @@ def get_posts(n: int = 3) -> list[str]:
     """
     List of three Posts
     """
-    return [get_post() for i in range(3)]
+    return [get_post() for i in range(n)]
 
 
 def get_posts_schema() -> dict:
