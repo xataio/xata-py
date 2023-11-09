@@ -77,7 +77,7 @@ class BulkProcessor(object):
             raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
-        telemetry = "%s; helper=bp; v=%s" % (self.client.get_headers()["x-xata-agent"], BP_VERSION)
+        telemetry = "%s; helper=bp:%s" % (self.client.get_headers()["x-xata-agent"], BP_VERSION)
         self.client.set_header("x-xata-agent", telemetry)
 
         self.processing_timeout = processing_timeout
@@ -321,7 +321,7 @@ class Transaction(object):
         :param client: XataClient
         """
         self.client = client
-        telemetry = "%shelper=trx;v=%s" % (self.client.get_headers()["x-xata-agent"], TRX_VERSION)
+        telemetry = "%s; helper=trx:%s" % (self.client.get_headers()["x-xata-agent"], TRX_VERSION)
         self.client.set_header("x-xata-agent", telemetry)
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
