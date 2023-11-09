@@ -127,7 +127,7 @@ class XataClient:
             "connection": "keep-alive",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
-            "x-xata-agent": f"client=PY_SDK;version={__version__};",
+            "x-xata-agent": f"client=PY_SDK; version={__version__}",
         }
 
         # init namespaces
