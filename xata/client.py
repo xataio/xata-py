@@ -127,6 +127,7 @@ class XataClient:
             "connection": "keep-alive",
             "x-xata-client-id": str(uuid.uuid4()),
             "x-xata-session-id": str(uuid.uuid4()),
+            # the format is key1=value; key2=value (with spaces and no trailing ;)
             "x-xata-agent": f"client=PY_SDK; version={__version__}",
         }
 
