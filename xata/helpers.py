@@ -77,7 +77,7 @@ class BulkProcessor(object):
             raise Exception("batch size can not be less than one, default: %d" % BP_DEFAULT_BATCH_SIZE)
 
         self.client = client
-        telemetry = "%shelper=bp;v=%s" % (self.client.get_headers()["x-xata-agent"], BP_VERSION)
+        telemetry = "%s; helper=bp; v=%s" % (self.client.get_headers()["x-xata-agent"], BP_VERSION)
         self.client.set_header("x-xata-agent", telemetry)
 
         self.processing_timeout = processing_timeout
