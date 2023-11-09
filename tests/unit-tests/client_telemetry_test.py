@@ -36,7 +36,7 @@ class TestClientTelemetry(unittest.TestCase):
         assert utils.PATTERNS_UUID4.match(headers1["x-xata-session-id"])
         assert headers1["x-xata-client-id"] != headers1["x-xata-session-id"]
         assert "x-xata-agent" in headers1
-        assert headers1["x-xata-agent"] == f"client=PY_SDK;version={__version__};"
+        assert headers1["x-xata-agent"] == f"client=PY_SDK; version={__version__}"
 
         api_key = "this-key-42"
         client2 = XataClient(api_key=api_key, workspace_id="ws_id")
