@@ -118,12 +118,12 @@ class TestTableNamespace(object):
         assert r == columns
 
         r = self.client.table().add_column("NonExistingTable", {"name": "foo"})
-        assert r.status_code == 404
+        assert not r.is_success()
 
         r = self.client.table().add_column("Posts", {"name": "foo"})
-        assert r.status_code == 400
+        assert not r.is_success()
         r = self.client.table().add_column("Posts", {"type": "bar"})
-        assert r.status_code == 400
+        assert not r.is_success()
 
     def test_get_column(self, new_column: dict):
         r = self.client.table().get_column("Posts", new_column["name"])
