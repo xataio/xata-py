@@ -52,7 +52,14 @@ class TestSqlQuery(object):
         r = self.client.sql().query('SELECT * FROM "Users" LIMIT 5')
         assert r.is_success()
         assert "records" in r
+        assert "columns" in r
+        assert "total" in r
+
         assert len(r["records"]) == 5
+        assert "id" in r["columns"]
+        assert "name" in r["columns"]
+        assert "email" in r["columns"]
+        assert "type_name" in r["columns"]["name"]
 
     def test_query_on_non_existing_table(self):
         r = self.client.sql().query('SELECT * FROM "DudeWhereIsMyTable"')
@@ -65,7 +72,8 @@ class TestSqlQuery(object):
     def test_query_statement_with_missing_params(self):
         r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = '$1'")
         assert r.is_success()
-        assert len(r) == 0
+        assert len(r["records"]) == 0
+        assert r["total"] == 0
 
     def test_query_statement_with_params_and_no_param_references(self):
         r = self.client.sql().query('SELECT * FROM "Users"', ["This is important"])
@@ -86,14 +94,18 @@ class TestSqlQuery(object):
             "INSERT INTO \"Users\" (name, email) VALUES ('Leslie Nielsen', 'leslie@example.com')"
         )
         assert r.is_success()
-        assert not r
+        assert not r["records"]
+        assert r["total"] == 0
+        assert not r["columns"]
 
     def test_insert_with_params(self):
         r = self.client.sql().query(
             'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Keanu Reeves", "keanu@example.com"]
         )
         assert r.is_success()
-        assert not r
+        assert not r["records"]
+        assert r["total"] == 0
+        assert not r["columns"]
 
     def test_query_with_params(self):
         r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])
