@@ -63,22 +63,31 @@ class TestHelpersBulkProcessor(object):
         }
 
     def test_bulk_insert_records(self, record: dict):
-        pt = 2
         bp = BulkProcessor(
             self.client,
             thread_pool_size=1,
-            batch_size=5,
-            flush_interval=1,
-            processing_timeout=pt,
         )
         bp.put_records("Posts", [self._get_record() for x in range(10)])
+        bp.flush_queue()
 
-        # wait until indexed :shrug:
-        time.sleep(pt)
-        utils.wait_until_records_are_indexed("Posts")
-
-        r = self.client.search_and_filter().search_table("Posts", {})
+        r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
         assert r.is_success()
-        assert "records" in r
-        assert len(r["records"]) > 0
-        assert len(r["records"]) <= 10
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == 10
+
+    def test_flush_queue(self):
+        bp = BulkProcessor(
+            self.client,
+            thread_pool_size=2,
+            batch_size=50,
+            flush_interval=1,
+        )
+        bp.put_records("Posts", [self._get_record() for x in range(1000)])
+        bp.flush_queue()
+
+        stats = bp.get_stats()
+        
+        assert stats["total"] == 1000
+        assert stats["queue"] == 0
+        assert stats["failed_batches"] == 0
+        assert stats["tables"]["Posts"] == 1000
