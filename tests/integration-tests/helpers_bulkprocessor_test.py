@@ -36,9 +36,10 @@ class TestHelpersBulkProcessor(object):
 
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
+        assert self.client.table().create("Users").is_success()
 
         # create schema
-        r = self.client.table().set_schema(
+        assert self.client.table().set_schema(
             "Posts",
             {
                 "columns": [
@@ -46,8 +47,16 @@ class TestHelpersBulkProcessor(object):
                     {"name": "text", "type": "text"},
                 ]
             },
-        )
-        assert r.is_success()
+        ).is_success()
+        assert self.client.table().set_schema(
+            "Users",
+            {
+                "columns": [
+                    {"name": "username", "type": "string"},
+                    {"name": "email", "type": "string"},
+                ]
+            },
+        ).is_success()
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
@@ -61,33 +70,81 @@ class TestHelpersBulkProcessor(object):
             "title": self.fake.company(),
             "text": self.fake.text(),
         }
+    
+    def _get_user(self) -> dict:
+        return {
+            "username": self.fake.name(),
+            "email": self.fake.email(),
+        }
 
     def test_bulk_insert_records(self, record: dict):
         bp = BulkProcessor(
             self.client,
             thread_pool_size=1,
         )
-        bp.put_records("Posts", [self._get_record() for x in range(10)])
+        bp.put_records("Posts", [self._get_record() for x in range(42)])
         bp.flush_queue()
 
         r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
         assert r.is_success()
         assert "summaries" in r
-        assert r["summaries"][0]["proof"] == 10
+        assert r["summaries"][0]["proof"] == 42
+
+        stats = bp.get_stats()
+        assert stats["total"] == 42
+        assert stats["queue"] == 0
+        assert stats["failed_batches"] == 0
+        assert stats["tables"]["Posts"] == 42
 
     def test_flush_queue(self):
+        assert self.client.sql().query('DELETE FROM "Posts" WHERE 1 = 1').is_success()
+
         bp = BulkProcessor(
             self.client,
-            thread_pool_size=2,
+            thread_pool_size=4,
             batch_size=50,
             flush_interval=1,
         )
         bp.put_records("Posts", [self._get_record() for x in range(1000)])
         bp.flush_queue()
 
-        stats = bp.get_stats()
+        r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
+        assert r.is_success()
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == 1000
         
+        stats = bp.get_stats()
         assert stats["total"] == 1000
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0
         assert stats["tables"]["Posts"] == 1000
+
+    def test_multiple_tables(self):
+        assert self.client.sql().query('DELETE FROM "Posts" WHERE 1 = 1').is_success()
+
+        bp = BulkProcessor(
+            self.client,
+            thread_pool_size=3,
+            batch_size=42,
+        )
+        for it in range(33):
+            bp.put_records("Posts", [self._get_record() for x in range(9)])
+            bp.put_records("Users", [self._get_user() for x in range(7)])
+        bp.flush_queue()
+
+        r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
+        assert r.is_success()
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == 33 * 9
+
+        r = self.client.data().summarize("Users", {"summaries": {"proof": {"count": "*"}}})
+        assert r.is_success()
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == 33 * 7
+        
+        stats = bp.get_stats()
+        assert stats["queue"] == 0
+        assert stats["failed_batches"] == 0
+        assert stats["tables"]["Posts"] == 33 * 9
+        assert stats["tables"]["Users"] == 33 * 7
+        assert stats["total"] == stats["tables"]["Posts"] + stats["tables"]["Users"]

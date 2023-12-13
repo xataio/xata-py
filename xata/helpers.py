@@ -182,19 +182,23 @@ class BulkProcessor(object):
     def flush_queue(self):
         """
         Flush all records from the queue.
+        https://github.com/xataio/xata-py/issues/184
         """
         self.logger.debug("flushing queue with %d records .." % (self.records.size()))
-        self.records.set_flush_interval(0)
-        self.processing_timeout = 0
 
-        # If the queue is not empty wait for one flush interval.
-        # Purpose is a race condition with self.stats["queue"]
-        if self.records.size() > 0:
-            time.sleep(self.flush_interval)
+        # force flush the records queue and shorten the processing times
+        self.records.force_queue_flush()
+        self.processing_timeout = 0.001
+        wait = 0.005 * len(self.thread_workers)
 
-        while self.stats["queue"] > 0:
+        while self.records.size() > 0:
             self.logger.debug("flushing queue with %d records." % self.stats["queue"])
-            time.sleep(self.processing_timeout / len(self.thread_workers) + 0.01)
+            time.sleep(wait)
+
+        # Last poor mans check if queue is fully flushed
+        if self.records.size() > 0 or self.stats["queue"] > 0:
+            self.logger.debug("one more flush interval necessary with queue at %d records." % self.stats["queue"])
+            time.sleep(wait)
 
     class Records(object):
         """
@@ -208,14 +212,22 @@ class BulkProcessor(object):
             """
             self.batch_size = batch_size
             self.flush_interval = flush_interval
+            self.force_flush = False
             self.logger = logger
 
             self.store = dict()
             self.store_ptr = 0
             self.lock = Lock()
 
-        def set_flush_interval(self, interval: int):
-            self.flush_interval = interval
+        def force_queue_flush(self):
+            """
+            Force next batch to be available
+            https://github.com/xataio/xata-py/issues/184
+            """
+            with self.lock:
+                self.force_flush = True
+                self.flush_interval = 0.001
+                self.batch_size = 1
 
         def put(self, table_name: str, records: list[dict]):
             """
@@ -264,8 +276,8 @@ class BulkProcessor(object):
                             self.flush_interval,
                         )
                     )
-                # pop records ?
-                if len(self.store[table_name]["records"]) >= self.batch_size or flush_needed:
+                # force flush table, batch size reached or timer exceeded
+                if self.force_flush or len(self.store[table_name]["records"]) >= self.batch_size or flush_needed:
                     self.store[table_name]["flushed"] = time.time()
                     rs = self.store[table_name]["records"][0 : self.batch_size]
                     del self.store[table_name]["records"][0 : self.batch_size]
