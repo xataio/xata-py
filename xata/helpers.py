@@ -197,6 +197,7 @@ class BulkProcessor(object):
         # force flush the records queue and shorten the processing times
         self.records.force_queue_flush()
         #self.processing_timeout = 1 / len(self.thread_workers)
+        #time.sleep(self.processing_timeout)
 
         # ensure the full records queue is flushed first
         while self.records.size() > 0:
