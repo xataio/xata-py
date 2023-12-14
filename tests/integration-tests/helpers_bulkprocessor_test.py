@@ -38,27 +38,35 @@ class TestHelpersBulkProcessor(object):
         assert self.client.table().create("Users").is_success()
 
         # create schema
-        assert self.client.table().set_schema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-        ).is_success()
-        assert self.client.table().set_schema(
-            "Users",
-            {
-                "columns": [
-                    {"name": "username", "type": "string"},
-                    {"name": "email", "type": "string"},
-                ]
-            },
-        ).is_success()
+        assert (
+            self.client.table()
+            .set_schema(
+                "Posts",
+                {
+                    "columns": [
+                        {"name": "title", "type": "string"},
+                        {"name": "text", "type": "text"},
+                    ]
+                },
+            )
+            .is_success()
+        )
+        assert (
+            self.client.table()
+            .set_schema(
+                "Users",
+                {
+                    "columns": [
+                        {"name": "username", "type": "string"},
+                        {"name": "email", "type": "string"},
+                    ]
+                },
+            )
+            .is_success()
+        )
 
     def teardown_class(self):
-        #assert self.client.databases().delete(self.db_name).is_success()
+        # assert self.client.databases().delete(self.db_name).is_success()
         pass
 
     @pytest.fixture
@@ -70,7 +78,7 @@ class TestHelpersBulkProcessor(object):
             "title": self.fake.company(),
             "text": self.fake.text(),
         }
-    
+
     def _get_user(self) -> dict:
         return {
             "username": self.fake.name(),
@@ -113,7 +121,7 @@ class TestHelpersBulkProcessor(object):
         assert r.is_success()
         assert "summaries" in r
         assert r["summaries"][0]["proof"] == 1000
-        
+
         stats = bp.get_stats()
         assert stats["total"] == 1000
         assert stats["queue"] == 0
@@ -136,7 +144,7 @@ class TestHelpersBulkProcessor(object):
         assert r.is_success()
         assert "summaries" in r
         assert r["summaries"][0]["proof"] == 750
-        
+
         stats = bp.get_stats()
         assert stats["total"] == 750
         assert stats["queue"] == 0
@@ -167,7 +175,7 @@ class TestHelpersBulkProcessor(object):
         assert r.is_success()
         assert "summaries" in r
         assert r["summaries"][0]["proof"] == 33 * 7
-        
+
         stats = bp.get_stats()
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0

@@ -182,7 +182,7 @@ class BulkProcessor(object):
         :returns dict
         """
         return self.stats
-    
+
     def get_queue_size(self) -> int:
         with self.stats_lock:
             return self.stats["queue"]
@@ -196,8 +196,8 @@ class BulkProcessor(object):
 
         # force flush the records queue and shorten the processing times
         self.records.force_queue_flush()
-        #self.processing_timeout = 1 / len(self.thread_workers)
-        #time.sleep(self.processing_timeout)
+        # self.processing_timeout = 1 / len(self.thread_workers)
+        # time.sleep(self.processing_timeout)
 
         # ensure the full records queue is flushed first
         while self.records.size() > 0:
@@ -305,7 +305,7 @@ class BulkProcessor(object):
             Get total size of stored records
             """
             with self.lock:
-                #return sum([len(self.store[n]["records"]) for n in self.store.keys()])
+                # return sum([len(self.store[n]["records"]) for n in self.store.keys()])
                 return sum([self.length(n) for n in self.store.keys()])
 
 
