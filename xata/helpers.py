@@ -85,7 +85,9 @@ class BulkProcessor(object):
         self.flush_interval = flush_interval
         self.failed_batches_queue = []
         self.throw_exception = throw_exception
-        self.stats = {"total": 0, "queue": 0, "failed_batches": 0, "tables": {}}
+
+        self.stats = {"total": 0, "queue": 0, "failed_batches": 0, "total_batches": 0, "tables": {}}
+        self.stats_lock = Lock()
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
         self.thread_workers = []
@@ -137,11 +139,13 @@ class BulkProcessor(object):
                         "thread #%d: pushed a batch of %d records to table %s"
                         % (id, len(batch["records"]), batch["table"])
                     )
-                    self.stats["total"] += len(batch["records"])
-                    self.stats["queue"] = self.records.size()
-                    if batch["table"] not in self.stats["tables"]:
-                        self.stats["tables"][batch["table"]] = 0
-                    self.stats["tables"][batch["table"]] += len(batch["records"])
+                    with self.stats_lock:
+                        self.stats["total"] += len(batch["records"])
+                        self.stats["queue"] = self.records.size()
+                        if batch["table"] not in self.stats["tables"]:
+                            self.stats["tables"][batch["table"]] = 0
+                        self.stats["tables"][batch["table"]] += len(batch["records"])
+                        self.stats["total_batches"] += 1
                 except Exception as exc:
                     logging.error("thread #%d: %s" % (id, exc))
             time.sleep(self.processing_timeout)
@@ -178,6 +182,10 @@ class BulkProcessor(object):
         :returns dict
         """
         return self.stats
+    
+    def get_queue_size(self) -> int:
+        with self.stats_lock:
+            return self.stats["queue"]
 
     def flush_queue(self):
         """
@@ -188,17 +196,17 @@ class BulkProcessor(object):
 
         # force flush the records queue and shorten the processing times
         self.records.force_queue_flush()
-        self.processing_timeout = 0.001
-        wait = 0.005 * len(self.thread_workers)
+        self.processing_timeout = 1 / len(self.thread_workers)
 
+        # ensure the full records queue is flushed first
         while self.records.size() > 0:
-            self.logger.debug("flushing queue with %d records." % self.stats["queue"])
-            time.sleep(wait)
+            self.logger.debug("flushing records queue with %d records." % self.records.size())
+            time.sleep(self.processing_timeout)
 
-        # Last poor mans check if queue is fully flushed
-        if self.records.size() > 0 or self.stats["queue"] > 0:
-            self.logger.debug("one more flush interval necessary with queue at %d records." % self.stats["queue"])
-            time.sleep(wait)
+        # wait until the processor queue is flushed
+        while self.get_queue_size() > 0:
+            self.logger.debug("flushing processor queue with %d records." % self.stats["queue"])
+            time.sleep(self.processing_timeout)
 
     class Records(object):
         """
@@ -226,8 +234,7 @@ class BulkProcessor(object):
             """
             with self.lock:
                 self.force_flush = True
-                self.flush_interval = 0.001
-                self.batch_size = 1
+                self.flush_interval = 0
 
         def put(self, table_name: str, records: list[dict]):
             """
@@ -261,27 +268,27 @@ class BulkProcessor(object):
                     self.store_ptr = 0
                 table_name = names[self.store_ptr]
 
-            rs = []
-            with self.store[table_name]["lock"]:
-                # flush interval exceeded
-                time_elapsed = time.time() - self.store[table_name]["flushed"]
-                flush_needed = time_elapsed > self.flush_interval
-                if flush_needed and len(self.store[table_name]["records"]) > 0:
-                    self.logger.debug(
-                        "flushing table '%s' with %d records after interval %s > %d"
-                        % (
-                            table_name,
-                            len(self.store[table_name]["records"]),
-                            time_elapsed,
-                            self.flush_interval,
+                rs = []
+                with self.store[table_name]["lock"]:
+                    # flush interval exceeded
+                    time_elapsed = time.time() - self.store[table_name]["flushed"]
+                    flush_needed = time_elapsed > self.flush_interval
+                    if flush_needed and len(self.store[table_name]["records"]) > 0:
+                        self.logger.debug(
+                            "flushing table '%s' with %d records after interval %s > %d"
+                            % (
+                                table_name,
+                                len(self.store[table_name]["records"]),
+                                time_elapsed,
+                                self.flush_interval,
+                            )
                         )
-                    )
-                # force flush table, batch size reached or timer exceeded
-                if self.force_flush or len(self.store[table_name]["records"]) >= self.batch_size or flush_needed:
-                    self.store[table_name]["flushed"] = time.time()
-                    rs = self.store[table_name]["records"][0 : self.batch_size]
-                    del self.store[table_name]["records"][0 : self.batch_size]
-            return {"table": table_name, "records": rs}
+                    # force flush table, batch size reached or timer exceeded
+                    if self.force_flush or len(self.store[table_name]["records"]) >= self.batch_size or flush_needed:
+                        self.store[table_name]["flushed"] = time.time()
+                        rs = self.store[table_name]["records"][0 : self.batch_size]
+                        del self.store[table_name]["records"][0 : self.batch_size]
+                return {"table": table_name, "records": rs}
 
         def length(self, table_name: str) -> int:
             """
@@ -297,7 +304,8 @@ class BulkProcessor(object):
             Get total size of stored records
             """
             with self.lock:
-                return sum([len(self.store[n]["records"]) for n in self.store.keys()])
+                #return sum([len(self.store[n]["records"]) for n in self.store.keys()])
+                return sum([self.length(n) for n in self.store.keys()])
 
 
 def to_rfc339(dt: datetime, tz=timezone.utc) -> str:

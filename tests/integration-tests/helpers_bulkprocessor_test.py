@@ -30,8 +30,7 @@ from xata.helpers import BulkProcessor
 class TestHelpersBulkProcessor(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
         self.fake = Faker()
 
         assert self.client.databases().create(self.db_name).is_success()
@@ -59,7 +58,8 @@ class TestHelpersBulkProcessor(object):
         ).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        #assert self.client.databases().delete(self.db_name).is_success()
+        pass
 
     @pytest.fixture
     def record(self) -> dict:
@@ -95,6 +95,7 @@ class TestHelpersBulkProcessor(object):
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0
         assert stats["tables"]["Posts"] == 42
+        assert stats["total_batches"] == 2
 
     def test_flush_queue(self):
         assert self.client.sql().query('DELETE FROM "Posts" WHERE 1 = 1').is_success()
@@ -117,10 +118,35 @@ class TestHelpersBulkProcessor(object):
         assert stats["total"] == 1000
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0
+        assert stats["total_batches"] == 20
         assert stats["tables"]["Posts"] == 1000
+
+    def test_flush_queue_many_threads(self):
+        assert self.client.sql().query('DELETE FROM "Users" WHERE 1 = 1').is_success()
+
+        bp = BulkProcessor(
+            self.client,
+            thread_pool_size=8,
+            batch_size=10,
+        )
+        bp.put_records("Users", [self._get_user() for x in range(750)])
+        bp.flush_queue()
+
+        r = self.client.data().summarize("Users", {"summaries": {"proof": {"count": "*"}}})
+        assert r.is_success()
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == 750
+        
+        stats = bp.get_stats()
+        assert stats["total"] == 750
+        assert stats["queue"] == 0
+        assert stats["failed_batches"] == 0
+        assert stats["total_batches"] == 75
+        assert stats["tables"]["Users"] == 750
 
     def test_multiple_tables(self):
         assert self.client.sql().query('DELETE FROM "Posts" WHERE 1 = 1').is_success()
+        assert self.client.sql().query('DELETE FROM "Users" WHERE 1 = 1').is_success()
 
         bp = BulkProcessor(
             self.client,
@@ -145,6 +171,7 @@ class TestHelpersBulkProcessor(object):
         stats = bp.get_stats()
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0
+        assert stats["total_batches"] == 14
         assert stats["tables"]["Posts"] == 33 * 9
         assert stats["tables"]["Users"] == 33 * 7
         assert stats["total"] == stats["tables"]["Posts"] + stats["tables"]["Users"]
