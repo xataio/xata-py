@@ -35,15 +35,15 @@ class TestHelpersBulkProcessor(unittest.TestCase):
 
         with pytest.raises(Exception) as e:
             BulkProcessor(client, batch_size=-1)
-        assert str(e.value) == "batch size can not be less than one, default: 25"
+        assert str(e.value) == "batch size can not be less than one, default: 50"
 
         with pytest.raises(Exception) as e:
             BulkProcessor(client, flush_interval=-1)
-        assert str(e.value) == "flush interval can not be negative, default: 5.000000"
+        assert str(e.value) == "flush interval can not be negative, default: 2.000000"
 
         with pytest.raises(Exception) as e:
             BulkProcessor(client, processing_timeout=-1)
-        assert str(e.value) == "processing timeout can not be negative, default: 0.025000"
+        assert str(e.value) == "processing timeout can not be negative, default: 0.050000"
 
     def test_bulk_processor_stats(self):
         client = XataClient(api_key="api_key", workspace_id="ws_id")
