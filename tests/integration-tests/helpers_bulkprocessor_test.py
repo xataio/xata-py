@@ -66,7 +66,7 @@ class TestHelpersBulkProcessor(object):
         )
 
     def teardown_class(self):
-        #assert self.client.databases().delete(self.db_name).is_success()
+        # assert self.client.databases().delete(self.db_name).is_success()
         pass
 
     @pytest.fixture

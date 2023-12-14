@@ -114,7 +114,7 @@ class BulkProcessor(object):
             )
         )
         while self.worker_active:
-            sleep_backoff = 5 # slow down if no records exist
+            sleep_backoff = 5  # slow down if no records exist
             time.sleep(self.processing_timeout * sleep_backoff)
 
             # process
@@ -144,7 +144,7 @@ class BulkProcessor(object):
                         "thread #%d: pushed a batch of %d records to table %s"
                         % (id, len(batch["records"]), batch["table"])
                     )
-                    #with self.stats_lock:
+                    # with self.stats_lock:
                     self.stats["total"] += len(batch["records"])
                     self.stats["queue"] = self.records.size()
                     if batch["table"] not in self.stats["tables"]:
@@ -153,7 +153,7 @@ class BulkProcessor(object):
                     self.stats["total_batches"] += 1
                 except Exception as exc:
                     logging.error("thread #%d: %s" % (id, exc))
-                sleep_backoff = 1 # keep velocity
+                sleep_backoff = 1  # keep velocity
 
     def put_record(self, table_name: str, record: dict):
         """
