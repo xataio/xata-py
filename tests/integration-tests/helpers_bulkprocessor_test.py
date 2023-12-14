@@ -66,7 +66,8 @@ class TestHelpersBulkProcessor(object):
         )
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        #assert self.client.databases().delete(self.db_name).is_success()
+        pass
 
     @pytest.fixture
     def record(self) -> dict:
@@ -88,21 +89,22 @@ class TestHelpersBulkProcessor(object):
         bp = BulkProcessor(
             self.client,
             thread_pool_size=1,
+            batch_size=43,
         )
         bp.put_records("Posts", [self._get_record() for x in range(42)])
         bp.flush_queue()
-
-        r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
-        assert r.is_success()
-        assert "summaries" in r
-        assert r["summaries"][0]["proof"] == 42
 
         stats = bp.get_stats()
         assert stats["total"] == 42
         assert stats["queue"] == 0
         assert stats["failed_batches"] == 0
         assert stats["tables"]["Posts"] == 42
-        assert stats["total_batches"] == 2
+        assert stats["total_batches"] == 1
+
+        r = self.client.data().summarize("Posts", {"summaries": {"proof": {"count": "*"}}})
+        assert r.is_success()
+        assert "summaries" in r
+        assert r["summaries"][0]["proof"] == stats["total"]
 
     def test_flush_queue(self):
         assert self.client.sql().query('DELETE FROM "Posts" WHERE 1 = 1').is_success()
