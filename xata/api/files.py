@@ -19,8 +19,8 @@
 
 # ------------------------------------------------------- #
 # Files
-# Files
-# Specification: core:v1.0
+# CRUD API for operating on binary content in file and file[] columns.
+# Specification: workspace:v1.0
 # ------------------------------------------------------- #
 
 from requests import request
@@ -46,6 +46,7 @@ class Files(ApiRequest):
         """
         Retrieves file content from an array by file ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file/file_id#download-content-from-a-file-item-in-a-file-array-column
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
         Method: GET
         Response status codes:
@@ -54,8 +55,9 @@ class Files(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: */*
-
+ 
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param column_name: str The Column name
@@ -63,7 +65,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -83,6 +85,7 @@ class Files(ApiRequest):
         """
         Uploads the file content to an array given the file ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file/file_id#upload-or-update-the-content-of-a-file-item-in-a-file-array-column
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
         Method: PUT
         Response status codes:
@@ -93,6 +96,7 @@ class Files(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -103,7 +107,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -122,6 +126,7 @@ class Files(ApiRequest):
         """
         Deletes an item from an file array column given the file ID
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file/file_id#delete-an-item-from-a-file-array
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}
         Method: DELETE
         Response status codes:
@@ -130,6 +135,7 @@ class Files(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -138,7 +144,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
@@ -150,6 +156,7 @@ class Files(ApiRequest):
         """
         Retrieves the file content from a file column
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file#download-content-from-a-file-column
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
         Method: GET
         Response status codes:
@@ -159,6 +166,7 @@ class Files(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
         Response: */*
 
         :param table_name: str The Table name
@@ -167,7 +175,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -186,6 +194,7 @@ class Files(ApiRequest):
         """
         Uploads the file content to the given file column
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file#upload-content-to-a-file-column
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
         Method: PUT
         Response status codes:
@@ -196,15 +205,17 @@ class Files(ApiRequest):
         - 404: Example response
         - 422: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param column_name: str The Column name
-        :param data: bytes
+        :param data: bytes content
+        :param content_type: str Default: "application/octet-stream"
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
@@ -217,6 +228,7 @@ class Files(ApiRequest):
         """
         Deletes a file referred in a file column
 
+        Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/data/record_id/column/column_name/file#remove-the-content-from-a-file-column
         Path: /db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file
         Method: DELETE
         Response status codes:
@@ -225,6 +237,7 @@ class Files(ApiRequest):
         - 401: Authentication Error
         - 404: Example response
         - 5XX: Unexpected Error
+        - default: Unexpected Error
 
         :param table_name: str The Table name
         :param record_id: str The Record name
@@ -232,7 +245,7 @@ class Files(ApiRequest):
         :param db_name: str = None The name of the database to query. Default: database name from the client.
         :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
-        :return ApiResponse
+        :returns ApiResponse
         """
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
