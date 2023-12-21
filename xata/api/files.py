@@ -109,10 +109,11 @@ class Files(ApiRequest):
 
         :returns ApiResponse
         """
+
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file/{file_id}"
         headers = {"content-type": content_type}
-        return self.request("PUT", url_path, headers, data=data)
+        return self.request("PUT", url_path, headers, data=data, override_base_url=self.get_upload_base_url())
 
     def delete_item(
         self,
@@ -220,7 +221,7 @@ class Files(ApiRequest):
         db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
         url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}/column/{column_name}/file"
         headers = {"content-type": content_type}
-        return self.request("PUT", url_path, headers, data=data)
+        return self.request("PUT", url_path, headers, data=data, override_base_url=self.get_upload_base_url())
 
     def delete(
         self, table_name: str, record_id: str, column_name: str, db_name: str = None, branch_name: str = None

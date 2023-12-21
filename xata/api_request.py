@@ -45,6 +45,15 @@ class ApiRequest:
         cfg = self.client.get_config()
         return "https://%s.%s.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
 
+    def get_upload_base_url(self) -> str:
+        """
+        Upload of files has dedidcated URL that is not represented in the OAS
+
+        :returns str
+        """
+        cfg = self.client.get_config()
+        return "https://%s.%s.upload.%s" % (cfg["workspaceId"], cfg["region"], cfg["domain_workspace"])
+
     def request(
         self,
         http_method: str,
@@ -53,6 +62,7 @@ class ApiRequest:
         payload: dict = None,
         data: bytes = None,
         is_streaming: bool = False,
+        override_base_url=None,
     ) -> ApiResponse:
         """
         :param http_method: str
@@ -61,6 +71,7 @@ class ApiRequest:
         :param payload: dict = None
         :param data: bytes = None
         :param is_streaming: bool = False
+        :param override_base_url = None Set alternative base URL
 
         :returns ApiResponse
 
@@ -69,7 +80,8 @@ class ApiRequest:
         :raises ServerError
         """
         headers = {**headers, **self.client.get_headers()}
-        url = "%s/%s" % (self.get_base_url(), url_path.lstrip("/"))
+        base_url = self.get_base_url() if override_base_url is None else override_base_url
+        url = "%s/%s" % (base_url, url_path.lstrip("/"))
 
         # In order not exhaust the connection pool with open connections from unread streams
         # we opt for Session usage on all non-stream requests
