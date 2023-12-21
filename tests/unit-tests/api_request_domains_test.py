@@ -37,3 +37,7 @@ class TestApiRequestCustomDomains(unittest.TestCase):
 
         expected = "https://%s.%s.%s" % (ws_id, DEFAULT_REGION, domain)
         assert expected == client.table().get_base_url()
+
+    def test_upload_base_url(self):
+        client = XataClient(api_key="123", db_url="https://12345.region-42.staging-xata.dev/db/testopia-042")
+        assert "https://12345.region-42.upload.staging-xata.dev" == client.databases().get_upload_base_url()
