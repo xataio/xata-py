@@ -57,7 +57,7 @@ class Files(ApiRequest):
         - 5XX: Unexpected Error
         - default: Unexpected Error
         Response: */*
- 
+
         :param table_name: str The Table name
         :param record_id: str The Record name
         :param column_name: str The Column name
