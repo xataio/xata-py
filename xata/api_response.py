@@ -44,7 +44,7 @@ class ApiResponse(dict):
         """
         Get the server message from the response, if you need the error message
         please the property error_message. This channel is only relevant for
-        deprecation messages or other meta information from Xata
+        deprecation messages or other meta information from Xata.
         :returns str | None
         """
         return self.headers["x-xata-message"] if "x-xata-message" in self.headers else None
