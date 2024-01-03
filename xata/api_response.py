@@ -42,7 +42,9 @@ class ApiResponse(dict):
 
     def server_message(self) -> Union[str, None]:
         """
-        Get the server message from the response
+        Get the server message from the response, if you need the error message
+        please the property error_message. This channel is only relevant for
+        deprecation messages or other meta information from Xata
         :returns str | None
         """
         return self.headers["x-xata-message"] if "x-xata-message" in self.headers else None
@@ -95,7 +97,7 @@ class ApiResponse(dict):
         return self.response.status_code
     
     @property
-    def error_message(self) -> str | None:
+    def error_message(self) -> Union[str, None]:
         """
         Get the error message if it is set, otherwise None
         :returns str | None
