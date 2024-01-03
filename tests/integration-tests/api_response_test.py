@@ -84,3 +84,16 @@ class TestApiResponse(object):
         assert posts.is_success()
         assert len(posts["records"]) == 1
         assert not posts.has_more_results()
+
+    def test_error_message(self):
+        user = self.client.records().get("Nope", "nope^2")
+        assert not user.is_success()
+        assert user.status_code > 299
+        assert user.error_message is not None
+        assert user.error_message.endswith("not found")
+
+    def test_error_message_should_not_be_set(self):
+        user = self.client.users().get()
+        assert user.is_success()
+        assert user.status_code < 300
+        assert not user.error_message

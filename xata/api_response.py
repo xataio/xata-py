@@ -93,6 +93,16 @@ class ApiResponse(dict):
         :returns int
         """
         return self.response.status_code
+    
+    @property
+    def error_message(self) -> str | None:
+        """
+        Get the error message if it is set, otherwise None
+        :returns str | None
+        """
+        if self.status_code < 300:
+            return None
+        return self.response.json().get("message", None)
 
     @property
     def headers(self) -> dict:
