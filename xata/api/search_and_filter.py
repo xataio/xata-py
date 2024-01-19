@@ -1137,7 +1137,7 @@ class SearchAndFilter(ApiRequest):
         While the summary endpoint is served from a transactional store and the results are strongly
         consistent, the aggregate endpoint is served from our columnar store and the results are
         only eventually consistent. On the other hand, the aggregate endpoint uses a
-        store that is more appropiate for analytics, makes use of approximative algorithms
+        store that is more appropriate for analytics, makes use of approximation algorithms
         (e.g for cardinality), and is generally faster and can do more complex aggregations.
 
         For usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
