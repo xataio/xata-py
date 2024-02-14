@@ -99,6 +99,7 @@ OPTIONAL_CURATED_PARAM_PAYLOAD = {
     "in": "requestBody",
     "required": True,  # TODO get required
 }
+TYPES = {}
 
 
 def fetch_openapi_specs(spec_url: str) -> dict:
@@ -405,6 +406,34 @@ def checksum(dictionary: Dict[str, Any]) -> str:
     return dhash.hexdigest()
 
 
+def generate_type(schema: dict, name: str) -> dict:
+    if schema["type"] == "dict":
+        schema["name"] = name
+        schema["template"] = "type_class"
+        schema["properties"] = generate_type_resolve_object(schema["properties"])
+        print(schema)
+        exit(12)
+    else:
+        schema["name"] = get_param_name(name)
+        schema["template"] = "type_param"
+    if "description" not in schema or schema["description"].strip() == "":
+        schema["description"] = name
+
+    # print(name)
+    # if schema["type"] == "dict":
+    #    print(schema)
+    #    exit(11)
+    return schema
+
+def generate_type_resolve_object(properties: dict) -> dict:
+    for name, prop in properties.items():
+        if "type" in prop and prop["type"] == "dict":
+            properties[name]["name"] = name
+            #schema["properties"] = generate_type_resolve_object(schema["properties"])
+        else:
+            properties[name]["name"] = get_param_name(name)
+    return properties
+
 def _sanitize_filename(n: str) -> str:
     return n.replace(" ", "_").lower()
 
@@ -413,6 +442,14 @@ def _sanitize_filename(n: str) -> str:
 #                         MAIN                            #
 # ------------------------------------------------------- #
 if __name__ == "__main__":
+    # Generate types skeleton
+    logging.info("creating types skeleton.")
+    out = Template(filename="codegen/templates/types.tpl", output_encoding="utf-8").render()
+    file_name = "%s/types.py" % WS_DIR
+    fh = open(file_name, "w+")
+    fh.write(out.decode("utf-8"))
+    fh.close()
+
     for scope in SPECS.keys():
         # fetch spec
         spec = fetch_openapi_specs(SPECS[scope]["spec_url"])
@@ -436,6 +473,25 @@ if __name__ == "__main__":
         # resolve references
         logging.info("resolving references ..")
         references = resolve_references(spec)
+
+        # generate types
+        for k, schema in spec["components"]["schemas"].items():
+            id = f"#/components/schema/{k}"
+            if id not in TYPES:
+                if "type" in schema:
+                    schema["id"] = id
+                    TYPES[id] = generate_type(schema, k)
+                    # print(TYPES)
+
+        # write types
+        logging.info("writing types ..")
+        file_name = "%s/types.py" % WS_DIR
+        fh = open(file_name, "a+")
+        for t in TYPES.values():
+            out = Template(filename="codegen/templates/%s.tpl" % t["template"], output_encoding="utf-8").render(**t)
+            fh.write(out.decode("utf-8"))
+        fh.close()
+        exit(11)
 
         # generate namespaces
         logging.info("generating %d namespaces .." % len(namespaces))
