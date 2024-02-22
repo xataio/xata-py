@@ -1140,7 +1140,7 @@ class SearchAndFilter(ApiRequest):
         store that is more appropiate for analytics, makes use of approximative algorithms
         (e.g for cardinality), and is generally faster and can do more complex aggregations.
 
-        For usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
+        For usage, see the [API Guide](https://xata.io/docs/sdk/aggregate).
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/aggregate#run-aggregations-over-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
