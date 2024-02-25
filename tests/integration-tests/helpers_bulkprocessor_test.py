@@ -17,8 +17,6 @@
 # under the License.
 #
 
-import time
-
 import pytest
 import utils
 from faker import Faker

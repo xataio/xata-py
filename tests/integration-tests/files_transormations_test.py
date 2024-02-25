@@ -23,9 +23,10 @@ import json
 import pytest
 import utils
 from faker import Faker
-from PIL import Image, ImageChops
 
 from xata.client import XataClient
+
+# from PIL import Image, ImageChops
 
 
 class TestFilesTransformations(object):
@@ -90,7 +91,7 @@ class TestFilesTransformations(object):
         upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
         assert upload.is_success()
 
-        img = utils.get_file_content(utils.get_file_name("images/03.png"))
+        # img = utils.get_file_content(utils.get_file_name("images/03.png"))
         self.client.files().transform(
             upload["one_file"]["url"],
             {"rotate": 180, "blur": 50, "trim": {"top": 20, "right": 30, "bottom": 20, "left": 0}},
@@ -127,18 +128,18 @@ class TestFilesTransformations(object):
         upload = self.client.records().insert("Attachments", payload, columns=["one_file.url"])
         assert upload.is_success()
 
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             self.client.files().transform(upload["one_file"]["url"], {})
 
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             self.client.files().transform(upload["one_file"]["url"], {"donkey": "kong"})
 
     def test_unknown_image_id(self):
         # must fail with a 403
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             self.client.files().transform("https://us-east-1.storage.xata.sh/lalala", {"rotate": 90})
 
     def test_invalid_url(self):
         # must fail with a 403
-        with pytest.raises(Exception) as e:
+        with pytest.raises(Exception):
             self.client.files().transform("https:/xata.sh/oh-hello", {"rotate": 90})
