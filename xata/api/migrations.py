@@ -165,7 +165,7 @@ class Migrations(ApiRequest):
         headers = {"content-type": "application/json"}
         return self.request("POST", url_path, headers, payload)
 
-    def compare_schemas(self, payload: dict, db_name: str = None, branch_name: str = None) -> ApiResponse:
+    def compare_schemas(self, branch_name: str, payload: dict, db_name: str = None) -> ApiResponse:
         """
         Compare branch schemas.
 
@@ -180,9 +180,9 @@ class Migrations(ApiRequest):
         - 5XX: Unexpected Error
         - default: Unexpected Error
 
+        :param branch_name: str The Database Name
         :param payload: dict content
         :param db_name: str = None The name of the database to query. Default: database name from the client.
-        :param branch_name: str = None The name of the branch to query. Default: branch name from the client.
 
         :returns ApiResponse
         """
