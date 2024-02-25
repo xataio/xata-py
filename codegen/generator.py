@@ -34,7 +34,7 @@ from mako.template import Template
 
 from xata.helpers import to_rfc339
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 
 coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -185,7 +185,8 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     else:
         endpoint_params = get_endpoint_params(path, endpoint, parameters, references)
     if "description" in endpoint:
-        desc = endpoint["description"].strip()
+        # poor man's escape of "\" as linter does not like it
+        desc = endpoint["description"].replace("\\", "\\\\").strip()
     else:
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
