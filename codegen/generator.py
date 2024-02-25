@@ -26,7 +26,6 @@ import hashlib
 import json
 import logging
 import re
-import textwrap
 from typing import Any, Dict
 
 import coloredlogs
@@ -35,7 +34,7 @@ from mako.template import Template
 
 from xata.helpers import to_rfc339
 
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 
 coloredlogs.install(level="INFO")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -186,7 +185,8 @@ def generate_endpoint(path: str, method: str, endpoint: dict, parameters: list, 
     else:
         endpoint_params = get_endpoint_params(path, endpoint, parameters, references)
     if "description" in endpoint:
-        desc = endpoint["description"].strip()
+        # poor man's escape of "\" as linter does not like it
+        desc = endpoint["description"].replace("\\", "\\\\").strip()
     else:
         logging.info("missing description for %s.%s - using summary." % (path, endpoint["operationId"]))
         desc = endpoint["summary"].strip()
@@ -259,56 +259,13 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
         "response_content_types": [],
     }
     if len(parameters) > 0:
-        # Check for convience param swaps
-        curated_param_list = []
-        for r in parameters:
-            if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
-                logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
-                # push two new params to cover for string creation
-                curated_param_list.append(OPTIONAL_CURATED_PARAM_DB_NAME)
-                curated_param_list.append(OPTIONAL_CURATED_PARAM_BRANCH_NAME)
-                skel["smart_db_branch_name"] = True
-            elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
-                # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
-                logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
-                curated_param_list.append(OPTIONAL_CURATED_PARAM_WORKSPACE_ID)
-                skel["smart_workspace_id"] = True
-            else:
-                curated_param_list.append(r)
+        body = _generate_enpoint_param_list(parameters)
+        curated_param_list = body["params"]
+        skel["smart_db_branch_name"] = body["smart_db_branch_name"]
+        skel["smart_workspace_id"] = body["smart_workspace_id"]
 
         for r in curated_param_list:
-            p = None
-            # if not in ref: endpoint specific params
-            if "$ref" in r and r["$ref"] in references:
-                p = references[r["$ref"]]
-                if "$ref" in p["schema"]:
-                    p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
-                elif "type" in p["schema"]:
-                    p["type"] = type_replacement(p["schema"]["type"])
-                else:
-                    logging.error("could resolve type of '%s' in the lookup." % r["$ref"])
-                    exit(11)
-            # else if name not in r: method specific params
-            elif "name" in r:
-                p = r
-                p["type"] = type_replacement(r["schema"]["type"])
-            # else fail with code: 11
-            else:
-                logging.error("could resolve reference %s in the lookup." % r["$ref"])
-                exit(11)
-
-            if "required" not in p:
-                p["required"] = False
-            if "description" not in p:
-                p["description"] = ""
-
-            p["name"] = p["name"].strip()
-            p["nameParam"] = get_param_name(p["name"])
-            p["description"] = p["description"].strip()
-            p["trueType"] = p["type"]
-            if not p["required"]:
-                p["type"] += " = None"
-
+            p = _prepare_endpoint_param(r, references)
             skel["list"].append(p)
 
             if p["in"] == "path":
@@ -358,17 +315,78 @@ def get_endpoint_params(path: str, endpoint: dict, parameters: dict, references:
             }
         )
 
+    skel["list"] = _sanitize_enpoint_list(skel["list"], skel["has_optional_params"])
+    return skel
+
+
+def _prepare_endpoint_param(r, references: list) -> list:
+    p = None
+    # if not in ref: endpoint specific params
+    if "$ref" in r and r["$ref"] in references:
+        p = references[r["$ref"]]
+        if "$ref" in p["schema"]:
+            p["type"] = type_replacement(references[p["schema"]["$ref"]]["type"])
+        elif "type" in p["schema"]:
+            p["type"] = type_replacement(p["schema"]["type"])
+        else:
+            logging.error("could resolve type of '%s' in the lookup." % r["$ref"])
+            exit(11)
+    # else if name not in r: method specific params
+    elif "name" in r:
+        p = r
+        p["type"] = type_replacement(r["schema"]["type"])
+    # else fail with code: 11
+    else:
+        logging.error("could resolve reference %s in the lookup." % r["$ref"])
+        exit(11)
+
+    if "required" not in p:
+        p["required"] = False
+    if "description" not in p:
+        p["description"] = ""
+    p["name"] = p["name"].strip()
+    p["nameParam"] = get_param_name(p["name"])
+    p["description"] = p["description"].strip()
+    p["trueType"] = p["type"]
+    if not p["required"]:
+        p["type"] += " = None"
+
+    return p
+
+
+def _generate_enpoint_param_list(parameters: list) -> list:
+    resp = {
+        "params": [],
+        "smart_db_branch_name": False,
+        "smart_workspace_id": False,
+    }
+    for r in parameters:
+        if "$ref" in r and r["$ref"] == REF_DB_BRANCH_NAME_PARAM:
+            logging.debug("adding smart value for %s" % "#/components/parameters/DBBranchNameParam")
+            # push two new params to cover for string creation
+            resp["params"].append(OPTIONAL_CURATED_PARAM_DB_NAME)
+            resp["params"].append(OPTIONAL_CURATED_PARAM_BRANCH_NAME)
+            resp["smart_db_branch_name"] = True
+        elif "$ref" in r and r["$ref"] == REF_WORKSPACE_ID_PARAM:
+            # and endpoint['operationId'] not in REF_WORKSPACE_ID_PARAM_EXCLUSIONS:
+            logging.debug("adding smart value for %s" % "#/components/parameters/WorkspaceIdParam")
+            resp["params"].append(OPTIONAL_CURATED_PARAM_WORKSPACE_ID)
+            resp["smart_workspace_id"] = True
+        else:
+            resp["params"].append(r)
+    return resp
+
+
+def _sanitize_enpoint_list(lst: list, has_optional_params: bool) -> list:
+    # reorder for optional params to be last
+    if has_optional_params:
+        lst = [e for e in lst if e["required"]] + [e for e in lst if not e["required"]]
     # Remove duplicates
     tmp = {}
-    for p in skel["list"]:
+    for p in lst:
         if p["name"].lower() not in tmp:
             tmp[p["name"].lower()] = p
-    skel["list"] = tmp.values()
-
-    # reorder for optional params to be last
-    if skel["has_optional_params"]:
-        skel["list"] = [e for e in skel["list"] if e["required"]] + [e for e in skel["list"] if not e["required"]]
-    return skel
+    return tmp.values()
 
 
 def resolve_references(spec: dict) -> dict:

@@ -95,7 +95,7 @@ class ApiResponse(dict):
         :returns int
         """
         return self.response.status_code
-    
+
     @property
     def error_message(self) -> Union[str, None]:
         """

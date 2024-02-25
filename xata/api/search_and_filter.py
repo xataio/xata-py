@@ -57,7 +57,7 @@ class SearchAndFilter(ApiRequest):
         }
         ```
 
-        For usage, see also the [API Guide](https://xata.io/docs/api-guide/get).
+        For usage, see also the [Xata SDK documentation](https://xata.io/docs/sdk/get).
 
         ### Column selection
 
@@ -459,7 +459,7 @@ class SearchAndFilter(ApiRequest):
         * `*` matches zero or more characters
         * `?` matches exactly one character
 
-        If you want to match a string that contains a wildcard character, you can escape them using a backslash (`\`). You can escape a backslash by usign another backslash.
+        If you want to match a string that contains a wildcard character, you can escape them using a backslash (`\\`). You can escape a backslash by usign another backslash.
 
         You can also use the `$endsWith` and `$startsWith` operators:
 
@@ -888,7 +888,7 @@ class SearchAndFilter(ApiRequest):
         """
         Run a free text search operation in a particular table.
 
-        The endpoint accepts a `query` parameter that is used for the free text search and a set of structured filters (via the `filter` parameter) that are applied before the search. The `filter` parameter uses the same syntax as the [query endpoint](/api-reference/db/db_branch_name/tables/table_name/) with the following exceptions:
+        The endpoint accepts a `query` parameter that is used for the free text search and a set of structured filters (via the `filter` parameter) that are applied before the search. The `filter` parameter uses the same syntax as the [query endpoint](/docs/api-reference/db/db_branch_name/tables/table_name/query#filtering) with the following exceptions:
         * filters `$contains`, `$startsWith`, `$endsWith` don't work on columns of type `text`
         * filtering on columns of type `multiple` is currently unsupported
 
@@ -1137,10 +1137,10 @@ class SearchAndFilter(ApiRequest):
         While the summary endpoint is served from a transactional store and the results are strongly
         consistent, the aggregate endpoint is served from our columnar store and the results are
         only eventually consistent. On the other hand, the aggregate endpoint uses a
-        store that is more appropiate for analytics, makes use of approximative algorithms
+        store that is more appropriate for analytics, makes use of approximation algorithms
         (e.g for cardinality), and is generally faster and can do more complex aggregations.
 
-        For usage, see the [API Guide](https://xata.io/docs/api-guide/aggregate).
+        For usage, see the [Aggregation documentation](https://xata.io/docs/sdk/aggregate).
 
         Reference: https://xata.io/docs/api-reference/db/db_branch_name/tables/table_name/aggregate#run-aggregations-over-a-table
         Path: /db/{db_branch_name}/tables/{table_name}/aggregate
