@@ -314,7 +314,7 @@ class Branch(ApiRequest):
         - default: Unexpected Error
 
         :param db_name: str The Database Name
-        :param git_branch: str The Git Branch to remove from the mapping
+        :param git_branch: str The git branch to remove from the mapping
 
         :returns ApiResponse
         """
@@ -326,7 +326,7 @@ class Branch(ApiRequest):
     def resolve(self, db_name: str, git_branch: str = None, fallback_branch: str = None) -> ApiResponse:
         """
         In order to resolve the database branch, the following algorithm is used:
-        * if the `gitBranch` was provided and is found in the [git branches mapping](/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned
+        * if the `gitBranch` was provided and is found in the [git branches mapping](/docs/api-reference/dbs/db_name/gitBranches), the associated Xata branch is returned
         * else, if a Xata branch with the exact same name as `gitBranch` exists, return it
         * else, if `fallbackBranch` is provided and a branch with that name exists, return it
         * else, return the default branch of the DB (`main` or the first branch)

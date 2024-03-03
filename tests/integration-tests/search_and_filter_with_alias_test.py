@@ -60,7 +60,7 @@ class TestSearchAndFilterWithAliasNamespace(object):
         ]
         r = self.client.records().bulk_insert("Posts", {"records": self.posts})
         assert r.is_success()
-        utils.wait_until_records_are_indexed("Posts")
+        utils.wait_until_records_are_indexed("Posts", "title", self.client)
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()

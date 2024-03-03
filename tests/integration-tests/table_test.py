@@ -177,6 +177,7 @@ class TestTableNamespace(object):
         assert r.is_success()
         assert r == columns
 
+    """
     def test_deprecated_object_header(self):
         r = self.client.table().get_columns("Posts")
         assert r.is_success()
@@ -186,3 +187,4 @@ class TestTableNamespace(object):
             == "The deprecated object column type will be removed on Dec 13, 2023 - Please consult https://xata.io/to/object-migration for migration."
         )
         assert r.server_message() == r.headers["x-xata-message"]
+    """

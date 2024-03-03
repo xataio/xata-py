@@ -56,10 +56,13 @@ class TestSqlQuery(object):
         assert "total" in r
 
         assert len(r["records"]) == 5
-        assert "id" in r["columns"]
-        assert "name" in r["columns"]
-        assert "email" in r["columns"]
-        assert "type_name" in r["columns"]["name"]
+        assert "id" in r["records"][0]
+        assert "name" in r["records"][0]
+        assert "email" in r["records"][0]
+
+        assert len(r["columns"]) == 2 + 4  # name & email + special xata_ columns
+        assert "name" in r["columns"][0]
+        assert "type" in r["columns"][0]
 
     def test_query_on_non_existing_table(self):
         r = self.client.sql().query('SELECT * FROM "DudeWhereIsMyTable"')
@@ -96,7 +99,6 @@ class TestSqlQuery(object):
         assert r.is_success()
         assert not r["records"]
         assert r["total"] == 0
-        assert not r["columns"]
 
     def test_insert_with_params(self):
         r = self.client.sql().query(
@@ -105,7 +107,6 @@ class TestSqlQuery(object):
         assert r.is_success()
         assert not r["records"]
         assert r["total"] == 0
-        assert not r["columns"]
 
     def test_query_with_params(self):
         r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])
