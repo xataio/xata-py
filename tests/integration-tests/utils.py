@@ -45,7 +45,7 @@ def wait_until_records_are_indexed(table: str, col: str, client: XataClient):
     Wait for the records to be index in order to able to search them
     """
     is_empty = True
-    counter = 10
+    counter = 24
     while is_empty:
         r = client.data().aggregate(table, {"aggs": {col: {"count": "*"}}})
         if r["aggs"][col] or counter <= 1:
