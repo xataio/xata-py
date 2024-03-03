@@ -60,7 +60,7 @@ class TestSqlQuery(object):
         assert "name" in r["records"][0]
         assert "email" in r["records"][0]
 
-        assert len(r["columns"]) == 2 + 4 # name & email + special xata_ columns
+        assert len(r["columns"]) == 2 + 4  # name & email + special xata_ columns
         assert "name" in r["columns"][0]
         assert "type" in r["columns"][0]
 

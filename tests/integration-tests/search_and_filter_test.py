@@ -35,7 +35,7 @@ class TestSearchAndFilterNamespace(object):
         assert self.client.table().create("Posts").is_success()
         assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
         assert self.client.records().bulk_insert("Posts", {"records": self.posts}).is_success()
-        utils.wait_until_records_are_indexed("Posts")
+        utils.wait_until_records_are_indexed("Posts", "title", self.client)
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
@@ -81,8 +81,8 @@ class TestSearchAndFilterNamespace(object):
         assert r.is_success()
 
         # TODO enable again when fixed
-        #r = self.client.data().search_table("NonExistingTable", payload)
-        #assert r.status_code == 404
+        # r = self.client.data().search_table("NonExistingTable", payload)
+        # assert r.status_code == 404
 
         r = self.client.data().search_table("Posts", {"invalid": "query"})
         assert r.status_code == 400
@@ -112,8 +112,8 @@ class TestSearchAndFilterNamespace(object):
         assert r["aggs"]["titles"] == len(self.posts)
 
         # TODO enable again when fixed
-        #r = self.client.data().aggregate("NonExistingTable", payload)
-        #assert r.status_code == 404
+        # r = self.client.data().aggregate("NonExistingTable", payload)
+        # assert r.status_code == 404
 
         r = self.client.data().aggregate("Posts", {"aggs": {"foo": "bar"}})
         assert r.status_code == 400

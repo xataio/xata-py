@@ -26,6 +26,8 @@ import time
 import magic
 from faker import Faker
 
+from xata.client import XataClient
+
 faker = Faker()
 Faker.seed(42)
 
@@ -38,13 +40,19 @@ def get_db_name() -> str:
     return f"sdk-integration-py-{get_random_string(6)}"
 
 
-def wait_until_records_are_indexed(table: str):
+def wait_until_records_are_indexed(table: str, col: str, client: XataClient):
     """
     Wait for the records to be index in order to able to search them
     """
-    # TODO remove in favour of wait loop with aggs
-    # when aggs are available
-    time.sleep(20)
+    is_empty = True
+    counter = 10
+    while is_empty:
+        r = client.data().aggregate(table, {"aggs": {col: {"count": "*"}}})
+        if r["aggs"][col] or counter <= 1:
+            is_empty = False
+        else:
+            counter -= 1  # escape endless loop
+            time.sleep(5)
 
 
 def get_random_string(length):

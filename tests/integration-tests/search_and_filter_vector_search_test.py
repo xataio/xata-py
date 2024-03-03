@@ -60,7 +60,7 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
 
         r = self.client.records().bulk_insert("users", {"records": self.users})
         assert r.is_success()
-        utils.wait_until_records_are_indexed("users")
+        utils.wait_until_records_are_indexed("users", "full_name", self.client)
 
     def teardown_class(self):
         assert self.client.databases().delete(self.db_name).is_success()
