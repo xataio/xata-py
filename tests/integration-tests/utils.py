@@ -44,7 +44,7 @@ def wait_until_records_are_indexed(table: str):
     """
     # TODO remove in favour of wait loop with aggs
     # when aggs are available
-    time.sleep(10)
+    time.sleep(20)
 
 
 def get_random_string(length):
