@@ -29,7 +29,7 @@ from faker import Faker
 from xata.client import XataClient
 
 faker = Faker()
-Faker.seed(42)
+#Faker.seed(412)
 
 
 def get_faker() -> Faker:

@@ -18,19 +18,25 @@
 #
 
 import utils
-from faker import Faker
-from requests import request
 
+import logging
+
+from requests import request
 from xata.client import XataClient
 
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
 
 class TestFilesSingleFile(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
+        self.db_name = "Testing-DC-from-Philip"
+
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.fake = Faker()
+        self.fake = utils.get_faker()
 
+        """
         assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Attachments").is_success()
         assert (
@@ -43,9 +49,11 @@ class TestFilesSingleFile(object):
             )
             .is_success()
         )
+        """
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        #assert self.client.databases().delete(self.db_name).is_success()
+        pass
 
     def test_upload_file(self):
         payload = {"title": self.fake.catch_phrase()}
@@ -55,7 +63,9 @@ class TestFilesSingleFile(object):
         rid = r["id"]
         gif = utils.get_file_content(utils.get_file_name("images/01.gif"))
 
-        assert self.client.files().put("Attachments", rid, "one_file", gif).is_success()
+        resp = self.client.files().put("Attachments", rid, "one_file", gif)
+        assert resp.status_code == ""
+        assert resp.is_success()
 
         record = self.client.records().get("Attachments", rid, columns=["one_file.*", "one_file.uploadUrl"])
         assert record.is_success()
