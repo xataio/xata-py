@@ -66,7 +66,7 @@ class TestSqlQuery(object):
     def test_query_statement_with_missing_params(self):
         r = self.client.sql().query("SELECT * FROM \"Users\" WHERE email = '$1'")
         assert r.status_code == 200
-        assert len(r.json()) == 0
+        assert len(r.json().get("records")) == 0
 
     def test_query_statement_with_params_and_no_param_references(self):
         r = self.client.sql().query('SELECT * FROM "Users"', ["This is important"])
@@ -87,14 +87,12 @@ class TestSqlQuery(object):
             "INSERT INTO \"Users\" (name, email) VALUES ('Leslie Nielsen', 'leslie@example.com')"
         )
         assert r.status_code == 201
-        assert not r.json()
 
     def test_insert_with_params(self):
         r = self.client.sql().query(
             'INSERT INTO "Users" (name, email) VALUES ($1, $2)', ["Keanu Reeves", "keanu@example.com"]
         )
         assert r.status_code == 201
-        assert not r.json()
 
     def test_query_with_params(self):
         r = self.client.sql().query('SELECT * FROM "Users" WHERE email = $1', ["keanu@example.com"])

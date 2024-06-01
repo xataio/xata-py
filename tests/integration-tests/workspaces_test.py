@@ -32,7 +32,7 @@ class TestWorkspacesNamespace(object):
         self.db_name = utils.get_db_name()
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
-        self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
+        self.workspace_name = "sdk-integration-py-%s" % utils.get_random_string(6)
 
     #
     # Workspace Ops
@@ -155,7 +155,7 @@ class TestWorkspacesNamespace(object):
         )
         assert r.status_code == 403
         r = self.client.workspaces().updateWorkspaceMemberRole("NonExistingUserId", payload)
-        assert r.status_code == 403
+        assert r.status_code == 404
         r = self.client.workspaces().updateWorkspaceMemberRole(pytest.workspaces["member"]["userId"], {})
         assert r.status_code == 400
 

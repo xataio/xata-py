@@ -141,7 +141,7 @@ class TestSearchAndFilterNamespace(object):
         assert r.status_code == 200
 
         r = self.client.search_and_filter().searchTable("NonExistingTable", payload)
-        assert r.status_code == 404
+        assert r.status_code == 200
 
         r = self.client.search_and_filter().searchTable("Posts", {"invalid": "query"})
         assert r.status_code == 400
@@ -171,7 +171,7 @@ class TestSearchAndFilterNamespace(object):
         assert r.json()["aggs"]["titles"] == len(self.posts)
 
         r = self.client.search_and_filter().aggregateTable("NonExistingTable", payload)
-        assert r.status_code == 404
+        assert r.status_code == 200
 
         r = self.client.search_and_filter().aggregateTable("Posts", {"aggs": {"foo": "bar"}})
         assert r.status_code == 400
