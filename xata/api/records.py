@@ -116,11 +116,17 @@ class Records(ApiRequest):
 
         :returns ApiResponse
         """
-        db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
-        url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
+        #db_branch_name = self.client.get_db_branch_name(db_name, branch_name)
+        #url_path = f"/db/{db_branch_name}/tables/{table_name}/data/{record_id}"
+        #if columns is not None:
+        #    url_path += "?columns=%s" % ",".join(columns)
+        #return self.request("GET", url_path)
+
+        cols = "*"
         if columns is not None:
-            url_path += "?columns=%s" % ",".join(columns)
-        return self.request("GET", url_path)
+            cols = ",".join([f"'{c}'" for c in columns])
+        stmt = f"SELECT {cols} FROM \"{table_name}\" WHERE \"id\" = '{record_id}' LIMIT 1;"
+        return self.client.sql().query(stmt, params=None, db_name=db_name, branch_name=branch_name)
 
     def insert_with_id(
         self,
