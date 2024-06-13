@@ -29,15 +29,18 @@ from faker import Faker
 from xata.client import XataClient
 
 faker = Faker()
-#Faker.seed(412)
+# Faker.seed(412)
 
 
 def get_faker() -> Faker:
     return faker
 
 
-def get_db_name() -> str:
-    return f"sdk-integration-py-{get_random_string(6)}"
+def get_db_name(always_random: bool = False) -> str:
+    generated_name = f"sdk-integration-py-{get_random_string(6)}"
+    if always_random:
+        return generated_name
+    return os.environ.get("XATA_STATIC_DB_NAME", generated_name)
 
 
 def wait_until_records_are_indexed(table: str, col: str, client: XataClient):
@@ -115,5 +118,6 @@ def get_posts_schema() -> dict:
             {"name": "labels", "type": "multiple"},
             {"name": "slug", "type": "string"},
             {"name": "content", "type": "text"},
+            {"name": "text", "type": "text"}
         ]
     }

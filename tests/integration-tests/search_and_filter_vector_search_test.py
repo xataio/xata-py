@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 
 from xata.client import XataClient
@@ -32,7 +34,8 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("users").is_success()
 
         # create schema
@@ -63,7 +66,9 @@ class TestSearchAndFilterVectorSearchEndpoint(object):
         utils.wait_until_records_are_indexed("users", "full_name", self.client)
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("users").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_vector_search_table_simple(self):
         payload = {

@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 from faker import Faker
 
@@ -31,14 +33,17 @@ class TestSearchAndFilterNamespace(object):
         self.posts = utils.get_posts(50)
         self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
         assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
         assert self.client.records().bulk_insert("Posts", {"records": self.posts}).is_success()
         utils.wait_until_records_are_indexed("Posts", "title", self.client)
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_search_branch(self):
         """

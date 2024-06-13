@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 from requests import request
 
@@ -26,25 +28,18 @@ from xata.client import XataClient
 class TestFilesMultipleFiles(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
         self.fake = utils.get_faker()
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Attachments").is_success()
-        assert (
-            self.client.table()
-            .set_schema(
-                "Attachments",
-                utils.get_attachments_schema(),
-                db_name=self.db_name,
-                branch_name=self.branch_name,
-            )
-            .is_success()
-        )
+        assert self.client.table().set_schema("Attachments", utils.get_attachments_schema()).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Attachments").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_put_file_item(self):
         payload = {

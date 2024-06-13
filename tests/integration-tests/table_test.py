@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import pytest
 import utils
 
@@ -26,13 +28,14 @@ from xata.client import XataClient
 class TestTableNamespace(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def columns(self) -> dict:
@@ -63,8 +66,7 @@ class TestTableNamespace(object):
         r = self.client.table().update(
             "RenameMe",
             {"name": "NewName"},
-            db_name=self.db_name,
-            branch_name=self.branch_name,
+            db_name=self.db_name
         )
         assert r.is_success()
         assert r["status"] == "completed"

@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import pytest
 import utils
 from faker import Faker
@@ -31,24 +33,13 @@ class TestHelpersBulkProcessor(object):
         self.client = XataClient(db_name=self.db_name)
         self.fake = Faker()
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
         assert self.client.table().create("Users").is_success()
 
         # create schema
-        assert (
-            self.client.table()
-            .set_schema(
-                "Posts",
-                {
-                    "columns": [
-                        {"name": "title", "type": "string"},
-                        {"name": "text", "type": "text"},
-                    ]
-                },
-            )
-            .is_success()
-        )
         assert (
             self.client.table()
             .set_schema(
@@ -64,7 +55,10 @@ class TestHelpersBulkProcessor(object):
         )
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        assert self.client.table().delete("Users").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     @pytest.fixture
     def record(self) -> dict:

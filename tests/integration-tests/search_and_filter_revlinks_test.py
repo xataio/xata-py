@@ -17,6 +17,7 @@
 # under the License.
 #
 
+import os
 import random
 
 import utils
@@ -32,7 +33,8 @@ class TestSearchAndFilterRevLinks(object):
         self.record_id = utils.get_random_string(24)
         self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
 
         assert self.client.table().create("Users").is_success()
         assert self.client.table().create("Posts").is_success()
@@ -80,7 +82,10 @@ class TestSearchAndFilterRevLinks(object):
         assert self.client.records().bulk_insert("Posts", {"records": self.posts}).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        assert self.client.table().delete("Users").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_revlinks_with_alias(self):
         payload = {

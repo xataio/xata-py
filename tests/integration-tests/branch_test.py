@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import pytest
 import utils
 
@@ -29,28 +31,15 @@ class TestBranchNamespace(object):
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 
-        # create database
-        assert self.client.databases().create(self.db_name).is_success()
-        assert self.client.table().create("Posts").is_success
-        assert (
-            self.client.table()
-            .set_schema(
-                "Posts",
-                {
-                    "columns": [
-                        {"name": "title", "type": "string"},
-                        {"name": "labels", "type": "multiple"},
-                        {"name": "slug", "type": "string"},
-                        {"name": "text", "type": "text"},
-                    ]
-                },
-            )
-            .is_success()
-        )
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
+        assert self.client.table().create("Posts").is_success()
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        assert self.client.table().delete("Posts").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_get_branch_list(self):
         r = self.client.branch().list(self.db_name)
