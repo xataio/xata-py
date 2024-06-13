@@ -118,6 +118,6 @@ def get_posts_schema() -> dict:
             {"name": "labels", "type": "multiple"},
             {"name": "slug", "type": "string"},
             {"name": "content", "type": "text"},
-            {"name": "text", "type": "text"}
+            {"name": "text", "type": "text"},
         ]
     }

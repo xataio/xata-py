@@ -57,4 +57,3 @@ jobs:
           XATA_STATIC_DB_NAME: ${{ secrets.INTEGRATION_DC_STATIC_DB_NAME }}
         run: |
           poetry run pytest -v --tb=short -W ignore::DeprecationWarning tests/integration-tests/
-

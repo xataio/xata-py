@@ -65,11 +65,7 @@ class TestTableNamespace(object):
         r = self.client.table().create("RenameMe")
         assert r.is_success()
 
-        r = self.client.table().update(
-            "RenameMe",
-            {"name": "NewName"},
-            db_name=self.db_name
-        )
+        r = self.client.table().update("RenameMe", {"name": "NewName"}, db_name=self.db_name)
         assert r.is_success()
         assert r["status"] == "completed"
         assert "migrationID" in r

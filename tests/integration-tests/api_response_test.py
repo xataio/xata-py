@@ -18,7 +18,9 @@
 #
 
 import os
+
 import utils
+
 from xata.client import XataClient
 
 

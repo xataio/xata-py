@@ -71,9 +71,9 @@ class TestFilesMultipleFiles(object):
         # overwrite item 1 with image 2
         assert record["many_files"][0] == ""
         file_1 = self.client.files().put_item("Attachments", rid, "many_files", record["many_files"][0]["id"], img_2)
-        
-        #assert file_1.status_code == 0 # extra
-        #assert file_1.json() == ""     # extra
+
+        # assert file_1.status_code == 0 # extra
+        # assert file_1.json() == ""     # extra
 
         assert file_1.is_success()
         assert "attributes" in file_1
