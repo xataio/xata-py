@@ -53,8 +53,8 @@ jobs:
       - name: Integration Tests on a dedicated cluster
         env:
           XATA_WORKSPACE_ID: ${{ secrets.INTEGRATION_DC_TEST_WORKSPACE }}
-          XATA_API_KEY: ${{ secrets.INTEGRATION_DC_TEST_API_KEY }}
-          XATA_STATIC_DB_NAME: ${{ secrets.INTEGRATION_DC_TEST_API_KEY }}
+          XATA_API_KEY: ${{ secrets.INTEGRATION_TEST_API_KEY }}
+          XATA_STATIC_DB_NAME: ${{ secrets.INTEGRATION_DC_STATIC_DB_NAME }}
         run: |
           poetry run pytest -v --tb=short -W ignore::DeprecationWarning tests/integration-tests/
 
