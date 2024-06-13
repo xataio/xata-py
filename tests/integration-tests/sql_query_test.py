@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 
 from xata.client import XataClient
@@ -26,7 +28,10 @@ class TestSqlQuery(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.client = XataClient(db_name=self.db_name)
-        assert self.client.databases().create(self.db_name).is_success()
+
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
+
         assert self.client.table().create("Users").is_success()
         assert (
             self.client.table()
@@ -46,7 +51,9 @@ class TestSqlQuery(object):
         assert self.client.records().bulk_insert("Users", {"records": users}).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Users").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_query(self):
         r = self.client.sql().query('SELECT * FROM "Users" LIMIT 5')

@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 from requests import request
 
@@ -26,29 +28,22 @@ from xata.client import XataClient
 class TestFilesMultipleFiles(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
         self.fake = utils.get_faker()
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Attachments").is_success()
-        assert (
-            self.client.table()
-            .set_schema(
-                "Attachments",
-                utils.get_attachments_schema(),
-                db_name=self.db_name,
-                branch_name=self.branch_name,
-            )
-            .is_success()
-        )
+        assert self.client.table().set_schema("Attachments", utils.get_attachments_schema()).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Attachments").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_put_file_item(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_put_file",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),
@@ -74,7 +69,12 @@ class TestFilesMultipleFiles(object):
         assert img_2 == proof_2.content
 
         # overwrite item 1 with image 2
+        assert record["many_files"][0] == ""
         file_1 = self.client.files().put_item("Attachments", rid, "many_files", record["many_files"][0]["id"], img_2)
+
+        # assert file_1.status_code == 0 # extra
+        # assert file_1.json() == ""     # extra
+
         assert file_1.is_success()
         assert "attributes" in file_1
         assert "mediaType" in file_1
@@ -91,7 +91,7 @@ class TestFilesMultipleFiles(object):
 
     def test_delete_file(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_delete_file",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),
@@ -118,7 +118,7 @@ class TestFilesMultipleFiles(object):
 
     def test_get_item(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_get_item",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),

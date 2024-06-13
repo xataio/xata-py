@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import pytest
 import utils
 from faker import Faker
@@ -28,29 +30,20 @@ from xata.helpers import Transaction
 class TestHelpersTransaction(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
         self.fake = Faker()
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
-        assert (
-            self.client.table()
-            .set_schema(
-                "Posts",
-                {
-                    "columns": [
-                        {"name": "title", "type": "string"},
-                        {"name": "content", "type": "text"},
-                    ]
-                },
-            )
-            .is_success()
-        )
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
     def teardown_class(self):
-        r = self.client.databases().delete(self.db_name)
-        assert r.is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
+        else:
+            assert self.client.table().delete("Posts").is_success()
+            assert self.client.branch().delete(branch_name="testing-issue-170").is_success()
 
     @pytest.fixture
     def record(self) -> dict:

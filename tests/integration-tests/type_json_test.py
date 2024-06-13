@@ -18,6 +18,7 @@
 #
 
 import json
+import os
 
 import utils
 from faker import Faker
@@ -32,10 +33,13 @@ class TestJsonColumnType(object):
         self.record_id = utils.get_random_string(24)
         self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_create_table_with_type(self):
         assert self.client.table().create("Posts").is_success()
