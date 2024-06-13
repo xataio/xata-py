@@ -37,9 +37,13 @@ class TestBranchNamespace(object):
         assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
     def teardown_class(self):
-        assert self.client.table().delete("Posts").is_success()
         if not os.environ.get("XATA_STATIC_DB_NAME"):
             assert self.client.databases().delete(self.db_name).is_success()
+        else:
+            assert self.client.table().delete("Posts").is_success()
+            for b in self.client.branch().list(self.db_name).get("branches"):
+                if b["name"] != "main":
+                    self.client.branch().delete(branch_name=b["name"])
 
     def test_get_branch_list(self):
         r = self.client.branch().list(self.db_name)

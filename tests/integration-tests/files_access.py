@@ -38,9 +38,10 @@ class TestFilesAccess(object):
         assert self.client.table().set_schema("Attachments", utils.get_attachments_schema()).is_success()
 
     def teardown_class(self):
-        assert self.client.table().delete("Attachments").is_success()
         if not os.environ.get("XATA_STATIC_DB_NAME"):
             assert self.client.databases().delete(self.db_name).is_success()
+        else:
+            assert self.client.table().delete("Attachments").is_success()
 
     def test_public_flag_true(self):
         payload = {

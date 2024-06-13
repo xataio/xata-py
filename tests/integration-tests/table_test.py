@@ -36,6 +36,8 @@ class TestTableNamespace(object):
     def teardown_class(self):
         if not os.environ.get("XATA_STATIC_DB_NAME"):
             assert self.client.databases().delete(self.db_name).is_success()
+        else:
+            assert self.client.table().delete("NewName").is_success()
 
     @pytest.fixture
     def columns(self) -> dict:

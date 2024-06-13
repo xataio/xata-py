@@ -43,9 +43,10 @@ class TestRecordsBranchTransactionsNamespace(object):
         assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
     def teardown_class(self):
-        assert self.client.table().delete("Posts").is_success()
         if not os.environ.get("XATA_STATIC_DB_NAME"):
             assert self.client.databases().delete(self.db_name).is_success()
+        else:
+            assert self.client.table().delete("Posts").is_success()
 
     def test_insert_only(self):
         payload = {

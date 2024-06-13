@@ -43,7 +43,7 @@ class TestApiRequest(object):
         Direct namespace invocation with dependency on internal client config
         :link https://github.com/xataio/xata-py/issues/57
         """
-        db_name = utils.get_db_name()
+        db_name = utils.get_db_name(True)
         databases = XataClient().databases()
 
         # workspace_id should be provided by the the client implicitly

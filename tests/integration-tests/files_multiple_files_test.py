@@ -43,7 +43,7 @@ class TestFilesMultipleFiles(object):
 
     def test_put_file_item(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_put_file",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),
@@ -69,7 +69,12 @@ class TestFilesMultipleFiles(object):
         assert img_2 == proof_2.content
 
         # overwrite item 1 with image 2
+        assert record["many_files"][0] == ""
         file_1 = self.client.files().put_item("Attachments", rid, "many_files", record["many_files"][0]["id"], img_2)
+        
+        #assert file_1.status_code == 0 # extra
+        #assert file_1.json() == ""     # extra
+
         assert file_1.is_success()
         assert "attributes" in file_1
         assert "mediaType" in file_1
@@ -86,7 +91,7 @@ class TestFilesMultipleFiles(object):
 
     def test_delete_file(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_delete_file",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),
@@ -113,7 +118,7 @@ class TestFilesMultipleFiles(object):
 
     def test_get_item(self):
         payload = {
-            "title": self.fake.catch_phrase(),
+            "title": "test_get_item",
             "many_files": [
                 utils.get_file("images/01.gif", public_url=True),
                 utils.get_file("images/02.gif", public_url=True),
