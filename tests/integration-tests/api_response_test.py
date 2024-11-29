@@ -17,6 +17,8 @@
 # under the License.
 #
 
+import os
+
 import utils
 
 from xata.client import XataClient
@@ -26,9 +28,11 @@ class TestApiResponse(object):
     def setup_class(self):
         self.db_name = utils.get_db_name()
         self.client = XataClient(db_name=self.db_name)
-        assert self.client.databases().create(self.db_name).is_success()
-        assert self.client.table().create("Posts").is_success()
-        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
+        if not self.client.table().get_schema("Posts").is_success():
+            assert self.client.table().create("Posts").is_success()
+            assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
         payload = {
             "operations": [
@@ -47,7 +51,9 @@ class TestApiResponse(object):
         assert self.client.records().transaction(payload).is_success()
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_is_success_true(self):
         user = XataClient().users().get()

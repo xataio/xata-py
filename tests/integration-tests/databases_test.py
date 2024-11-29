@@ -26,7 +26,7 @@ from xata.errors import UnauthorizedError
 
 class TestDatabasesNamespace(object):
     def setup_class(self):
-        self.db_name = utils.get_db_name()
+        self.db_name = utils.get_db_name(True)
         self.branch_name = "main"
         self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
 

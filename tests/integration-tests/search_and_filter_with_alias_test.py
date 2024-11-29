@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import os
 
 import utils
 from faker import Faker
@@ -27,26 +28,13 @@ class TestSearchAndFilterWithAliasNamespace(object):
     def setup_class(self):
         self.fake = Faker()
         self.db_name = utils.get_db_name()
-        self.branch_name = "main"
         self.record_id = utils.get_random_string(24)
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.client = XataClient(db_name=self.db_name)
 
-        assert self.client.databases().create(self.db_name).is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().create(self.db_name).is_success()
         assert self.client.table().create("Posts").is_success()
-
-        # create schema
-        r = self.client.table().set_schema(
-            "Posts",
-            {
-                "columns": [
-                    {"name": "title", "type": "string"},
-                    {"name": "labels", "type": "multiple"},
-                    {"name": "slug", "type": "string"},
-                    {"name": "text", "type": "text"},
-                ]
-            },
-        )
-        assert r.is_success()
+        assert self.client.table().set_schema("Posts", utils.get_posts_schema()).is_success()
 
         # ingests posts
         self.posts = [
@@ -63,7 +51,9 @@ class TestSearchAndFilterWithAliasNamespace(object):
         utils.wait_until_records_are_indexed("Posts", "title", self.client)
 
     def teardown_class(self):
-        assert self.client.databases().delete(self.db_name).is_success()
+        assert self.client.table().delete("Posts").is_success()
+        if not os.environ.get("XATA_STATIC_DB_NAME"):
+            assert self.client.databases().delete(self.db_name).is_success()
 
     def test_query_table(self):
         """

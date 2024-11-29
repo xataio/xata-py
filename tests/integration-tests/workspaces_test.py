@@ -25,9 +25,8 @@ from xata.client import XataClient
 
 class TestWorkspacesNamespace(object):
     def setup_class(self):
-        self.db_name = utils.get_db_name()
-        self.branch_name = "main"
-        self.client = XataClient(db_name=self.db_name, branch_name=self.branch_name)
+        self.db_name = utils.get_db_name(True)
+        self.client = XataClient(db_name=self.db_name)
         self.workspace_name = "py-sdk-tests-%s" % utils.get_random_string(6)
 
     def test_list_workspaces(self):
